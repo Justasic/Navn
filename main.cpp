@@ -150,15 +150,18 @@ int main (int argcx, char** argvx)
 	}
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
-	cout << chanmsg("Welcome "+unick+" to "+chan+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.");
+	   cout << chanmsg("Welcome "+unick+" to "+reply->channel+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.");
       }
       if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
 	sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
 	log(unick + " quit the bot with password: \"" + password + "\"");
-
       }
       if (reply->said(killed)){ // if the bot is killed.. throw a socket exception saying so.
 	throw CoreException("You have been killed by "+unick);
+      }
+      if(reply->said(":Navn!"+username && " NICK ")){
+         nick = reply->param[3];
+         sock << notice(owner_nick, "Someone changed my nickname to "+nick);                             
       }
       //this says that we are now in the server
       if(reply->said(server_welcome)){
@@ -323,8 +326,24 @@ int main (int argcx, char** argvx)
 	sock << privmsg(chan, "If you would like to add a command or function, talk to them.");
 	log(unick+" used Da_Goats !version command in "+chan);
       }
+      /*******************************Easter Eggs*********************************/
       if(reply->said("!everything")){
 	sock << privmsg(chan, "Yes, there is a script for everything..\007");
+      }
+      if(reply->said("\001ACTION "+unick+" hugs "+nick"\001")){
+         sock << me(chan, "Hugs "+unick);                           
+      }
+      if(reply->said("\001ACTION "+unick+" kicks "+nick+"\001")){
+         sock << privmsg(chan, "Ouch!");                           
+      }
+      if(reply->said("\001ACTION "+unick+" eats "+nick+"\001")){
+         sock << privmsg(chan, "how do I taste?");                        
+      }
+      if(reply->said("\001ACTION "+unick+" licks "+nick+"\001")){
+         sock << me(chan, "is a little creeped out that "+unick+" licked him");                        
+      }
+      if(reply->said("cum")){
+         sock << privmsg(chan, "ewww..");
       }
       /***********************End Da_Goat Functions*******************************/
       
