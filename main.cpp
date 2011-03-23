@@ -159,7 +159,7 @@ int main (int argcx, char** argvx)
       if (reply->said(killed)){ // if the bot is killed.. throw a socket exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
-      if(reply->said(":Navn!"+usrname && " NICK ")){
+      if(reply->said(":Navn!"+usrname+" NICK ")){
          nick = reply->params(3);
          sock << notice(owner_nick, "Someone changed my nickname to "+nick);
       }
