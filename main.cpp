@@ -167,6 +167,7 @@ int main (int argcx, char** argvx)
       if(reply->said(server_welcome)){
 	sock << mode(nick, "+B");
 	sock << join(channel);
+	sock << privmsg("NickServ", "identify "+nsacc+" "+ncpass);
 	log("Successfully connected to the server " +server +" " +port +" " +channel);
       }
       if (reply->said(":Closing link:")){ // if we ping timeout or something.

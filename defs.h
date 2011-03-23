@@ -10,7 +10,7 @@
 #define logfile "navn.log"
 using namespace std;
 
-/*List the constants used throughout the script. 
+/*List the constants used throughout the script.
 If you wanna edit the server, channel, nick, etc that the bot
 connects to, do so here, NOT in the main code.
 */
@@ -20,8 +20,7 @@ bool debug = false;
 bool dev = false;
 bool quitting = false;
 const string version = "v1.3.1";
-string server = "5.205.91.159";
-string port = "6667";
+
     /*
     'Reply' means 'What the server is saying back'
     'unick' means that whatever user is saying to the bot or whoever said
@@ -39,11 +38,17 @@ string quitmsg;
 string fullhost;
 string ident;
 //make sure the channel name is the same case as the one on IRC
+/**************************configuration***********************/
+string server = "5.205.91.159";
+string port = "6667";
 string channel = "#Test";
 string nick = "Navn";
 string usrname = "Navn";
 string realname = "The Navn Bot "+version;
 string owner_nick = "Justasic";
+string nspass = "letmein";
+string nsacc = "Navn";
+/**************************configuration***********************/
 const string welcome_msg = nick+" has connected. Type !time to see the time.";
 const string kick_msg = "KICK "+channel+" "+nick;
 //433 replies that the nick is taken
