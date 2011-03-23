@@ -3,7 +3,7 @@ clear
 build_it ()
 {
   echo "\033[01;31m"
-  g++ -ansi -g main.cpp Socket.cpp Socket.h SocketException.h defs.h -o navn
+  g++ -ansi -g main.cpp Socket.cpp -o navn
   echo "\033[22;37m"
   echo "<=====================================>"
   echo Done building!
