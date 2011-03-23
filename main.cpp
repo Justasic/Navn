@@ -6,7 +6,7 @@ using namespace std;
 using namespace flux_net_irc;
 
 int main (int argcx, char** argvx)
-{  
+{
   startup(argcx, argvx);
   try
   {
@@ -23,7 +23,7 @@ int main (int argcx, char** argvx)
     sock << "USER "+usrname+" * 8 :"+realname+"\r\n";
     sock << setnick(nick);
     log("Successfully Started");
-    
+
     if (reply->said("PING :")){
       sock << "PONG :"+rply.substr(6,-1);
     }
@@ -34,12 +34,12 @@ int main (int argcx, char** argvx)
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     sigaction(SIGINT, &act, 0);
-    
+
     delete reply;
-    
+
     while (!quitting){ //infi loop to stay connected
       sock >> rply; //keep the connection messages in the rply string.
-      
+
       irc_string* reply = new irc_string(rply);
       host = reply->host;
       fullhost = reply->usernick+"!"+reply->user+"@"+host;
@@ -91,12 +91,12 @@ int main (int argcx, char** argvx)
       }
       //request the quit password
       if (reply->said(pass_req)){
-	if (fullhost == "Justasic!Ping-Timeout@I.still.hate.packets" || host == "Netadmin.Flux-Net.net"){
+	if (host == "I.still.hate.packets" || host == "Netadmin.Flux-Net.net"){
 	  sock << notice(unick, "The password is:\2 "+password);
-	  log(unick + " requested the navn quit password: " + password); 
+	  log(unick + " requested the navn quit password: " + password);
 	} else {
 	  sock << notice(unick, access_denied);
-	  log(unick + " attempted to request the navn quit password."); 
+	  log(unick + " attempted to request the navn quit password.");
 	}
       }//gdb info rply
       if (reply->said(gdb_req)){
@@ -161,7 +161,7 @@ int main (int argcx, char** argvx)
       }
       if(reply->said(":Navn!"+username && " NICK ")){
          nick = reply->param[3];
-         sock << notice(owner_nick, "Someone changed my nickname to "+nick);                             
+         sock << notice(owner_nick, "Someone changed my nickname to "+nick);
       }
       //this says that we are now in the server
       if(reply->said(server_welcome)){
@@ -190,9 +190,9 @@ int main (int argcx, char** argvx)
       }
       /*Find the channel join code (366)
       If found it makes in_channel true.
-      This is so you can make things happen only if you know you are in 
+      This is so you can make things happen only if you know you are in
       a channel.
-      */      
+      */
       if(reply->said(in_the_channel)){
 	if (debug || dev){
 	 cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
@@ -275,7 +275,7 @@ int main (int argcx, char** argvx)
 	/*
 	if(sysinfo(&sys_info) != 0)
 	  perror("sysinfo");
- 
+
 	// Uptime
         days = sys_info.uptime / 86400;
 	hours = (sys_info.uptime / 3600) - (days * 24);
@@ -284,21 +284,21 @@ int main (int argcx, char** argvx)
 	sock << privmsg(chan, "Uptime: "+days+", "+hours+", "+mins+", "+);
 	printf("Uptime: %ddays, %dhours, %dminutes, %ldseconds\n",
                       days, hours, mins, sys_info.uptime % 60);
- 
+
 	// Load Averages for 1,5 and 15 minutes
 	sock << privmsg(chan, "Load Avgs: 1min("+sys_info.loads[0]+") 5mins("+sys_info.loads[1]+") 15mins("+sys_info.loads[2]+")");
- 
+
 	// Total and free ram.
 	sock << privmsg(chan, "Total Ram: "+sys_info.totalram / 1024+"\tFree: "+sys_info.freeram / 1024);
- 
+
 	// Shared and buffered ram.
 	sock << privmsg(chan, "Shared Ram: "+sys_info.sharedram / 1024);
 	sock << privmsg(chan, "Buffered Ram: "+sys_info.bufferram / 1024);
- 
+
 	// Swap space
 	sock << privmsg(chan, "Total Swap: "+sys_info.totalswap / 1024+"\tFree: "+sys_info.freeswap / 1024);
- 
-	// Number of processes currently running. 
+
+	// Number of processes currently running.
 	sock << privmsg(chan, "Number of processes: "+sys_info.procs);
 	*/
 	log(unick+" used Da_Goats !uptime command in "+chan);
@@ -331,31 +331,31 @@ int main (int argcx, char** argvx)
 	sock << privmsg(chan, "Yes, there is a script for everything..\007");
       }
       if(reply->said("\001ACTION "+unick+" hugs "+nick"\001")){
-         sock << me(chan, "Hugs "+unick);                           
+         sock << me(chan, "Hugs "+unick);
       }
       if(reply->said("\001ACTION "+unick+" kicks "+nick+"\001")){
-         sock << privmsg(chan, "Ouch!");                           
+         sock << privmsg(chan, "Ouch!");
       }
       if(reply->said("\001ACTION "+unick+" eats "+nick+"\001")){
-         sock << privmsg(chan, "how do I taste?");                        
+         sock << privmsg(chan, "how do I taste?");
       }
       if(reply->said("\001ACTION "+unick+" licks "+nick+"\001")){
-         sock << me(chan, "is a little creeped out that "+unick+" licked him");                        
+         sock << me(chan, "is a little creeped out that "+unick+" licked him");
       }
       if(reply->said("cum")){
          sock << privmsg(chan, "ewww..");
       }
       /***********************End Da_Goat Functions*******************************/
-      
+
       //If it looks for !time in a server rply (aka if anyone in the channel
       //says it) and if it finds it, it tells the time.
-            
+
       if (reply->said("!time") && in_channel){
-	
+
 	/*WORLD CLOCK
 	Since this is all C++ and not IRC or socket stuff, I won't bother
 	trying to explain it. (Mainly because if youre trying something
-	like this you should already have a decent grasp on C++, and partly 
+	like this you should already have a decent grasp on C++, and partly
 	because I'm lazy)
 	*/
 	time_t rawtime;
@@ -365,29 +365,29 @@ int main (int argcx, char** argvx)
 	int minutes = (ptm->tm_min);
 	string dd_minutes = make_two_digits(minutes);
 	sock << privmsg(chan, "Current time around the World:");
-	
+
 	int GMT_h = ((ptm->tm_hour+UTC)%24);
 	sock << privmsg(chan, "GMT == " + make_two_digits(GMT_h) + ":" + dd_minutes);
-	
+
 	int new_york_h = ((ptm->tm_hour+EST)%24);
 	if (new_york_h < 0){
 	  new_york_h += 24;
 	}
 	sock << privmsg(chan, "New York (USA) == " + make_two_digits(new_york_h) + ":" + dd_minutes);
-	
+
 	int cali_h = ((ptm->tm_hour+PST)%24);
 	if (cali_h < 0){
 	  cali_h += 24;
 	}
 	sock << privmsg(chan, "California (USA) == " +  make_two_digits(cali_h) + ":" + dd_minutes);
-	
+
 	int beijing_h = ((ptm->tm_hour+CCT)%24);
 	if (beijing_h < 0){
 	  beijing_h += 24;
 	}
 	sock << privmsg(chan, "Beijing (China) == " + make_two_digits(beijing_h) + ":" + dd_minutes);
 	log(unick + " requested !time command in " + chan);
-      }  
+      }
       //if the nick is taken and the server connection is terminated.
       if(reply->said(con_closed_nick)){
 	throw SocketException("Nickname is taken.");
@@ -405,7 +405,7 @@ int main (int argcx, char** argvx)
 	do_quit();
       }
       delete reply;
-    }//while loop ends here 
+    }//while loop ends here
      sock << quit(quitmsg); //quit the bot if we had a terminal signal.
      log("Quitting: "+quitmsg);
      do_quit();
