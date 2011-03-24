@@ -331,16 +331,16 @@ int main (int argcx, char** argvx)
       if(reply->said("!everything")){
 	sock << privmsg(chan, "Yes, there is a script for everything..\007");
       }
-      if(reply->said(":ACTION "+unick+" hugs "+nick)){
+      if(reply->said(":\001ACTION "+unick+" hugs "+nick)){
          sock << me(chan, "Hugs "+unick);
       }
-      if(reply->said(":ACTION "+unick+" kicks "+nick)){
+      if(reply->said(":\001ACTION "+unick+" kicks "+nick)){
          sock << privmsg(chan, "Ouch!");
       }
-      if(reply->said(":ACTION "+unick+" eats "+nick)){
+      if(reply->said(":\001ACTION "+unick+" eats "+nick)){
          sock << privmsg(chan, "how do I taste?");
       }
-      if(reply->said(":ACTION "+unick+" licks "+nick)){
+      if(reply->said(":\001ACTION "+unick+" licks "+nick)){
          sock << me(chan, "is a little creeped out that "+unick+" licked him");
       }
       if(reply->said("cum")){
