@@ -159,19 +159,16 @@ int main (int argcx, char** argvx)
       if (reply->said(killed)){ // if the bot is killed.. throw a socket exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
-      if(reply->said(":Navn!"+username && " NICK ")){
-         nick = reply->param[3];
+      if(reply->said(":Navn!"+usrname+" NICK ")){
+         nick = reply->params(3);
          sock << notice(owner_nick, "Someone changed my nickname to "+nick);
       }
       //this says that we are now in the server
       if(reply->said(server_welcome)){
 	sock << mode(nick, "+B");
 	sock << join(channel);
-	sock << privmsg("NickServ", "identify "+nsacc+" "+ncpass);
+	sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
 	log("Successfully connected to the server " +server +" " +port +" " +channel);
-      }
-      if (reply->said(":Closing link:")){ // if we ping timeout or something.
-	throw SocketException("Server closed the connection. Error: "+msg);
       }
       //if the nick is not avalable
       if(reply->said(nick_taken_rsl)){
