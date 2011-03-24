@@ -67,7 +67,7 @@ const Socket& Socket::operator >> (std::string& s) const
   memset ( buf, 0, MAXRECV + 1 );
   ::recv ( m_sock, buf, MAXRECV, 0 );
   s = buf;
-  if(nofork)
+  if(nofork){
   std::cout << s << "\n";
   }
   return *this;
