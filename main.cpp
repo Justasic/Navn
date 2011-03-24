@@ -51,12 +51,6 @@ int main (int argcx, char** argvx)
       if (reply->said("PING :")){
 	sock << "PONG :"+rply.substr(6,-1);
       }
-      /*for whenever justasic plans on making something with anope string
-      if (reply->said("derpo")){
-	//Anope::string &fnick = reply->usernick;
-	//sock << "PRIVMSG " << chan << " " << fnick << nl;
-	sock << chanmsg("lol youre a retard");
-      }*/
       if(reply->said("!google") && in_channel){ // if !google is said in the channel
 	sock << privmsg(chan, search(rply, "!google"));
 	log("Channel Google Search from " + unick + " \"" +search(rply, "!google") + "\"");

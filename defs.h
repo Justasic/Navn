@@ -73,6 +73,24 @@ const string gdb_msg = "gdb#: (1) From the directory that you would do ./program
 const string access_denied = "Access Denied.";
 const string nl = "\r\n";
 
+/**Command Line Help
+ * for when someone does --help or -h with the bot
+ * @param ./navn --help
+ * @param ./navn -h
+ */
+void help(){
+ cout << "\t Navn Internet Relay Chat Bot" << nl;
+ cout << "\t \t "<< version << nl; 
+ cout << nl;
+ cout << "Paramiters \t   Function" << nl; 
+ cout << "--help \t -h \t Displays this message." << nl; 
+ cout << "--debug  -d\t Starts the bot in debug mode." << nl; 
+ cout << "--dev \t -x \t Starts the bot in developer mode." << nl; 
+ cout << nl;
+ cout << "\t This bot does have Epic Powers." << nl;
+ exit(0);
+}
+
 struct sysinfo sys_info;
 
 #endif

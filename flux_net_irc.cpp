@@ -179,24 +179,6 @@ string search(string s, string command){
   }
 }
 
-/**Command Line Help
- * for when someone does --help or -h with the bot
- * @param ./navn --help
- * @param ./navn -h
- */
-void help(){
- cout << "\t Navn Internet Relay Chat Bot" << nl;
- cout << "\t \t "<< version << nl; 
- cout << nl;
- cout << "Paramiters \t   Function" << nl; 
- cout << "--help \t -h \t \t Displays this message." << nl; 
- cout << "--debug \t \t Starts the bot in debug mode." << nl; 
- cout << "--dev \t \t \t Starts the bot in developer mode." << nl; 
- cout << nl;
- cout << "\t This bot does have Epic Powers." << nl;
- exit(0);
-}
-
 string make_two_digits(int x){
   if (x < 10){
     stringstream dd_ss;
@@ -409,23 +391,30 @@ void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   if(argv[1] != NULL){
     arg = argv[1];
-    if(arg == "--dev")
+    if(arg == "--dev" || arg == "-x")
     {
       dev = true;
 	 log("Navn is started in Developer mode. (" +arg+ ")");
     }
-    else if (arg == "--debug"){ // for possable future use
+    else if (arg == "--debug" || arg == "-d"){ // for possable future use
       debug = true;
       log("Navn is started in Debug mode. (" + arg + ")");
     }
-	else if (arg == "--nofork" || arg == "-f"){
-	 nofork = true;
-	 dev = true;
-	 log("Navn is started with nofork enabled");
-	}
     else if (arg == "--help" || arg == "-h"){
      help();
     }
+	else if (arg == "--version" || arg == "-v"){
+	 cout << "Navn IRC C++ Bot Version " << version << nl;
+	 cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
+	 cout << nl;
+	 cout << "IRC: irc.Flux-Net.net #Computers" << nl;
+	 cout << "WWW: http://www.Flux-Net.net" << nl;
+	 cout << "Email: staff@flux-net.net" << nl;
+	 cout << nl;
+	 cout << "This bot does have Epic Powers." << nl;
+	 cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+	 exit(0);
+	}
   }
   //logging to a text file and making the PID file.
    log("navn start 5047");

@@ -59,7 +59,6 @@ bool Socket::connect ()
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   return true;
 }
-
 const Socket& Socket::operator >> (std::string& s) const
 {
   char buf [ MAXRECV + 1 ];
@@ -67,16 +66,12 @@ const Socket& Socket::operator >> (std::string& s) const
   memset ( buf, 0, MAXRECV + 1 );
   ::recv ( m_sock, buf, MAXRECV, 0 );
   s = buf;
-  if(nofork){
   std::cout << s << "\n";
-  }
   return *this;
 }
 
 const Socket& Socket::operator << (const std::string& s) const
 {
   ::send ( m_sock, s.c_str(), s.size(), 0 );
-  if (nofork){
   std::cout << "<-- " + s << "\n";
-  }
 }

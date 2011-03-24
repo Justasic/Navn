@@ -24,8 +24,4 @@
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <unistd.h>
-/*
-#include "anope.h"
-#include "hashcomp.h"
-*/
 #endif

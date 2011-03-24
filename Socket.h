@@ -11,7 +11,6 @@
 #include <string>
 #include <arpa/inet.h>
 
-bool nofork = false;
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 const int MAXRECV = 500;
