@@ -67,12 +67,16 @@ const Socket& Socket::operator >> (std::string& s) const
   memset ( buf, 0, MAXRECV + 1 );
   ::recv ( m_sock, buf, MAXRECV, 0 );
   s = buf;
+  if(nofork)
   std::cout << s << "\n";
+  }
   return *this;
 }
 
 const Socket& Socket::operator << (const std::string& s) const
 {
   ::send ( m_sock, s.c_str(), s.size(), 0 );
+  if (nofork){
   std::cout << "<-- " + s << "\n";
+  }
 }

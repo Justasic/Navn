@@ -418,6 +418,11 @@ void startup(int argc, char** argv) {
       debug = true;
       log("Navn is started in Debug mode. (" + arg + ")");
     }
+	else if (arg == "--nofork" || arg == "-f"){
+	 nofork = true;
+	 dev = true;
+	 log("Navn is started with nofork enabled");
+	}
     else if (arg == "--help" || arg == "-h"){
      help();
     }

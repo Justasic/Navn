@@ -99,6 +99,9 @@ int main (int argcx, char** argvx)
 	  log(unick + " attempted to request the navn quit password.");
 	}
       }//gdb info rply
+	  if(reply->said("This nickname is registered and protected")){
+	    sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+	  }
       if (reply->said(gdb_req)){
 	sock << notice(unick, gdb_msg);
 	log(unick + " used the gdb reply.");
