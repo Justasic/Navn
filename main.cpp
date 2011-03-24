@@ -159,15 +159,15 @@ int main (int argcx, char** argvx)
       if (reply->said(killed)){ // if the bot is killed.. throw a socket exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
-      if(reply->said(":Navn!"+usrname+" NICK ")){
-         nick = reply->params(3);
+      if(reply->said(":Navn!"+username && " NICK ")){
+         nick = reply->param[3];
          sock << notice(owner_nick, "Someone changed my nickname to "+nick);
       }
       //this says that we are now in the server
       if(reply->said(server_welcome)){
 	sock << mode(nick, "+B");
 	sock << join(channel);
-	sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+	sock << privmsg("NickServ", "identify "+nsacc+" "+ncpass);
 	log("Successfully connected to the server " +server +" " +port +" " +channel);
       }
       if (reply->said(":Closing link:")){ // if we ping timeout or something.
@@ -421,9 +421,7 @@ int main (int argcx, char** argvx)
     cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     stringstream RCV;
     RCV << e.GetReason();
-    string derp;
-    derp = RCV.str();
-    log("Core Exception Caught: "+derp);
+    log("Core Exception Caught: "+RCV.str());
     do_quit(1);
   }
   log("Logging ended at "+get_os_time());
