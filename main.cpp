@@ -1,5 +1,4 @@
 /* main.cpp */
-//#include "algos.h"
 #include "flux_net_irc.cpp"
 
 using namespace std;

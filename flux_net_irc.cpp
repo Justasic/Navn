@@ -1,7 +1,6 @@
 #ifndef flux_net_irc_ns_h
 #define flux_net_irc_ns_h
 #include "defs.h"
-//#include "sighandle.h"
 #include "includes.h"
 
 namespace flux_net_irc{
