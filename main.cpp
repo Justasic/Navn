@@ -9,7 +9,7 @@ int main (int argcx, char** argvx)
   startup(argcx, argvx);
   try
   {
-    cout << "\033[22;31mStarted with PID \033[22;32m" << get_pID() << "\033[22;37m" << nl;
+    cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
     //Make the socket used to connect to the server
     Socket sock(server,port);
     //Incase there is no connection, say so
@@ -19,7 +19,7 @@ int main (int argcx, char** argvx)
     sock >> rply;
     irc_string* reply = new irc_string(rply);
     //Set the username and nick
-    sock << "USER "+usrname+" * 8 :"+realname+"\r\n";
+    sock << "USER "+usrname+" * 8 :"+realname+nl;;
     sock << setnick(nick);
     log("Successfully Started");
 
@@ -94,6 +94,7 @@ int main (int argcx, char** argvx)
       }//gdb info rply
 	  if(reply->said("This nickname is registered and protected")){
 	    sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+		log("Identified to NickServ with account "+nsacc);
 	  }
       if (reply->said(gdb_req)){
 	sock << notice(unick, gdb_msg);
@@ -179,7 +180,7 @@ int main (int argcx, char** argvx)
       }
       if(reply->said(CTCP_TIME)){ // for CTCP TIME reply
 	cout << "\033[22;31mRecieved CTCP TIME from "+unick+"\033[22;36m\r\n";
-	sock << notice(unick, "\001TIME "+ get_os_time()+"\001");
+	sock << notice(unick, "\001TIME "+ os_time()+"\001");
 	log("Recieved CTCP TIME from " + unick);
       }
       /*Find the channel join code (366)
@@ -417,6 +418,6 @@ int main (int argcx, char** argvx)
     log("Core Exception Caught: "+RCV.str());
     do_quit(1);
   }
-  log("Logging ended at "+get_os_time());
+  log("Logging ended at "+os_time());
   return EXIT_SUCCESS;
 }

@@ -6,7 +6,7 @@
 #define UTC (0)
 #define CCT (+8)
 #define EST (-5)
-#define PST (-8)
+#define PST (-7)
 #define logfile "navn.log"
 using namespace std;
 

@@ -193,9 +193,9 @@ string make_two_digits(int x){
 }
 /** Get the operating systems time
  * This is just a simple function that gets the time
- * @param get_os_time()
+ * @param os_time()
  */
-string get_os_time(){
+string os_time(){
   time_t rawtime;
   time ( &rawtime );
   return ctime (&rawtime);
@@ -208,7 +208,7 @@ void log(string message){
   if (message == "navn start 5047"){ //needed to keep the time from sending /r/n and the var nl from doing the same
    fstream log;
    log.open(logfile, fstream::in | fstream::out | fstream::app);
-   log << "Navn started " << get_os_time();
+   log << "Navn started " << os_time();
    log.close();
   }else{
    fstream log;
@@ -374,12 +374,12 @@ string quit(string msg){
 }
 
 void do_quit(int K){
-  log("Logging ended at "+get_os_time());
+  log("Logging ended at "+os_time());
   remove("Navn.pid");
   exit(K);
 }
 void do_quit(){
-  log("Logging ended at "+get_os_time());
+  log("Logging ended at "+os_time());
   remove("Navn.pid");
   exit(0);
 }
