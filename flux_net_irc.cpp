@@ -213,7 +213,7 @@ void log(string message){
   }else{
    fstream log;
    log.open(logfile, fstream::in | fstream::out | fstream::app);
-   log << message << nl;
+   log << "[ "<< os_time() << " ] "<< message << nl;
    log.close();
   }
 }
@@ -275,8 +275,7 @@ string me(string dest, string message){
 string privmsg(string stringy1, string stringy2){
   stringstream stringy_ss_privmsg;
   stringy_ss_privmsg << "PRIVMSG " << stringy1 << " " << stringy2 << nl;
-  string out_put = stringy_ss_privmsg.str();
-  return out_put;
+  return stringy_ss_privmsg.str();
 }
 /** Channel message Function
  * This function sends a channel message to the pre-defined
@@ -287,8 +286,7 @@ string privmsg(string stringy1, string stringy2){
 string chanmsg(string stringy){
   stringstream stringy_ss;
   stringy_ss << "PRIVMSG " << channel << " " << stringy << nl;
-  string out_put = stringy_ss.str();
-  return out_put;
+  return stringy_ss.str();
 }
 /** Set Nickname Function
  * Sets the bots nickname in IRC.
@@ -298,8 +296,7 @@ string chanmsg(string stringy){
 string setnick(string nickname){
  stringstream nick_ss;
  nick_ss << "NICK " << nickname << nl;
- string out_put = nick_ss.str();
- return out_put;
+ return nick_ss.str();
 }
 /** Join channel function
  * Makes the bot join a channel
@@ -309,8 +306,7 @@ string setnick(string nickname){
 string join(string stringy_chan){
   stringstream stringy_join_ss;
   stringy_join_ss << "JOIN " << stringy_chan << nl;
-  string out_put = stringy_join_ss.str();
-  return out_put;
+  return stringy_join_ss.str();
 }
 /** Part Function
  * Sends part with message
@@ -327,6 +323,16 @@ string part(string channel){
   part_ss << "PART "<< channel << nl;
   return part_ss.str();
 }
+/** Whois Function
+ * Sends a IRC Whois to Server.
+ * NOTE: must be sent with 'sock'
+ * @param whois(nickname)
+ */
+ string whois(string Nick){
+  stringstream whois_ss;
+  whois_ss << "WHOIS " << Nick << nl;
+  return whois_ss.str();
+ }
 /** Notice Function
  * Sends a IRC notice to a user or channel
  * NOTE: must be sent with 'sock'
@@ -366,23 +372,26 @@ string chmode(string channel, string mode, string username){
 string quit(string msg){
   stringstream msg_ss;
   msg_ss << "QUIT " << msg << nl;
-  string out_put = msg_ss.str();
   if (!quitting){
   cout << "\033[01;31mRequested Quit from "+unick+". Pass: "+password+" \033[22;37m\r\n";
   }
-  return out_put;
+  return msg_ss.str();
 }
-
 void do_quit(int K){
   log("Logging ended at "+os_time());
   remove("Navn.pid");
+  if(K > 0){
   exit(K);
+  }else{
+   exit(0);
+  }
 }
 void do_quit(){
   log("Logging ended at "+os_time());
   remove("Navn.pid");
   exit(0);
 }
+
 /**This is the startup sequence that starts before the try loop starts
  * @param startup(int, char)
  */
@@ -390,12 +399,12 @@ void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   if(argv[1] != NULL){
     arg = argv[1];
-    if(arg == "--dev" || arg == "-x")
+    if(arg == "--developer" || arg == "--dev" || arg == "-d")
     {
       dev = true;
 	 log("Navn is started in Developer mode. (" +arg+ ")");
     }
-    else if (arg == "--debug" || arg == "-d"){ // for possable future use
+    else if (arg == "--debug" || arg == "-D"){ // for possable future use
       debug = true;
       log("Navn is started in Debug mode. (" + arg + ")");
     }
@@ -409,6 +418,7 @@ void startup(int argc, char** argv) {
 	 cout << "IRC: irc.Flux-Net.net #Computers" << nl;
 	 cout << "WWW: http://www.Flux-Net.net" << nl;
 	 cout << "Email: staff@flux-net.net" << nl;
+	 cout << "Git: git@gitorious.org:navn/navn.git" << nl;
 	 cout << nl;
 	 cout << "This bot does have Epic Powers." << nl;
 	 cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
@@ -426,7 +436,8 @@ void startup(int argc, char** argv) {
    string U;
    U = h.str();
    log("Created PID file. PID: "+U);
-  if (debug || dev){
+   
+   if (debug || dev){
   } else {
   cout << "What server would you like to connect to?" << nl;
   cin >> server;
@@ -440,7 +451,23 @@ void startup(int argc, char** argv) {
   cin >> owner_nick;
   }
 }
-
+void restart(string reason){
+   #define GetCurrentDir getcwd
+   char CurrentPath[FILENAME_MAX];
+   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
+ if(reason.empty()){
+  reason = "-no reason-";
+  log("Restarting: "+reason);
+  chdir(CurrentPath);
+  execvp(my_av[0], my_av);
+  exit(1);
+  }else{
+    log("Restarting: "+reason);
+	chdir(CurrentPath);
+    execvp(my_av[0], my_av);
+	exit(1);
+  }
+}
 /**Random Number Generator
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(1,5)

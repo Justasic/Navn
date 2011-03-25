@@ -14,12 +14,14 @@ using namespace std;
 If you wanna edit the server, channel, nick, etc that the bot
 connects to, do so here, NOT in the main code.
 */
+char **my_av;
+char ** my_envp;
 int days, hours, mins;
 bool in_channel = false;
 bool debug = false;
 bool dev = false;
 bool quitting = false;
-const string version = "v1.3.1";
+const string version = "v1.3.4";
 
     /*
     'Reply' means 'What the server is saying back'
@@ -37,6 +39,7 @@ string msg;
 string quitmsg;
 string fullhost;
 string ident;
+string myhost;
 //make sure the channel name is the same case as the one on IRC
 /**************************configuration***********************/
 string server = "5.205.91.159";
@@ -65,6 +68,7 @@ const string help_req = "PRIVMSG "+nick+" :help";
 const string join_req = "PRIVMSG "+nick+" :join";
 const string part_req = "PRIVMSG "+nick+" :part";
 const string pass_req = "PRIVMSG "+nick+" :pass";
+const string restart_req = "PRIVMSG "+nick+" :restart";
 const string gdb_req = "PRIVMSG "+nick+" :gdb";
 const string quitmsg_req = "PRIVMSG "+nick+" :quit";
 const string pmsggoogle = "PRIVMSG "+nick+" :google";
