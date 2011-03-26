@@ -406,7 +406,10 @@ void restart(string reason){
   }else{
     log("Restarting: "+reason);
 	chdir(CurrentPath);
-    execvp(my_av[0], my_av);
+    int execvpret = execvp(my_av[0], my_av);
+	if(execvpret > 0){
+		throw CoreException("Restart Failed, Exiting");
+	}
 	exit(1);
   }
 }
