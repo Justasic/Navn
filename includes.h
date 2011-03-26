@@ -24,4 +24,7 @@
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstdio>
+#include <cstdarg>
+#include <alloca.h>
 #endif

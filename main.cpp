@@ -196,7 +196,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       if(reply->said(CTCP_TIME)){ // for CTCP TIME reply
 		cout << "\033[22;31mRecieved CTCP TIME from "+unick+"\033[22;36m\r\n";
-		sock << notice(unick, "\001TIME "+ os_time()+"\001");
+		sock << notice(unick, "\001TIME "+os_time()+"\001");
 		log("Recieved CTCP TIME from " + unick);
       }
       /*Find the channel join code (366)

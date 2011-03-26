@@ -9,7 +9,6 @@ template<typename T> inline std::string stringify(const T &x){
 		throw CoreException("Stringify Fail");
 	return stream.str();
 }
-
 namespace flux_net_irc{
   
   using namespace std;
@@ -197,12 +196,12 @@ string make_two_digits(int x){
 }
 /** Get the operating systems time
  * This is just a simple function that gets the time
- * @param os_time()
+ * @param os_time
  */
 string os_time(){
   time_t rawtime;
   time ( &rawtime );
-  return ctime (&rawtime);
+  return ctime(&rawtime);
 }
 /** The Log
  * This is what logs everything that goes on with the bot
@@ -403,11 +402,7 @@ void restart(string reason){
    char CurrentPath[FILENAME_MAX];
    GetCurrentDir(CurrentPath, sizeof(CurrentPath));
  if(reason.empty()){
-  reason = "-no reason-";
-  log("Restarting: "+reason);
-  chdir(CurrentPath);
-  execvp(my_av[0], my_av);
-  exit(1);
+  throw CoreException("Recieved an empty string on shutdown.");
   }else{
     log("Restarting: "+reason);
 	chdir(CurrentPath);
@@ -459,7 +454,6 @@ void startup(int argc, char** argv) {
    string U;
    U = h.str();
    log("Created PID file. PID: "+U);
-   
    if (debug || dev){
   } else {
   cout << "What server would you like to connect to?" << nl;
