@@ -117,8 +117,7 @@ int main (int argcx, char** argvx, char *envp[])
 		log(unick + " requested information about themself.");
       }
       if (reply->said(join_req)){
-	string blah;
-	blah = reply->params(1);
+	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
 	 sock << notice(unick, "Channel "+blah+" is not a valad channel.");
 	 log(unick + " attempted to make bot join " + blah);
@@ -129,8 +128,7 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       }
       if (reply->said(part_req)){
-	string blah;
-	blah = reply->params(1);
+	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
 	 sock << notice(unick, "Channel "+blah+" is not a valad channel.");
 	 log(unick + " attempted to make bot part "+blah);
