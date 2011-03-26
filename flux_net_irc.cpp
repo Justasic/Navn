@@ -3,11 +3,16 @@
 #include "defs.h"
 #include "includes.h"
 
+template<typename T> inline std::string stringify(const T &x){
+	std::ostringstream stream;
+	if(!(stream << x))
+		throw CoreException("Stringify Fail");
+	return stream.str();
+}
+
 namespace flux_net_irc{
   
   using namespace std;
-  
-  
   /** irc_string Class
  * Lordofsraam must document this
  * NOTE this MUST be used in the main file.
@@ -85,7 +90,6 @@ class irc_string:string{
     }
 
 };
-
 
 /** PID handler
  * Gets the Process ID of the process or parent process
@@ -338,11 +342,10 @@ string part(string channel){
  * NOTE: must be sent with 'sock'
  * @param notice(Destination, message)
  */
-string notice(string stringy1, string stringy2){
-  stringstream stringy_ss_notice;
-  stringy_ss_notice << "NOTICE " << stringy1 << " " << stringy2 << nl;
-  string out_put = stringy_ss_notice.str();
-  return out_put;
+string notice(string Destination, string Message){
+  stringstream notice_ss;
+  notice_ss << "NOTICE " << Destination << " " << Message << nl;
+  return notice_ss.str();
 }
 /** Mode Function
  * Sends a mode to be set in IRC
@@ -377,7 +380,7 @@ string quit(string msg){
   }
   return msg_ss.str();
 }
-void do_quit(int K){
+void DoQuit(int K){
   log("Logging ended at "+os_time());
   remove("Navn.pid");
   if(K > 0){
@@ -386,12 +389,32 @@ void do_quit(int K){
    exit(0);
   }
 }
-void do_quit(){
+void DoQuit(){
   log("Logging ended at "+os_time());
   remove("Navn.pid");
   exit(0);
 }
-
+/** Restart Function
+ * Restarts the Bot
+ * @param restart(message)
+ */
+void restart(string reason){
+   #define GetCurrentDir getcwd
+   char CurrentPath[FILENAME_MAX];
+   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
+ if(reason.empty()){
+  reason = "-no reason-";
+  log("Restarting: "+reason);
+  chdir(CurrentPath);
+  execvp(my_av[0], my_av);
+  exit(1);
+  }else{
+    log("Restarting: "+reason);
+	chdir(CurrentPath);
+    execvp(my_av[0], my_av);
+	exit(1);
+  }
+}
 /**This is the startup sequence that starts before the try loop starts
  * @param startup(int, char)
  */
@@ -449,23 +472,6 @@ void startup(int argc, char** argv) {
   cin >> nick; 
   cout << "Owner's Nickname?" << nl;
   cin >> owner_nick;
-  }
-}
-void restart(string reason){
-   #define GetCurrentDir getcwd
-   char CurrentPath[FILENAME_MAX];
-   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
- if(reason.empty()){
-  reason = "-no reason-";
-  log("Restarting: "+reason);
-  chdir(CurrentPath);
-  execvp(my_av[0], my_av);
-  exit(1);
-  }else{
-    log("Restarting: "+reason);
-	chdir(CurrentPath);
-    execvp(my_av[0], my_av);
-	exit(1);
   }
 }
 /**Random Number Generator

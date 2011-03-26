@@ -159,7 +159,7 @@ int main (int argcx, char** argvx, char *envp[])
       if (reply->said(killed)){ // if the bot is killed.. throw a socket exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
-      if(reply->said(":Navn!"+usrname+" NICK ")){
+      if(reply->said(":"+nick+"!"+usrname+" NICK ")){
          nick = reply->params(3);
          sock << notice(owner_nick, "Someone changed my nickname to "+nick);
       }
@@ -235,6 +235,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << notice(unick, "youtube \t Youtubes something.");
 		sock << notice(unick, "join \t \t \tTells the bot to join the specified channel.");
 		sock << notice(unick, "part \t \t \tParts the channel");
+		sock << notice(unick, "restart \t Restarts the Bot (Password needed)");
 		log(unick + " used help command");
       }
       if(reply->said("do a me")){
@@ -402,27 +403,24 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said(quit_req)){
 		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
 		log(unick +" quit the bot with password: \"" +password +"\"");
-		do_quit();
+		DoQuit(0);
       }
       delete reply;
     }//while loop ends here
      sock << quit(quitmsg); //quit the bot if we had a terminal signal.
      log("Quitting: "+quitmsg);
-     do_quit();
+     DoQuit(0);
   }//try ends here
   catch ( SocketException& e ) //catch any SocketExceptions sent.
   {
     cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
     log("Socket Exception Caught: "+ e.description());
-    do_quit(1);
+    DoQuit(1);
   }
   catch(CoreException& e){
     cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
-    stringstream RCV;
-    RCV << e.GetReason();
-    log("Core Exception Caught: "+RCV.str());
-    do_quit(1);
-  }
-  log("Logging ended at "+os_time());
+    log("Core Exception Caught: "+stringify(e.GetReason()));
+    DoQuit(1);
+	}
   return EXIT_SUCCESS;
 }
