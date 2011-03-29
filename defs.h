@@ -2,10 +2,10 @@
 #define defs_h
 #include "includes.h"
 
-#define MST (-7)
+#define MST (-6)
 #define UTC (0)
 #define CCT (+8)
-#define EST (-5)
+#define EST (-4)
 #define PST (-7)
 #define logfile "navn.log"
 using namespace std;

@@ -21,7 +21,7 @@ int main (int argcx, char** argvx, char *envp[])
     sock >> rply;
     irc_string* reply = new irc_string(rply);
     //Set the username and nick
-    sock << "USER "+usrname+" * 8 :"+realname+nl;;
+    sock << "USER "+usrname+" * 8 :"+realname+nl;
     sock << setnick(nick);
     log("Successfully Started");
 
