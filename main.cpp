@@ -402,6 +402,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
 		log(unick +" quit the bot with password: \"" +password +"\"");
 		DoQuit(0);
+		return EXIT_SUCCESS;
       }
       delete reply;
     }//while loop ends here

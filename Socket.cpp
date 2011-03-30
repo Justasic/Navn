@@ -69,7 +69,6 @@ const Socket& Socket::operator >> (std::string& s) const
   std::cout << s << "\n";
   return *this;
 }
-
 const Socket& Socket::operator << (const std::string& s) const
 {
   ::send ( m_sock, s.c_str(), s.size(), 0 );
