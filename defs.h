@@ -20,7 +20,7 @@ bool in_channel = false;
 bool debug = false;
 bool dev = false;
 bool quitting = false;
-const string version = "v1.3.4";
+const string version = "v1.3.6";
 
     /*
     'Reply' means 'What the server is saying back'

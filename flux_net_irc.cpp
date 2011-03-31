@@ -317,6 +317,17 @@ string privmsg(string stringy1, string stringy2){
   stringy_ss_privmsg << "PRIVMSG " << stringy1 << " " << stringy2 << nl;
   return stringy_ss_privmsg.str();
 }
+string sprivmsg(string Dest, const char *fmt, ...){
+va_list args;
+va_start(args, fmt);
+
+stringstream sprivmsg_ss;
+char buf[4096];
+vsnprintf(buf, sizeof(buf), fmt, args);
+sprivmsg_ss << "PRIVMSG " << Dest << " " << buf << nl;
+va_end(args);
+return sprivmsg_ss.str();
+}
 /** Channel message Function
  * This function sends a channel message to the pre-defined
  * channel in the defs.h file.

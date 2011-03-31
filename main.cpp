@@ -176,7 +176,10 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << whois(nickname);
 		log("%s used .Whois on %s", unick.c_str(), nickname.c_str());
 	  }
-	  if(reply->said(".git")){
+	  if(reply->said("%s test")){
+	  sock << sprivmsg(chan, "your nick is %s", unick.c_str());
+	  }
+	  if(reply->said("? git")){
 	    sock << notice(unick, "Navn git: git@gitorious.org:navn/navn.git");
 	    log("%s requested Git repository link.", unick.c_str());
 	  }
@@ -278,40 +281,53 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << privmsg(chan, "!changelog !uptime !rules !spam !rename");
 		log("%s used Da_Goats !help command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!uptime")){
-	  //I will let someone else try and make this..
-	/*
-	if(sysinfo(&sys_info) != 0)
-	  perror("sysinfo");
-
-	// Uptime
-        days = sys_info.uptime / 86400;
-	hours = (sys_info.uptime / 3600) - (days * 24);
-	mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
-
-	sock << privmsg(chan, "Uptime: "+days+", "+hours+", "+mins+", "+);
-	printf("Uptime: %ddays, %dhours, %dminutes, %ldseconds\n",
+      if(reply->said("!stats")){
+	  //Shows system stats in the channel.
+	
+		if(sysinfo(&sys_info) != 0)
+			perror("sysinfo");
+ 
+		// Uptime
+		days = sys_info.uptime / 86400;
+		hours = (sys_info.uptime / 3600) - (days * 24);
+		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
+ 
+		sock << sprivmsg(chan, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
                       days, hours, mins, sys_info.uptime % 60);
-
-	// Load Averages for 1,5 and 15 minutes
-	sock << privmsg(chan, "Load Avgs: 1min("+sys_info.loads[0]+") 5mins("+sys_info.loads[1]+") 15mins("+sys_info.loads[2]+")");
-
-	// Total and free ram.
-	sock << privmsg(chan, "Total Ram: "+sys_info.totalram / 1024+"\tFree: "+sys_info.freeram / 1024);
-
-	// Shared and buffered ram.
-	sock << privmsg(chan, "Shared Ram: "+sys_info.sharedram / 1024);
-	sock << privmsg(chan, "Buffered Ram: "+sys_info.bufferram / 1024);
-
-	// Swap space
-	sock << privmsg(chan, "Total Swap: "+sys_info.totalswap / 1024+"\tFree: "+sys_info.freeswap / 1024);
-
-	// Number of processes currently running.
-	sock << privmsg(chan, "Number of processes: "+sys_info.procs);
-	*/
-	log("%s used Da_Goats !uptime command in %s", unick.c_str(), chan.c_str());
-	sock << privmsg(chan, "This function needs work");
+ 
+		// Load Averages for 1,5 and 15 minutes
+		sock << sprivmsg(chan, "Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
+				sys_info.loads[0], sys_info.loads[1], sys_info.loads[2]);
+ 
+		// Total and free ram.
+		sock << sprivmsg(chan, "Total Ram: %ldk\tFree: %ldk", sys_info.totalram / 1024,
+                                        sys_info.freeram / 1024);
+ 
+		// Shared and buffered ram.
+		sock << sprivmsg(chan, "Shared Ram: %ldk", sys_info.sharedram / 1024);
+		sock << sprivmsg(chan, "Buffered Ram: %ldk", sys_info.bufferram / 1024);
+ 
+		// Swap space
+		sock << sprivmsg(chan, "Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
+                                           sys_info.freeswap / 1024);
+ 
+		// Number of processes currently running.
+		sock << sprivmsg(chan, "Number of processes: %d", sys_info.procs);
+	
+		log("%s used Da_Goats !stats command in %s", unick.c_str(), chan.c_str());
       }
+	  if(reply->said("!uptime")){
+		if(sysinfo(&sys_info) != 0)
+			perror("sysinfo");
+ 
+		// Uptime
+		days = sys_info.uptime / 86400;
+		hours = (sys_info.uptime / 3600) - (days * 24);
+		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
+ 
+		sock << sprivmsg(chan, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
+                      days, hours, mins, sys_info.uptime % 60);
+	  }
       if(reply->said("!rules")){
 		sock << privmsg(chan, "There are only a few simple rules for "+chan+".");
         sock << privmsg(chan, "Do NOT hate on others in any way. Basically do not troll in any shape or form.");
@@ -328,7 +344,7 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said("!version")){
         sock << privmsg(chan, "The Current Navn Bot Version is \002\0037"+version);
         sock << privmsg(chan, "Dah_Goat's old script was part python(xchat) and mIRC");
-        sock << privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ coded from scratch");
+        sock << privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ coded from scratch by lordofsraam");
 		sock << privmsg(chan, "Navn's Code can be found at \002git@gitorious.org:navn/navn.git");
         sock << privmsg(chan, "Navn is managed by "+owner_nick);
 		sock << privmsg(chan, "If you would like to add a command or function, talk to them.");
