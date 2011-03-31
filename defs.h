@@ -7,7 +7,6 @@
 #define CCT (+8)
 #define EST (-4)
 #define PST (-7)
-#define logfile "navn.log"
 using namespace std;
 
 /*List the constants used throughout the script.
@@ -51,6 +50,7 @@ string realname = "The Navn Bot "+version;
 string owner_nick = "Justasic";
 string nspass = "letmein";
 string nsacc = "Navn";
+string logfile = "navn.log";
 /**************************configuration***********************/
 const string welcome_msg = nick+" has connected. Type !time to see the time.";
 const string kick_msg = "KICK "+channel+" "+nick;

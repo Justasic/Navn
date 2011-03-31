@@ -67,3 +67,13 @@ class CoreException : public std::exception
 	}
 };
 #endif  
+
+#ifndef LogException_class
+#define LogException_class
+class LogException : public CoreException
+{
+ public:
+		LogException(const std::string &message) : CoreException(message, "A Log") { }
+		virtual ~LogException() throw() { }
+};
+#endif

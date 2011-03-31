@@ -23,7 +23,6 @@ int main (int argcx, char** argvx, char *envp[])
     //Set the username and nick
     sock << "USER "+usrname+" * 8 :"+realname+nl;
     sock << setnick(nick);
-    log("Successfully Started");
 
     if (reply->said("PING :")){
       sock << "PONG :"+rply.substr(6,-1);
@@ -54,49 +53,49 @@ int main (int argcx, char** argvx, char *envp[])
       }
       if(reply->said("!google") && in_channel){ // if !google is said in the channel
 		sock << privmsg(chan, search(rply, "!google"));
-		log("Channel Google Search from " + unick + " \"" +search(rply, "!google") + "\"");
+		log("Channel Google Search from %s \"%s\"", unick.c_str(), search(rply, "!google").c_str());
       }
       if(reply->said(pmsggoogle)){ //if the message was sent to the bot as a private message.
 		sock << notice(unick, search(rply, "google"));
-		log("Private message Google Search from " + unick + " \"" + search(rply, "google") + "\"");
+		log("Private message Google Search from %s \"%s\"", unick.c_str(), search(rply, "google").c_str());
       }
       if(reply->said("!youtube") && in_channel){ // if !youtube is said in the channel
 		sock << privmsg(chan, search(rply, "!youtube"));
-		log("Channel youtube Search from " + unick + " \"" +search(rply, "!youtube") + "\"");
+		log("Channel youtube Search from %s \"%s\"", unick.c_str(), search(rply, "!youtube").c_str());
       }
       if(reply->said(pmsgyoutube)){ //if the message was sent to the bot as a private message.
 		sock << notice(unick, search(rply, "youtube"));
-		log("Private message Google Search from " + unick + " \"" + search(rply, "youtube") + "\"");
+		log("Private message Google Search from %s \"%s\"", unick.c_str(), search(rply, "youtube").c_str());
       }
       if(reply->said("!tpb") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
 		sock << privmsg(chan, search(rply, "!tpb"));
-		log("Channel tpb Search from " + unick + " \"" +search(rply, "!youtube") + "\"");
+		log("Channel tpb Search from %s \"%s\"", unick.c_str(), search(rply, "!tpb").c_str());
       }
       if(reply->said("!define") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
 		sock << privmsg(chan, search(rply, "!define"));
-		log("Channel define Search from " + unick + " \"" +search(rply, "!define") + "\"");
+		log("Channel define Search from %s \"%s\"", unick.c_str(), search(rply, "!define").c_str());
       }
       if(reply->said("!urban") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
 		sock << privmsg(chan, search(rply, "!urban"));
-		log("Channel urban Search from " + unick + " \"" +search(rply, "!urban") + "\"");
+		log("Channel urban Search from %s \"%s\"", unick.c_str(), search(rply, "!urban").c_str());
       }
       if(reply->said("!movie") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
 		sock << privmsg(chan, search(rply, "!movie"));
-		log("Channel movie Search from " + unick + " \"" +search(rply, "!urban") + "\"");
+		log("Channel movie Search from %s \"%s\"", unick.c_str(), search(rply, "!movie").c_str());
       }
       //request the quit password
       if (reply->said(pass_req)){
 	if (host == "I.still.hate.packets" || host == "Netadmin.Flux-Net.net"){
 	  sock << notice(unick, "The password is:\2 "+password);
-	  log(unick + " requested the navn quit password: " + password);
+	  log("%s requested the navn quit password: %s", unick.c_str(), password.c_str());
 	} else {
 	  sock << notice(unick, access_denied);
-	  log(unick + " attempted to request the navn quit password.");
+	  log("%s attempted to request the navn quit password.", unick.c_str());
 	}
       }//gdb info rply
 	  if(reply->said("This nickname is registered and protected")){
 	    sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
-		log("Identified to NickServ with account "+nsacc);
+		log("Identified to NickServ with account \"%s\"", nsacc.c_str());
 	  }
 	  if (reply->said(restart_req+" "+password)){
 	  string reason = "-no reason-";
@@ -105,7 +104,7 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       if (reply->said(gdb_req)){
 		sock << notice(unick, gdb_msg);
-		log(unick + " used the gdb reply.");
+		log("%s used the gdb reply.", unick.c_str());
       }
       if(reply->said("about me")){
 		sock << notice(unick, "Raw: "+reply->raw_string);
@@ -114,15 +113,15 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << notice(unick, "Host: "+host);
 		sock << notice(unick, "Channel: "+chan);
 		sock << notice(unick, "Fullhost: "+fullhost);
-		log(unick + " requested information about themself.");
+		log("%s requested information about themself.", unick.c_str());
       }
       if (reply->said(join_req)){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
 	 sock << notice(unick, "Channel "+blah+" is not a valad channel.");
-	 log(unick + " attempted to make bot join " + blah);
+	 log("%s attempted to make bot join %s", unick.c_str(), blah.c_str());
 	} else {
-		log(unick + " made the bot join " + blah);
+		log("%s made the bot join %s", unick.c_str(), blah.c_str());
 		sock << join(blah);
 		sock << privmsg(blah, welcome_msg);
 	}
@@ -131,9 +130,9 @@ int main (int argcx, char** argvx, char *envp[])
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
 	 sock << notice(unick, "Channel "+blah+" is not a valad channel.");
-	 log(unick + " attempted to make bot part "+blah);
+	 log("%s attempted to make bot part %s", unick.c_str(), blah.c_str());
 	} else {
-		log(unick + " made the bot part "+blah);
+		log("%s made the bot part %s", unick.c_str(), blah.c_str());
 		sock << part(blah);
 	}
       }
@@ -141,20 +140,20 @@ int main (int argcx, char** argvx, char *envp[])
 	if(!in_channel){
 		sock << join(channel);
 		sock << chanmsg(welcome_msg);
-		log(unick + " made the bot rejoin the channel");
+		log("%s made the bot rejoin the channel", unick.c_str());
 	}else{
 	  sock << notice(unick, "The bot is already in the channel.");
-	  log(unick + " attempted to rejoin the bot into a channel its already in.");
+	  log("%s attempted to rejoin the bot into a channel its already in.", unick.c_str());
 	}
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
-	   sock << privmsg(chan, "Welcome "+unick+" to "+reply->channel+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.");
+	   sock << privmsg(chan, "Welcome "+strip(unick)+" to "+strip(reply->channel)+". Type !time for time or \"/msg "+strip(nick)+" help\" for help on more commands.");
       }
       if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
 		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
-		log(unick + " quit the bot with password: \"" + password + "\"");
+		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
       }
-      if (reply->said(killed)){ // if the bot is killed.. throw a socket exception saying so.
+      if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
       if(reply->said(":"+nick+"!"+usrname+" NICK ")){
@@ -170,32 +169,33 @@ int main (int argcx, char** argvx, char *envp[])
 		if(reply->said("311 "+nick+" "+nick)){
 		cout << nl;
 		}
-		log("Successfully connected to the server " +server +" " +port +" " +channel);
+		log("Successfully connected to the server \"%s\" Port: %s Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
       }
 	  if(reply->said(".Whois")){
 	    string nickname = reply->params(1);
 		sock << whois(nickname);
-		log(unick+" used .Whois on "+nickname);
+		log("%s used .Whois on %s", unick.c_str(), nickname.c_str());
 	  }
 	  if(reply->said(".git")){
 	    sock << notice(unick, "Navn git: git@gitorious.org:navn/navn.git");
-	    log(unick+" requested Git repository link.");
+	    log("%s requested Git repository link.", unick.c_str());
 	  }
       //if the nick is not avalable
       if(reply->said(nick_taken_rsl)){
-		log("Nickname: " + nick + " is taken, attempting with " + nick+"_");
+	    string newnick = nick+"_";
+		log("Nickname: %s is taken, attempting with %s", nick.c_str(), newnick.c_str());
 		nick = nick+"_";
 		sock << setnick(nick);
       }
       if(reply->said(CTCP_VERS)){ // for CTCP VERSION reply
 		cout << "\033[22;31mRecieved CTCP VERSION from "+unick+"\033[22;36m\r\n";
 		sock << notice(unick, "\001VERSION Navn Bot "+version+"\001");
-		log("Recieved CTCP VERSION from " + unick);
+		log("Recieved CTCP VERSION from %s", unick.c_str());
       }
       if(reply->said(CTCP_TIME)){ // for CTCP TIME reply
 		cout << "\033[22;31mRecieved CTCP TIME from "+unick+"\033[22;36m\r\n";
 		sock << notice(unick, "\001TIME "+os_time()+"\001");
-		log("Recieved CTCP TIME from " + unick);
+		log("Recieved CTCP TIME from %s", unick.c_str());
       }
       /*Find the channel join code (366)
       If found it makes in_channel true.
@@ -234,28 +234,25 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << notice(unick, "join \t \t \tTells the bot to join the specified channel.");
 		sock << notice(unick, "part \t \t \tParts the channel");
 		sock << notice(unick, "restart \t Restarts the Bot (Password needed)");
-		log(unick + " used help command");
-      }
-      if(reply->said("do a me")){
-		sock << me(chan, "/me!");
+		log("%s used help command", unick.c_str());
       }
       /***************************Da_Goat Functions*******************************/
 	if(reply->said("!poke")){ //Easter egg ;P
 		sock << me(chan, "Is angry at "+unick);
 		sock << kick(chan, unick, "\002\00315Dont poke me!\017");
-		log(unick+" used Da_Goats !poke command in "+chan);
+		log("%s used Da_Goats !poke command in %s", unick.c_str(), chan.c_str());
       }
 	if(reply->said("!info")){
 		sock << privmsg(chan, "Our forum is at \037castawaycrew.hyperboards.com\017");
 		sock << privmsg(chan, "Our Website is \002Flux-Net.net\017");
 		sock << privmsg(chan, "Flux-Net git is at: \002\0034git@gitorious.org:navn/navn.git\017");
 		sock << privmsg(chan, "Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
-		log(unick+" used Da_Goats !info command in "+chan);
+		log("%s used Da_Goats !info command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!rename")){
 		sock << privmsg(chan, "This channel is a Nickname only channel. This means that you MUST have your own Nickname! If you do not choose your own nick name you WILL be kicked.");
 		sock << privmsg(chan, "To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
-		log(unick+" used Da_Goats !rename command in "+chan);
+		log("%s used Da_Goats !rename command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!register")){
 		sock << privmsg(chan, "To Register you nickname type:");
@@ -268,18 +265,18 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << privmsg(chan, "\00312/identify [passwordhere]\017");
 		sock << privmsg(chan, "\0034You will need to indetify everytime you join into the chatroom\017");
 		sock << privmsg(chan, "Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
-		log(unick+" used Da_Goats !register command in "+chan);
+		log("%s used Da_Goats !register command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!socialinfo")){
 		sock << privmsg(chan, "Ventrilo Server:\002 5.110.166.75 Port:\00313 3784");
 		sock << privmsg(chan, "Our IRC server: \002irc.Flux-Net.net\002 port\00313 6667\017 or\00313 8067\017");
-		log(unick+" used Da_Goats !socialinfo command in "+chan);
+		log("%s used Da_Goats !socialinfo command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!help")){
 		sock << privmsg(chan, "Local "+chan+ " commands are:");
 		sock << privmsg(chan, "!help !info !register !socialinfo !version");
 		sock << privmsg(chan, "!changelog !uptime !rules !spam !rename");
-		log(unick+" used Da_Goats !help command in "+chan);
+		log("%s used Da_Goats !help command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!uptime")){
 	  //I will let someone else try and make this..
@@ -312,7 +309,7 @@ int main (int argcx, char** argvx, char *envp[])
 	// Number of processes currently running.
 	sock << privmsg(chan, "Number of processes: "+sys_info.procs);
 	*/
-	log(unick+" used Da_Goats !uptime command in "+chan);
+	log("%s used Da_Goats !uptime command in %s", unick.c_str(), chan.c_str());
 	sock << privmsg(chan, "This function needs work");
       }
       if(reply->said("!rules")){
@@ -322,10 +319,10 @@ int main (int argcx, char** argvx, char *envp[])
         sock << privmsg(chan, "Do not Mini-mod the chatroom. The moderators are there for a reason, we don't need more.");
         sock << privmsg(chan, "Do not spam the chatroom. This includes flooding by text, private messages, join/quit commands, External links, etc.");
 		sock << privmsg(chan, "If you violate any of these rules you will be kicked and possably banned from "+chan+".");
-		log(unick+" used Da_Goats !rules command");
+		log("%s used Da_Goats !rules command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!spam")){
-		log(unick+" used Da_Goats !spam command in "+chan);
+		log("%s used Da_Goats !spam command in %s", unick.c_str(), chan.c_str());
         sock << privmsg(chan, "Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
       }
       if(reply->said("!version")){
@@ -335,7 +332,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << privmsg(chan, "Navn's Code can be found at \002git@gitorious.org:navn/navn.git");
         sock << privmsg(chan, "Navn is managed by "+owner_nick);
 		sock << privmsg(chan, "If you would like to add a command or function, talk to them.");
-		log(unick+" used Da_Goats !version command in "+chan);
+		log("%s used Da_Goats !version command in %s", unick.c_str(), chan.c_str());
       }
       /*******************************Easter Eggs*********************************/
       if(reply->said("!everything")){
@@ -385,7 +382,7 @@ int main (int argcx, char** argvx, char *envp[])
 	  beijing_h += 24;
 	}
 		sock << privmsg(chan, "Beijing (China) == " + make_two_digits(beijing_h) + ":" + dd_minutes);
-		log(unick + " requested !time command in " + chan);
+		log("%s requested !time command in %s", unick.c_str(), chan.c_str());
       }
       //if the nick is taken and the server connection is terminated.
       if(reply->said(con_closed_nick)){
@@ -395,30 +392,30 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said(kick_msg)){
 		sock << notice(owner_nick, "Someone kicked me!");
 		in_channel = false;
-		log(unick + " kicked bot out of channel " + chan);
+		log("%s kicked bot out of channel %s", unick.c_str(), chan.c_str());
       }
       //if told to quit, then do so lol
       if(reply->said(quit_req)){
 		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
-		log(unick +" quit the bot with password: \"" +password +"\"");
+		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
 		DoQuit(0);
 		return EXIT_SUCCESS;
       }
       delete reply;
     }//while loop ends here
      sock << quit(quitmsg); //quit the bot if we had a terminal signal.
-     log("Quitting: "+quitmsg);
+     log("Quitting: %s", quitmsg.c_str());
      DoQuit(0);
   }//try ends here
   catch ( SocketException& e ) //catch any SocketExceptions sent.
   {
     cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
-    log("Socket Exception Caught: "+ e.description());
+    log("Socket Exception Caught: %s", e.description().c_str());
     DoQuit(1);
   }
   catch(CoreException& e){
     cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
-    log("Core Exception Caught: "+stringify(e.GetReason()));
+    log("Core Exception Caught: ", stringify(e.GetReason()).c_str());
     DoQuit(1);
 	}
   return EXIT_SUCCESS;

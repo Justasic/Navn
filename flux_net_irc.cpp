@@ -194,6 +194,32 @@ string make_two_digits(int x){
     return sd_time;
   }
 }
+/** Strip Function
+ * Strip \r and \n from a string.
+ * @param strip(string_to_strip);
+ */
+string strip(const string &buf){
+	string newbuf = buf;
+	char c = newbuf[newbuf.size() - 1];
+	while (c == '\n' || c == '\r'){
+		newbuf.erase(newbuf.end() - 1);
+		c = newbuf[newbuf.size() - 1];
+	}
+	return newbuf;
+}
+/** Strip Colors
+ * This function is supposed to strip all IRC color codes. (Experimental)
+ * @param uncolor(string);
+ */
+string uncolor(const string &buf){
+	string newbuf = buf;
+	char c = newbuf[newbuf.size() - 1];
+	while (c == '\002' || c == '\003' || c == '\015' || c == '\017' || c == '\001' || c == '\016'){
+		newbuf.erase(newbuf.end() - 1);
+		c = newbuf[newbuf.size() - 1];
+	}
+	return newbuf;
+}
 /** Get the operating systems time
  * This is just a simple function that gets the time
  * @param os_time
@@ -207,18 +233,29 @@ string os_time(){
  * This is what logs everything that goes on with the bot
  * @param log(Message)
  */
-void log(string message){
-  if (message == "navn start 5047"){ //needed to keep the time from sending /r/n and the var nl from doing the same
-   fstream log;
-   log.open(logfile, fstream::in | fstream::out | fstream::app);
-   log << "Navn started " << os_time();
-   log.close();
-  }else{
-   fstream log;
-   log.open(logfile, fstream::in | fstream::out | fstream::app);
-   log << "[ "<< os_time() << " ] "<< message << nl;
-   log.close();
+void log(const char *fmt, ...){
+  fstream log;
+  try{
+  log.open(logfile.c_str(), fstream::in | fstream::out | fstream::app);
+  if(!log.is_open())
+     throw LogException("Failed to open log file.");
+  }catch (LogException &e){
+   cerr << "Log Exception Caught: " << e.GetReason() << nl;
   }
+  va_list args;
+  va_start(args, fmt);
+  
+  time_t t = time(NULL);
+  struct tm *tm = localtime(&t);
+  
+  char buf[512];
+  strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
+  log << buf;
+  vsnprintf(buf, sizeof(buf), fmt, args);
+  log << buf << endl;
+  va_end(args);
+  va_end(args);
+  log.close();
 }
 /**Channel Validation
  * This function returns if the channel is valid or not.
@@ -380,7 +417,7 @@ string quit(string msg){
   return msg_ss.str();
 }
 void DoQuit(int K){
-  log("Logging ended at "+os_time());
+  log("Logging ended");
   remove("Navn.pid");
   if(K > 0){
   exit(K);
@@ -389,7 +426,7 @@ void DoQuit(int K){
   }
 }
 void DoQuit(){
-  log("Logging ended at "+os_time());
+  log("Logging ended");
   remove("Navn.pid");
   exit(0);
 }
@@ -404,7 +441,7 @@ void restart(string reason){
  if(reason.empty()){
   throw CoreException("Recieved an empty string on shutdown.");
   }else{
-    log("Restarting: "+reason);
+    log("Restarting: %s", reason.c_str());
 	chdir(CurrentPath);
     int execvpret = execvp(my_av[0], my_av);
 	if(execvpret > 0){
@@ -423,11 +460,11 @@ void startup(int argc, char** argv) {
     if(arg == "--developer" || arg == "--dev" || arg == "-d")
     {
       dev = true;
-	 log("Navn is started in Developer mode. (" +arg+ ")");
+	 log("Navn is started in Developer mode. (%s)", arg.c_str());
     }
     else if (arg == "--debug" || arg == "-D"){ // for possable future use
       debug = true;
-      log("Navn is started in Debug mode. (" + arg + ")");
+      log("Navn is started in Debug mode. (%s)", arg.c_str());
     }
     else if (arg == "--help" || arg == "-h"){
      help();
@@ -447,7 +484,6 @@ void startup(int argc, char** argv) {
 	}
   }
   //logging to a text file and making the PID file.
-   log("navn start 5047");
    fstream pid;
    pid.open("Navn.pid", fstream::in | fstream::out | fstream::app);
    pid << getpid();
@@ -456,7 +492,7 @@ void startup(int argc, char** argv) {
    h << getpid();
    string U;
    U = h.str();
-   log("Created PID file. PID: "+U);
+   log("Navn Started. PID: %s", U.c_str());
    if (debug || dev){
   } else {
   cout << "What server would you like to connect to?" << nl;
