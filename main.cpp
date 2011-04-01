@@ -1,5 +1,5 @@
 /* main.cpp */
-#include "flux_net_irc.cpp"
+#include "flux_net_irc.hpp"
 string binary_path, services_dir, services_bin;
 using namespace std;
 using namespace flux_net_irc;
@@ -71,15 +71,15 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << privmsg(chan, search(rply, "!tpb"));
 		log("Channel tpb Search from %s \"%s\"", unick.c_str(), search(rply, "!tpb").c_str());
       }
-      if(reply->said("!define") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
+      if(reply->said("!define") && in_channel){
 		sock << privmsg(chan, search(rply, "!define"));
 		log("Channel define Search from %s \"%s\"", unick.c_str(), search(rply, "!define").c_str());
       }
-      if(reply->said("!urban") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
+      if(reply->said("!urban") && in_channel){ 
 		sock << privmsg(chan, search(rply, "!urban"));
 		log("Channel urban Search from %s \"%s\"", unick.c_str(), search(rply, "!urban").c_str());
       }
-      if(reply->said("!movie") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
+      if(reply->said("!movie") && in_channel){ 
 		sock << privmsg(chan, search(rply, "!movie"));
 		log("Channel movie Search from %s \"%s\"", unick.c_str(), search(rply, "!movie").c_str());
       }
@@ -93,10 +93,10 @@ int main (int argcx, char** argvx, char *envp[])
 	  log("%s attempted to request the navn quit password.", unick.c_str());
 	}
       }//gdb info rply
-	  if(reply->said("This nickname is registered and protected")){
-	    sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+	  /*if(reply->said("This nickname is registered and protected")){
+	    sock << privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
 		log("Identified to NickServ with account \"%s\"", nsacc.c_str());
-	  }
+	  }*/
 	  if (reply->said(restart_req+" "+password)){
 	  string reason = "-no reason-";
 	  sock << quit("Restarting: "+reason);
@@ -118,7 +118,7 @@ int main (int argcx, char** argvx, char *envp[])
       if (reply->said(join_req)){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
-	 sock << notice(unick, "Channel "+blah+" is not a valad channel.");
+	 sock << notice(unick, "Channel %s is not a valad channel.", blah.c_str());
 	 log("%s attempted to make bot join %s", unick.c_str(), blah.c_str());
 	} else {
 		log("%s made the bot join %s", unick.c_str(), blah.c_str());
@@ -129,7 +129,7 @@ int main (int argcx, char** argvx, char *envp[])
       if (reply->said(part_req)){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
-	 sock << notice(unick, "Channel "+blah+" is not a valad channel.");
+	 sock << notice(unick, "Channel %s is not a valad channel.", blah.c_str());
 	 log("%s attempted to make bot part %s", unick.c_str(), blah.c_str());
 	} else {
 		log("%s made the bot part %s", unick.c_str(), blah.c_str());
@@ -147,7 +147,8 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
-	   sock << privmsg(chan, "Welcome "+strip(unick)+" to "+strip(reply->channel)+". Type !time for time or \"/msg "+strip(nick)+" help\" for help on more commands.");
+	   //sock << notice(chan, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), chan.c_str(), nick.c_str());
+	   log("%s joined %s", unick.c_str(), chan.c_str());
       }
       if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
 		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
@@ -164,7 +165,7 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said(server_welcome)){
 		sock << mode(nick, "+B");
 		sock << join(channel);
-		sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+		//sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
 		sock << whois(nick);
 		if(reply->said("311 "+nick+" "+nick)){
 		cout << nl;
@@ -176,9 +177,6 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << whois(nickname);
 		log("%s used .Whois on %s", unick.c_str(), nickname.c_str());
 	  }
-	  if(reply->said("%s test")){
-	  sock << sprivmsg(chan, "your nick is %s", unick.c_str());
-	  }
 	  if(reply->said("? git")){
 	    sock << notice(unick, "Navn git: git@gitorious.org:navn/navn.git");
 	    log("%s requested Git repository link.", unick.c_str());
@@ -187,8 +185,8 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said(nick_taken_rsl)){
 	    string newnick = nick+"_";
 		log("Nickname: %s is taken, attempting with %s", nick.c_str(), newnick.c_str());
-		nick = nick+"_";
-		sock << setnick(nick);
+		nick = newnick;
+		sock << setnick(newnick);
       }
       if(reply->said(CTCP_VERS)){ // for CTCP VERSION reply
 		cout << "\033[22;31mRecieved CTCP VERSION from "+unick+"\033[22;36m\r\n";
@@ -206,11 +204,11 @@ int main (int argcx, char** argvx, char *envp[])
       a channel.
       */
       if(reply->said(in_the_channel)){
-	if (debug || dev){
+	if (dev){
 		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mSending password to owner\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-		cout << "\033[01;33mWarning: \033[22;31mNavn is currently started in debug mode.\033[22;36m"<<nl;
+		cout << "\033[01;33mWarning: \033[22;31mNavn is currently started with mode \""<< my_av <<"\"\033[22;36m"<<nl;
 		cout << "\033[22;34mSession Quit Password: \033[01;32m"+password+"\033[22;36m"<< nl;
 		sock << notice(owner_nick, "The quit password is: "+password);
 		sock << notice(owner_nick, "\0038Warning: \017\0034\2Navn is currently started in a non-normal mode. ("+arg+")\017");
@@ -237,6 +235,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << notice(unick, "join \t \t \tTells the bot to join the specified channel.");
 		sock << notice(unick, "part \t \t \tParts the channel");
 		sock << notice(unick, "restart \t Restarts the Bot (Password needed)");
+		sock << notice(unick, "stats \t \t Shows system statistics.");
 		log("%s used help command", unick.c_str());
       }
       /***************************Da_Goat Functions*******************************/
@@ -281,7 +280,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << privmsg(chan, "!changelog !uptime !rules !spam !rename");
 		log("%s used Da_Goats !help command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!stats")){
+      if(reply->said("PRIVMSG "+nick+" :stats")){
 	  //Shows system stats in the channel.
 	
 		if(sysinfo(&sys_info) != 0)
@@ -292,27 +291,27 @@ int main (int argcx, char** argvx, char *envp[])
 		hours = (sys_info.uptime / 3600) - (days * 24);
 		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
  
-		sock << sprivmsg(chan, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
+		sock << notice(unick, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
                       days, hours, mins, sys_info.uptime % 60);
  
 		// Load Averages for 1,5 and 15 minutes
-		sock << sprivmsg(chan, "Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
+		sock << notice(unick, "Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
 				sys_info.loads[0], sys_info.loads[1], sys_info.loads[2]);
  
 		// Total and free ram.
-		sock << sprivmsg(chan, "Total Ram: %ldk\tFree: %ldk", sys_info.totalram / 1024,
+		sock << notice(unick, "Total Ram: %ldk\tFree: %ldk", sys_info.totalram / 1024,
                                         sys_info.freeram / 1024);
  
 		// Shared and buffered ram.
-		sock << sprivmsg(chan, "Shared Ram: %ldk", sys_info.sharedram / 1024);
-		sock << sprivmsg(chan, "Buffered Ram: %ldk", sys_info.bufferram / 1024);
+		sock << notice(unick, "Shared Ram: %ldk", sys_info.sharedram / 1024);
+		sock << notice(unick, "Buffered Ram: %ldk", sys_info.bufferram / 1024);
  
 		// Swap space
-		sock << sprivmsg(chan, "Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
+		sock << notice(unick, "Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
                                            sys_info.freeswap / 1024);
  
 		// Number of processes currently running.
-		sock << sprivmsg(chan, "Number of processes: %d", sys_info.procs);
+		sock << notice(unick, "Number of processes: %d", sys_info.procs);
 	
 		log("%s used Da_Goats !stats command in %s", unick.c_str(), chan.c_str());
       }
@@ -325,16 +324,16 @@ int main (int argcx, char** argvx, char *envp[])
 		hours = (sys_info.uptime / 3600) - (days * 24);
 		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
  
-		sock << sprivmsg(chan, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
+		sock << privmsg(chan, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
                       days, hours, mins, sys_info.uptime % 60);
 	  }
       if(reply->said("!rules")){
-		sock << privmsg(chan, "There are only a few simple rules for "+chan+".");
+		sock << privmsg(chan, "There are only a few simple rules for %s.", chan.c_str());
         sock << privmsg(chan, "Do NOT hate on others in any way. Basically do not troll in any shape or form.");
         sock << privmsg(chan, "Do not ask for op status. you will be granted op status when the moderators feel you deserve op status.");
         sock << privmsg(chan, "Do not Mini-mod the chatroom. The moderators are there for a reason, we don't need more.");
         sock << privmsg(chan, "Do not spam the chatroom. This includes flooding by text, private messages, join/quit commands, External links, etc.");
-		sock << privmsg(chan, "If you violate any of these rules you will be kicked and possably banned from "+chan+".");
+		sock << privmsg(chan, "If you violate any of these rules you will be kicked and possably banned from %s.", chan.c_str());
 		log("%s used Da_Goats !rules command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!spam")){
@@ -412,7 +411,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       //if told to quit, then do so lol
       if(reply->said(quit_req)){
-		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
+		sock << quit("Requested from \2"+unick+"\017. Pass:\00320 "+password+"\017");
 		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
 		DoQuit(0);
 		return EXIT_SUCCESS;
@@ -434,5 +433,6 @@ int main (int argcx, char** argvx, char *envp[])
     log("Core Exception Caught: ", stringify(e.GetReason()).c_str());
     DoQuit(1);
 	}
+  return EXIT_SUCCESS;
   return EXIT_SUCCESS;
 }

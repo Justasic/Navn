@@ -7,6 +7,7 @@
 #define CCT (+8)
 #define EST (-4)
 #define PST (-7)
+#define GetCurrentDir getcwd
 using namespace std;
 
 /*List the constants used throughout the script.
@@ -17,8 +18,9 @@ char **my_av;
 char ** my_envp;
 int days, hours, mins;
 bool in_channel = false;
-bool debug = false;
+bool nofork = false;
 bool dev = false;
+
 bool quitting = false;
 const string version = "v1.3.6";
 
