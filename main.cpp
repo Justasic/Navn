@@ -92,17 +92,17 @@ int main (int argcx, char** argvx, char *envp[])
 	  sock << notice(unick, access_denied);
 	  log("%s attempted to request the navn quit password.", unick.c_str());
 	}
-      }//gdb info rply
-	  /*if(reply->said("This nickname is registered and protected")){
+      }
+	  if(reply->said("This nickname is registered and protected")){
 	    sock << privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
 		log("Identified to NickServ with account \"%s\"", nsacc.c_str());
-	  }*/
+	  }
 	  if (reply->said(restart_req+" "+password)){
 	  string reason = "-no reason-";
 	  sock << quit("Restarting: "+reason);
 	  restart(reason);
 	}
-      if (reply->said(gdb_req)){
+      if (reply->said(gdb_req)){//gdb info rply
 		sock << notice(unick, gdb_msg);
 		log("%s used the gdb reply.", unick.c_str());
       }
@@ -147,12 +147,13 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
-	   //sock << notice(chan, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), chan.c_str(), nick.c_str());
+	   sock << notice(chan, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), chan.c_str(), nick.c_str());
 	   log("%s joined %s", unick.c_str(), chan.c_str());
       }
       if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
 		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
 		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
+		DoQuit();
       }
       if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
 	throw CoreException("You have been killed by "+unick);
@@ -165,7 +166,7 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said(server_welcome)){
 		sock << mode(nick, "+B");
 		sock << join(channel);
-		//sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+		sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
 		sock << whois(nick);
 		if(reply->said("311 "+nick+" "+nick)){
 		cout << nl;
