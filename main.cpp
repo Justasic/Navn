@@ -148,7 +148,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
 	   sock << notice(chan, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), chan.c_str(), nick.c_str());
-	   log("%s joined %s", unick.c_str(), chan.c_str());
+	   log("%s joined %s", unick.c_str(), strip(chan).c_str());
       }
       if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
 		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
@@ -162,6 +162,9 @@ int main (int argcx, char** argvx, char *envp[])
          nick = reply->params(3);
          sock << notice(owner_nick, "Someone changed my nickname to "+nick);
       }
+	  if(reply->said("send test")){
+		sock.Send("PRIVMSG "+chan+" New Send Sent!"+nl);
+	  }
       //this says that we are now in the server
       if(reply->said(server_welcome)){
 		sock << mode(nick, "+B");

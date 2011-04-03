@@ -26,6 +26,7 @@ class Socket
   bool is_valid() const { return m_sock != -1; }
   const Socket& operator >> (std::string&) const;
   const Socket& operator << (const std::string&) const;
+  void Send(const std::string &s) const;
   
  private:
   const std::string server;

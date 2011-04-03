@@ -74,3 +74,8 @@ const Socket& Socket::operator << (const std::string& s) const
   ::send ( m_sock, s.c_str(), s.size(), 0 );
   std::cout << "<-- " + s << "\n";
 }
+void Socket::Send(const std::string& s) const
+{
+	::send ( m_sock, s.c_str(), s.size(), 0 );
+	std::cout << "<-- " << s << "\n";
+}
