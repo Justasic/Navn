@@ -16,7 +16,7 @@ How to Install:
 
 How to start in developer mode (skips the startup process and loads whats set in defs.h)
 1. Follow above instructions.
-2. Start the bot with ./navn --dev
+2. Start the bot with ./navn -d
 
 
 All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html)

@@ -43,7 +43,7 @@ string ident;
 string myhost;
 //make sure the channel name is the same case as the one on IRC
 /**************************configuration***********************/
-string server = "5.205.91.159";
+string server = "irc.Flux-Net.net";
 string port = "6667";
 string channel = "#Test";
 string nick = "Navn";
@@ -90,8 +90,10 @@ void help(){
  cout << nl;
  cout << "Paramiters \t   Function" << nl; 
  cout << "--help \t -h \t Displays this message." << nl; 
- cout << "--debug  -d\t Starts the bot in debug mode." << nl; 
+ cout << "--developer  -d\t Starts the bot in debug mode." << nl; 
  cout << "--dev \t -x \t Starts the bot in developer mode." << nl; 
+ cout << "--nofork \t-f \t Keep" << nl;
+ cout << "" <<nl;
  cout << nl;
  cout << "\t This bot does have Epic Powers." << nl;
  exit(0);

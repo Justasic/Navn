@@ -147,7 +147,7 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
-	   sock << notice(chan, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), chan.c_str(), nick.c_str());
+	   sock << notice(chan, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), strip(chan).c_str(), nick.c_str());
 	   log("%s joined %s", unick.c_str(), strip(chan).c_str());
       }
       if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
