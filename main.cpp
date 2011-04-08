@@ -165,6 +165,9 @@ int main (int argcx, char** argvx, char *envp[])
 	  if(reply->said("send test")){
 		sock.Send("PRIVMSG "+chan+" New Send Sent!"+nl);
 	  }
+	  if(reply->said("!bugs")){
+	    sock.Send(privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/"));
+	  }
       //this says that we are now in the server
       if(reply->said(server_welcome)){
 		sock << mode(nick, "+B");
@@ -192,6 +195,24 @@ int main (int argcx, char** argvx, char *envp[])
 		nick = newnick;
 		sock << setnick(newnick);
       }
+	  if(reply->said("PRIVMSG "+nick+" :kick")){
+	    if(unick == owner_nick){
+		string kickee = reply->params(2);
+		string kickchan = reply->params(1);
+		sock << kick(kickchan, kickee, "Kick from %s", unick.c_str());
+	    }
+	   else{
+	    sock << notice(unick, access_denied);
+	   }
+	  }
+	  if(reply->said("PRIVMSG "+nick+" :chown")){
+	    if(host == "I.still.hate.packets"){
+			owner_nick = reply->params(1);
+			sock << notice(unick, "New owner for %s is %s", nick.c_str(), unick.c_str());
+		}else{
+			sock << notice(unick, access_denied);
+		}
+	  }
       if(reply->said(CTCP_VERS)){ // for CTCP VERSION reply
 		cout << "\033[22;31mRecieved CTCP VERSION from "+unick+"\033[22;36m\r\n";
 		sock << notice(unick, "\001VERSION Navn Bot "+version+"\001");
@@ -229,15 +250,17 @@ int main (int argcx, char** argvx, char *envp[])
       }
       //help replies
 	if(reply->said(help_req)){
-		sock << notice(unick, "There are 8 commands:");
+		sock << notice(unick, "There are 12 commands:");
 		sock << notice(unick, "quit \t \t \tQuits the bot (password needed)");
-		sock << notice(unick, "pass\t \t \t Gets the quit password for the bot (need to be a bot admin)");
+		sock << notice(unick, "pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
 		sock << notice(unick, "gdb\t \t \t \tDisplays how to use gdb.");
 		sock << notice(unick, "rejoin\t \t Rejoins the bot to the channel.");
+		sock << notice(unick, "chown \t \t Changes ownership over the bot (must be a bot admin)");
 		sock << notice(unick, "google\t \t Googles something.");
 		sock << notice(unick, "youtube \t Youtubes something.");
 		sock << notice(unick, "join \t \t \tTells the bot to join the specified channel.");
 		sock << notice(unick, "part \t \t \tParts the channel");
+		sock << notice(unick, "kick \t \t \tkicks a user from the channel (must be bot owner)");
 		sock << notice(unick, "restart \t Restarts the Bot (Password needed)");
 		sock << notice(unick, "stats \t \t Shows system statistics.");
 		log("%s used help command", unick.c_str());
@@ -251,7 +274,6 @@ int main (int argcx, char** argvx, char *envp[])
 	if(reply->said("!info")){
 		sock << privmsg(chan, "Our forum is at \037castawaycrew.hyperboards.com\017");
 		sock << privmsg(chan, "Our Website is \002Flux-Net.net\017");
-		sock << privmsg(chan, "Flux-Net git is at: \002\0034git@gitorious.org:navn/navn.git\017");
 		sock << privmsg(chan, "Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
 		log("%s used Da_Goats !info command in %s", unick.c_str(), chan.c_str());
       }
@@ -279,9 +301,9 @@ int main (int argcx, char** argvx, char *envp[])
 		log("%s used Da_Goats !socialinfo command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!help")){
-		sock << privmsg(chan, "Local "+chan+ " commands are:");
-		sock << privmsg(chan, "!help !info !register !socialinfo !version");
-		sock << privmsg(chan, "!changelog !uptime !rules !spam !rename");
+		sock << privmsg(chan, "Local %s commands are:", chan.c_str());
+		sock << privmsg(chan, "!help !info !register !socialinfo !version !time");
+		sock << privmsg(chan, "!changelog !uptime !rules !spam !rename !bugs");
 		log("%s used Da_Goats !help command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("PRIVMSG "+nick+" :stats")){
@@ -317,7 +339,7 @@ int main (int argcx, char** argvx, char *envp[])
 		// Number of processes currently running.
 		sock << notice(unick, "Number of processes: %d", sys_info.procs);
 	
-		log("%s used Da_Goats !stats command in %s", unick.c_str(), chan.c_str());
+		log("%s used stats command in %s", unick.c_str(), chan.c_str());
       }
 	  if(reply->said("!uptime")){
 		if(sysinfo(&sys_info) != 0)
@@ -330,6 +352,7 @@ int main (int argcx, char** argvx, char *envp[])
  
 		sock << privmsg(chan, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
                       days, hours, mins, sys_info.uptime % 60);
+		log("%s used !uptime command in %s", unick.c_str(), chan.c_str());
 	  }
       if(reply->said("!rules")){
 		sock << privmsg(chan, "There are only a few simple rules for %s.", chan.c_str());
@@ -345,11 +368,11 @@ int main (int argcx, char** argvx, char *envp[])
         sock << privmsg(chan, "Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
       }
       if(reply->said("!version")){
-        sock << privmsg(chan, "The Current Navn Bot Version is \002\0037"+version);
-        sock << privmsg(chan, "Dah_Goat's old script was part python(xchat) and mIRC");
+        sock << privmsg(chan, "The Current Navn Bot Version is \002\0037%s\0!ever17", version.c_str());
         sock << privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ coded from scratch by lordofsraam");
 		sock << privmsg(chan, "Navn's Code can be found at \002git@gitorious.org:navn/navn.git");
-        sock << privmsg(chan, "Navn is managed by "+owner_nick);
+		sock << privmsg(chan, "Report all bugs at: http://flux-net.net/bugs/");
+        sock << privmsg(chan, "Navn is managed by %s", owner_nick.c_str());
 		sock << privmsg(chan, "If you would like to add a command or function, talk to them.");
 		log("%s used Da_Goats !version command in %s", unick.c_str(), chan.c_str());
       }
@@ -437,6 +460,5 @@ int main (int argcx, char** argvx, char *envp[])
     log("Core Exception Caught: ", stringify(e.GetReason()).c_str());
     DoQuit(1);
 	}
-  return EXIT_SUCCESS;
   return EXIT_SUCCESS;
 }
