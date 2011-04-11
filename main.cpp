@@ -179,7 +179,7 @@ int main (int argcx, char** argvx, char *envp[])
 		}
 		log("Successfully connected to the server \"%s\" Port: %s Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
       }
-	  if(reply->said(".Whois")){
+	  if(reply->said("? Whois")){
 	    string nickname = reply->params(1);
 		sock << whois(nickname);
 		log("%s used .Whois on %s", unick.c_str(), nickname.c_str());
@@ -187,6 +187,9 @@ int main (int argcx, char** argvx, char *envp[])
 	  if(reply->said("? git")){
 	    sock << notice(unick, "Navn git: git@gitorious.org:navn/navn.git");
 	    log("%s requested Git repository link.", unick.c_str());
+	  }
+	  if(reply->said(":DCC ")){
+	   sock << notice(unick, "I do not accept or support DCC connections.");
 	  }
       //if the nick is not avalable
       if(reply->said(nick_taken_rsl)){
@@ -317,7 +320,7 @@ int main (int argcx, char** argvx, char *envp[])
 		hours = (sys_info.uptime / 3600) - (days * 24);
 		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
  
-		sock << notice(unick, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
+		sock << notice(unick, "Uptime: %d days, %d hours, %d minutes, %ld seconds",
                       days, hours, mins, sys_info.uptime % 60);
  
 		// Load Averages for 1,5 and 15 minutes
@@ -350,7 +353,7 @@ int main (int argcx, char** argvx, char *envp[])
 		hours = (sys_info.uptime / 3600) - (days * 24);
 		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
  
-		sock << privmsg(chan, "Uptime: %ddays, %dhours, %dminutes, %ldseconds",
+		sock << privmsg(chan, "Uptime: %d days, %d hours, %d minutes, %ld seconds",
                       days, hours, mins, sys_info.uptime % 60);
 		log("%s used !uptime command in %s", unick.c_str(), chan.c_str());
 	  }
@@ -368,12 +371,12 @@ int main (int argcx, char** argvx, char *envp[])
         sock << privmsg(chan, "Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
       }
       if(reply->said("!version")){
-        sock << privmsg(chan, "The Current Navn Bot Version is \002\0037%s\0!ever17", version.c_str());
+        sock << privmsg(chan, "The Current Navn Bot Version is \002\0037%s\017", version.c_str());
         sock << privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ coded from scratch by lordofsraam");
 		sock << privmsg(chan, "Navn's Code can be found at \002git@gitorious.org:navn/navn.git");
-		sock << privmsg(chan, "Report all bugs at: http://flux-net.net/bugs/");
-        sock << privmsg(chan, "Navn is managed by %s", owner_nick.c_str());
-		sock << privmsg(chan, "If you would like to add a command or function, talk to them.");
+		sock << privmsg(chan, "Report all bugs at: \2http://flux-net.net/bugs/\2");
+        sock << privmsg(chan, "Navn is managed by \2%s\2", owner_nick.c_str());
+		sock << privmsg(chan, "If you would like to add a command or function, talk to him.");
 		log("%s used Da_Goats !version command in %s", unick.c_str(), chan.c_str());
       }
       /*******************************Easter Eggs*********************************/
