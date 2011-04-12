@@ -115,6 +115,11 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << notice(unick, "Fullhost: "+fullhost);
 		log("%s requested information about themself.", unick.c_str());
       }
+	  if(reply->said("? weather")){
+		string area = reply->params(3);
+	    sock << privmsg(chan, get_weather(area));
+		log("%s used weather command to get the weather for %s in %s", unick.c_str(), area.c_str(), chan.c_str());
+	  }
       if (reply->said(join_req)){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
