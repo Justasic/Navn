@@ -7,6 +7,7 @@
  */
 #include "Socket.h"
 #include "SocketException.h"
+#include "INIReader.h"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>

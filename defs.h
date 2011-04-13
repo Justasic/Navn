@@ -22,7 +22,7 @@ bool nofork = false;
 bool dev = false;
 
 bool quitting = false;
-const string version = "v1.3.6";
+const string version = "v1.3.7";
 
     /*
     'Reply' means 'What the server is saying back'
@@ -41,19 +41,31 @@ string quitmsg;
 string fullhost;
 string ident;
 string myhost;
-//make sure the channel name is the same case as the one on IRC
-/**************************configuration***********************/
-string server = "irc.Flux-Net.net";
-string port = "6667";
-string channel = "#Test";
-string nick = "Navn";
-string usrname = "Navn";
-string realname = "The Navn Bot "+version;
-string owner_nick = "Justasic";
-string nspass = "letmein";
-string nsacc = "Navn";
-string logfile = "navn.log";
-/**************************configuration***********************/
+/******************Configuration variables***********************/
+string logfile;
+string nsacc;
+string nspass;
+string owner_nick;
+string realname;
+string usrname;
+string nick;
+string channel;
+string port;
+string server;
+
+void ReadConfig(INIReader &config){
+logfile = config.Get("Log","Log_File","navn.log");
+nsacc = config.Get("Bot","NickServ_Account","");
+nspass = config.Get("Bot","NickServ_Password","");
+owner_nick = config.Get("Bot","Owner","Derp");
+realname = config.Get("Connect","Realname","The Navn Bot "+version);
+usrname = config.Get("Connect","Ident","Navn");
+nick = config.Get("Bot","Nick","Navn");
+channel = config.Get("Bot","Channel","#Test");
+port = config.Get("Connect","Port","6667");
+server = config.Get("Connect", "Server", "irc.flux-net.net");
+}
+/******************End Configuration variables********************/
 const string welcome_msg = nick+" has connected. Type !time to see the time.";
 const string kick_msg = "KICK "+channel+" "+nick;
 //433 replies that the nick is taken

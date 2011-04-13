@@ -13,6 +13,11 @@ int main (int argcx, char** argvx, char *envp[])
   {
     cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
     //Make the socket used to connect to the server
+    INIReader config("bot.conf");
+    if (config.ParseError() < 0) {
+       throw CoreException("Cannot load bot.conf");
+    }
+    ReadConfig(config);
     Socket sock(server,port);
     //Incase there is no connection, say so
     if ( !sock.get_address() ) throw SocketException("Could not resolve the IRC server.");
@@ -27,6 +32,7 @@ int main (int argcx, char** argvx, char *envp[])
     if (reply->said("PING :")){
       sock << "PONG :"+rply.substr(6,-1);
     }
+    
     sock >> rply;
     string line;
     struct sigaction act; // to catch a signal sent from the terminal.

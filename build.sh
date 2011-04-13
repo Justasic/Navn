@@ -3,7 +3,7 @@ clear
 build_it ()
 {
   echo '\033[01;31m'
-  g++ -ansi -pedantic -g -o navn main.cpp Socket.cpp Sepstream.cpp
+  g++ -ansi -pedantic -g -o navn main.cpp Socket.cpp Sepstream.cpp INIReader.cpp ini.c
   echo '\033[22;37m'
   echo "<=====================================>"
   echo Done building!
