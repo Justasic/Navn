@@ -169,6 +169,11 @@ int main (int argcx, char** argvx, char *envp[])
       if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
+      if(reply->said("rehash")){
+	sock << notice(unick, "Rehashing config file.");
+	log("%s rehashed config file.", unick.c_str());
+	ReadConfig(config);
+      }
       if(reply->said(":"+nick+"!"+usrname+" NICK ")){
          nick = reply->params(3);
          sock << notice(owner_nick, "Someone changed my nickname to "+nick);
