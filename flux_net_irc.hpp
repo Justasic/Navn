@@ -518,32 +518,18 @@ void startup(int argc, char** argv) {
   }
   //logging to a text file and making the PID file.
    fstream pid;
-   pid.open("Navn.pid", fstream::in | fstream::out | fstream::app);
+   pid.open(pid_file.c_str(), fstream::in | fstream::out | fstream::app);
    if(!pid.is_open())
 		throw CoreException("Failed to create PID file.");
    pid << getpid() << nl;
    pid.close();
    log("Navn Started. PID: %d", getpid());
-   if (dev){
-  }else{
-  cout << "What server would you like to connect to?" << nl;
-  cin >> server;
-  cout << "What port?" << nl;
-  cin >> port;
-  cout << "Channel?" << nl;
-  cin >> channel;
-  cout << "Bots Nickname?" << nl;
-  cin >> nick; 
-  cout << "Owner's Nickname?" << nl;
-  cin >> owner_nick;
-  }
-  if (!nofork){
+   if (!nofork){
 	int i = fork();
 	if(i < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
 		cout << "Navn IRC Bot " << version << " Started." << nl;
-		cout << "Connecting to server \"" << server << ":" << port << "\" Bot Nick: \"" << nick << "\" channel: " << channel << "." << nl;
 		cout << "Forking to background. PID: "<< i << nl;
 		exit(0);
 	}

@@ -1,7 +1,6 @@
 /* SocketException.h */
-
-#ifndef SocketException_class
-#define SocketException_class
+#ifndef SOCKET_EXCEPTION_H
+#define SOCKET_EXCEPTION_H
 #include <string>
 /** SocketExceptions are to be thrown with anything Socket related
  * Throws Socket Exception
@@ -17,7 +16,7 @@ class SocketException
  private:
   std::string m_s;
 };
-#endif
+
 /**CoreExceptions are to be thrown with everything else
  * Throws Core Exception
  * @param throw CoreException(message)
@@ -27,8 +26,6 @@ class SocketException
  * and has been modified to the needs of this bot *
  **************************************************/
 
-#ifndef CoreException_class
-#define CoreException_class
 class CoreException : public std::exception
 {
  public:
@@ -66,14 +63,19 @@ class CoreException : public std::exception
 		return source.c_str();
 	}
 };
-#endif  
 
-#ifndef LogException_class
-#define LogException_class
 class LogException : public CoreException
 {
  public:
 		LogException(const std::string &message) : CoreException(message, "A Log") { }
 		virtual ~LogException() throw() { }
+};
+
+class ConfigException : public CoreException
+{
+ public:
+ 		ConfigException() : CoreException("Config threw an exception", "Config Parser") { }
+		ConfigException(const std::string &msg) : CoreException(msg, "A Config") { }
+		virtual ~ConfigException() throw() { }
 };
 #endif

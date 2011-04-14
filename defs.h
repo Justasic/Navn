@@ -52,6 +52,7 @@ string nick;
 string channel;
 string port;
 string server;
+string pid_file;
 
 void ReadConfig(INIReader &config){
 logfile = config.Get("Log","Log_File","navn.log");
@@ -64,6 +65,7 @@ nick = config.Get("Bot","Nick","Navn");
 channel = config.Get("Bot","Channel","#Test");
 port = config.Get("Connect","Port","6667");
 server = config.Get("Connect", "Server", "irc.flux-net.net");
+pid_file = config.Get("Log","PID_File","navn.pid");
 }
 /******************End Configuration variables********************/
 const string welcome_msg = nick+" has connected. Type !time to see the time.";

@@ -8,16 +8,22 @@ int main (int argcx, char** argvx, char *envp[])
 {
   my_av = argvx;
   my_envp = envp;
+  try{
+  INIReader config("bot.conf");
+    if (config.ParseError() < 0) {
+       throw ConfigException("Cannot load bot.conf");
+    }
+  ReadConfig(config);
+  }catch(ConfigException &ex){
+    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
+    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
+    DoQuit(1);
+  }
   startup(argcx, argvx);
   try
   {
     cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
     //Make the socket used to connect to the server
-    INIReader config("bot.conf");
-    if (config.ParseError() < 0) {
-       throw CoreException("Cannot load bot.conf");
-    }
-    ReadConfig(config);
     Socket sock(server,port);
     //Incase there is no connection, say so
     if ( !sock.get_address() ) throw SocketException("Could not resolve the IRC server.");
@@ -172,7 +178,17 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said("rehash")){
 	sock << notice(unick, "Rehashing config file.");
 	log("%s rehashed config file.", unick.c_str());
-	ReadConfig(config);
+	try{
+  	 INIReader config("bot.conf");
+    	 if (config.ParseError() < 0) {
+       		throw ConfigException("Cannot load bot.conf");
+    	 }
+  	 ReadConfig(config);
+  	 }catch(ConfigException &ex){
+    		cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
+    		log("Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
+    		sock << notice(unick, "Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
+  	 }
       }
       if(reply->said(":"+nick+"!"+usrname+" NICK ")){
          nick = reply->params(3);
