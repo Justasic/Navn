@@ -97,7 +97,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       //request the quit password
       if (reply->said(pass_req)){
-	if (host == "I.still.hate.packets" || host == "Netadmin.Flux-Net.net"){
+	if (unick == owner_nick){
 	  sock << notice(unick, "The password is:\2 "+password);
 	  log("%s requested the navn quit password: %s", unick.c_str(), password.c_str());
 	} else {
@@ -109,7 +109,7 @@ int main (int argcx, char** argvx, char *envp[])
 	    sock << privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
 		log("Identified to NickServ with account \"%s\"", nsacc.c_str());
 	  }
-	  if (reply->said(restart_req+" "+password)){
+	  if (reply->said("PRIVMSG "+nick+" :restart "+password)){
 	  string reason = "-no reason-";
 	  sock << quit("Restarting: "+reason);
 	  restart(reason);
@@ -120,6 +120,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       if(reply->said("about me")){
 		sock << notice(unick, "Raw: "+reply->raw_string);
+		sock << notice(unick, "message: "+msg);
 		sock << notice(unick, "Nickname: "+unick);
 		sock << notice(unick, "Ident: "+reply->user);
 		sock << notice(unick, "Host: "+host);
@@ -129,7 +130,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
 	  if(reply->said("? weather")){
 		string area = reply->params(3);
-	    sock << privmsg(chan, get_weather(area));
+	        sock << privmsg(chan, get_weather(area));
 		log("%s used weather command to get the weather for %s in %s", unick.c_str(), area.c_str(), chan.c_str());
 	  }
       if (reply->said(join_req)){
@@ -176,6 +177,8 @@ int main (int argcx, char** argvx, char *envp[])
 	throw CoreException("You have been killed by "+unick);
       }
       if(reply->said("rehash")){
+	string getpass = reply->params(1);
+	if(unick == owner_nick || getpass == usrpass){
 	sock << notice(unick, "Rehashing config file.");
 	log("%s rehashed config file.", unick.c_str());
 	try{
@@ -189,14 +192,12 @@ int main (int argcx, char** argvx, char *envp[])
     		log("Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
     		sock << notice(unick, "Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
   	 }
+	}else{
+		sock << notice(unick, access_denied);
+		log("%s attempted a rehash.", unick.c_str());
+
+	}
       }
-      if(reply->said(":"+nick+"!"+usrname+" NICK ")){
-         nick = reply->params(3);
-         sock << notice(owner_nick, "Someone changed my nickname to "+nick);
-      }
-	  if(reply->said("send test")){
-		sock.Send("PRIVMSG "+chan+" New Send Sent!"+nl);
-	  }
 	  if(reply->said("!bugs")){
 	    sock.Send(privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/"));
 	  }
@@ -211,11 +212,6 @@ int main (int argcx, char** argvx, char *envp[])
 		}
 		log("Successfully connected to the server \"%s\" Port: %s Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
       }
-	  if(reply->said("? Whois")){
-	    string nickname = reply->params(1);
-		sock << whois(nickname);
-		log("%s used .Whois on %s", unick.c_str(), nickname.c_str());
-	  }
 	  if(reply->said("? git")){
 	    sock << notice(unick, "Navn git: git@gitorious.org:navn/navn.git");
 	    log("%s requested Git repository link.", unick.c_str());
@@ -241,11 +237,14 @@ int main (int argcx, char** argvx, char *envp[])
 	   }
 	  }
 	  if(reply->said("PRIVMSG "+nick+" :chown")){
-	    if(host == "I.still.hate.packets"){
+		string givinpass = reply->params(2);
+	    if(givinpass == usrpass){
+			log("Changing ownership from %s to %s", owner_nick.c_str(), unick.c_str());
 			owner_nick = reply->params(1);
 			sock << notice(unick, "New owner for %s is %s", nick.c_str(), unick.c_str());
 		}else{
 			sock << notice(unick, access_denied);
+			log("%s attempted to change ownership of the bot", unick.c_str());
 		}
 	  }
       if(reply->said(CTCP_VERS)){ // for CTCP VERSION reply
@@ -263,7 +262,7 @@ int main (int argcx, char** argvx, char *envp[])
       This is so you can make things happen only if you know you are in
       a channel.
       */
-      if(reply->said(in_the_channel)){
+      if(reply->said("252 "+nick)){
 	if (dev){
 		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mSending password to owner\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
@@ -284,8 +283,8 @@ int main (int argcx, char** argvx, char *envp[])
         in_channel = true;
       }
       //help replies
-	if(reply->said(help_req)){
-		sock << notice(unick, "There are 12 commands:");
+	if(reply->said("PRIVMSG "+nick+" :help")){
+		sock << notice(unick, "There are 13 commands:");
 		sock << notice(unick, "quit \t \t \tQuits the bot (password needed)");
 		sock << notice(unick, "pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
 		sock << notice(unick, "gdb\t \t \t \tDisplays how to use gdb.");
@@ -297,6 +296,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << notice(unick, "part \t \t \tParts the channel");
 		sock << notice(unick, "kick \t \t \tkicks a user from the channel (must be bot owner)");
 		sock << notice(unick, "restart \t Restarts the Bot (Password needed)");
+		sock << notice(unick, "rehash\t \t Rehashes the Bot (Password needed)");
 		sock << notice(unick, "stats \t \t Shows system statistics.");
 		log("%s used help command", unick.c_str());
       }
@@ -318,7 +318,7 @@ int main (int argcx, char** argvx, char *envp[])
 		log("%s used Da_Goats !rename command in %s", unick.c_str(), chan.c_str());
       }
       if(reply->said("!register")){
-		sock << privmsg(chan, "To Register you nickname type:");
+		sock << privmsg(chan, "To Register your nickname type:");
 		sock << privmsg(chan, "\0034If this is the nick you want then skip step 1.\017");
 		sock << privmsg(chan, "\0034Do not include brackets when registering, this will cause errors\017");
 		sock << privmsg(chan, "Step 1: change your nick \00312/nick [nickname here]\017");

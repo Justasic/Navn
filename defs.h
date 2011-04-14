@@ -53,6 +53,7 @@ string channel;
 string port;
 string server;
 string pid_file;
+string usrpass;
 
 void ReadConfig(INIReader &config){
 logfile = config.Get("Log","Log_File","navn.log");
@@ -66,8 +67,10 @@ channel = config.Get("Bot","Channel","#Test");
 port = config.Get("Connect","Port","6667");
 server = config.Get("Connect", "Server", "irc.flux-net.net");
 pid_file = config.Get("Log","PID_File","navn.pid");
+usrpass = config.Get("Bot","Password","Navn");
 }
 /******************End Configuration variables********************/
+
 const string welcome_msg = nick+" has connected. Type !time to see the time.";
 const string kick_msg = "KICK "+channel+" "+nick;
 //433 replies that the nick is taken
@@ -78,21 +81,18 @@ const string ChanJoin = "366"+nick;
 const string server_welcome = "005 "+nick;
 const string killed = "KILL "+nick;
 const string con_closed_nick = "[Registration timeout]";
-const string CTCP_VERS = "PRIVMSG "+nick+" :\001VERSION\001";
-const string CTCP_TIME = "PRIVMSG "+nick+" :\001TIME\001";
-const string help_req = "PRIVMSG "+nick+" :help";
+const string CTCP_VERS = " :\001VERSION\001";
+const string CTCP_TIME = " :\001TIME\001";
 const string join_req = "PRIVMSG "+nick+" :join";
 const string part_req = "PRIVMSG "+nick+" :part";
 const string pass_req = "PRIVMSG "+nick+" :pass";
-const string restart_req = "PRIVMSG "+nick+" :restart";
 const string gdb_req = "PRIVMSG "+nick+" :gdb";
 const string quitmsg_req = "PRIVMSG "+nick+" :quit";
 const string pmsggoogle = "PRIVMSG "+nick+" :google";
 const string pmsgyoutube = "PRIVMSG "+nick+" :youtube";
 const string gdb_msg = "gdb#: (1) From the directory that you would do ./program from, do the following instead: gdb ./program (2) Do: r -paramiters (3) Upon crash, do: bt full to see all the output of the crash.";
-const string access_denied = "Access Denied.";
+const string access_denied = "Access is Denied.";
 const string nl = "\r\n";
-
 /**Command Line Help
  * for when someone does --help or -h with the bot
  * @param ./navn --help
