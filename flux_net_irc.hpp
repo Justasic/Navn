@@ -168,7 +168,26 @@ string search(string s, string command){
     }
   }
 }
-
+string execute(char* cmd) {
+    #ifdef _WIN32
+    FILE* pipe = _popen
+    #else
+    FILE* pipe = popen(cmd, "r");
+    #endif
+    if (!pipe) return "ERROR";
+    char buffer[128];
+    string result = "";
+    while(!feof(pipe)) {
+        if(fgets(buffer, 128, pipe) != NULL)
+                result += buffer;
+    }
+    #ifdef _WIN32
+    _pclose(pipe);
+    #else
+    pclose(pipe);
+    #endif
+    return result;
+}
 string make_two_digits(int x){
   if (x < 10){
     stringstream dd_ss;

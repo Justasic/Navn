@@ -24,6 +24,7 @@
 #include <istream>
 #include <sys/sysinfo.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <unistd.h>
 #include <cstdio>
 #include <cstdarg>

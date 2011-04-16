@@ -32,7 +32,7 @@ int main (int argcx, char** argvx, char *envp[])
     sock >> rply;
     irc_string* reply = new irc_string(rply);
     //Set the username and nick
-    sock << "USER "+usrname+" * 8 :"+realname+nl;
+    sock << "USER "+usrname+" * * :"+realname+nl;
     sock << setnick(nick);
 
     if (reply->said("PING :")){
@@ -109,10 +109,14 @@ int main (int argcx, char** argvx, char *envp[])
 	    sock << privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
 		log("Identified to NickServ with account \"%s\"", nsacc.c_str());
 	  }
-	  if (reply->said("PRIVMSG "+nick+" :restart "+password)){
-	  string reason = "-no reason-";
-	  sock << quit("Restarting: "+reason);
-	  restart(reason);
+	  if (reply->said("PRIVMSG "+nick+" :restart")){
+	    if(reply->params(2) == password){
+	      string reason = "-no reason-";
+	      sock << quit("Restarting: "+reason);
+	      restart(reason);
+	     }else{
+	       sock << notice(unick, access_denied);
+	   }
 	}
       if (reply->said(gdb_req)){//gdb info rply
 		sock << notice(unick, gdb_msg);
@@ -165,7 +169,9 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
-	   sock << notice(chan, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), strip(chan).c_str(), nick.c_str());
+	   sleep(2);
+	   string buf = "Welcome "+unick+" to "+chan+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.";
+	   sock << notice(strip(chan), strip(buf));
 	   log("%s joined %s", unick.c_str(), strip(chan).c_str());
       }
       if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
@@ -180,6 +186,7 @@ int main (int argcx, char** argvx, char *envp[])
 	string getpass = reply->params(1);
 	if(unick == owner_nick || getpass == usrpass){
 	sock << notice(unick, "Rehashing config file.");
+	cout << "Rehashing config file." << nl;
 	log("%s rehashed config file.", unick.c_str());
 	try{
   	 INIReader config("bot.conf");
@@ -206,10 +213,6 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << mode(nick, "+B");
 		sock << join(channel);
 		sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
-		sock << whois(nick);
-		if(reply->said("311 "+nick+" "+nick)){
-		cout << nl;
-		}
 		log("Successfully connected to the server \"%s\" Port: %s Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
       }
 	  if(reply->said("? git")){
@@ -219,13 +222,6 @@ int main (int argcx, char** argvx, char *envp[])
 	  if(reply->said(":DCC ")){
 	   sock << notice(unick, "I do not accept or support DCC connections.");
 	  }
-      //if the nick is not avalable
-      if(reply->said(nick_taken_rsl)){
-	    string newnick = nick+"_";
-		log("Nickname: %s is taken, attempting with %s", nick.c_str(), newnick.c_str());
-		nick = newnick;
-		sock << setnick(newnick);
-      }
 	  if(reply->said("PRIVMSG "+nick+" :kick")){
 	    if(unick == owner_nick){
 		string kickee = reply->params(2);
@@ -241,7 +237,7 @@ int main (int argcx, char** argvx, char *envp[])
 	    if(givinpass == usrpass){
 			log("Changing ownership from %s to %s", owner_nick.c_str(), unick.c_str());
 			owner_nick = reply->params(1);
-			sock << notice(unick, "New owner for %s is %s", nick.c_str(), unick.c_str());
+			sock << notice(unick, "New owner for \2%s\2 is \2%s\2", nick.c_str(), unick.c_str());
 		}else{
 			sock << notice(unick, access_denied);
 			log("%s attempted to change ownership of the bot", unick.c_str());
@@ -249,7 +245,12 @@ int main (int argcx, char** argvx, char *envp[])
 	  }
       if(reply->said(CTCP_VERS)){ // for CTCP VERSION reply
 		cout << "\033[22;31mRecieved CTCP VERSION from "+unick+"\033[22;36m\r\n";
-		sock << notice(unick, "\001VERSION Navn Bot "+version+"\001");
+		struct utsname uts;
+		if(uname(&uts) < 0)
+			//perror("uname() error");
+			throw CoreException("uname() Error");
+
+		sock << notice(unick, "\001VERSION Navn Bot %s %s %s\001",version.c_str(), uts.sysname, uts.machine);
 		log("Recieved CTCP VERSION from %s", unick.c_str());
       }
       if(reply->said(CTCP_TIME)){ // for CTCP TIME reply
@@ -267,7 +268,7 @@ int main (int argcx, char** argvx, char *envp[])
 		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mSending password to owner\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-		cout << "\033[01;33mWarning: \033[22;31mNavn is currently started with mode \""<< my_av <<"\"\033[22;36m"<<nl;
+		cout << "\033[01;33mWarning: \033[22;31mNavn is currently started with mode \""<< arg <<"\"\033[22;36m"<<nl;
 		cout << "\033[22;34mSession Quit Password: \033[01;32m"+password+"\033[22;36m"<< nl;
 		sock << notice(owner_nick, "The quit password is: "+password);
 		sock << notice(owner_nick, "\0038Warning: \017\0034\2Navn is currently started in a non-normal mode. ("+arg+")\017");
@@ -345,7 +346,12 @@ int main (int argcx, char** argvx, char *envp[])
 	  //Shows system stats in the channel.
 	
 		if(sysinfo(&sys_info) != 0)
-			perror("sysinfo");
+			//perror("sysinfo");
+			throw CoreException("sys_info Error");
+		struct utsname uts;
+		if(uname(&uts) < 0)
+			//perror("uname() error");
+			throw CoreException("uname() Error");
  
 		// Uptime
 		days = sys_info.uptime / 86400;
@@ -373,10 +379,14 @@ int main (int argcx, char** argvx, char *envp[])
  
 		// Number of processes currently running.
 		sock << notice(unick, "Number of processes: %d", sys_info.procs);
-	
+		sock << notice(unick, "\003");
+		sock << notice(unick, "System Name: %s \tRelease: %s %s \tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine );
+		sock << notice(unick, "System Version: %s", uts.version);
+
+		sock << notice(unick, strip(execute("grep 'model name' /proc/cpuinfo")));
 		log("%s used stats command in %s", unick.c_str(), chan.c_str());
       }
-	  if(reply->said("!uptime")){
+      if(reply->said("!uptime")){
 		if(sysinfo(&sys_info) != 0)
 			perror("sysinfo");
  
@@ -462,7 +472,6 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << quit("Requested from \2"+unick+"\017. Pass:\00320 "+password+"\017");
 		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
 		DoQuit(0);
-		return EXIT_SUCCESS;
       }
       delete reply;
     }//while loop ends here
@@ -470,7 +479,7 @@ int main (int argcx, char** argvx, char *envp[])
      log("Quitting: %s", quitmsg.c_str());
      DoQuit(0);
   }//try ends here
-  catch ( SocketException& e ) //catch any SocketExceptions sent.
+  catch ( SocketException& e ) //catch any Exceptions sent.
   {
     cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
     log("Socket Exception Caught: %s", e.description().c_str());
