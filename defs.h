@@ -93,6 +93,7 @@ const string pmsgyoutube = "PRIVMSG "+nick+" :youtube";
 const string gdb_msg = "gdb#: (1) From the directory that you would do ./program from, do the following instead: gdb ./program (2) Do: r -paramiters (3) Upon crash, do: bt full to see all the output of the crash.";
 const string access_denied = "Access is Denied.";
 const string nl = "\r\n";
+
 /**Command Line Help
  * for when someone does --help or -h with the bot
  * @param ./navn --help

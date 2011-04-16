@@ -436,30 +436,16 @@ int main (int argcx, char** argvx, char *envp[])
 	time ( &rawtime );
 	ptm = gmtime ( &rawtime );
 	int minutes = (ptm->tm_min);
-	string dd_minutes = make_two_digits(minutes);
 	sock << privmsg(chan, "Current time around the World:");
-
-	int GMT_h = ((ptm->tm_hour+UTC)%24);
-	sock << privmsg(chan, "GMT == " + make_two_digits(GMT_h) + ":" + dd_minutes);
-
-	int new_york_h = ((ptm->tm_hour+EST)%24);
-	if (new_york_h < 0){
-	  new_york_h += 24;
-	}
-	sock << privmsg(chan, "New York (USA) == " + make_two_digits(new_york_h) + ":" + dd_minutes);
-
-	int cali_h = ((ptm->tm_hour+PST)%24);
-	if (cali_h < 0){
-	  cali_h += 24;
-	}
-	sock << privmsg(chan, "California (USA) == " +  make_two_digits(cali_h) + ":" + dd_minutes);
-
-	int beijing_h = ((ptm->tm_hour+CCT)%24);
-	if (beijing_h < 0){
-	  beijing_h += 24;
-	}
-		sock << privmsg(chan, "Beijing (China) == " + make_two_digits(beijing_h) + ":" + dd_minutes);
-		log("%s requested !time command in %s", unick.c_str(), chan.c_str());
+	sock << privmsg(chan, "GMT == %2d:%02d", (ptm->tm_hour+UTC)%24, minutes);
+	sock << privmsg(chan, "New York (USA) == %2d:%02d", (ptm->tm_hour+EST)%24, minutes);
+	sock << privmsg(chan, "California (USA) == %2d:%02d", (ptm->tm_hour+PST)%24, minutes);
+	sock << privmsg(chan, "Beijing (China) == %2d:%02d", (ptm->tm_hour+CCT)%24, minutes);	
+	char buf[100];
+	ptm = localtime(&rawtime);
+	strftime(buf,100,"Navn's Time: %Z %c",ptm);
+	sock << privmsg(chan, buf);
+	log("%s requested !time command in %s", unick.c_str(), chan.c_str());
       }
       //if the nick is taken and the server connection is terminated.
       if(reply->said(con_closed_nick)){

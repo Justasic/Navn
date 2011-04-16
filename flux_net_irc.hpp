@@ -322,7 +322,12 @@ return me_ss.str();
  */
 string privmsg(string stringy1, string stringy2){
   stringstream stringy_ss_privmsg;
-  stringy_ss_privmsg << "PRIVMSG " << stringy1 << " " << stringy2 << nl;
+  stringy_ss_privmsg << "PRIVMSG " << stringy1 << " :" << stringy2 << nl;
+  return stringy_ss_privmsg.str();
+}
+string privmsg(string Dest, char* message){
+  stringstream stringy_ss_privmsg;
+  stringy_ss_privmsg << "PRIVMSG " << Dest << " :" << message << nl;
   return stringy_ss_privmsg.str();
 }
 string privmsg(string Dest, const char *fmt, ...){
@@ -331,7 +336,7 @@ va_start(args, fmt);
 stringstream privmsg_ss;
 char buf[4096];
 vsnprintf(buf, sizeof(buf), fmt, args);
-privmsg_ss << "PRIVMSG " << Dest << " " << buf << nl;
+privmsg_ss << "PRIVMSG " << Dest << " :" << buf << nl;
 va_end(args);
 return privmsg_ss.str();
 }
