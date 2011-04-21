@@ -1,5 +1,6 @@
 /* main.cpp */
 #include "flux_net_irc.hpp"
+#include "da_goat.h"
 string binary_path, services_dir, services_bin;
 using namespace std;
 using namespace flux_net_irc;
@@ -96,7 +97,7 @@ int main (int argcx, char** argvx, char *envp[])
 		log("Channel movie Search from %s \"%s\"", unick.c_str(), search(rply, "!movie").c_str());
       }
       //request the quit password
-      if (reply->said(pass_req)){
+      if (reply->said("PRIVMSG "+nick+" :pass")){
 	if (unick == owner_nick){
 	  sock << notice(unick, "The password is:\2 "+password);
 	  log("%s requested the navn quit password: %s", unick.c_str(), password.c_str());
@@ -137,7 +138,7 @@ int main (int argcx, char** argvx, char *envp[])
 	        sock << privmsg(chan, get_weather(area));
 		log("%s used weather command to get the weather for %s in %s", unick.c_str(), area.c_str(), chan.c_str());
 	  }
-      if (reply->said(join_req)){
+      if (reply->said("PRIVMSG "+nick+" :join")){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
 	 sock << notice(unick, "Channel %s is not a valad channel.", blah.c_str());
@@ -148,7 +149,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << privmsg(blah, welcome_msg);
 	}
       }
-      if (reply->said(part_req)){
+      if (reply->said("PRIVMSG "+nick+" :part")){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
 	 sock << notice(unick, "Channel %s is not a valad channel.", blah.c_str());
@@ -174,10 +175,10 @@ int main (int argcx, char** argvx, char *envp[])
 	   sock << notice(strip(chan), strip(buf));
 	   log("%s joined %s", unick.c_str(), strip(chan).c_str());
       }
-      if (reply->said(quitmsg_req+" "+password)){ //quits the bot.
-		sock << quit("Requested from \2"+ unick +"\017. Pass:\00320 "+password+"\017");
+      if (reply->said("PRIVMSG "+nick+" :pass "+password)){ //quits the bot.
+		sock << notice(unick, "Quitting..");
 		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
-		DoQuit();
+		DoQuit(sock, "Requested From \2"+unick+"\17. Pass: \00320"+password+"\017");
       }
       if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
 	throw CoreException("You have been killed by "+unick);
@@ -237,7 +238,7 @@ int main (int argcx, char** argvx, char *envp[])
 	    if(givinpass == usrpass){
 			log("Changing ownership from %s to %s", owner_nick.c_str(), unick.c_str());
 			owner_nick = reply->params(1);
-			sock << notice(unick, "New owner for \2%s\2 is \2%s\2", nick.c_str(), unick.c_str());
+			sock << notice(unick, "New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
 		}else{
 			sock << notice(unick, access_denied);
 			log("%s attempted to change ownership of the bot", unick.c_str());
@@ -301,135 +302,7 @@ int main (int argcx, char** argvx, char *envp[])
 		sock << notice(unick, "stats \t \t Shows system statistics.");
 		log("%s used help command", unick.c_str());
       }
-      /***************************Da_Goat Functions*******************************/
-	if(reply->said("!poke")){ //Easter egg ;P
-		sock << me(chan, "Is angry at "+unick);
-		sock << kick(chan, unick, "\002\00315Dont poke me!\017");
-		log("%s used Da_Goats !poke command in %s", unick.c_str(), chan.c_str());
-      }
-	if(reply->said("!info")){
-		sock << privmsg(chan, "Our forum is at \037castawaycrew.hyperboards.com\017");
-		sock << privmsg(chan, "Our Website is \002Flux-Net.net\017");
-		sock << privmsg(chan, "Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
-		log("%s used Da_Goats !info command in %s", unick.c_str(), chan.c_str());
-      }
-      if(reply->said("!rename")){
-		sock << privmsg(chan, "This channel is a Nickname only channel. This means that you MUST have your own Nickname! If you do not choose your own nick name you WILL be kicked.");
-		sock << privmsg(chan, "To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
-		log("%s used Da_Goats !rename command in %s", unick.c_str(), chan.c_str());
-      }
-      if(reply->said("!register")){
-		sock << privmsg(chan, "To Register your nickname type:");
-		sock << privmsg(chan, "\0034If this is the nick you want then skip step 1.\017");
-		sock << privmsg(chan, "\0034Do not include brackets when registering, this will cause errors\017");
-		sock << privmsg(chan, "Step 1: change your nick \00312/nick [nickname here]\017");
-		sock << privmsg(chan, "Step 2: now to begin registration type:");
-		sock << privmsg(chan, "\00312/ns register [\037YourPasswordHere\017] [\002YouremailHere\015]");
-		sock << privmsg(chan, "Step 3: Then to identify so you can have op status type:");
-		sock << privmsg(chan, "\00312/identify [passwordhere]\017");
-		sock << privmsg(chan, "\0034You will need to indetify everytime you join into the chatroom\017");
-		sock << privmsg(chan, "Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
-		log("%s used Da_Goats !register command in %s", unick.c_str(), chan.c_str());
-      }
-      if(reply->said("!socialinfo")){
-		sock << privmsg(chan, "Ventrilo Server:\002 5.110.166.75 Port:\00313 3784");
-		sock << privmsg(chan, "Our IRC server: \002irc.Flux-Net.net\002 port\00313 6667\017 or\00313 8067\017");
-		log("%s used Da_Goats !socialinfo command in %s", unick.c_str(), chan.c_str());
-      }
-      if(reply->said("!help")){
-		sock << privmsg(chan, "Local %s commands are:", chan.c_str());
-		sock << privmsg(chan, "!help !info !register !socialinfo !version !time");
-		sock << privmsg(chan, "!changelog !uptime !rules !spam !rename !bugs");
-		log("%s used Da_Goats !help command in %s", unick.c_str(), chan.c_str());
-      }
-      if(reply->said("PRIVMSG "+nick+" :stats")){
-	  //Shows system stats in the channel.
-	
-		if(sysinfo(&sys_info) != 0)
-			//perror("sysinfo");
-			throw CoreException("sys_info Error");
-		struct utsname uts;
-		if(uname(&uts) < 0)
-			//perror("uname() error");
-			throw CoreException("uname() Error");
- 
-		// Uptime
-		days = sys_info.uptime / 86400;
-		hours = (sys_info.uptime / 3600) - (days * 24);
-		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
- 
-		sock << notice(unick, "Uptime: %d days, %d hours, %d minutes, %ld seconds",
-                      days, hours, mins, sys_info.uptime % 60);
- 
-		// Load Averages for 1,5 and 15 minutes
-		sock << notice(unick, "Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
-				sys_info.loads[0], sys_info.loads[1], sys_info.loads[2]);
- 
-		// Total and free ram.
-		sock << notice(unick, "Total Ram: %ldk\tFree: %ldk", sys_info.totalram / 1024,
-                                        sys_info.freeram / 1024);
- 
-		// Shared and buffered ram.
-		sock << notice(unick, "Shared Ram: %ldk", sys_info.sharedram / 1024);
-		sock << notice(unick, "Buffered Ram: %ldk", sys_info.bufferram / 1024);
- 
-		// Swap space
-		sock << notice(unick, "Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
-                                           sys_info.freeswap / 1024);
- 
-		// Number of processes currently running.
-		sock << notice(unick, "Number of processes: %d", sys_info.procs);
-		sock << notice(unick, "\003");
-		sock << notice(unick, "System Name: %s \tRelease: %s %s \tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine );
-		sock << notice(unick, "System Version: %s", uts.version);
-
-		sock << notice(unick, strip(execute("grep 'model name' /proc/cpuinfo")));
-		log("%s used stats command in %s", unick.c_str(), chan.c_str());
-      }
-      if(reply->said("!uptime")){
-		if(sysinfo(&sys_info) != 0)
-			perror("sysinfo");
- 
-		// Uptime
-		days = sys_info.uptime / 86400;
-		hours = (sys_info.uptime / 3600) - (days * 24);
-		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
- 
-		sock << privmsg(chan, "Uptime: %d days, %d hours, %d minutes, %ld seconds",
-                      days, hours, mins, sys_info.uptime % 60);
-		log("%s used !uptime command in %s", unick.c_str(), chan.c_str());
-	  }
-      if(reply->said("!rules")){
-		sock << privmsg(chan, "There are only a few simple rules for %s.", chan.c_str());
-        sock << privmsg(chan, "Do NOT hate on others in any way. Basically do not troll in any shape or form.");
-        sock << privmsg(chan, "Do not ask for op status. you will be granted op status when the moderators feel you deserve op status.");
-        sock << privmsg(chan, "Do not Mini-mod the chatroom. The moderators are there for a reason, we don't need more.");
-        sock << privmsg(chan, "Do not spam the chatroom. This includes flooding by text, private messages, join/quit commands, External links, etc.");
-		sock << privmsg(chan, "If you violate any of these rules you will be kicked and possably banned from %s.", chan.c_str());
-		log("%s used Da_Goats !rules command in %s", unick.c_str(), chan.c_str());
-      }
-      if(reply->said("!spam")){
-		log("%s used Da_Goats !spam command in %s", unick.c_str(), chan.c_str());
-        sock << privmsg(chan, "Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
-      }
-      if(reply->said("!version")){
-        sock << privmsg(chan, "The Current Navn Bot Version is \002\0037%s\017", version.c_str());
-        sock << privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ coded from scratch by lordofsraam");
-		sock << privmsg(chan, "Navn's Code can be found at \002git@gitorious.org:navn/navn.git");
-		sock << privmsg(chan, "Report all bugs at: \2http://flux-net.net/bugs/\2");
-        sock << privmsg(chan, "Navn is managed by \2%s\2", owner_nick.c_str());
-		sock << privmsg(chan, "If you would like to add a command or function, talk to him.");
-		log("%s used Da_Goats !version command in %s", unick.c_str(), chan.c_str());
-      }
-      /*******************************Easter Eggs*********************************/
-      if(reply->said("!everything")){
-		sock << privmsg(chan, "Yes, there is a script for everything..\007");
-      }
-      if(reply->said("cum")){
-         sock << privmsg(chan, "ewww..");
-      }
-      /***********************End Da_Goat Functions*******************************/
-
+	Da_Goat(sock, rply);
       //If it looks for !time in a server rply (aka if anyone in the channel
       //says it) and if it finds it, it tells the time.
 

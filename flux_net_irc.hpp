@@ -168,7 +168,7 @@ string search(string s, string command){
     }
   }
 }
-string execute(char* cmd) {
+string execute(const char *cmd) {
     #ifdef _WIN32
     FILE* pipe = _popen
     #else
@@ -475,6 +475,12 @@ quit_ss << "QUIT :" << buf << nl;
 va_end(args);
 return quit_ss.str();
 }
+void DoQuit(Socket &s, const string msg){
+  s.Send("QUIT :"+msg+nl);
+  log("Logging ended.");
+  remove("Navn.pid");
+  exit(0);
+}
 void DoQuit(int K){
   log("Logging ended.");
   remove("Navn.pid");
@@ -777,11 +783,9 @@ void sigact(int sig)
       break;
     default:
       stringstream signal1;
-      string output;
       signal1 << sig;
-      output = signal1.str();
-      quitmsg = "Recieved weird signal from terminal. Sig Number: "+output;
-      throw CoreException("Recieved weird signal from terminal. Signal Number: "+output);
+      quitmsg = "Recieved weird signal from terminal. Sig Number: "+signal1.str();
+      throw CoreException("Recieved weird signal from terminal. Signal Number: "+signal1.str());
   }
   quitmsg = "Recieved Signal: "+sigstr;
   cout << "\r\n\033[0m";
