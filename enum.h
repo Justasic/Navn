@@ -70,21 +70,22 @@
 }*/
 
 enum IRCColors{
-Red = 4
-Blue = 2
-Green = 23
-Orange = 7
-Yellow = 8
-Purple = 45
-Pink = 38
-Cyan = 9
-Black = 1
-White = 0
-lightblue = 11
-gravel = 14
-lightgreen = 21
+Red = 4,
+Blue = 2,
+Green = 23,
+Orange = 7,
+Yellow = 8,
+Purple = 45,
+lightpurple = 15,
+Pink = 38,
+Cyan = 9,
+Black = 1,
+White = 0,
+lightblue = 11,
+gravel = 14,
+lightgreen = 21,
 neongreen = 27
-}
+};
 
 
 

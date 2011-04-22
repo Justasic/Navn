@@ -22,7 +22,7 @@ bool nofork = false;
 bool dev = false;
 
 bool quitting = false;
-const string version = "v1.3.7";
+const string version = "v1.3.8";
 
     /*
     'Reply' means 'What the server is saying back'
