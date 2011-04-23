@@ -1,6 +1,7 @@
 /* main.cpp */
 #include "flux_net_irc.hpp"
 #include "da_goat.h"
+#include "dns.h"
 string binary_path, services_dir, services_bin;
 using namespace std;
 using namespace flux_net_irc;
@@ -303,9 +304,12 @@ int main (int argcx, char** argvx, char *envp[])
 		log("%s used help command", unick.c_str());
       }
 	Da_Goat(sock, rply);
+	if(reply->said("!dns")){
+	 string ip = reply->params(1);
+	 dns(sock, rply, ip);
+	}
       //If it looks for !time in a server rply (aka if anyone in the channel
       //says it) and if it finds it, it tells the time.
-
       if (reply->said("!time") && in_channel){
 
 	/*WORLD CLOCK

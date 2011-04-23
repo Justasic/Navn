@@ -9,6 +9,9 @@
 #include "SocketException.h"
 #include "enum.h"
 #include "INIReader.h"
+#include <arpa/nameser.h>
+#include <resolv.h>
+#include <ares.h>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
