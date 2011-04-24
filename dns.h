@@ -28,7 +28,11 @@ void main_loop(ares_channel &channel)
         ares_process(channel, &readers, &writers);
      }
 }
-void dns(Socket &sock, string rply, string argv) {
+/** Reverse DNS Lookup
+ * Looks up an IP address to host
+ * @Param rdns(Socket, rawircstring, Destination, ipaddress)
+ */
+void rdns(Socket &sock, string rply, string dest, string argv) {
     irc_string* reply = new irc_string(rply);
     nerp.str("");//some weird ass fixes to get this to work without segmentation faults.
     struct in_addr ip;
@@ -37,13 +41,21 @@ void dns(Socket &sock, string rply, string argv) {
     ares_channel channel;
     if((res = ares_init(&channel)) != ARES_SUCCESS) {
 	nerp << res;
-        sock << "PRIVMSG " << chan << " :ares feiled: " << nerp.str() << "\n";
+        sock << "PRIVMSG " << dest << " :ares feiled: " << nerp.str() << "\n";
     }
     ares_gethostbyaddr(channel, &ip, sizeof ip, AF_INET, dns_callback, NULL);
     main_loop(channel);
-    sock << strip("PRIVMSG "+chan+" :\0034[DNS]\017 "+nerp.str())+"\r\n";
+    sock << strip("PRIVMSG "+dest+" :\0034[rDNS]\017 "+nerp.str())+"\n";
     delete reply;
 }
-
+/** Domain look up
+ * Looks up a domain name to ip address
+ * @Param(Socket, Destination, Domain Name)
+ */
+void dns(Socket &sock, string dest, string host){
+	 struct hostent *he;
+	 he = gethostbyname(host.c_str());
+	 sock << privmsg(dest, "\0034[DNS]\017 %s", inet_ntoa(*(struct in_addr*)he->h_addr));
+}
 
 #endif
