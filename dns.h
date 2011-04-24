@@ -55,7 +55,11 @@ void rdns(Socket &sock, string rply, string dest, string argv) {
 void dns(Socket &sock, string dest, string host){
 	 struct hostent *he;
 	 he = gethostbyname(host.c_str());
+	 if (he == NULL){
+	 sock << privmsg(dest, "\0034[DNS]\017 Lookup Failed.");
+	}else{
 	 sock << privmsg(dest, "\0034[DNS]\017 %s", inet_ntoa(*(struct in_addr*)he->h_addr));
+	}
 }
 
 #endif
