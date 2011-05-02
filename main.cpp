@@ -108,14 +108,14 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       }
 	  if(reply->said("This nickname is registered and protected")){
-	    sock << privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
+	    sock << privmsg(unick, "identify %s %s", nsacc.c_str(), nspass.c_str());
 		log("Identified to NickServ with account \"%s\"", nsacc.c_str());
 	  }
 	  if (reply->said("PRIVMSG "+nick+" :restart")){
-	    if(reply->params(2) == password){
-	      string reason = "-no reason-";
-	      sock << quit("Restarting: "+reason);
-	      restart(reason);
+	    if(reply->params(2) == password || reply->params(2) == usrpass){
+	      //string reason = "-no reason-";
+	      sock << quit("Restarting..");
+	      restart("Restarting..");
 	     }else{
 	       sock << notice(unick, access_denied);
 	   }
@@ -147,7 +147,7 @@ int main (int argcx, char** argvx, char *envp[])
 	} else {
 		log("%s made the bot join %s", unick.c_str(), blah.c_str());
 		sock << join(blah);
-		sock << privmsg(blah, welcome_msg);
+		sock << privmsg(blah, welcome_msg, nick.c_str());
 	}
       }
       if (reply->said("PRIVMSG "+nick+" :part")){
@@ -163,7 +163,7 @@ int main (int argcx, char** argvx, char *envp[])
       if (reply->said("rejoin")){ //rejoin the channel
 	if(!in_channel){
 		sock << join(channel);
-		sock << chanmsg(welcome_msg);
+		sock << privmsg(channel, welcome_msg, nick.c_str());
 		log("%s made the bot rejoin the channel", unick.c_str());
 	}else{
 	  sock << notice(unick, "The bot is already in the channel.");
@@ -184,7 +184,7 @@ int main (int argcx, char** argvx, char *envp[])
       if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
-      if(reply->said("rehash")){
+      if(reply->said("PRIVMSG "+nick+" :rehash")){
 	string getpass = reply->params(1);
 	if(unick == owner_nick || getpass == usrpass){
 	sock << notice(unick, "Rehashing config file.");
@@ -201,6 +201,7 @@ int main (int argcx, char** argvx, char *envp[])
     		log("Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
     		sock << notice(unick, "Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
   	 }
+	cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 	}else{
 		sock << notice(unick, access_denied);
 		log("%s attempted a rehash.", unick.c_str());
@@ -211,7 +212,7 @@ int main (int argcx, char** argvx, char *envp[])
 	    sock.Send(privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/"));
 	  }
       //this says that we are now in the server
-      if(reply->said(server_welcome)){
+      if(reply->said("005 "+nick)){
 		sock << mode(nick, "+B");
 		sock << join(channel);
 		sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
@@ -268,20 +269,22 @@ int main (int argcx, char** argvx, char *envp[])
       if(reply->said("252 "+nick)){
 	if (dev){
 		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
+		cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mSending password to owner\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
 		cout << "\033[01;33mWarning: \033[22;31mNavn is currently started with mode \""<< arg <<"\"\033[22;36m"<<nl;
-		cout << "\033[22;34mSession Quit Password: \033[01;32m"+password+"\033[22;36m"<< nl;
-		sock << notice(owner_nick, "The quit password is: "+password);
-		sock << notice(owner_nick, "\0038Warning: \017\0034\2Navn is currently started in a non-normal mode. ("+arg+")\017");
-		sock << chanmsg(welcome_msg);
+		cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<< nl;
+		sock << notice(owner_nick, "The randomly generated password is: "+password);
+		sock << notice(owner_nick, "\0038Warning: \017\0034\2%s is currently started in a non-normal mode. (%s)\017", nick.c_str(), arg.c_str());
+		sock << privmsg(channel, welcome_msg, nick.c_str());
 	} else {
-		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[22;32mCHECK\033[22;36m"<<nl;
+		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
+		cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mSending password to owner\033[22;30m... \033[22;32mCHECK\033[22;36m"<<nl;;
 		cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-		cout << "\033[22;34mSession Quit Password: \033[01;32m"+password+"\033[22;36m"<<nl;
-		sock << notice(owner_nick, "The quit password is: "+password);
-		sock << chanmsg(welcome_msg);
+		cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
+		sock << notice(owner_nick, "The randomly generated password is: "+password);
+		sock << privmsg(channel, welcome_msg, nick.c_str());
         }
         in_channel = true;
       }
@@ -327,11 +330,13 @@ int main (int argcx, char** argvx, char *envp[])
 	time ( &rawtime );
 	ptm = gmtime ( &rawtime );
 	int minutes = (ptm->tm_min);
+	int seconds = (ptm->tm_sec);
 	sock << privmsg(chan, "Current time around the World:");
-	sock << privmsg(chan, "GMT == %2d:%02d", (ptm->tm_hour+UTC)%24, minutes);
-	sock << privmsg(chan, "New York (USA) == %2d:%02d", (ptm->tm_hour+EST)%24, minutes);
-	sock << privmsg(chan, "California (USA) == %2d:%02d", (ptm->tm_hour+PST)%24, minutes);
-	sock << privmsg(chan, "Beijing (China) == %2d:%02d", (ptm->tm_hour+CCT)%24, minutes);	
+	sock << privmsg(chan, "GMT == %2d:%02d:%02d", (ptm->tm_hour+UTC)%24, minutes, seconds);
+	sock << privmsg(chan, "New York (USA) == %2d:%02d:%02d", (ptm->tm_hour+EST)%24, minutes, seconds);
+	sock << privmsg(chan, "California (USA) == %2d:%02d:%02d", (ptm->tm_hour+PST)%24, minutes, seconds);
+	sock << privmsg(chan, "Beijing (China) == %2d:%02d:%02d", (ptm->tm_hour+CCT)%24, minutes, seconds);
+	sock << privmsg(chan, "Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);	
 	char buf[100];
 	ptm = localtime(&rawtime);
 	strftime(buf,100,"Navn's Time: %Z %c",ptm);
@@ -343,16 +348,10 @@ int main (int argcx, char** argvx, char *envp[])
 		throw SocketException("Nickname is taken.");
       }
       //If someone kicked the bot, alert the owner
-      if(reply->said(kick_msg)){
+      if(reply->said("KICK "+chan+" "+nick)){
 		sock << notice(owner_nick, "Someone kicked me!");
 		in_channel = false;
 		log("%s kicked bot out of channel %s", unick.c_str(), chan.c_str());
-      }
-      //if told to quit, then do so lol
-      if(reply->said(quit_req)){
-		sock << quit("Requested from \2"+unick+"\017. Pass:\00320 "+password+"\017");
-		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
-		DoQuit(0);
       }
       delete reply;
     }//while loop ends here
