@@ -171,10 +171,10 @@ int main (int argcx, char** argvx, char *envp[])
 	}
       }
       if (reply->said("JOIN :"+chan) && in_channel){ //welcomes everyone who joins the channel
-	   sleep(2);
-	   string buf = "Welcome "+unick+" to "+chan+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.";
-	   sock << notice(strip(chan), strip(buf));
+	if(unick == nick){}else{
+	   sock << notice(unick, "Welcome "+unick+" to "+strip(chan)+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.");
 	   log("%s joined %s", unick.c_str(), strip(chan).c_str());
+	}
       }
       if (reply->said("PRIVMSG "+nick+" :pass "+password)){ //quits the bot.
 		sock << notice(unick, "Quitting..");

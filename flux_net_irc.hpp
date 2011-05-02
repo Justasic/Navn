@@ -292,7 +292,6 @@ string make_pass(){
   return pass_str;
 }
 const string password = make_pass();
-const string quit_req = "NOTICE "+nick+" :!quit "+password;
 
 /** Kick Function
  * Handles kick requests
