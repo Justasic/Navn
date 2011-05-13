@@ -7,6 +7,9 @@ SVN: https://flux-net.googlecode.com/svn/trunk/cpp_bot/
 
 System support: Linux/Unix i386 (x86)
 
+to compile on a debian system you need the C-Ares libraries
+to get them on debian 5/6 type "sudo apt-get install libc-ares-dev"
+
 How to Install:
 1. Extract the source with unzip on linux.
 2. Make sure you have updated Gpp and G++ to latest versions.
