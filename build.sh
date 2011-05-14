@@ -10,6 +10,7 @@ build_it ()
   echo "Build finished at: `date +%T` "
   echo "<=====================================>"
   echo " "
+  echo "If you had any building problems make sure you read the Readme.txt"
   echo "Bash 'navn' to run the bot (./navn)"
   echo "This bot was made in C++ by Lordofsraam from Flux-Net"
   echo "and further developed by Justasic and Lordofsraam."
