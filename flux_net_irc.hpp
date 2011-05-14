@@ -163,6 +163,8 @@ string search(string s, string command){
       return "http://www.urbandictionary.com/define.php?term="+searchstring;
     }else if(command == "!movie"){
       return "www.letmewatchthis.ch/index.php?search_keywords="+searchstring;
+    }else if(command == "!image"){
+      return "http://www.google.com/search?tbm=isch&hl=en&source=hp&biw=1280&bih=688&q="+searchstring;
     }else{
       return "http://www.google.com/search?q="+searchstring;
     }

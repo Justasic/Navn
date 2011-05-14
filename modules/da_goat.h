@@ -1,11 +1,10 @@
 #ifndef DA_GOAT_H
 #define DA_GOAT_H
-#include "includes.h"
-#include "flux_net_irc.hpp"
+#include "../includes.h"
+#include "../flux_net_irc.hpp"
 using namespace std;
 using namespace flux_net_irc;
-void Da_Goat(Socket &sock, string rply){
-irc_string* reply = new irc_string(rply);
+void Da_Goat(Socket &sock, irc_string *reply){
 /***************************Da_Goat Functions*******************************/
 	if(reply->said("!poke")){ //Easter egg ;P
 		sock << me(chan, "Is angry at "+unick);
@@ -135,6 +134,5 @@ irc_string* reply = new irc_string(rply);
       }
       /***********************End Da_Goat Functions*******************************/
 
-delete reply;
 }
 #endif
