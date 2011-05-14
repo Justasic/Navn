@@ -506,7 +506,7 @@ void restart(string reason){
 	chdir(CurrentPath);
     int execvpret = execvp(my_av[0], my_av);
 	if(execvpret > 0){
-		throw CoreException("Restart Failed, Exiting");
+	  throw CoreException("Restart Failed, Exiting");
 	}
 	exit(1);
   }
@@ -522,30 +522,30 @@ void startup(int argc, char** argv) {
     if(arg == "--developer" || arg == "--dev" || arg == "-d")
     {
       dev = true;
-	  nofork = true;
-	 log("Navn is started in Developer mode. (%s)", arg.c_str());
+      nofork = true;
+      log("Navn is started in Developer mode. (%s)", arg.c_str());
     }
     else if (arg == "--nofork" || arg == "-f"){
       nofork = true;
       log("Navn is started With No Forking enabled. (%s)", arg.c_str());
     }
     else if (arg == "--help" || arg == "-h"){
-     help();
-    } else if (arg == "--skip" || arg == "-s"){
-	dev = true;
-	} else if (arg == "--version" || arg == "-v"){
-	 cout << "Navn IRC C++ Bot Version " << version << nl;
-	 cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
-	 cout << nl;
-	 cout << "IRC: irc.Flux-Net.net #Computers" << nl;
-	 cout << "WWW: http://www.Flux-Net.net" << nl;
-	 cout << "Email: staff@flux-net.net" << nl;
-	 cout << "Git: git@gitorious.org:navn/navn.git" << nl;
-	 cout << nl;
-	 cout << "This bot does have Epic Powers." << nl;
-	 cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
-	 exit(0);
-	}
+      help();
+    }else if (arg == "--skip" || arg == "-s"){
+      dev = true;
+    }else if (arg == "--version" || arg == "-v"){
+      cout << "Navn IRC C++ Bot Version " << version << nl;
+      cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
+      cout << nl;
+      cout << "IRC: irc.Flux-Net.net #Computers" << nl;
+      cout << "WWW: http://www.Flux-Net.net" << nl;
+      cout << "Email: staff@flux-net.net" << nl;
+      cout << "Git: git@gitorious.org:navn/navn.git" << nl;
+      cout << nl;
+      cout << "This bot does have Epic Powers." << nl;
+      cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+      exit(0);
+    }
   }
   //logging to a text file and making the PID file.
    fstream pid;
@@ -560,14 +560,14 @@ void startup(int argc, char** argv) {
 	if(i < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		cout << "Navn IRC Bot " << version << " Started." << nl;
-		cout << "Forking to background. PID: "<< i << nl;
-		exit(0);
+	  cout << "Navn IRC Bot " << version << " Started." << nl;
+	  cout << "Forking to background. PID: "<< i << nl;
+	  exit(0);
 	}
 	if(Terminal){
-		close(0);
-		close(1);
-		close(2);
+	  close(0);
+	  close(1);
+	  close(2);
 	}
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
