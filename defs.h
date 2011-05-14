@@ -72,7 +72,7 @@ usrpass = config.Get("Bot","Password","Navn");
 }
 /******************End Configuration variables********************/
 
-#define welcome_msg "%s has joined. Type !time to see the time."
+#define welcome_msg "%s has joined. Type message me the word 'help' to see the commands."
 //433 replies that the nick is taken
 const string nick_taken_rsl = "433 * "+nick+" :Nickname is already in use.";
 const string in_the_channel = "252 "+nick;

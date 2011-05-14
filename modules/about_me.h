@@ -6,7 +6,7 @@ using namespace std;
 using namespace flux_net_irc;
 void about_me(Socket &sock, irc_string *reply){
 
-  if(reply->said("about me")){
+  if(reply->said("!about me")){
     sock << notice(unick, "Raw: "+reply->raw_string);
     sock << notice(unick, "message: "+msg);
     sock << notice(unick, "Nickname: "+unick);
