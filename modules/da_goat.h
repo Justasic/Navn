@@ -46,6 +46,11 @@ void Da_Goat(Socket &sock, irc_string *reply){
 		sock << privmsg(chan, "!changelog !uptime !rules !spam !rename !bugs");
 		log("%s used Da_Goats !help command in %s", unick.c_str(), chan.c_str());
       }
+      if(reply->said("!ts3")){
+		sock << privmsg(chan, "The Flux-Net TeamSpeak 3 server is: ");
+		sock << privmsg(chan, "Galaxy.Flux-Net.net:9987");
+		log("%s used Da_Goats !ts3 command in %s", unick.c_str(), chan.c_str());
+	}
       if(reply->said("PRIVMSG "+nick+" :stats")){
 	  //Shows system stats in the channel.
 	
