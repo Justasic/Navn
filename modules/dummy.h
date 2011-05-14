@@ -7,7 +7,7 @@ using namespace flux_net_irc;
 void dummy(Socket &sock, irc_string *reply){
 
   if (reply->said("testing testing")){
-    sock << chanmsg("I hear you!");
+    sock << chanmsg("I hear you "+reply->usernick+"!");
   }
 
 }
