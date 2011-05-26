@@ -75,7 +75,7 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 	   log("%s joined %s", unick.c_str(), strip(chan).c_str());
 	}
       }
-      if (reply->said("PRIVMSG "+nick+" :pass "+password)){ //quits the bot.
+      if (reply->said("PRIVMSG "+nick+" :quit "+password)){ //quits the bot.
 		sock << notice(unick, "Quitting..");
 		log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
 		DoQuit(sock, "Requested From \2"+unick+"\17. Pass: \00320"+password+"\017");

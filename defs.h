@@ -2,12 +2,6 @@
 #define defs_h
 #include "includes.h"
 
-#define MST (-6)
-#define UTC (0)
-#define CCT (+8)
-#define EST (-4)
-#define PST (-7)
-#define AUS (+10)
 #define GetCurrentDir getcwd
 using namespace std;
 
@@ -23,7 +17,7 @@ bool nofork = false;
 bool dev = false;
 
 bool quitting = false;
-const string version = "v2.0.5";
+const string version = "v1.3.9";
 
     /*
     'Reply' means 'What the server is saying back'
@@ -116,3 +110,4 @@ void help(){
 struct sysinfo sys_info;
 
 #endif
+

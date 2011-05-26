@@ -2,6 +2,12 @@
 #define WORLD_CLOCK_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+#define MST (-6)
+#define UTC (0)
+#define CCT (+8)
+#define EST (-4)
+#define PST (-7)
+#define AUS (+10)
 using namespace std;
 using namespace flux_net_irc;
 void world_clock(Socket &sock, irc_string *reply){
