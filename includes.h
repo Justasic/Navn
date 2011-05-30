@@ -11,7 +11,6 @@
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <ares.h>
-#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -24,13 +23,11 @@
 #include <fstream>
 #include <cstdlib>
 #include <cstring>
-#include <istream>
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <cstdio>
-#include <cstdarg>
 #include <alloca.h>
 #endif
 

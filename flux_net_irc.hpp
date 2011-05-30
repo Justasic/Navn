@@ -1,5 +1,6 @@
 #ifndef DERP_H
 #define DERP_H
+#include <fstream>
 #include "includes.h"
 #include "defs.h"
 template<typename T> inline std::string stringify(const T &x){
@@ -560,6 +561,15 @@ void restart(string reason){
 	exit(1);
   }
 }
+void WritePID(){
+  //logging to a text file and making the PID file.
+   fstream pid;
+   pid.open(pid_file.c_str(), fstream::in | fstream::out | fstream::app);
+   if(!pid.is_open())
+		throw CoreException("Failed to create PID file.");
+   pid << getpid() << nl;
+   pid.close();
+}
 /**This is the startup sequence that starts before the try loop starts
  * @param startup(int, char)
  */
@@ -594,14 +604,7 @@ void startup(int argc, char** argv) {
 	 cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
 	 exit(0);
 	}
-  }
-  //logging to a text file and making the PID file.
-   fstream pid;
-   pid.open(pid_file.c_str(), fstream::in | fstream::out | fstream::app);
-   if(!pid.is_open())
-		throw CoreException("Failed to create PID file.");
-   pid << getpid() << nl;
-   pid.close();
+   WritePID();
    log("Navn Started. PID: %d", getpid());
    if (!nofork){
 	int i = fork();
