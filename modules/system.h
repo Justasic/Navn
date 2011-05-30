@@ -114,11 +114,17 @@ void system_m(Socket &sock, irc_string *reply, string rply){
       if(reply->said("005 "+nick)){
 		sock << mode(nick, "+B");
 		sock << join(channel);
-		sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+		if(ouser.empty() || opass.empty()){
+		}else{
+		  sock << oper("%s %s", ouser.c_str(), opass.c_str());
+		}if(nsacc.empty() || nspass.empty()){
+		}else{
+		  sock << privmsg("NickServ", "identify "+nsacc+" "+nspass);
+		}
 		log("Successfully connected to the server \"%s\" Port: %s Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
       }
 	  if(reply->said("? git")){
-	    sock << notice(unick, "Navn git: git@gitorious.org:navn/navn.git");
+	    sock << notice(unick, "Navn git: git://gitorious.org:navn/navn.git");
 	    log("%s requested Git repository link.", unick.c_str());
 	  }
 	  if(reply->said(":DCC ")){
@@ -160,7 +166,7 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 		cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<< nl;
 		sock << notice(owner_nick, "The randomly generated password is: "+password);
 		sock << notice(owner_nick, "\0038Warning: \017\0034\2%s is currently started in a non-normal mode. (%s)\017", nick.c_str(), arg.c_str());
-		sock << privmsg(channel, welcome_msg, nick.c_str());
+		sock << privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
 	} else {
 		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
 		cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
@@ -168,7 +174,7 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 		cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
 		cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
 		sock << notice(owner_nick, "The randomly generated password is: "+password);
-		sock << privmsg(channel, welcome_msg, nick.c_str());
+		sock << privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
         }
         in_channel = true;
       }

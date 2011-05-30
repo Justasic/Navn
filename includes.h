@@ -7,7 +7,7 @@
  */
 #include "Socket.h"
 #include "SocketException.h"
-#include "INIReader.h"
+#include "inireader/INIReader.h"
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <ares.h>

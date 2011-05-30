@@ -12,6 +12,7 @@
 #include "modules/about_me.h"
 #include "modules/world_clock.h"
 #include "modules/system.h"
+//#include "modules/Flux_Services.h"
 /***************************/
 
 string binary_path, services_dir, services_bin;
@@ -71,7 +72,7 @@ int main (int argcx, char** argvx, char *envp[])
       unick = reply->usernick;
       msg = reply->message;
       ident = reply->user;
-      
+
       /*************MODULES**************/
       ping_pong(sock, reply, rply);
       searcher(sock, reply, rply);
@@ -83,6 +84,7 @@ int main (int argcx, char** argvx, char *envp[])
       dns_m(sock, reply, rply);
       world_clock(sock, reply);
       ctcp_m(sock, reply);
+      //Flux_Services(sock, reply);
       /***********************************/
       
       delete reply;

@@ -9,6 +9,11 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <string>
+#include <fstream>
+#include <iostream>
+#include <istream>
+#include <cstdarg>
+#include <ostream>
 #include <arpa/inet.h>
 
 const int MAXHOSTNAME = 200;

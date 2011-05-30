@@ -1,16 +1,18 @@
-echo '\033[22;37m'
+echo '\033[0m'
 clear
 build_it ()
 {
   echo '\033[01;31m'
-  g++ -ansi -pedantic -g -o navn main.cpp Socket.cpp Sepstream.cpp INIReader.cpp ini.c -lcares
-  echo '\033[22;37m'
+  g++ -ansi -pedantic -g -c *.cpp
+  echo '\033[0m\033[1;34mLinking Files...\033[01;31m'
+  g++ -ansi -pedantic -g -o navn *.o inireader/INIReader.cpp inireader/ini.c -lcares
+  rm -f *.o
+  echo '\033[0m'
   echo "<=====================================>"
   echo Done building!
   echo "Build finished at: `date +%T` "
   echo "<=====================================>"
   echo " "
-  echo "If you had any building problems make sure you read the Readme.txt"
   echo "Bash 'navn' to run the bot (./navn)"
   echo "This bot was made in C++ by Lordofsraam from Flux-Net"
   echo "and further developed by Justasic and Lordofsraam."

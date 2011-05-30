@@ -51,6 +51,31 @@ void Da_Goat(Socket &sock, irc_string *reply){
 		sock << privmsg(chan, "Galaxy.Flux-Net.net:9987");
 		log("%s used Da_Goats !ts3 command in %s", unick.c_str(), chan.c_str());
 	}
+      if(reply->said("PRIVMSG "+nick+" :topic")){
+		if(unick == owner_nick){
+			string tchan = reply->params(1);
+			if(!IsValadChannel(tchan))
+				sock << notice(unick, "%s is not a valid channel.", tchan.c_str());
+		  
+			msg.erase(0,6);
+			sock << topic(tchan, msg);
+			fstream topic;
+
+			topic.open("topic.tmp", fstream::in | fstream::out | fstream::app);
+
+			if(!topic.is_open()){
+
+				sock << notice(owner_nick, "Unable to write topic temp file");
+				sock << notice(unick, "Unable to write topic temp file");
+				cout << "Unable to write topic temp file" << nl;
+			}else{
+				topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><description> " << tchan << " Topic: " << strip(msg) << " </description></channel></rss>" << nl;
+				system("sh ftp.sh");
+			}
+		}else{ 
+			sock << notice(unick, access_denied); 
+		}
+	}
       if(reply->said("PRIVMSG "+nick+" :stats")){
 	  //Shows system stats in the channel.
 	

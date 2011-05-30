@@ -49,6 +49,8 @@ string port;
 string server;
 string pid_file;
 string usrpass;
+string ouser;
+string opass;
 
 void ReadConfig(INIReader &config){
 logfile = config.Get("Log","Log_File","navn.log");
@@ -63,10 +65,12 @@ port = config.Get("Connect","Port","6667");
 server = config.Get("Connect", "Server", "irc.flux-net.net");
 pid_file = config.Get("Log","PID_File","navn.pid");
 usrpass = config.Get("Bot","Password","Navn");
+ouser = config.Get("Oper","Oper_Username","");
+opass = config.Get("Oper","Oper_Password","");
 }
 /******************End Configuration variables********************/
 
-#define welcome_msg "%s has joined. Type !time to see the time."
+#define welcome_msg "%s has joined. Type '\\msg %s help' to see a list of commands."
 //433 replies that the nick is taken
 const string nick_taken_rsl = "433 * "+nick+" :Nickname is already in use.";
 const string in_the_channel = "252 "+nick;
@@ -85,7 +89,7 @@ const string pmsggoogle = "PRIVMSG "+nick+" :google";
 const string pmsgyoutube = "PRIVMSG "+nick+" :youtube";
 const string gdb_msg = "gdb#: (1) From the directory that you would do ./program from, do the following instead: gdb ./program (2) Do: r -paramiters (3) Upon crash, do: bt full to see all the output of the crash.";
 const string access_denied = "Access is Denied.";
-const string nl = "\r\n";
+const string nl = "\n";
 
 /**Command Line Help
  * for when someone does --help or -h with the bot
@@ -93,15 +97,15 @@ const string nl = "\r\n";
  * @param ./navn -h
  */
 void help(){
- cout << "\t Navn Internet Relay Chat Bot" << nl;
- cout << "\t \t "<< version << nl; 
- cout << nl;
- cout << "Paramiters \t   Function" << nl; 
- cout << "--help \t -h \t Displays this message." << nl; 
- cout << "--developer  -d\t Starts the bot in debug mode." << nl; 
- cout << "--dev \t -x \t Starts the bot in developer mode." << nl; 
- cout << "--nofork \t-f \t Keep" << nl;
- cout << "" <<nl;
+ cout << "\t Navn Internet Relay Chat Bot" << endl;
+ cout << "\t \t "<< version << endl; 
+ cout << endl;
+ cout << "Paramiters \t   Function" << endl; 
+ cout << "--help \t -h \t Displays this message." << endl; 
+ cout << "--developer  -d\t Starts the bot in debug mode." << endl; 
+ cout << "--dev \t -d \t Starts the bot in developer mode." << endl; 
+ cout << "--nofork \t-f \t Keep" << endl;
+ cout << endl;
  cout << nl;
  cout << "\t This bot does have Epic Powers." << nl;
  exit(0);
