@@ -72,6 +72,7 @@ void Da_Goat(Socket &sock, irc_string *reply){
 				topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><description> " << tchan << " Topic: " << strip(msg) << " </description></channel></rss>" << nl;
 				system("sh ftp.sh");
 			}
+			log("%s used Da_Goats !topic command to change the topin in %s to \"%s\"",unick.c_str(), tchan.c_str(), strip(msg).c_str());
 		}else{ 
 			sock << notice(unick, access_denied); 
 		}

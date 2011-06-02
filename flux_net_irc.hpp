@@ -89,6 +89,32 @@ class irc_string:string{
     }
 
 };
+class IsoHost:string{
+public:
+    string raw;
+    string nick;
+    string host;
+    string user;
+
+	IsoHost(string fullhost){
+		nick = isolate(':','!',fullhost);
+		raw = fullhost;
+        	host = isolate('@',' ',fullhost);
+        	user = isolate('!','@',fullhost);
+	}
+
+    string isolate(char begin, char end, string msg){
+      string to_find;
+      size_t pos = msg.find(begin);
+      pos += 1;
+      for (int i = pos; i < msg.length(); i++){
+	if (msg.at(i) == end){
+	  break;
+	}else{to_find = to_find+msg.at(i);}
+      }
+      return to_find;
+    }
+};
 /** Search Function
  * This is what generates the search links
  * @param search(origonal-string, command-used) 
