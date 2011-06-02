@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e '\033[0m'
+echo -e "\033[0m"
 clear
 build_it ()
 {
@@ -21,9 +21,9 @@ build_it ()
   if [ "$?" != 0 ]; then
     echo -e "\033[0mTheir was an error removing the object files after linking (rm -f *.o)"
   fi
-  echo -e '\033[0m'
+  echo -e "\033[0m"
   echo "<=====================================>"
-  echo Done building!
+  echo "Done building!"
   echo "Build finished at: `date +%T` "
   echo "<=====================================>"
   echo " "
@@ -36,21 +36,21 @@ if [ -f navn ]; then
   echo -n "A previous build was found, would you like to overwrite it (y/n)? "; read answer
   if [ "$answer" = "y" ]; then
     clear
-    echo Removing the old Navn build...
+    echo "Removing the old Navn build..."
     rm -f navn
     if [ "$?" != 0 ]; then
       echo -e "\033[0mTheir was an error removing the old executable (rm -f navn)"
     fi
-    echo Rebuilding the Navn bot...
+    echo "Rebuilding the Navn bot..."
     echo "Build started at: `date +%T` "
     build_it
   elif [ "$answer" = "n" ]; then
     clear
-    echo Exiting...
+    echo "Exiting..."
     exit
   else
     clear
-    echo Exiting...
+    echo "Exiting..."
     exit
   fi
 else
