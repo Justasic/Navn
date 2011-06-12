@@ -17,7 +17,7 @@ bool nofork = false;
 bool dev = false;
 
 bool quitting = false;
-const string version = "v1.3.9";
+const string version = "v1.4.1";
 
     /*
     'Reply' means 'What the server is saying back'
@@ -71,7 +71,7 @@ opass = config.Get("Oper","Oper_Password","");
 }
 /******************End Configuration variables********************/
 
-#define welcome_msg "%s has joined. Type '\\msg %s help' to see a list of commands."
+#define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 //433 replies that the nick is taken
 const string nick_taken_rsl = "433 * "+nick+" :Nickname is already in use.";
 const string in_the_channel = "252 "+nick;
