@@ -83,14 +83,6 @@ void system_m(Socket &sock, irc_string *reply, string rply){
       if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
 	throw CoreException("You have been killed by "+unick);
       }
-      if(reply->said("!decodehost")){
-	string nerp = reply->params(1);
-	IsoHost* Host = new IsoHost(nerp);
-	sock << privmsg(chan, "Nick: %s", Host->nick.c_str());
-	sock << privmsg(chan, "User: %s", Host->user.c_str());
-	sock << privmsg(chan, "Host: %s", Host->host.c_str());
-	sock << privmsg(chan, "Raw: %s", Host->raw.c_str());
-	}
       if(reply->said("PRIVMSG "+nick+" :rehash")){
 	string getpass = reply->params(1);
 	if(unick == owner_nick || getpass == usrpass){

@@ -2,6 +2,9 @@
 #define CTCP_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+const string CTCP_VERS = " :\001VERSION\001";
+const string CTCP_TIME = " :\001TIME\001";
+const string CTCP_SOURCE = " :\001SOURCE\001";
 using namespace std;
 using namespace flux_net_irc;
 void ctcp_m(Socket &sock, irc_string *reply){
@@ -21,6 +24,11 @@ void ctcp_m(Socket &sock, irc_string *reply){
     sock << notice(unick, "\001TIME "+os_time()+"\001");
     log("Recieved CTCP TIME from %s", unick.c_str());
   }
-
+  if(reply->said(CTCP_SOURCE)){
+    cout << "\033[22;31mRecieved CTCP SOURCE from "+unick+"\033[22;36m\r\n";
+    sock << notice(unick, "\001SOURCE https://gitorious.org/navn/navn\001");
+    sock << notice(unick, "\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
+    log("Recieved CTCP SOURCE from %s", unick.c_str());
+  }
 }
 #endif

@@ -48,6 +48,7 @@ string nick;
 string channel;
 string port;
 string server;
+string LogChannel;
 string pid_file;
 string usrpass;
 string ouser;
@@ -68,6 +69,7 @@ pid_file = config.Get("Log","PID_File","navn.pid");
 usrpass = config.Get("Bot","Password","Navn");
 ouser = config.Get("Oper","Oper_Username","");
 opass = config.Get("Oper","Oper_Password","");
+LogChannel = config.Get("Modules", "LogChannel","");
 }
 /******************End Configuration variables********************/
 
@@ -79,8 +81,6 @@ const string ChanJoin = "366"+nick;
 //005 is just the generic welcome message saying you have logged in to the server.
 const string killed = "KILL "+nick;
 const string con_closed_nick = "[Registration timeout]";
-const string CTCP_VERS = " :\001VERSION\001";
-const string CTCP_TIME = " :\001TIME\001";
 const string join_req = "PRIVMSG "+nick+" :join";
 const string part_req = "PRIVMSG "+nick+" :part";
 const string pass_req = "PRIVMSG "+nick+" :pass";

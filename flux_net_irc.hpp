@@ -411,21 +411,6 @@ stringstream topic_ss;
 topic_ss << "TOPIC " << Dest << " :" << buf << nl;
 return topic_ss.str();
 }
-/*
-string privmsg(Socket &sock, string Dest, const char *fmt, ...){
-va_list args;
-va_start(args, fmt);
-char buf[4096];
-stringstream privmsg_ss;
-string tok;
-vsnprintf(buf, sizeof(buf), fmt, args);
-sepstream sep(buf.c_str(), '\n');
-while (sep.GetToken(tok)){
-	sock << "PRIVMSG " << Dest << " :" << buf << nl;
-}
-va_end(args);
-}
-*/
 string oper(const char *msg, ...){
 va_list args;
 va_start(args, msg);

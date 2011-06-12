@@ -16,6 +16,14 @@ void about_me(Socket &sock, irc_string *reply){
     sock << notice(unick, "Fullhost: "+fullhost);
     log("%s requested information about themself.", unick.c_str());
    }
-
+    if(reply->said("!decodehost")){
+	string nerp = reply->params(1);
+	IsoHost* Host = new IsoHost(nerp);
+	sock << privmsg(chan, "Nick: %s", Host->nick.c_str());
+	sock << privmsg(chan, "User: %s", Host->user.c_str());
+	sock << privmsg(chan, "Host: %s", Host->host.c_str());
+	sock << privmsg(chan, "Raw: %s", Host->raw.c_str());
+	delete Host;
+    }
 }
 #endif
