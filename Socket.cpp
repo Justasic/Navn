@@ -9,6 +9,16 @@
 
 using namespace std;
 
+string strip(const string &buf){
+	string newbuf = buf;
+	char c = newbuf[newbuf.size() - 1];
+	while (c == '\n' || c == '\r'){
+		newbuf.erase(newbuf.end() - 1);
+		c = newbuf[newbuf.size() - 1];
+	}
+	return newbuf;
+}
+
 Socket::Socket(const std::string s, const std::string p) : m_sock(-1), server(s), port(p)
 {
   memset ( &hints, 0, sizeof ( hints ) );
@@ -111,12 +121,12 @@ void sendlog(const char *fmt, ...){
 const Socket& Socket::operator << (const std::string& s) const
 {
   ::send ( m_sock, s.c_str(), s.size(), 0 );
-  std::cout << "<-- " + s << "\n";
+  std::cout << "<-- " + strip(s) << "\n";
   //sendlog("%s", s.c_str());
 }
 void Socket::Send(const std::string& s) const
 {
 	::send ( m_sock, s.c_str(), s.size(), 0 );
-	std::cout << "<-- " << s << "\n";
+	std::cout << "<-- " << strip(s) << "\n";
 	//sendlog("%s", s.c_str());
 }

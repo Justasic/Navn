@@ -72,6 +72,7 @@ int main (int argcx, char** argvx, char *envp[])
       unick = reply->usernick;
       msg = reply->message;
       ident = reply->user;
+      raw = reply->raw_string;
 
       /*************MODULES**************/
       ping_pong(sock, reply, rply);

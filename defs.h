@@ -31,6 +31,7 @@ string rply;
 string host;
 string arg;
 string chan;
+string raw;
 string msg;
 string quitmsg;
 string fullhost;
