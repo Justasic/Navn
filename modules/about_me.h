@@ -2,6 +2,13 @@
 #define ABOUT_ME_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+/* About Me Module
+ * This module was created by lordofsraam but functions
+ * coded by Justasic
+ * 
+ * the module is more of a test module for classes but 
+ * could be used for something else
+ */
 using namespace std;
 using namespace flux_net_irc;
 void about_me(Socket &sock, irc_string *reply){
