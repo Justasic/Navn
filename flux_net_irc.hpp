@@ -531,7 +531,6 @@ return quit_ss.str();
 void DoQuit(Socket &s, const string msg){
   s.Send("QUIT :"+msg+nl);
   log("Logging ended.");
-  remove_pidfile();
   exit(0);
 }
 void DoQuit(int K){
@@ -541,7 +540,6 @@ void DoQuit(int K){
 }
 void DoQuit(){
   log("Logging ended.");
-  remove_pidfile();
   exit(0);
 }
 /** Restart Function
