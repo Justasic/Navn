@@ -32,12 +32,6 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 		sock << notice(unick, gdb_msg);
 		log("%s used the gdb reply.", unick.c_str());
       }
-      
-	  if(reply->said("? weather")){
-		string area = reply->params(3);
-	        sock << privmsg(chan, get_weather(area));
-		log("%s used weather command to get the weather for %s in %s", unick.c_str(), area.c_str(), chan.c_str());
-	  }
       if (reply->said("PRIVMSG "+nick+" :join")){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
