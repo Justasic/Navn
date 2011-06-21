@@ -10,17 +10,9 @@ void searcher(Socket &sock, irc_string *reply, string rply){
 		sock << privmsg(chan, search(rply, "!google"));
 		log("Channel Google Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "!google").c_str());
       }
-      if(reply->said(pmsggoogle)){ //if the message was sent to the bot as a private message.
-		sock << notice(reply->usernick, search(rply, "google"));
-		log("Private message Google Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "google").c_str());
-      }
       if(reply->said("!youtube") && in_channel){ // if !youtube is said in the channel
 		sock << privmsg(chan, search(rply, "!youtube"));
 		log("Channel youtube Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "!youtube").c_str());
-      }
-      if(reply->said(pmsgyoutube)){ //if the message was sent to the bot as a private message.
-		sock << notice(reply->usernick, search(rply, "youtube"));
-		log("Private message Google Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "youtube").c_str());
       }
       if(reply->said("!tpb") && in_channel){ // if !tpb xor !thepiratebay is said in the channel
 		sock << privmsg(chan, search(rply, "!tpb"));

@@ -7,7 +7,7 @@
  * coded by Justasic
  * 
  * the module is more of a test module for classes but 
- * could be used for something else
+ * could be used for something else.
  */
 using namespace std;
 using namespace flux_net_irc;
