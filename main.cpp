@@ -13,6 +13,7 @@
 #include "modules/world_clock.h"
 #include "modules/system.h"
 #include "modules/channel_logger.h"
+#include "modules/weather.h"
 //#include "modules/Flux_Services.h"
 /***************************/
 
@@ -87,6 +88,7 @@ int main (int argcx, char** argvx, char *envp[])
       world_clock(sock, reply);
       ctcp_m(sock, reply);
       Chanlog(reply);
+      weather(sock, reply);
       //Flux_Services(sock, reply);
       /***********************************/
       
