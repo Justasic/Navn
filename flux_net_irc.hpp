@@ -241,19 +241,6 @@ string strip(const string &buf){
 	}
 	return newbuf;
 }
-/** Strip Colors
- * This function is supposed to strip all IRC color codes. (Experimental)
- * @param uncolor(string);
- */
-string uncolor(const string &buf){
-	string newbuf = buf;
-	char c = newbuf[newbuf.size() - 1];
-	while (c == '\002' || c == '\003' || c == '\015' || c == '\017' || c == '\001' || c == '\016'){
-		newbuf.erase(newbuf.end() - 1);
-		c = newbuf[newbuf.size() - 1];
-	}
-	return newbuf;
-}
 /** Get the operating systems time
  * This is just a simple function that gets the time
  * @param os_time
@@ -286,7 +273,7 @@ void log(const char *fmt, ...){
   strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
   log << buf;
   vsnprintf(buf, sizeof(buf), fmt, args);
-  log << buf << endl;
+  log << strip(buf) << endl;
   va_end(args);
   va_end(args);
   log.close();
@@ -518,6 +505,10 @@ string chmode(string channel, string mode, string username){
   string out_put = stringy_ss_mode.str();
   return out_put;
 }
+static void remove_pidfile()
+{
+ remove(pid_file.c_str());
+}
 /** Quit Function
  * Sends a disconnect message to IRC
  * @param quit(reason)
@@ -540,17 +531,17 @@ return quit_ss.str();
 void DoQuit(Socket &s, const string msg){
   s.Send("QUIT :"+msg+nl);
   log("Logging ended.");
-  remove("Navn.pid");
+  remove_pidfile();
   exit(0);
 }
 void DoQuit(int K){
   log("Logging ended.");
-  remove("Navn.pid");
+  remove_pidfile();
   exit(K);
 }
 void DoQuit(){
   log("Logging ended.");
-  remove("Navn.pid");
+  remove_pidfile();
   exit(0);
 }
 /** Restart Function
@@ -569,13 +560,11 @@ void restart(string reason){
 	if(execvpret > 0){
 		throw CoreException("Restart Failed, Exiting");
 	}
+	remove_pidfile();
 	exit(1);
   }
 }
-static void remove_pidfile()
-{
- remove(pid_file.c_str());
-}
+
 static void WritePID(){
   //logging to a text file and making the PID file.
   FILE *pidfile;
@@ -592,12 +581,84 @@ static void WritePID(){
   else
     throw CoreException("Can not write to PID file "+pid_file);
 }
+/*
+static std::vector<std::pair<string, string> > CommandLineArguments;
+ 
+static void ParseCommandLineArguments(int ac, char **av)
+{
+  for (int i = 1; i < ac; ++i)
+  {
+    string option = av[i];
+    string param;
+    while (!option.empty() && option[0] == '-')
+      option.erase(option.begin());
+    size_t t = option.find('=');
+    if (t != string::npos)
+    {
+      param = option.substr(t + 1);
+      option.erase(t);
+    }
+    if (option.empty())
+      continue;
+    
+    CommandLineArguments.push_back(std::make_pair(option, param));
+  }
+}
+
+bool GetCommandLineArgument(const string &name, char shortname)
+{
+  string Unused;
+  return GetCommandLineArgument(name, shortname, Unused);
+}
+bool GetCommandLineArgument(const string &name, char shortname, string &param)
+{
+  param.clear();
+  for (std::vector<std::pair<string, string> >::iterator it = CommandLineArguments.begin(), it_end = CommandLineArguments.end(); it != it_end; ++it)
+  {
+    if (it->first.equals_ci(name) || it->first[0] == shortname)
+    {
+      param = it->second;
+      return true;
+    }
+  }
+  return false;
+}
+*/
 /**This is the startup sequence that starts before the try loop starts
  * @param startup(int, char)
  */
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
+  /*
+  ParseCommandLineArguments(argc, argv);
+  arg = argv[1];
+  if(GetCommandLineArgument("help", 'h')){
+    help();
+  }
+  else if(GetCommandLineArgument("developer", 'd')){
+   dev = true;
+   nofork = true;
+   log("navn is started in Developer mode. (%s)", arg.c_str());
+  }
+  else if(GetCommandLineArgument("nofork", 'f')){
+   nofork =  true;
+   log("Navn is started with noforking enabled. (%s)", arg.c_str());
+  }
+  else if(GetCommandLineArgument("version", 'v')){
+    cout << "Navn IRC C++ Bot Version " << version << nl;
+    cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
+    cout << nl;
+    cout << "IRC: irc.Flux-Net.net #Computers" << nl;
+    cout << "WWW: http://www.Flux-Net.net" << nl;
+    cout << "Email: staff@flux-net.net" << nl;
+    cout << "Git: git://gitorious.org:navn/navn.git" << nl;
+    cout << nl;
+    cout << "This bot does have Epic Powers." << nl;
+    cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+    exit(0);
+  }
+  */
   if(argv[1] != NULL){
     arg = argv[1];
     if(arg == "--developer" || arg == "--dev" || arg == "-d")
