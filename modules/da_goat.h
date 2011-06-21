@@ -7,9 +7,16 @@ using namespace flux_net_irc;
 void Da_Goat(Socket &sock, irc_string *reply){
 /***************************Da_Goat Functions*******************************/
 	if(reply->said("!poke")){ //Easter egg ;P
-		sock << me(chan, "Is angry at "+unick);
-		sock << kick(chan, unick, "\002\00315Dont poke me!\017");
-		log("%s used Da_Goats !poke command in %s", unick.c_str(), chan.c_str());
+		string person = reply->params(1);
+		if (person.empty()){
+		  sock << me(chan, "Is angry at "+unick);
+		  sock << kick(chan, unick, "\002\00315Dont poke me!\017");
+		  log("%s used Da_Goats !poke command in %s", unick.c_str(), chan.c_str());
+		}else{
+		  sock << me(chan, "Is angry at "+person);
+		  sock << kick(chan, person, "\002\00315Dont poke me!\017");
+		  log("%s used Da_Goats !poke command in %s to poke %s", unick.c_str(), chan.c_str(), person.c_str());
+		}
       }
 	if(reply->said("!info")){
 		sock << privmsg(chan, "Our forum is at \037castawaycrew.hyperboards.com\017");

@@ -40,7 +40,7 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 	} else {
 		log("%s made the bot join %s", unick.c_str(), blah.c_str());
 		sock << join(blah);
-		sock << privmsg(blah, welcome_msg, nick.c_str());
+		sock << privmsg(blah, welcome_msg, nick.c_str(), nick.c_str());
 	}
       }
       if (reply->said("PRIVMSG "+nick+" :part")){
@@ -98,11 +98,14 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 	}else{
 		sock << notice(unick, access_denied);
 		log("%s attempted a rehash.", unick.c_str());
-
 	}
       }
 	  if(reply->said("!bugs")){
 	    sock.Send(privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/"));
+	  }
+	  if(reply->said("482 "+nick+" "+chan+" :You must be a channel operator")){
+	   cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
+	   log("Op is required in %s", chan.c_str());
 	  }
       //this says that we are now in the server
       if(reply->said("005 "+nick)){
