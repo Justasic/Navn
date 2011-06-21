@@ -572,14 +572,25 @@ void restart(string reason){
 	exit(1);
   }
 }
-void WritePID(){
+static void remove_pidfile()
+{
+ remove(pid_file.c_str());
+}
+static void WritePID(){
   //logging to a text file and making the PID file.
-   fstream pid;
-   pid.open(pid_file.c_str(), fstream::in | fstream::out | fstream::app);
-   if(!pid.is_open())
-		throw CoreException("Failed to create PID file.");
-   pid << getpid() << nl;
-   pid.close();
+  FILE *pidfile;
+  pidfile = fopen(pid_file.c_str(), "w");
+  if(pidfile){
+#ifdef _WIN32
+    fprintf(pidfile, "%d\n", static_cast<int>(GetCurrentProcessId()));
+#else
+    fprintf(pidfile, "%d\n", static_cast<int>(getpid()));
+#endif
+    fclose(pidfile);
+    atexit(remove_pidfile);
+  }
+  else
+    throw CoreException("Can not write to PID file "+pid_file);
 }
 /**This is the startup sequence that starts before the try loop starts
  * @param startup(int, char)
