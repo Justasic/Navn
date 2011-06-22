@@ -5,10 +5,33 @@
 using namespace std;
 using namespace flux_net_irc;
 
+void get_google_xml(string area){
+ try{
+  Socket socket(string("google.com"),string("80")); 
+  socket << "GET /ig/api?weather="+area+" http/1.1" << nl;
+  socket << "HOST: google.com" << nl;
+  string buf;
+  socket >> buf;
+  fstream html;
+  html.open("temp.xml", fstream::in | fstream::out | fstream::app);
+  if(!html.is_open())
+     throw LogException("Failed to open log file.");
+  html << buf << endl;
+  html.close();
+  }catch (LogException &e){
+   cerr << "HTML write Exception Caught: " << e.GetReason() << nl;
+   log("HTML write Exception Caught: %s", e.GetReason());
+  }catch (SocketException &e){
+   cerr << "Socket Exception caught: " <<  e.description() << nl;
+   log("Socket Exception Caught: %s",  e.description().c_str());
+  }
+}
+
 string get_weather(string area){
- string wget = "wget -q -O temp.xml - http://www.google.com/ig/api?weather="+area;
- system(wget.c_str());
+ //string wget = "wget -q -O temp.xml - http://www.google.com/ig/api?weather="+area;
+ //system(wget.c_str());
  ifstream file("temp.xml");
+ get_google_xml(area);
  string line;
  string value;
  string city;
@@ -77,10 +100,14 @@ if(wreply->said("condition")){
 }
 
 void weather(Socket &sock, irc_string *reply){
-if(reply->said("? weather")){
-	string area = reply->params(3);
-	sock << privmsg(chan, get_weather(area));
-	log("%s used weather command to get the weather for %s in %s", unick.c_str(), area.c_str(), chan.c_str());
-}
+/*if(reply->said("!weather")){
+	string area = reply->params(2);
+	if(area.empty()){
+	  sock << privmsg(unick, "Please enter a postal area code.");
+	}else{
+	  sock << privmsg(chan, get_weather(area));
+	  log("%s used weather command to get the weather for %s in %s", unick.c_str(), area.c_str(), chan.c_str());
+        }
+    }*/
 }
 #endif
