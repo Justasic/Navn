@@ -530,12 +530,18 @@ return quit_ss.str();
 }
 void DoQuit(Socket &s, const string msg){
   s.Send("QUIT :"+msg+nl);
+  log("Quitting: %s", msg.c_str());
   log("Logging ended.");
   exit(0);
 }
+void DoQuit(Socket &s, const string msg, int K){
+  s.Send("QUIT :"+msg+nl);
+  log("Quitting: %s", msg.c_str());
+  log("Logging ended.");
+  exit(K);
+}
 void DoQuit(int K){
   log("Logging ended.");
-  remove_pidfile();
   exit(K);
 }
 void DoQuit(){
@@ -807,14 +813,14 @@ void sigact(int sig)
   switch (sig){
     case 1:
       //this case can later be used to rehash the bot.
-      sigstr = "Recieved rehash, no handler definition found. Quitting.";
-      break;
+     
     case 2:
-      sigstr = siginit(randint(1,20));
+      sigstr = "Someone pressed CTRL + C";
+      signal(sig, SIG_IGN);
       quitting = true;
       break;
     case 3:
-      sigstr = siginit(randint(1,20));
+      sigstr = "Someone closed my terminal -_-";
       quitting = true;
       break;
     case 4:
@@ -833,6 +839,10 @@ void sigact(int sig)
       sigstr = "User defined signal 1 (SIGUSR1)";
       quitting = true;
       break;
+    case 11:
+      sigstr = "Segmentation Fault (SIGSEGV)";
+      exit(1);
+      break;
     case 13:
       sigstr = "Broken pipe (SIGPIPE)";
       quitting = true;
@@ -842,14 +852,12 @@ void sigact(int sig)
       quitting = true;
       break;
     case 15:
-      sigstr = siginit(randint(1,20));
+      sigstr = "Termination signal (SIGTERM)";
       quitting = true;
       break;
     default:
-      stringstream signal1;
-      signal1 << sig;
-      quitmsg = "Recieved weird signal from terminal. Sig Number: "+signal1.str();
-      throw CoreException("Recieved weird signal from terminal. Signal Number: "+signal1.str());
+      quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);
+      throw CoreException("Recieved weird signal from terminal. Signal Number: "+stringify(sig));
   }
   quitmsg = "Recieved Signal: "+sigstr;
   cout << "\r\n\033[0m";

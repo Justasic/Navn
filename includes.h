@@ -17,7 +17,7 @@
 #include <string.h>
 #include <time.h>
 #include <sstream>
-#include <signal.h>
+#include <csignal>
 #include <unistd.h>
 #include <vector>
 #include <fstream>

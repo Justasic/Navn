@@ -56,13 +56,20 @@ int main (int argcx, char** argvx, char *envp[])
     
     sock >> rply;
     string line;
+    
+    signal(SIGTERM, sigact); //catch any terminal signals if possible
+    signal(SIGINT, sigact);
+    signal(SIGABRT, sigact);
+    signal(SIGILL, sigact);
+    signal(SIGSEGV, sigact);
+    
+    /*
     struct sigaction act; // to catch a signal sent from the terminal.
     act.sa_handler = sigact;
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     sigaction(SIGINT, &act, 0);
-
-    //delete reply;
+    */
 
     while (!quitting){ //infi loop to stay connected
       sock >> rply; //keep the connection messages in the rply string.
@@ -93,14 +100,27 @@ int main (int argcx, char** argvx, char *envp[])
       /***********************************/
       
       delete reply;
-      
+      if(quitting){
+	 if(!quitmsg.empty()){
+	   cout << quitmsg << endl;
+           DoQuit(sock, quitmsg);
+	 }else{
+	   quitmsg = "Quitting: Unknown reason";
+	   cout << quitmsg << endl;
+           DoQuit(sock, quitmsg);
+	 }
+      }
     }//while loop ends here
-    
-  sock << quit(quitmsg); //quit the bot if we had a terminal signal.
-  log("Quitting: %s", quitmsg.c_str());
-  DoQuit(0);
+    if(!quitmsg.empty()){
+      cout << quitmsg << endl;
+      DoQuit(sock, quitmsg);
+    }else{
+      quitmsg = "Quitting: Unknown reason";
+      cout << quitmsg << endl;
+      DoQuit(sock, quitmsg);
+    }
   }//try ends here
-  catch ( SocketException& e ) //catch any Exceptions sent.
+  catch (SocketException& e) //catch any Exceptions sent.
   {
     cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
     log("Socket Exception Caught: %s", e.description().c_str());
@@ -110,6 +130,6 @@ int main (int argcx, char** argvx, char *envp[])
     cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log("Core Exception Caught: ", stringify(e.GetReason()).c_str());
     DoQuit(1);
-	}
+  }
   return EXIT_SUCCESS;
 }
