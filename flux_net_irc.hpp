@@ -95,14 +95,12 @@ public:
     string nick;
     string host;
     string user;
-
-	IsoHost(string fullhost){
-		nick = isolate(':','!',fullhost);
-		raw = fullhost;
-        	host = isolate('@',' ',fullhost);
-        	user = isolate('!','@',fullhost);
-	}
-
+    IsoHost(string fullhost){
+      nick = isolate(':','!',fullhost);
+      raw = fullhost;
+      host = isolate('@',' ',fullhost);
+      user = isolate('!','@',fullhost);
+    }
     string isolate(char begin, char end, string msg){
       string to_find;
       size_t pos = msg.find(begin);
@@ -568,7 +566,35 @@ void restart(string reason){
 	exit(1);
   }
 }
-
+static void Rehash(){
+ cout << "Rehashing config file." << nl;
+ try{
+  INIReader config("bot.conf");
+    if (config.ParseError() < 0) {
+       throw ConfigException("Cannot load bot.conf");
+    }
+  cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
+  ReadConfig(config);
+  }catch(ConfigException &ex){
+    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
+    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
+  } 
+}
+static void Rehash(Socket &sock){
+ cout << "Rehashing config file." << nl;
+ try{
+  INIReader config("bot.conf");
+    if (config.ParseError() < 0) {
+       throw ConfigException("Cannot load bot.conf");
+    }
+  cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
+  ReadConfig(config);
+  }catch(ConfigException &ex){
+    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
+    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
+    sock << notice(owner_nick, "Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
+  } 
+}
 static void WritePID(){
   //logging to a text file and making the PID file.
   FILE *pidfile;
@@ -741,56 +767,27 @@ void sigact(int sig)
 {
   string sigstr;
   switch (sig){
-    case 1:
-      //this case can later be used to rehash the bot.
-     
-    case 2:
+    case SIGHUP:
+      signal(sig, SIG_IGN);
+      Rehash();
+      break;
+    case SIGINT:
+      cout << "\r\n\033[0m";
       sigstr = "Someone pressed CTRL + C";
       signal(sig, SIG_IGN);
+      quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
-      break;
-    case 3:
-      sigstr = "Someone closed my terminal -_-";
+    case SIGTERM:
+      cout << "\r\n\033[0m";
+      sigstr = "Someone killed me";
+      signal(sig, SIG_IGN);
+      quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
-      break;
-    case 4:
-      sigstr = "Illegal instruction (SIGILL)";
-      quitting = true;
-      break;
-    case 6:
-      sigstr = "Abort signal (SIGABRT)";
-      quitting = true;
-      break;
-    case 9:
-      sigstr = "KILL (SIGKILL)";
-      quitting = true;
-      break;
-    case 10:
-      sigstr = "User defined signal 1 (SIGUSR1)";
-      quitting = true;
-      break;
-    case 11:
-      sigstr = "Segmentation Fault (SIGSEGV)";
-      exit(1);
-      break;
-    case 13:
-      sigstr = "Broken pipe (SIGPIPE)";
-      quitting = true;
-      break;
-    case 14:
-      sigstr = "Timer signal from alarm (SIGALRM)";
-      quitting = true;
-      break;
-    case 15:
-      sigstr = "Termination signal (SIGTERM)";
-      quitting = true;
-      break;
     default:
       quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);
+      cout << "\r\n\033[0m";
       throw CoreException("Recieved weird signal from terminal. Signal Number: "+stringify(sig));
   }
-  quitmsg = "Recieved Signal: "+sigstr;
-  cout << "\r\n\033[0m";
 }
 }
 #endif

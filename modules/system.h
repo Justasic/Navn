@@ -81,23 +81,11 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 	string getpass = reply->params(1);
 	if(unick == owner_nick || getpass == usrpass){
 	sock << notice(unick, "Rehashing config file.");
-	cout << "Rehashing config file." << nl;
 	log("%s rehashed config file.", unick.c_str());
-	try{
-  	 INIReader config("bot.conf");
-    	 if (config.ParseError() < 0) {
-       		throw ConfigException("Cannot load bot.conf");
-    	 }
-  	 ReadConfig(config);
-  	 }catch(ConfigException &ex){
-    		cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
-    		log("Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
-    		sock << notice(unick, "Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
-  	 }
-	cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
+	Rehash(sock);
 	}else{
-		sock << notice(unick, access_denied);
-		log("%s attempted a rehash.", unick.c_str());
+	  sock << notice(unick, access_denied);
+	  log("%s attempted a rehash.", unick.c_str());
 	}
       }
 	  if(reply->said("!bugs")){

@@ -96,7 +96,7 @@ const Socket& Socket::operator >> (std::string& s) const
   memset ( buf, 0, MAXRECV + 1 );
   ::recv ( m_sock, buf, MAXRECV, 0 );
   s = buf;
-  std::cout << s << "\n";
+  std::cout << strip(s) << "\n";
   //recvlog("%s", s.c_str());
   return *this;
 }

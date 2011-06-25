@@ -59,9 +59,7 @@ int main (int argcx, char** argvx, char *envp[])
     
     signal(SIGTERM, sigact); //catch any terminal signals if possible
     signal(SIGINT, sigact);
-    signal(SIGABRT, sigact);
-    signal(SIGILL, sigact);
-    signal(SIGSEGV, sigact);
+    signal(SIGHUP, sigact);
     
     /*
     struct sigaction act; // to catch a signal sent from the terminal.
