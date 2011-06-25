@@ -585,85 +585,12 @@ static void WritePID(){
   else
     throw CoreException("Can not write to PID file "+pid_file);
 }
-/*
-static std::vector<std::pair<string, string> > CommandLineArguments;
- 
-static void ParseCommandLineArguments(int ac, char **av)
-{
-  for (int i = 1; i < ac; ++i)
-  {
-    string option = av[i];
-    string param;
-    while (!option.empty() && option[0] == '-')
-      option.erase(option.begin());
-    size_t t = option.find('=');
-    if (t != string::npos)
-    {
-      param = option.substr(t + 1);
-      option.erase(t);
-    }
-    if (option.empty())
-      continue;
-    
-    CommandLineArguments.push_back(std::make_pair(option, param));
-  }
-}
-
-bool GetCommandLineArgument(const string &name, char shortname)
-{
-  string Unused;
-  return GetCommandLineArgument(name, shortname, Unused);
-}
-bool GetCommandLineArgument(const string &name, char shortname, string &param)
-{
-  param.clear();
-  for (std::vector<std::pair<string, string> >::iterator it = CommandLineArguments.begin(), it_end = CommandLineArguments.end(); it != it_end; ++it)
-  {
-    if (it->first.equals_ci(name) || it->first[0] == shortname)
-    {
-      param = it->second;
-      return true;
-    }
-  }
-  return false;
-}
-*/
 /**This is the startup sequence that starts before the try loop starts
  * @param startup(int, char)
  */
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-  /*
-  ParseCommandLineArguments(argc, argv);
-  arg = argv[1];
-  if(GetCommandLineArgument("help", 'h')){
-    help();
-  }
-  else if(GetCommandLineArgument("developer", 'd')){
-   dev = true;
-   nofork = true;
-   log("navn is started in Developer mode. (%s)", arg.c_str());
-  }
-  else if(GetCommandLineArgument("nofork", 'f')){
-   nofork =  true;
-   log("Navn is started with noforking enabled. (%s)", arg.c_str());
-  }
-  else if(GetCommandLineArgument("version", 'v')){
-    cout << "Navn IRC C++ Bot Version " << version << nl;
-    cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
-    cout << nl;
-    cout << "IRC: irc.Flux-Net.net #Computers" << nl;
-    cout << "WWW: http://www.Flux-Net.net" << nl;
-    cout << "Email: staff@flux-net.net" << nl;
-    cout << "Git: git://gitorious.org:navn/navn.git" << nl;
-    cout << nl;
-    cout << "This bot does have Epic Powers." << nl;
-    cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
-    exit(0);
-  }
-  */
-  
   if(argv[1] != NULL){
     arg = argv[1];
    for(int Arg=0; Arg < argc; Arg++){
