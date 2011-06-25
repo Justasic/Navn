@@ -14,6 +14,7 @@
 #include "modules/system.h"
 #include "modules/channel_logger.h"
 #include "modules/weather.h"
+#include "modules/tinyurl.h"
 //#include "modules/Flux_Services.h"
 /***************************/
 
@@ -94,6 +95,7 @@ int main (int argcx, char** argvx, char *envp[])
       ctcp_m(sock, reply);
       Chanlog(reply);
       weather(sock, reply);
+      TinyURL(sock, reply);
       //Flux_Services(sock, reply);
       /***********************************/
       

@@ -16,7 +16,8 @@ void ping_pong(Socket &sock, irc_string *reply, string re){
   if(reply->said("ERROR :Closing link:")){
    throw SocketException(raw);
   }
-  /* This is still a very experemental Ping timer to give ping timeouts when something happens
+  // This is still a very experemental Ping timer to give ping timeouts when something happens
+  /*
   if (time(NULL) > endwait){
    string pingtimestamp = stringify(time(NULL));
    sock << strip("PING "+ strip(servername));

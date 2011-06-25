@@ -637,9 +637,9 @@ void startup(int argc, char** argv) {
       cout << "Navn IRC C++ Bot Version " << version << nl;
       cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
       cout << nl;
-      cout << "IRC: irc.Flux-Net.net #Computers" << nl;
+      cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
       cout << "WWW: http://www.Flux-Net.net" << nl;
-      cout << "Email: staff@flux-net.net" << nl;
+      cout << "Email: Staff@Flux-Net.net" << nl;
       cout << "Git: git://gitorious.org:navn/navn.git" << nl;
       cout << nl;
       cout << "This bot does have Epic Powers." << nl;

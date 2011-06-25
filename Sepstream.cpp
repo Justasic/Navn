@@ -17,7 +17,7 @@ bool sepstream::GetToken(std::string &token)
 				
 				while (token.length() && token.rfind(sep) == token.length() - 1)
                                  token.erase(token.end() - 1);
-								 
+
 				++n;
 				
 				return true;

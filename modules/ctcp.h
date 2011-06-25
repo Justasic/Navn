@@ -28,6 +28,7 @@ void ctcp_m(Socket &sock, irc_string *reply){
     cout << "\033[22;31mRecieved CTCP SOURCE from "+unick+"\033[22;36m\r\n";
     sock << notice(unick, "\001SOURCE https://gitorious.org/navn/navn\001");
     sock << notice(unick, "\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
+    sock << notice(unick, "\1SOURCE git://gitorious.org/navn/navn.git\1");
     log("Recieved CTCP SOURCE from %s", unick.c_str());
   }
 }
