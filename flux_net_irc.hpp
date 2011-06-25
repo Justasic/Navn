@@ -663,8 +663,10 @@ void startup(int argc, char** argv) {
     exit(0);
   }
   */
+  
   if(argv[1] != NULL){
     arg = argv[1];
+   for(int Arg=0; Arg < argc; Arg++){
     if(arg == "--developer" || arg == "--dev" || arg == "-d")
     {
          dev = true;
@@ -678,19 +680,20 @@ void startup(int argc, char** argv) {
     else if (arg == "--help" || arg == "-h"){
      help();
     }
-	} else if (arg == "--version" || arg == "-v"){
-	 cout << "Navn IRC C++ Bot Version " << version << nl;
-	 cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
-	 cout << nl;
-	 cout << "IRC: irc.Flux-Net.net #Computers" << nl;
-	 cout << "WWW: http://www.Flux-Net.net" << nl;
-	 cout << "Email: staff@flux-net.net" << nl;
-	 cout << "Git: git://gitorious.org:navn/navn.git" << nl;
-	 cout << nl;
-	 cout << "This bot does have Epic Powers." << nl;
-	 cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
-	 exit(0);
-	}
+    else if (arg == "--version" || arg == "-v"){
+      cout << "Navn IRC C++ Bot Version " << version << nl;
+      cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
+      cout << nl;
+      cout << "IRC: irc.Flux-Net.net #Computers" << nl;
+      cout << "WWW: http://www.Flux-Net.net" << nl;
+      cout << "Email: staff@flux-net.net" << nl;
+      cout << "Git: git://gitorious.org:navn/navn.git" << nl;
+      cout << nl;
+      cout << "This bot does have Epic Powers." << nl;
+      cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+      exit(0);
+    }
+  }
    WritePID();
    log("Navn Started. PID: %d", getpid());
    if (!nofork){
@@ -710,13 +713,13 @@ void startup(int argc, char** argv) {
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
   }
+  }
 }
 string trim(string const& source, char const* delims = " \t\r\n") {
   string result(source);
   string::size_type index = result.find_last_not_of(delims);
   if(index != string::npos)
     result.erase(++index);
-
   index = result.find_first_not_of(delims);
   if(index != string::npos)
     result.erase(0, index);
