@@ -5,6 +5,7 @@
 using namespace std;
 using namespace flux_net_irc;
 int idiots = 0; //define the idiot counter outside of the main loop
+int magiccount = 0;
 void Flux_Services(Socket &sock, irc_string *reply){
 	if(reply->said("!part ")){ 
 		if(unick == owner_nick){
@@ -52,6 +53,75 @@ void Flux_Services(Socket &sock, irc_string *reply){
 	}
 	 idiots++; //add +1 to the already big number of idiots in the list
 	 sock << privmsg(chan, "\2\0034,1Total \0039morons \0033slapped \0038back \00310: %i", idiots); //tell the channel how many idiots where slapped.
+	}
+	if(reply->said("!magicbox")){
+	 int num = randint(1,20);
+	 string object;
+	  switch(num){ //FIXME: This switch statement will become rather large.. perhapse rewriting it to read from a wordlist?
+	    case 1:
+	      object = "toothbrush (Object #"+stringify(num)+")";
+	      break;
+	    case 2:
+	      object = "balloon (Object #"+stringify(num)+")";
+	      break;	      
+	    case 3:
+	      object = "spacecraft (Object #"+stringify(num)+")";
+	      break;	      
+	    case 4:
+	      object = "apple (Object #"+stringify(num)+")";
+	      break;	      
+	    case 5:
+	      object = "basketball (Object #"+stringify(num)+")";
+	      break;	      
+	    case 6:
+	      object = "$10,000 check (Object #"+stringify(num)+")";
+	      break;
+	    case 7:
+	      object = "dinner table (Object #"+stringify(num)+")";
+	      break;	      
+	    case 8:
+	      object = "couch (Object #"+stringify(num)+")";
+	      break;	      
+	    case 9:
+	      object = "lawn chair (Object #"+stringify(num)+")";
+	      break;	      
+	    case 10:
+	      object = "pink flamingo (Object #"+stringify(num)+")";
+	      break;	      
+	    case 11:
+	      object = "KFC bucket (Object #"+stringify(num)+")";
+	      break;	      
+	    case 12:
+	      object = "used condom (Object #"+stringify(num)+")";
+	      break;	      
+	    case 13:
+	      object = "candy bar (Object #"+stringify(num)+")";
+	      break;	      
+	    case 14:
+	      object = "door knob (Object #"+stringify(num)+")";
+	      break;	      
+	    case 15:
+	      object = "free bottle of vodka (Object #"+stringify(num)+")";
+	      break;	      
+	    case 16:
+	      object = "empty can (Object #"+stringify(num)+")";
+	      break;
+	    case 17:
+	      object = "light bulb (Object #"+stringify(num)+")";
+	      break;	      
+	    case 18:
+	      object = "arm & hammer box (Object #"+stringify(num)+")";
+	      break;	      
+	    case 19:
+	      object = "laundry detergent (Object #"+stringify(num)+")";
+	      break;	      
+	    case 20:
+	      object = "toilet paper roll (Object #"+stringify(num)+")";
+	      break;	              
+	  }
+	  magiccount++;
+	  sock << me(chan, "%s gives %s a %s", nick.c_str(), unick.c_str(), object.c_str());
+	  sock << privmsg(chan, "MagicBox used %i times", magiccount);
 	}
 	/*
 	if(reply->said("!umode")){
