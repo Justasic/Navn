@@ -21,7 +21,7 @@ int days, hours, mins;
 bool in_channel = false;
 bool nofork = false;
 bool dev = false;
-
+bool game_started = false;
 bool quitting = false;
 const string version = "v2.0.5";
 

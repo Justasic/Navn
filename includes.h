@@ -32,4 +32,5 @@
 #include <cstdio>
 #include <cstdarg>
 #include <alloca.h>
+#include <algorithm>
 #endif

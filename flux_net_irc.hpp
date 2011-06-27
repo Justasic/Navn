@@ -457,6 +457,27 @@ string chmode(string channel, string mode, string username){
   string out_put = stringy_ss_mode.str();
   return out_put;
 }
+/** Topic Function
+ * Sets the channel topic
+ * @param topic(channel, new_topic)
+ */
+string topic(string chan, string msg){
+  stringstream stringy_ss_mode;
+  stringy_ss_mode <<  "TOPIC " << chan << " 1 2 " << msg << nl;
+  string out_put = stringy_ss_mode.str();
+  return out_put;
+}
+/** Print Vector Function
+ * Prints contents of a vector
+ * @param print_vector(vector<string>)
+ */
+string print_vector(vector<string> v) {
+  string output;
+  for (vector<string>::iterator i = v.begin(); i != v.end(); ++i){
+    output = output+" "+*i;
+  }	
+  return output;
+}
 /** Quit Function
  * Sends a disconnect message to IRC
  * @param quit(reason)

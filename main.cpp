@@ -12,6 +12,7 @@
 #include "modules/about_me.h"
 #include "modules/world_clock.h"
 #include "modules/system.h"
+#include "modules/riista/riista_m.h"
 /***************************/
 
 string binary_path, services_dir, services_bin;
@@ -58,7 +59,7 @@ int main (int argcx, char** argvx, char *envp[])
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     sigaction(SIGINT, &act, 0);
-
+    
     //delete reply;
 
     while (!quitting){ //infi loop to stay connected
@@ -83,6 +84,7 @@ int main (int argcx, char** argvx, char *envp[])
       dns_m(sock, reply, rply);
       world_clock(sock, reply);
       ctcp_m(sock, reply);
+      riista_m(sock, reply);
       /***********************************/
       
       delete reply;
