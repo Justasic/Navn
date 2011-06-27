@@ -777,12 +777,14 @@ void sigact(int sig)
       signal(sig, SIG_IGN);
       quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
+      break;
     case SIGTERM:
       cout << "\r\n\033[0m";
       sigstr = "Someone killed me";
       signal(sig, SIG_IGN);
       quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
+      break;
     default:
       quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);
       cout << "\r\n\033[0m";

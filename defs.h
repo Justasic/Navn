@@ -84,9 +84,7 @@ const string con_closed_nick = "[Registration timeout]";
 const string join_req = "PRIVMSG "+nick+" :join";
 const string part_req = "PRIVMSG "+nick+" :part";
 const string pass_req = "PRIVMSG "+nick+" :pass";
-const string gdb_req = "PRIVMSG "+nick+" :gdb";
 const string quitmsg_req = "PRIVMSG "+nick+" :quit";
-const string gdb_msg = "gdb#: (1) From the directory that you would do ./program from, do the following instead: gdb ./program (2) Do: r -paramiters (3) Upon crash, do: bt full to see all the output of the crash.";
 const string access_denied = "Access is Denied.";
 const string nl = "\n";
 
