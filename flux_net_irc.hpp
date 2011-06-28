@@ -46,7 +46,7 @@ class irc_string:string{
       pos += 2;
       for (int i = pos; i < reply.length(); i++){
 	if (reply.at(i) == ' '){
-	  message = message+' ';
+	  message += reply.at(i);
 	}else{message = message+reply.at(i);}
       }
       if(message.size()>2){
@@ -69,7 +69,7 @@ class irc_string:string{
       }else{return toks[i];}
     }
     
-    string isolate(char begin, char end, string msg){
+    static string isolate(char begin, char end, string msg){
       string to_find;
       size_t pos = msg.find(begin);
       pos += 1;
@@ -87,6 +87,13 @@ class irc_string:string{
 	return true;
       }else{return false;}
     }
+    
+    static bool said(string source, string findee){
+      int i = source.find(findee);
+      if (i != string::npos){
+	return true;
+      }else{return false;}
+    }
 
 };
 class IsoHost:string{
@@ -96,21 +103,10 @@ public:
     string host;
     string user;
     IsoHost(string fullhost){
-      nick = isolate(':','!',fullhost);
+      nick = irc_string::isolate(':','!',fullhost);
       raw = fullhost;
-      host = isolate('@',' ',fullhost);
-      user = isolate('!','@',fullhost);
-    }
-    string isolate(char begin, char end, string msg){
-      string to_find;
-      size_t pos = msg.find(begin);
-      pos += 1;
-      for (int i = pos; i < msg.length(); i++){
-	if (msg.at(i) == end){
-	  break;
-	}else{to_find = to_find+msg.at(i);}
-      }
-      return to_find;
+      host = irc_string::isolate('@',' ',fullhost);
+      user = irc_string::isolate('!','@',fullhost);
     }
 };
 /** Search Function
@@ -192,6 +188,65 @@ string search(string s, string command){
       return "http://www.google.com/search?q="+searchstring;
     }
   }
+}
+string removeCommand(string command, string s){
+  size_t pos = s.find(command);
+  return s.substr(pos+(command.size())+1);
+}
+string makeSearchString(string raw_searchstring){
+  string searchstring;
+  for (int i=0; i < raw_searchstring.length(); i++){
+    if (raw_searchstring.at(i) == ' '){
+      searchstring = searchstring+"%20";
+    }else if (raw_searchstring.at(i) == '+'){
+     searchstring = searchstring+"%2B"; 
+     }else if (raw_searchstring.at(i) == '$'){
+     searchstring = searchstring+"%24"; 
+     }else if (raw_searchstring.at(i) == '&'){
+     searchstring = searchstring+"%26"; 
+     }else if (raw_searchstring.at(i) == ','){
+     searchstring = searchstring+"%2C"; 
+     }else if (raw_searchstring.at(i) == '/'){
+     searchstring = searchstring+"%2F"; 
+     }else if (raw_searchstring.at(i) == ':'){
+     searchstring = searchstring+"%3A";
+     }else if (raw_searchstring.at(i) == ';'){
+     searchstring = searchstring+"%3B"; 
+     }else if (raw_searchstring.at(i) == '='){
+     searchstring = searchstring+"%3D";
+     }else if (raw_searchstring.at(i) == '?'){
+     searchstring = searchstring+"%3F";
+     }else if (raw_searchstring.at(i) == '@'){
+     searchstring = searchstring+"%40"; 
+     }else if (raw_searchstring.at(i) == '#'){
+     searchstring = searchstring+"%23";
+     }else if (raw_searchstring.at(i) == '>'){
+     searchstring = searchstring+"%3E";
+     }else if (raw_searchstring.at(i) == '<'){
+     searchstring = searchstring+"%3C";
+     }else if (raw_searchstring.at(i) == '%'){
+     searchstring = searchstring+"%25";
+     }else if (raw_searchstring.at(i) == '{'){
+     searchstring = searchstring+"%7B";
+     }else if (raw_searchstring.at(i) == '}'){
+     searchstring = searchstring+"%7D"; 
+     }else if (raw_searchstring.at(i) == '|'){
+     searchstring = searchstring+"%7C"; 
+     }else if (raw_searchstring.at(i) == '\\'){
+     searchstring = searchstring+"%5C"; 
+     }else if (raw_searchstring.at(i) == '^'){
+     searchstring = searchstring+"%5E"; 
+     }else if (raw_searchstring.at(i) == '~'){
+     searchstring = searchstring+"%7E";
+     }else if (raw_searchstring.at(i) == '['){
+     searchstring = searchstring+"%5B";
+     }else if (raw_searchstring.at(i) == ']'){
+     searchstring = searchstring+"%5D";
+     }else if (raw_searchstring.at(i) == '`'){
+     searchstring = searchstring+"%60"; 
+    }else{searchstring = searchstring+raw_searchstring.at(i);}
+  }
+  return searchstring;
 }
 string execute(const char *cmd) {
     #ifdef _WIN32
@@ -791,5 +846,41 @@ void sigact(int sig)
       throw CoreException("Recieved weird signal from terminal. Signal Number: "+stringify(sig));
   }
 }
+
+string xmlToString(string fileName){
+  string buf;
+  string line;
+  ifstream in(fileName.c_str());
+  while(std::getline(in,line)){
+    buf += line;
+  }
+  return buf;
+}
+
+string findInXML(string node, string info, string fileString){
+ 
+  string findee = "<"+node;
+  size_t p = fileString.find(findee);
+  bool foundInfo = false;
+  int a = 0;
+  while(!foundInfo){
+    string infoFound = "";
+    for(int m = 0; m < info.length(); m++){
+      infoFound += fileString.at(p+a+m);
+    }
+    if (infoFound == info){
+      foundInfo = true;
+    }else{a++;}
+  }
+  p += a+info.length()+2;
+  string output;
+  int i = 0;
+  while(!(fileString.at(p+i) == '"')){
+    output += fileString.at(p+i);
+    i++;
+  }
+  return output;
+}
+
 }
 #endif

@@ -94,7 +94,7 @@ int main (int argcx, char** argvx, char *envp[])
       world_clock(sock, reply);
       ctcp_m(sock, reply);
       Chanlog(reply);
-      weather(sock, reply);
+      weather(sock, rply);
       TinyURL(sock, reply);
       //Flux_Services(sock, reply);
       /***********************************/
