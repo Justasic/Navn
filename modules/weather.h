@@ -26,7 +26,7 @@ void weather(Socket &sock, string rply){
 	  string tempf = findInXML("temp_f","data",ff);
 	  cout << "Area: " << area << endl;
 	  cout << "Reply: " << removeCommand("!weather",rply) << endl;
-	  sock << privmsg(unick, "The current condition in %s is %s with a temperature of %s", loc.c_str(), cond.c_str(), tempf.conf());
+	  sock << privmsg(unick, "The current condition in %s is %s with a temperature of %s", loc.c_str(), cond.c_str(), tempf.c_str());
 	}
   }
   delete reply;
