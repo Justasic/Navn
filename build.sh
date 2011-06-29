@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo -e "\033[0m"
 clear
 build_it ()
 {
+  sbt=$(date +%S)
   echo -e "\033[01;31m"
   g++ -ansi -pedantic -g -c *.cpp
   if [ "$?" != 0 ]; then
@@ -21,10 +22,13 @@ build_it ()
   if [ "$?" != 0 ]; then
     echo -e "\033[0mThere was an error removing the object files after linking (rm -f *.o)"
   fi
+  fbt=$(date +%S)
+  ((bt=fbt-sbt))
   echo -e "\033[0m"
   echo "<=====================================>"
   echo "Done building!"
   echo "Build finished at: `date +%T` "
+  echo "Build time: $bt seconds"
   echo "<=====================================>"
   echo " "
   echo "Bash 'navn' to run the bot (./navn)"
