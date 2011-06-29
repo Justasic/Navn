@@ -704,9 +704,8 @@ static void WritePID(){
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-  if(argv[1] != NULL){
     arg = argv[1];
-   for(int Arg=0; Arg < argc; Arg++){
+    for(int Arg=0; Arg < argc; Arg++){
     if(arg == "--developer" || arg == "--dev" || arg == "-d")
     {
          dev = true;
@@ -752,7 +751,6 @@ void startup(int argc, char** argv) {
 	}
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
-  }
   }
 }
 string trim(string const& source, char const* delims = " \t\r\n") {
