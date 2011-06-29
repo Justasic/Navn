@@ -79,13 +79,29 @@ class irc_string:string{
 	pch = strtok (NULL, " ");
       }
     }
-    
+    /**
+     * \fn string params(int i)
+     * \brief Returns individual words from the message of a reply
+     * Because \a toks is private, this is its "get" function.
+     * We made this so someone writing a module doesn't try to go out 
+     * of bounds while accessing an array.
+     * \param i An integer value.
+     * \return A string with the single specified word.
+     */
     string params(int i){
       if (i >= toks.size()){
 	return " ";
       }else{return toks[i];}
     }
-    
+    /**
+     * \overload string params(int b, int e)
+     * \brief Overload of params. Returns a range of words.
+     * We overloaded \a params() so that you could get a range of words from the message
+     *  as requeseted by Justasic.
+     * \param b An integer value describing the place of the first word wanted.
+     * \param e An integer value describing the place of the last word wanted.
+     * \return A string withing the range of words specified by \a b and \a e
+     */
     string params(int b, int e){
       string buf = "";
       if (b >= toks.size()){
@@ -100,7 +116,15 @@ class irc_string:string{
       }
       return buf;
     }
-    
+    /**
+     * \fn static string isolate(char begin, char end, string msg)
+     * \brief Isolates a string between two characters
+     * Finds the first character, then begins to add every consecutive character from there to a string
+     *  until it reaches the end character.
+     * \param begin The character saying where the cut should begin.
+     * \param end The character saying where the cut should end.
+     * \param msg The string you are wanting to isolate from.
+     */
     static string isolate(char begin, char end, string msg){
       string to_find;
       size_t pos = msg.find(begin);
@@ -704,8 +728,9 @@ static void WritePID(){
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
+  if(argv[1] != NULL){
     arg = argv[1];
-    for(int Arg=0; Arg < argc; Arg++){
+   for(int Arg=0; Arg < argc; Arg++){
     if(arg == "--developer" || arg == "--dev" || arg == "-d")
     {
          dev = true;
@@ -751,6 +776,7 @@ void startup(int argc, char** argv) {
 	}
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
+  }
   }
 }
 string trim(string const& source, char const* delims = " \t\r\n") {
