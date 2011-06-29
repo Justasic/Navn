@@ -10,48 +10,65 @@ template<typename T> inline std::string stringify(const T &x){
 	return stream.str();
 }
 namespace flux_net_irc{
-  
+  /** 
+   * \namespace flux_net_irc
+   * \brief This is where we keep all our algorithms
+   * 
+   * We made this namespace so we could group all the common functions
+   * and algorithms we use really often in one place. These will 
+   * hopefully help anyone else that tries to extend navn.
+ */
   using namespace std;
-  /** irc_string Class
- * Lordofsraam must document this
- * NOTE this MUST be used in the main file.
- * @param variable->params(#)
+class irc_string:string{
+  /** \class irc_string
+ * NOTE this MUST be included in the main file.
+ * This class wraps around a string (usually revieved from the irc server)
+ * and attempts to decode all the info recieved from the server
+ * so as to make it easier to read different kinds of information
+ * (ei. who said something, their host, username, etc.)
+ * @param variable->params(positive_int)
  * @param variable->raw_string
  * @param variable->usernick
  * @param variable->host
  * @param variable->user
  * @param variable->channel
  * @param variable->message
- * @param variable->said(whats-said)
+ * @param variable->said(word_to_be_found)
  */
-class irc_string:string{
   private :
     vector<string> toks;
   public :
-    string raw_string;
-    string usernick;
-    string host;
-    string user;
-    string channel;
-    string message;
-       
+    string raw_string; /**< Will hold the exact string that was recieved from the server */
+    string usernick; /**< Will hold the usernick of the person who sent the message*/
+    string host; /**< Will hold the host of the person who sent the message */
+    string user; /**< Will hold the user of the person who sent the message */
+    string channel; /**< Will hold the channel of where the message was said */
+    string message; /**< Will hold the message (no irc protocol stuff) */
+    /**
+     *\fn irc_string(string reply)
+     *Constructor for \a irc_string class
+     * This is where the magic happens. The constructor takes the string
+     * and breaks it down into its component parts to find the 
+     * \a usernick \a host \a user \a channel and \a message
+     */   
     irc_string(string reply){
       raw_string = reply;
       usernick = isolate(':','!',reply);
       host = isolate('@',' ',reply);
       user = isolate('!','@',reply);
       channel = '#'+isolate('#',' ',reply);
-      
+      string space = "  ";
       size_t pos = reply.find(" :");
       pos += 2;
       for (int i = pos; i < reply.length(); i++){
 	if (reply.at(i) == ' '){
-	  message += reply.at(i);
+	  message.append(space);
 	}else{message = message+reply.at(i);}
       }
       if(message.size()>2){
 	message.resize(message.size()-2);
       }
+      
       string fmessage = message;
       char * cmessage = (char *)fmessage.c_str();
       char * pch;
@@ -67,6 +84,21 @@ class irc_string:string{
       if (i >= toks.size()){
 	return " ";
       }else{return toks[i];}
+    }
+    
+    string params(int b, int e){
+      string buf = "";
+      if (b >= toks.size()){
+	b = toks.size();
+      }
+      if (e >= toks.size()){
+	e = toks.size() - 1;
+      }
+      for (int i = b; i <= (e); i++){
+	buf += toks[i];
+	buf.append(" ");
+      }
+      return buf;
     }
     
     static string isolate(char begin, char end, string msg){
