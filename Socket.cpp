@@ -79,7 +79,6 @@ const Socket& Socket::operator >> (std::string& s) const
   ::recv ( m_sock, buf, MAXRECV, 0 );
   s = buf;
   std::cout << strip(s) << "\n";
-  //recvlog("%s", s.c_str());
   return *this;
 }
 const Socket& Socket::operator << (const std::string& s) const

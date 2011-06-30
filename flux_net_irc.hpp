@@ -193,55 +193,100 @@ string search(string s, string command){
   size_t pos = s.find(command);
   raw_searchstring = s.substr(pos+(command.size())+1);
   for (int i=0; i < raw_searchstring.length(); i++){
-    if (raw_searchstring.at(i) == ' '){
-      searchstring = searchstring+"%20";
-    }else if (raw_searchstring.at(i) == '+'){
-     searchstring = searchstring+"%2B"; 
-     }else if (raw_searchstring.at(i) == '$'){
-     searchstring = searchstring+"%24"; 
-     }else if (raw_searchstring.at(i) == '&'){
-     searchstring = searchstring+"%26"; 
-     }else if (raw_searchstring.at(i) == ','){
-     searchstring = searchstring+"%2C"; 
-     }else if (raw_searchstring.at(i) == '/'){
-     searchstring = searchstring+"%2F"; 
-     }else if (raw_searchstring.at(i) == ':'){
-     searchstring = searchstring+"%3A";
-     }else if (raw_searchstring.at(i) == ';'){
-     searchstring = searchstring+"%3B"; 
-     }else if (raw_searchstring.at(i) == '='){
-     searchstring = searchstring+"%3D";
-     }else if (raw_searchstring.at(i) == '?'){
-     searchstring = searchstring+"%3F";
-     }else if (raw_searchstring.at(i) == '@'){
-     searchstring = searchstring+"%40"; 
-     }else if (raw_searchstring.at(i) == '#'){
-     searchstring = searchstring+"%23";
-     }else if (raw_searchstring.at(i) == '>'){
-     searchstring = searchstring+"%3E";
-     }else if (raw_searchstring.at(i) == '<'){
-     searchstring = searchstring+"%3C";
-     }else if (raw_searchstring.at(i) == '%'){
-     searchstring = searchstring+"%25";
-     }else if (raw_searchstring.at(i) == '{'){
-     searchstring = searchstring+"%7B";
-     }else if (raw_searchstring.at(i) == '}'){
-     searchstring = searchstring+"%7D"; 
-     }else if (raw_searchstring.at(i) == '|'){
-     searchstring = searchstring+"%7C"; 
-     }else if (raw_searchstring.at(i) == '\\'){
-     searchstring = searchstring+"%5C"; 
-     }else if (raw_searchstring.at(i) == '^'){
-     searchstring = searchstring+"%5E"; 
-     }else if (raw_searchstring.at(i) == '~'){
-     searchstring = searchstring+"%7E";
-     }else if (raw_searchstring.at(i) == '['){
-     searchstring = searchstring+"%5B";
-     }else if (raw_searchstring.at(i) == ']'){
-     searchstring = searchstring+"%5D";
-     }else if (raw_searchstring.at(i) == '`'){
-     searchstring = searchstring+"%60"; 
-    }else{searchstring = searchstring+raw_searchstring.at(i);}
+    switch(raw_searchstring.at(i)){
+      case ' ':
+	searchstring = searchstring+"%20";
+	break;
+      case '+':
+	searchstring = searchstring+"%2B";
+	break;
+      case '$':
+	searchstring = searchstring+"%24";
+	break;
+      case '&':
+	searchstring = searchstring+"%26";
+	break;
+      case ',':
+	searchstring = searchstring+"%2C";
+	break;
+      case '/':
+	searchstring = searchstring+"%2F";
+	break;
+      case ':':
+	searchstring = searchstring+"%3A";
+	break;
+      case ';':
+	searchstring = searchstring+"%3B";
+	break;
+      case '=':
+	searchstring = searchstring+"%3D";
+	break;
+      case '?':
+	searchstring = searchstring+"%3F";
+	break;
+      case '@':
+	searchstring = searchstring+"%40";
+	break;
+      case '#':
+	searchstring = searchstring+"%23";
+	break;
+      case '>':
+	searchstring = searchstring+"%3E";
+	break;
+      case '<':
+	searchstring = searchstring+"%3C";
+	break;
+      case '%':
+	searchstring = searchstring+"%25";
+	break;
+      case '{':
+	searchstring = searchstring+"%7B";
+	break;
+      case '}':
+	searchstring = searchstring+"%7D";
+	break;
+      case '|':
+	searchstring = searchstring+"%7C";
+	break;
+      case '\\':
+	searchstring = searchstring+"%5C";
+	break;
+      case '^':
+	searchstring = searchstring+"%5E";
+	break;
+      case '~':
+	searchstring = searchstring+"%7E";
+	break;
+      case '[':
+	searchstring = searchstring+"%5B";
+	break;
+      case ']':
+	searchstring = searchstring+"%5D";
+	break;
+      case '`':
+	searchstring = searchstring+"%60";
+	break;
+      case '*':
+	searchstring = searchstring+"%2A";
+	break;
+      case '(':
+	searchstring = searchstring+"%28";
+	break;
+      case ')':
+	searchstring = searchstring+"%29";
+	break;
+      case '"':
+	searchstring = searchstring+"%22";
+	break;
+      case '\'':
+	searchstring = searchstring+"%27";
+	break;
+      case '.':
+	searchstring = searchstring+"%2E";
+	break;
+      default:
+	searchstring = searchstring+raw_searchstring.at(i);
+    }
   }
   if (searchstring.empty()){
     return "Empty search string.";
