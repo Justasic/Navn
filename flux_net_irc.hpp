@@ -805,7 +805,6 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
   }
-}
 string trim(string const& source, char const* delims = " \t\r\n") {
   string result(source);
   string::size_type index = result.find_last_not_of(delims);
