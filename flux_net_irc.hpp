@@ -753,11 +753,12 @@ static void WritePID(){
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-  if(argv[1] != NULL){
-    arg = argv[1];
-   for(int Arg=0; Arg < argc; Arg++){
-    if(arg == "--developer" || arg == "--dev" || arg == "-d")
-    {
+  if (argc < 1 || argv[1] == NULL){
+  }else{
+    string arg = argv[1];
+    for(int Arg=0; Arg < argc; Arg++){
+       if(arg == "--developer" || arg == "--dev" || arg == "-d")
+       {
          dev = true;
 	 nofork = true;
 	 log("Navn is started in Developer mode. (%s)", arg.c_str());
