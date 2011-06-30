@@ -42,7 +42,6 @@ void Chanlog(irc_string *reply){
   if(reply->said("PRIVMSG "+LogChannel+" ")){
      // This is where Justasic plans on starting a channel logger
      if(reply->said("\001ACTION")){
-       string::iterator it;
        msg = msg.erase(0,7);
        cout << msg << endl;
        msg.erase(msg.size()-1, 1);

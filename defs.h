@@ -29,7 +29,6 @@ const string version = "v1.4.3";
 string unick;
 string rply;
 string host;
-string arg;
 string chan;
 string raw;
 string msg;

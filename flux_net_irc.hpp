@@ -632,6 +632,7 @@ oper_ss << "OPER " << buf << nl;
 va_end(args);
 return oper_ss.str();
 }
+<<<<<<< HEAD
 
 /** 
  * \fn string chanmsg(string stringy)
@@ -639,6 +640,13 @@ return oper_ss.str();
  * NOTE: must be sent with \a sock
  * \param stringy String to send to channel.
  * \deprecated This function is still available but we discourage its use due to the fact that it does not support mutilple channels.
+=======
+/** Channel message Function
+ * This function sends a channel message to the pre-defined
+ * channel in the defs.h file.
+ * NOTE: this function is deprecated and must be sent with 'sock'
+ * @param chanmsg(Message)
+>>>>>>> 35d102e0d3ac210007b8fc053b6702d24f7ecd92
  */
 string chanmsg(string stringy){
   stringstream stringy_ss;
@@ -757,23 +765,23 @@ quit_ss << "QUIT :" << buf << nl;
 va_end(args);
 return quit_ss.str();
 }
-void DoQuit(Socket &s, const string msg){
+static void DoQuit(Socket &s, const string msg){
   s.Send("QUIT :"+msg+nl);
   log("Quitting: %s", msg.c_str());
   log("Logging ended.");
   exit(0);
 }
-void DoQuit(Socket &s, const string msg, int K){
+static void DoQuit(Socket &s, const string msg, int K){
   s.Send("QUIT :"+msg+nl);
   log("Quitting: %s", msg.c_str());
   log("Logging ended.");
   exit(K);
 }
-void DoQuit(int K){
+static void DoQuit(int K){
   log("Logging ended.");
   exit(K);
 }
-void DoQuit(){
+static void DoQuit(){
   log("Logging ended.");
   exit(0);
 }
@@ -781,7 +789,7 @@ void DoQuit(){
  * Restarts the Bot
  * @param restart(message)
  */
-void restart(string reason){
+static void restart(string reason){
    char CurrentPath[FILENAME_MAX];
    GetCurrentDir(CurrentPath, sizeof(CurrentPath));
  if(reason.empty()){
@@ -796,6 +804,13 @@ void restart(string reason){
 	remove_pidfile();
 	exit(1);
   }
+}
+static void shutdown(Socket &sock, string quitmsg){
+ if(quitmsg.empty())
+      quitmsg = "Quitting: Unknown reason";
+    cout << quitmsg << endl;
+    sock << quit(quitmsg);
+    DoQuit(sock, quitmsg); 
 }
 static void Rehash(){
  cout << "Rehashing config file." << nl;
@@ -848,35 +863,37 @@ static void WritePID(){
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-  if(argv[1] != NULL){
-    arg = argv[1];
-   for(int Arg=0; Arg < argc; Arg++){
-    if(arg == "--developer" || arg == "--dev" || arg == "-d")
-    {
+  if (argc < 1 || argv[1] == NULL){
+  }else{
+    string arg = argv[1];
+    for(int Arg=0; Arg < argc; Arg++){
+       if(arg == "--developer" || arg == "--dev" || arg == "-d")
+       {
          dev = true;
 	 nofork = true;
 	 log("Navn is started in Developer mode. (%s)", arg.c_str());
-    }
-    else if (arg == "--nofork" || arg == "-f"){
-      nofork = true;
-      log("Navn is started With No Forking enabled. (%s)", arg.c_str());
-    }
-    else if (arg == "--help" || arg == "-h"){
-     help();
-    }
-    else if (arg == "--version" || arg == "-v"){
-      cout << "Navn IRC C++ Bot Version " << version << nl;
-      cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
-      cout << nl;
-      cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
-      cout << "WWW: http://www.Flux-Net.net" << nl;
-      cout << "Email: Staff@Flux-Net.net" << nl;
-      cout << "Git: git://gitorious.org:navn/navn.git" << nl;
-      cout << nl;
-      cout << "This bot does have Epic Powers." << nl;
-      cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
-      exit(0);
-    }
+       }
+       else if (arg == "--nofork" || arg == "-f"){
+         nofork = true;
+         log("Navn is started With No Forking enabled. (%s)", arg.c_str());
+       }
+       else if (arg == "--help" || arg == "-h"){
+        help();
+       }
+       else if (arg == "--version" || arg == "-v"){
+         cout << "Navn IRC C++ Bot Version " << version << nl;
+         cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
+         cout << nl;
+         cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
+         cout << "WWW: http://www.Flux-Net.net" << nl;
+         cout << "Email: Staff@Flux-Net.net" << nl;
+         cout << "Git: git://gitorious.org:navn/navn.git" << nl;
+         cout << nl;
+         cout << "This bot does have Epic Powers." << nl;
+         cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+         exit(0);
+       }
+  }
   }
    WritePID();
    log("Navn Started. PID: %d", getpid());
@@ -898,7 +915,6 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
   }
-}
 string trim(string const& source, char const* delims = " \t\r\n") {
   string result(source);
   string::size_type index = result.find_last_not_of(delims);
@@ -999,22 +1015,21 @@ void sigact(int sig)
   string sigstr;
   switch (sig){
     case SIGHUP:
+    {
       signal(sig, SIG_IGN);
       Rehash();
       break;
+    }
     case SIGINT:
-      cout << "\r\n\033[0m";
-      sigstr = "Someone pressed CTRL + C";
-      signal(sig, SIG_IGN);
-      quitmsg = "Recieved Signal: "+sigstr;
-      quitting = true;
-      break;
     case SIGTERM:
+      signal(sig, SIG_IGN);
+      signal(SIGHUP, SIG_IGN);
       cout << "\r\n\033[0m";
       sigstr = "Someone killed me";
       signal(sig, SIG_IGN);
       quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
+      throw CoreException(quitmsg);
       break;
     default:
       quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);
