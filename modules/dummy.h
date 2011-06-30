@@ -12,7 +12,7 @@ using namespace flux_net_irc;
  */
 
 /**
- * \defgroup dummykM Dummy (Example) Module
+ * \defgroup dummyM Dummy (Example) Module
  * This is a template or example module.
  * \section commands Commands associated with this module.
  * \subsection test testing testing
