@@ -2,14 +2,29 @@
 #define CLOG_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-/* Channel Logging Module
- * This is a basic channel logger used to log a channel's messages
- * load the module in main.cpp to use it
- * change the LogChannel string below to the channel you want to log
- *** IT IS CAPS SENSITIVE! ***
- * 
- * Created by Justasic
- * Flux-Net.net
+/**
+ * \file channel_logger.h Header file holding the \a ChanLog function.
+ * \author Justasic.
+ */
+
+/**
+ * \defgroup chanlogM Channel Log Module
+ * This is the module for the Channel Logger function. \n
+ * The channel logger function logs what was said in the channel
+ * to a file specified in the config file for navn \n
+ * NOTE: Channel name is caps sensitive \n
+ * For a better description see the function description.
+ * \section commands Commands associated with this module.
+ * \subsection none none
+ * This module has no user interactive function
+ * @{
+ */
+
+/**
+ * \fn void Chanlog(irc_string *reply)
+ * \fn void CLog(const char *fmt, ...)
+ * \brief Logs channel messages
+ * Logs what is said in the channel to a specified file.
  */
 using namespace std;
 using namespace flux_net_irc;
@@ -71,4 +86,7 @@ void Chanlog(irc_string *reply){
      CLog("*** %s sets mode %s %s", unick.c_str(), reply->params(3).c_str(), reply->params(4).c_str());
   }
 }
+/**
+ * @}
+ */
 #endif

@@ -2,6 +2,33 @@
 #define DNS_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+/**
+ * \file dns.h Header file holding the \a DNS functions.
+ * \author Justasic.
+ */
+
+/**
+ * \defgroup dnsM DNS module
+ * This is the module for the DNS functions.
+ * Resolves a DNS hostname or Reverse DNS resolve a ip address to a hostname
+ * For a better description see the function description.
+ * \section commands Commands associated with this module.
+ * \subsection dns !dns
+ * Say \a !dns with a hostname and it will return the resolved IP address
+ * \subsection rdns !rdns
+ * Say \a !rdns with an IP address and it will return the reverse DNS hostname
+ * @{
+ */
+
+/**
+ * \fn void dns_callback (void* arg, int status, int timeouts, struct hostent* host)
+ * \fn void main_loop(ares_channel &channel)
+ * \fn void rdns(Socket &sock, irc_string *reply, string dest, string argv)
+ * \fn void dns(Socket &sock, string dest, string host)
+ * \fn void dns_m(Socket &sock, irc_string *reply, string rply)
+ * \brief Resolve DNS queries
+ * Resolves a DNS hostname or Reverse DNS resolve a ip address to a hostname
+ */
 using namespace std;
 using namespace flux_net_irc;
 ostringstream nerp;
@@ -69,4 +96,7 @@ void dns_m(Socket &sock, irc_string *reply, string rply){
     dns(sock, chan, host);
   }
 }
+/**
+ * @}
+ */
 #endif

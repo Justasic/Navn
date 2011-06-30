@@ -2,6 +2,27 @@
 #define CTCP_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+/**
+ * \file ctcp.h Header file holding the \a ctcp functions.
+ * \author Lordofsraam. Polished by Justasic.
+ */
+
+/**
+ * \defgroup ctcpM CTCP Module
+ * This is the module for the CTCP functions.
+ * It houses the CTCP replies when someone versions it or asks for the time
+ * For a better description see the function description.
+ * \section commands Commands associated with this module.
+ * \subsection none none
+ * This module has no user interactive function
+ * @{
+ */
+
+/**
+ * \fn void ctcp_m(Socket &sock, irc_string *reply)
+ * \brief Replies to CTCPs
+ * Replies to CTCP requests in IRC
+ */
 const string CTCP_VERS = " :\001VERSION\001";
 const string CTCP_TIME = " :\001TIME\001";
 const string CTCP_SOURCE = " :\001SOURCE\001";
@@ -32,4 +53,7 @@ void ctcp_m(Socket &sock, irc_string *reply){
     log("Recieved CTCP SOURCE from %s", unick.c_str());
   }
 }
+/**
+ * @}
+ */
 #endif
