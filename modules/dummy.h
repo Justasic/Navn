@@ -6,7 +6,7 @@ using namespace std;
 using namespace flux_net_irc;
 /**
  * \example dummy.h 
- * This is an example module showing a simple if-said-that-reply-this situation.
+ * This is an example module showing a simple if-said-than-reply-this situation.
  * \file dummy.h Header file holding the \a dummy function.
  * \author Lordofsraam
  */
@@ -16,7 +16,7 @@ using namespace flux_net_irc;
  * This is a template or example module.
  * \section commands Commands associated with this module.
  * \subsection test testing testing
- * Say "testing testing" to see the current time, the GMT, and the times in New York, California, Beijing, and Sydney.
+ * Say \a testing \a testing to see a test message that navn replies with.
  * @{
  */
 
