@@ -46,4 +46,7 @@ void help_m(Socket &sock, irc_string *reply){
   }
 
 }
+/**
+ * @}
+ */
 #endif
