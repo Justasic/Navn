@@ -578,7 +578,7 @@ string make_pass(){
 const string password = make_pass();
 
 /**
- * \fn string kick(string channel, string user, string reason)
+ * \fn string kick(string Channel, string User, const char *fmt, ...)
  * \brief Handles kick requests
  * NOTE: must be used with \a sock
  * \param channel Channel to be kicked from.
@@ -586,12 +586,6 @@ const string password = make_pass();
  * \param reason Reason for the kick.
  * \return A string that, if sent to the socket, will kick the \a user from \a channel.
  */
-string kick(string channel, string user, string reason){
- stringstream kick_ss;
- kick_ss << "KICK " << channel << " " << user <<" "<< reason << nl;
- return kick_ss.str();
-}
-
 string kick(string Channel, string User, const char *fmt, ...){
 va_list args;
 va_start(args, fmt);
@@ -602,7 +596,14 @@ kick_ss << "KICK " << Channel << " " << User << " :" << buf << nl;
 va_end(args);
 return kick_ss.str();
 }
-
+/**
+ * \overload string kick(string channel, string user, string reason)
+ */
+string kick(string channel, string user, string reason){
+ stringstream kick_ss;
+ kick_ss << "KICK " << channel << " " << user <<" "<< reason << nl;
+ return kick_ss.str();
+}
 /** 
  * \fn string me(string dest, string message)
  * \brief Handles the IRC action function (/me)
@@ -646,15 +647,6 @@ string privmsg(string stringy1, string stringy2){
 }
 
 /**
- * \overload string privmsg(string Dest, char* message)
- */
-string privmsg(string Dest, char* message){
-  stringstream stringy_ss_privmsg;
-  stringy_ss_privmsg << "PRIVMSG " << Dest << " :" << message << nl;
-  return stringy_ss_privmsg.str();
-}
-
-/**
  * \overload string privmsg(string Dest, const char *fmt, ...)
  */
 string privmsg(string Dest, const char *fmt, ...){
@@ -684,7 +676,8 @@ return samode_ss.str();
 }
 
 /**
- * \overload string topic(string Dest, const char *fmt, ...)
+ * \fn string topic(string Dest, const char *fmt, ...)
+ * \brief Sets channel topic.
  */
 string topic(string Dest, const char *fmt, ...){
 va_list args;
@@ -696,10 +689,8 @@ topic_ss << "TOPIC " << Dest << " :" << buf << nl;
 va_end(args);
 return topic_ss.str();
 }
-
 /**
- * \fn string topic(string Dest, string buf)
- * \brief Sets channel topic.
+ * \overload string topic(string Dest, string buf)
  */
 string topic(string Dest, string buf){
 stringstream topic_ss;
@@ -845,19 +836,28 @@ string chmode(string channel, string mode, string username){
   string out_put = stringy_ss_mode.str();
   return out_put;
 }
+/** 
+ * \fn static void remove_pidfile()
+ * \brief Removes the PID file on exit
+ */
 static void remove_pidfile()
 {
  remove(pid_file.c_str());
 }
-/** Quit Function
- * Sends a disconnect message to IRC
- * @param quit(reason)
+/** 
+ * \fn string quit(string msg)
+ * \brief Sent quit to IRC to disconnect from the server
+ * NOTE: must be sent with \a sock.
+ * \param msg The message to be sent on quit.
  */
 string quit(string msg){
   stringstream msg_ss;
   msg_ss << "QUIT " << msg << nl;
   return msg_ss.str();
 }
+/**
+ * \overload string quit(const char *fmt, ...)
+ */
 string quit(const char *fmt, ...){
 va_list args;
 va_start(args, fmt);
@@ -868,29 +868,47 @@ quit_ss << "QUIT :" << buf << nl;
 va_end(args);
 return quit_ss.str();
 }
+
+/** 
+ * \fn static void DoQuit(Socket &s, const string msg)
+ * \brief Send quit to server and exit.
+ * \param Socket The socket class.
+ * \param msg The quit message
+ * \param K the exit status code
+ */
 static void DoQuit(Socket &s, const string msg){
   s.Send("QUIT :"+msg+nl);
   log("Quitting: %s", msg.c_str());
   log("Logging ended.");
   exit(0);
 }
+/**
+ * \overload DoQuit(Socket &s, const string msg, int K)
+ */
 static void DoQuit(Socket &s, const string msg, int K){
   s.Send("QUIT :"+msg+nl);
   log("Quitting: %s", msg.c_str());
   log("Logging ended.");
   exit(K);
 }
+/**
+ * \overload static void DoQuit(int K)
+ */
 static void DoQuit(int K){
   log("Logging ended.");
   exit(K);
 }
+/**
+ * \overload static void DoQuit()
+ */
 static void DoQuit(){
   log("Logging ended.");
   exit(0);
 }
-/** Restart Function
- * Restarts the Bot
- * @param restart(message)
+/** 
+ * \fn static void restart(string reason)
+ * \brief Restart the bot process
+ * \param reason The reason for the restart
  */
 static void restart(string reason){
    char CurrentPath[FILENAME_MAX];
@@ -908,6 +926,12 @@ static void restart(string reason){
 	exit(1);
   }
 }
+/** 
+ * \fn static void shutdown(Socket &sock, string quitmsg)
+ * \brief shutdown the bot process
+ * \param quitmsg The reason for the shutdown.
+ * \param sock The Socket class
+ */
 static void shutdown(Socket &sock, string quitmsg){
  if(quitmsg.empty())
       quitmsg = "Quitting: Unknown reason";
@@ -915,6 +939,9 @@ static void shutdown(Socket &sock, string quitmsg){
     sock << quit(quitmsg);
     DoQuit(sock, quitmsg); 
 }
+/**
+ * \overload static void Rehash()
+ */
 static void Rehash(){
  cout << "Rehashing config file." << nl;
  try{
@@ -929,6 +956,11 @@ static void Rehash(){
     log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
   } 
 }
+/** 
+ * \fn static void Rehash(Socket &sock)
+ * \brief Reload the bot config file
+ * \param sock The Socket class
+ */
 static void Rehash(Socket &sock){
  cout << "Rehashing config file." << nl;
  try{
@@ -944,6 +976,10 @@ static void Rehash(Socket &sock){
     sock << notice(owner_nick, "Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
   } 
 }
+/** 
+ * \fn static void WritePID()
+ * \brief Write the bots PID file
+ */
 static void WritePID(){
   //logging to a text file and making the PID file.
   FILE *pidfile;
@@ -1018,6 +1054,12 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
   }
+/** 
+ * \fn string trim(string const& source, char const* delims = " \t\r\n")
+ * \brief trims off the return characters from a string
+ * \param source The string which needs trimming
+ * \param delims The return charactor that needs removal
+ */
 string trim(string const& source, char const* delims = " \t\r\n") {
   string result(source);
   string::size_type index = result.find_last_not_of(delims);
@@ -1033,7 +1075,7 @@ string trim(string const& source, char const* delims = " \t\r\n") {
 
 /**Random Number Generator
  * This will generate a random number x is start number, y is the stop number.
- * @param randint(1,5)
+ * @param randint(int x, int y)
  */
 int randint(int x, int y) {
   srand(time(NULL));
@@ -1041,7 +1083,7 @@ int randint(int x, int y) {
 }
 /**Random Quit message selector
  * This is where it will set the quit message if there was a terminal quit or signal interrupt (ctrl+c)
- * @param siginit(12)
+ * @param siginit(integer)
  */
 string siginit(int sigstring){
   string message;
@@ -1111,7 +1153,7 @@ string siginit(int sigstring){
 }
 /** Terminal Signal Handler
  * Come here for weird signals
- * @param sigact(number-only)
+ * @param sigact(integer)
  */
 void sigact(int sig)
 {
@@ -1140,7 +1182,11 @@ void sigact(int sig)
       throw CoreException("Recieved weird signal from terminal. Signal Number: "+stringify(sig));
   }
 }
-
+/** 
+ * \fn string xmlToString(string fileName)
+ * \brief takes an xml file and converts it to a string
+ * \param source The filename for conversion
+ */
 string xmlToString(string fileName){
   string buf;
   string line;
@@ -1150,7 +1196,13 @@ string xmlToString(string fileName){
   }
   return buf;
 }
-
+/** 
+ * \fn string findInXML(string node, string info, string fileString)
+ * \brief xml string parser
+ * \param node An XML node
+ * \param info The info from that node
+ * \param fileString string to parse
+ */
 string findInXML(string node, string info, string fileString){
  
   string findee = "<"+node;
