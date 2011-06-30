@@ -138,25 +138,13 @@ void system_m(Socket &sock, irc_string *reply, string rply){
       a channel.
       */
       if(reply->said("252 "+nick)){
-	if (dev){
-		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-		cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-		cout << "\033[22;31mSending password to owner\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-		cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-		cout << "\033[01;33mWarning: \033[22;31mNavn is currently started with mode \""<< arg <<"\"\033[22;36m"<<nl;
-		cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<< nl;
-		sock << notice(owner_nick, "The randomly generated password is: "+password);
-		sock << notice(owner_nick, "\0038Warning: \017\0034\2%s is currently started in a non-normal mode. (%s)\017", nick.c_str(), arg.c_str());
-		sock << privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
-	} else {
-		cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-		cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-		cout << "\033[22;31mSending password to owner\033[22;30m... \033[22;32mCHECK\033[22;36m"<<nl;;
-		cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-		cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
-		sock << notice(owner_nick, "The randomly generated password is: "+password);
-		sock << privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
-        }
+	cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
+	cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
+	cout << "\033[22;31mSending password to owner\033[22;30m... \033[22;32mCHECK\033[22;36m"<<nl;;
+	cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
+	cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
+	sock << notice(owner_nick, "The randomly generated password is: "+password);
+	sock << privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
         in_channel = true;
       }
 

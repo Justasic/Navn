@@ -672,34 +672,37 @@ static void WritePID(){
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-    arg = argv[1];
+  if (argc < 1 || argv[1] == NULL){
+  }else{
+    string arg = argv[1];
     for(int Arg=0; Arg < argc; Arg++){
-    if(arg == "--developer" || arg == "--dev" || arg == "-d")
-    {
+       if(arg == "--developer" || arg == "--dev" || arg == "-d")
+       {
          dev = true;
 	 nofork = true;
 	 log("Navn is started in Developer mode. (%s)", arg.c_str());
-    }
-    else if (arg == "--nofork" || arg == "-f"){
-      nofork = true;
-      log("Navn is started With No Forking enabled. (%s)", arg.c_str());
-    }
-    else if (arg == "--help" || arg == "-h"){
-     help();
-    }
-    else if (arg == "--version" || arg == "-v"){
-      cout << "Navn IRC C++ Bot Version " << version << nl;
-      cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
-      cout << nl;
-      cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
-      cout << "WWW: http://www.Flux-Net.net" << nl;
-      cout << "Email: Staff@Flux-Net.net" << nl;
-      cout << "Git: git://gitorious.org:navn/navn.git" << nl;
-      cout << nl;
-      cout << "This bot does have Epic Powers." << nl;
-      cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
-      exit(0);
-    }
+       }
+       else if (arg == "--nofork" || arg == "-f"){
+         nofork = true;
+         log("Navn is started With No Forking enabled. (%s)", arg.c_str());
+       }
+       else if (arg == "--help" || arg == "-h"){
+        help();
+       }
+       else if (arg == "--version" || arg == "-v"){
+         cout << "Navn IRC C++ Bot Version " << version << nl;
+         cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
+         cout << nl;
+         cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
+         cout << "WWW: http://www.Flux-Net.net" << nl;
+         cout << "Email: Staff@Flux-Net.net" << nl;
+         cout << "Git: git://gitorious.org:navn/navn.git" << nl;
+         cout << nl;
+         cout << "This bot does have Epic Powers." << nl;
+         cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+         exit(0);
+       }
+  }
   }
    WritePID();
    log("Navn Started. PID: %d", getpid());
@@ -821,17 +824,15 @@ void sigact(int sig)
   string sigstr;
   switch (sig){
     case SIGHUP:
+    {
       signal(sig, SIG_IGN);
       Rehash();
       break;
+    }
     case SIGINT:
-      cout << "\r\n\033[0m";
-      sigstr = "Someone pressed CTRL + C";
-      signal(sig, SIG_IGN);
-      quitmsg = "Recieved Signal: "+sigstr;
-      quitting = true;
-      break;
     case SIGTERM:
+      signal(sig, SIG_IGN);
+      signal(SIGHUP, SIG_IGN);
       cout << "\r\n\033[0m";
       sigstr = "Someone killed me";
       signal(sig, SIG_IGN);

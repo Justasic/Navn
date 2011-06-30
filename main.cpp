@@ -100,16 +100,6 @@ int main (int argcx, char** argvx, char *envp[])
       /***********************************/
       
       delete reply;
-      if(quitting){
-	 if(!quitmsg.empty()){
-	   cout << quitmsg << endl;
-           DoQuit(sock, quitmsg);
-	 }else{
-	   quitmsg = "Quitting: Unknown reason";
-	   cout << quitmsg << endl;
-           DoQuit(sock, quitmsg);
-	 }
-      }
     }//while loop ends here
     if(!quitmsg.empty()){
       cout << quitmsg << endl;
