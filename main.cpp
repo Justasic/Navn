@@ -44,8 +44,8 @@ int main (int argcx, char** argvx, char *envp[])
     //Make the socket used to connect to the server
     Socket sock(server,port);
     //Incase there is no connection, say so
-    if ( !sock.get_address() ) throw SocketException("Could not resolve the IRC server.");
-    if ( !sock.connect() ) throw SocketException("Could not connect to the IRC server.");
+    if (!sock.get_address()) throw SocketException("Could not resolve the IRC server.");
+    if (!sock.connect()) throw SocketException("Could not connect to the IRC server.");
     //Accept some server replies after connecting
     sock >> rply;
     irc_string* reply = new irc_string(rply);
@@ -71,9 +71,11 @@ int main (int argcx, char** argvx, char *envp[])
     */
 
     while (!quitting){ //infi loop to stay connected
+      if(quitting)
+	 shutdown(sock, quitmsg);
       sock >> rply; //keep the connection messages in the rply string.
-
       irc_string* reply = new irc_string(rply);
+
       host = reply->host;
       fullhost = reply->usernick+"!"+reply->user+"@"+host;
       chan = reply->channel; //sets the variables.
@@ -98,17 +100,9 @@ int main (int argcx, char** argvx, char *envp[])
       TinyURL(sock, reply);
       //Flux_Services(sock, reply);
       /***********************************/
-      
       delete reply;
     }//while loop ends here
-    if(!quitmsg.empty()){
-      cout << quitmsg << endl;
-      DoQuit(sock, quitmsg);
-    }else{
-      quitmsg = "Quitting: Unknown reason";
-      cout << quitmsg << endl;
-      DoQuit(sock, quitmsg);
-    }
+    shutdown(sock, quitmsg);
   }//try ends here
   catch (SocketException& e) //catch any Exceptions sent.
   {

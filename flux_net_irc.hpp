@@ -464,7 +464,7 @@ return oper_ss.str();
 /** Channel message Function
  * This function sends a channel message to the pre-defined
  * channel in the defs.h file.
- * NOTE: must be sent with 'sock'
+ * NOTE: this function is deprecated and must be sent with 'sock'
  * @param chanmsg(Message)
  */
 string chanmsg(string stringy){
@@ -581,23 +581,23 @@ quit_ss << "QUIT :" << buf << nl;
 va_end(args);
 return quit_ss.str();
 }
-void DoQuit(Socket &s, const string msg){
+static void DoQuit(Socket &s, const string msg){
   s.Send("QUIT :"+msg+nl);
   log("Quitting: %s", msg.c_str());
   log("Logging ended.");
   exit(0);
 }
-void DoQuit(Socket &s, const string msg, int K){
+static void DoQuit(Socket &s, const string msg, int K){
   s.Send("QUIT :"+msg+nl);
   log("Quitting: %s", msg.c_str());
   log("Logging ended.");
   exit(K);
 }
-void DoQuit(int K){
+static void DoQuit(int K){
   log("Logging ended.");
   exit(K);
 }
-void DoQuit(){
+static void DoQuit(){
   log("Logging ended.");
   exit(0);
 }
@@ -605,7 +605,7 @@ void DoQuit(){
  * Restarts the Bot
  * @param restart(message)
  */
-void restart(string reason){
+static void restart(string reason){
    char CurrentPath[FILENAME_MAX];
    GetCurrentDir(CurrentPath, sizeof(CurrentPath));
  if(reason.empty()){
@@ -620,6 +620,13 @@ void restart(string reason){
 	remove_pidfile();
 	exit(1);
   }
+}
+static void shutdown(Socket &sock, string quitmsg){
+ if(quitmsg.empty())
+      quitmsg = "Quitting: Unknown reason";
+    cout << quitmsg << endl;
+    sock << quit(quitmsg);
+    DoQuit(sock, quitmsg); 
 }
 static void Rehash(){
  cout << "Rehashing config file." << nl;
@@ -838,6 +845,7 @@ void sigact(int sig)
       signal(sig, SIG_IGN);
       quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
+      throw CoreException(quitmsg);
       break;
     default:
       quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);

@@ -157,6 +157,5 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 		in_channel = false;
 		log("%s kicked bot out of channel %s", unick.c_str(), chan.c_str());
       }
-
 }
 #endif
