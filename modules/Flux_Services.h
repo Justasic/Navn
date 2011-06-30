@@ -2,6 +2,30 @@
 #define FS
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+/**
+ * \file Flux_Services.h Header file holding the \a Flux_S3rvices functions.
+ * \author DeathBlade. Polished by Justasic.
+ */
+
+/**
+ * \defgroup flux_servicesM Flux_S3rvices Module
+ * This is the module for the Flux_S3rvices function.
+ * For a better description see the function description.
+ * \section commands Commands associated with this module.
+ * \subsection part !part
+ * Say \a !part and the bot will part the channel the command was said in
+ * \subsection botadd !botadd
+ * Say \a !botadd with the correct parameters and if the bot is oper, the bot will
+ * create a new anope channel bot for the network
+ * \subsection magicbox !magicbox
+ * Say \a !magicbox in a channel and the bot will give you a random object from the list in the switch statement
+ * @{
+ */
+
+/**
+ * \fn void Flux_Services(Socket &sock, irc_string *reply)
+ * \brief Flux_S3rvices module created by DeathBlade
+ */
 using namespace std;
 using namespace flux_net_irc;
 int idiots = 0; //define the idiot counter outside of the main loop
@@ -134,4 +158,7 @@ void Flux_Services(Socket &sock, irc_string *reply){
 		}	
 	}*/
 }
+/**
+ * @}
+ */
 #endif
