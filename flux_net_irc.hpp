@@ -666,51 +666,70 @@ string setnick(string nickname){
  return nick_ss.str();
 }
 
-/** Join channel function
- * Makes the bot join a channel
- * NOTE: must be sent with 'sock'
- * @param join("#channel")
+/** 
+ * \fn string join(string stringy_chan)
+ * \brief Makes the bot join a channel
+ * NOTE: must be sent with \a sock.
+ * \param stringy_chan A string with the channel you want to join.
  */
 string join(string stringy_chan){
   stringstream stringy_join_ss;
   stringy_join_ss << "JOIN " << stringy_chan << nl;
   return stringy_join_ss.str();
 }
-/** Part Function
- * Sends part with message
- * NOTE: must be used with 'sock'
- * @param part(channel, reason)
+
+/** 
+ * \fn string part(string channel, string reason)
+ * \brief Sends part with message
+ * NOTE: must be used with \a sock.
+ * \param channel Channel to part from.
+ * \param reason Reason for parting.
  */
 string part(string channel, string reason){
   stringstream part_ss;
   part_ss << "PART " << channel << " " << reason << nl;
   return part_ss.str();
 }
+/** 
+ * \overload string part(string channel)
+ * \brief Parts channel w/o reason.
+ * NOTE: must be used with \a sock.
+ * \param channel Channel to part from.
+ */
 string part(string channel){
   stringstream part_ss;
   part_ss << "PART "<< channel << nl;
   return part_ss.str();
 }
-/** Whois Function
- * Sends a IRC Whois to Server.
- * NOTE: must be sent with 'sock'
- * @param whois(nickname)
+
+/** 
+ * \fn string whois(string Nick)
+ * \brief Sends a IRC Whois to Server.
+ * NOTE: must be sent with \a sock.
+ * \param Nick Nick to query
  */
  string whois(string Nick){
   stringstream whois_ss;
   whois_ss << "WHOIS " << Nick << nl;
   return whois_ss.str();
  }
-/** Notice Function
- * Sends a IRC notice to a user or channel
- * NOTE: must be sent with 'sock'
- * @param notice(Destination, message)
+ 
+/** \fn string notice(string Destination, string Message)
+ * \brief Sends a IRC notice to a user or channel
+ * NOTE: must be sent with \a sock.
+ * \param Destination Who to send the notice to.
+ * \param Message Message to send to \a Destination.
  */
 string notice(string Destination, string Message){
   stringstream notice_ss;
   notice_ss << "NOTICE " << Destination << " :" << Message << nl;
   return notice_ss.str();
 }
+/**
+ * \overload  string notice(string Destination, string Message)
+ * \brief Sends a IRC notice to a user or channel
+ * NOTE: must be sent with \a sock.
+ */
 string notice(string Dest, const char *fmt, ...){
   stringstream notice_ss;
   va_list args;
@@ -721,10 +740,13 @@ string notice(string Dest, const char *fmt, ...){
   va_end(args);
   return notice_ss.str();
 }
-/** Mode Function
- * Sends a mode to be set in IRC
- * NOTE: must be sent with 'sock'
- * @param mode(Destination, mode)
+
+/** 
+ * \fn string mode(string nickname, string mode)
+ * \brief Sends a mode to be set in IRC
+ * NOTE: must be sent with \a sock.
+ * \param nickname Nickname of who we are setting a more to.
+ * \param mode The mode to set.
  */
 string mode(string nickname, string mode){
   stringstream stringy_ss_mode;
@@ -732,9 +754,10 @@ string mode(string nickname, string mode){
   string out_put = stringy_ss_mode.str();
   return out_put;
 }
-/** Channel Mode Function
- * Sends a channel mode to the IRC network
- * @param chmode(channel, mode, username)
+
+/** 
+ * \fn string chmode(string channel, string mode, string username)
+ * \brief Sends a channel mode to the IRC network.
  */
 string chmode(string channel, string mode, string username){
   stringstream stringy_ss_mode;
