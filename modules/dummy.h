@@ -5,8 +5,13 @@
 using namespace std;
 using namespace flux_net_irc;
 /**
+<<<<<<< HEAD
+ * \example dummy.h
+ * This is an example module showing a simple if-said-that-reply-this situation.
+=======
  * \example dummy.h 
  * This is an example module showing a simple if-said-than-reply-this situation.
+>>>>>>> 2a5ec5e4eaaa4bebf7b98352096d984570ad5beb
  * \file dummy.h Header file holding the \a dummy function.
  * \author Lordofsraam
  */
