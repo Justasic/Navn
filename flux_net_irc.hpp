@@ -10,48 +10,65 @@ template<typename T> inline std::string stringify(const T &x){
 	return stream.str();
 }
 namespace flux_net_irc{
-  
+  /** 
+   * \namespace flux_net_irc
+   * \brief This is where we keep all our algorithms
+   * 
+   * We made this namespace so we could group all the common functions
+   * and algorithms we use really often in one place. These will 
+   * hopefully help anyone else that tries to extend navn.
+ */
   using namespace std;
-  /** irc_string Class
- * Lordofsraam must document this
- * NOTE this MUST be used in the main file.
- * @param variable->params(#)
+class irc_string:string{
+  /** \class irc_string
+ * NOTE this MUST be included in the main file.
+ * This class wraps around a string (usually revieved from the irc server)
+ * and attempts to decode all the info recieved from the server
+ * so as to make it easier to read different kinds of information
+ * (ei. who said something, their host, username, etc.)
+ * @param variable->params(positive_int)
  * @param variable->raw_string
  * @param variable->usernick
  * @param variable->host
  * @param variable->user
  * @param variable->channel
  * @param variable->message
- * @param variable->said(whats-said)
+ * @param variable->said(word_to_be_found)
  */
-class irc_string:string{
   private :
     vector<string> toks;
   public :
-    string raw_string;
-    string usernick;
-    string host;
-    string user;
-    string channel;
-    string message;
-       
+    string raw_string; /**< Will hold the exact string that was recieved from the server */
+    string usernick; /**< Will hold the usernick of the person who sent the message*/
+    string host; /**< Will hold the host of the person who sent the message */
+    string user; /**< Will hold the user of the person who sent the message */
+    string channel; /**< Will hold the channel of where the message was said */
+    string message; /**< Will hold the message (no irc protocol stuff) */
+    /**
+     *\fn irc_string(string reply)
+     *Constructor for \a irc_string class
+     * This is where the magic happens. The constructor takes the string
+     * and breaks it down into its component parts to find the 
+     * \a usernick \a host \a user \a channel and \a message
+     */   
     irc_string(string reply){
       raw_string = reply;
       usernick = isolate(':','!',reply);
       host = isolate('@',' ',reply);
       user = isolate('!','@',reply);
       channel = '#'+isolate('#',' ',reply);
-      
+      string space = "  ";
       size_t pos = reply.find(" :");
       pos += 2;
       for (int i = pos; i < reply.length(); i++){
 	if (reply.at(i) == ' '){
-	  message += reply.at(i);
+	  message.append(space);
 	}else{message = message+reply.at(i);}
       }
       if(message.size()>2){
 	message.resize(message.size()-2);
       }
+      
       string fmessage = message;
       char * cmessage = (char *)fmessage.c_str();
       char * pch;
@@ -62,13 +79,52 @@ class irc_string:string{
 	pch = strtok (NULL, " ");
       }
     }
-    
+    /**
+     * \fn string params(int i)
+     * \brief Returns individual words from the message of a reply
+     * Because \a toks is private, this is its "get" function.
+     * We made this so someone writing a module doesn't try to go out 
+     * of bounds while accessing an array.
+     * \param i An integer value.
+     * \return A string with the single specified word.
+     */
     string params(int i){
       if (i >= toks.size()){
 	return " ";
       }else{return toks[i];}
     }
-    
+    /**
+     * \overload string params(int b, int e)
+     * \brief Overload of params. Returns a range of words.
+     * We overloaded \a params() so that you could get a range of words from the message
+     *  as requeseted by Justasic.
+     * \param b An integer value describing the place of the first word wanted.
+     * \param e An integer value describing the place of the last word wanted.
+     * \return A string withing the range of words specified by \a b and \a e
+     */
+    string params(int b, int e){
+      string buf = "";
+      if (b >= toks.size()){
+	b = toks.size();
+      }
+      if (e >= toks.size()){
+	e = toks.size() - 1;
+      }
+      for (int i = b; i <= (e); i++){
+	buf += toks[i];
+	buf.append(" ");
+      }
+      return buf;
+    }
+    /**
+     * \fn static string isolate(char begin, char end, string msg)
+     * \brief Isolates a string between two characters
+     * Finds the first character, then begins to add every consecutive character from there to a string
+     *  until it reaches the end character.
+     * \param begin The character saying where the cut should begin.
+     * \param end The character saying where the cut should end.
+     * \param msg The string you are wanting to isolate from.
+     */
     static string isolate(char begin, char end, string msg){
       string to_find;
       size_t pos = msg.find(begin);
@@ -81,13 +137,27 @@ class irc_string:string{
       return to_find;
     }
     
+    /**
+     * \fn bool said(string findee)
+     * \brief Check if something was said.
+     * \param findee The string you want to check if was said.
+     * \return True if \a findee was found, false otherwise.
+     */
     bool said(string findee){
       int i = raw_string.find(findee);
       if (i != string::npos){
 	return true;
       }else{return false;}
     }
-    
+    /**
+     * \overload static bool said(string source, string findee)
+     * \brief Static overload of said() function.
+     * \param source A string that is to be searched through.
+     * \param findee The string that is to be found.
+     * We overloaded the said function and made it static because we thought it would be 
+     *  very useful to have outside of an \a irc_string object.
+     * \return True if \a findee was found, false otherwise.
+     */
     static bool said(string source, string findee){
       int i = source.find(findee);
       if (i != string::npos){
@@ -96,6 +166,10 @@ class irc_string:string{
     }
 
 };
+
+/**
+ * \class IsoHost
+ */
 class IsoHost:string{
 public:
     string raw;
@@ -679,12 +753,11 @@ static void WritePID(){
 void startup(int argc, char** argv) {
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-  if (argc < 1 || argv[1] == NULL){
-  }else{
-    string arg = argv[1];
-    for(int Arg=0; Arg < argc; Arg++){
-       if(arg == "--developer" || arg == "--dev" || arg == "-d")
-       {
+  if(argv[1] != NULL){
+    arg = argv[1];
+   for(int Arg=0; Arg < argc; Arg++){
+    if(arg == "--developer" || arg == "--dev" || arg == "-d")
+    {
          dev = true;
 	 nofork = true;
 	 log("Navn is started in Developer mode. (%s)", arg.c_str());
@@ -729,6 +802,7 @@ void startup(int argc, char** argv) {
 	}
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
+  }
   }
 }
 string trim(string const& source, char const* delims = " \t\r\n") {

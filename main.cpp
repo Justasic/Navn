@@ -1,4 +1,7 @@
-/* main.cpp */
+/**
+ *\file  main.cpp 
+ *\brief Contains the main() function.
+ */
 #include "flux_net_irc.hpp"
 
 /*Include your modules here*/
@@ -100,6 +103,9 @@ int main (int argcx, char** argvx, char *envp[])
       TinyURL(sock, reply);
       //Flux_Services(sock, reply);
       /***********************************/
+      cout << msg << endl;
+      cout << reply->params(0) << endl;
+      cout << reply->params(0,3) << endl;
       delete reply;
     }//while loop ends here
     shutdown(sock, quitmsg);
