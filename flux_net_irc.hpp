@@ -721,7 +721,6 @@ oper_ss << "OPER " << buf << nl;
 va_end(args);
 return oper_ss.str();
 }
-<<<<<<< HEAD
 
 /** 
  * \fn string chanmsg(string stringy)
@@ -729,13 +728,6 @@ return oper_ss.str();
  * NOTE: must be sent with \a sock
  * \param stringy String to send to channel.
  * \deprecated This function is still available but we discourage its use due to the fact that it does not support mutilple channels.
-=======
-/** Channel message Function
- * This function sends a channel message to the pre-defined
- * channel in the defs.h file.
- * NOTE: this function is deprecated and must be sent with 'sock'
- * @param chanmsg(Message)
->>>>>>> 35d102e0d3ac210007b8fc053b6702d24f7ecd92
  */
 string chanmsg(string stringy){
   stringstream stringy_ss;
