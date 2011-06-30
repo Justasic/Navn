@@ -5,7 +5,7 @@
 using namespace std;
 using namespace flux_net_irc;
 /**
- * \example dummy.h 
+ * \example dummy.h
  * This is an example module showing a simple if-said-that-reply-this situation.
  * \file dummy.h Header file holding the \a dummy function.
  * \author Lordofsraam

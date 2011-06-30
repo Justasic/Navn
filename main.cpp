@@ -18,7 +18,7 @@
  */
 #include "flux_net_irc.hpp"
 
-/*Include your modules here*/
+
 #include "modules/da_goat.h"
 #include "modules/dns.h"
 #include "modules/ctcp.h"
@@ -33,7 +33,6 @@
 #include "modules/weather.h"
 #include "modules/tinyurl.h"
 //#include "modules/Flux_Services.h"
-/***************************/
 
 string binary_path, services_dir, services_bin;
 using namespace std;
@@ -101,7 +100,7 @@ int main (int argcx, char** argvx, char *envp[])
       ident = reply->user;
       raw = reply->raw_string;
 
-      /*************MODULES**************/
+      /**       MODULES          */
       ping_pong(sock, reply, rply);
       searcher(sock, reply, rply);
       system_m(sock, reply, rply);
