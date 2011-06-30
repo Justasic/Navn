@@ -721,7 +721,6 @@ oper_ss << "OPER " << buf << nl;
 va_end(args);
 return oper_ss.str();
 }
-
 /** 
  * \fn string chanmsg(string stringy)
  * \brief This function sends a channel message to the pre-defined channel in the defs.h file.
