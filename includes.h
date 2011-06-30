@@ -1,7 +1,10 @@
 #ifndef includes_h
 #define includes_h
 /**
- * The only use in this file is to fix the includes hell that 
+ *\file includes.h Inlcludes header file
+ *\brief Automatically includes all of the things we've used so far.
+ *\author Justasic
+ * The only use of this file is to fix the includes hell that 
  * Justasic was having earlier. if you can fix it an easier 
  * way then do so.
  */

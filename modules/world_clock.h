@@ -10,16 +10,29 @@
 #define AUS (+10)
 using namespace std;
 using namespace flux_net_irc;
+
+/**
+ * \file world_clock.h Header file holding the \a world_clock function.
+ * \author Lordofsraam. Polished by Justasic.
+ */
+
+/**
+ * \defgroup world_clockM World Clock Module
+ * This is the module for the world clock function.
+ * For a better description see the function description.
+ * \section commands Commands associated with this module.
+ * \subsection time !time
+ * Say \a !time to see the current time, the GMT, and the times in New York, California, Beijing, and Sydney.
+ * @{
+ */
+
+/**
+ * \fn void world_clock(Socket &sock, irc_string *reply)
+ * \brief Tells the world time.
+ * Uses C++ time functions to tell the time around the world.
+ */
 void world_clock(Socket &sock, irc_string *reply){
-//If it looks for !time in a server rply (aka if anyone in the channel
-//says it) and if it finds it, it tells the time.
   if (reply->said("!time") && in_channel){
-    /*WORLD CLOCK
-    Since this is all C++ and not IRC or socket stuff, I won't bother
-    trying to explain it. (Mainly because if youre trying something
-    like this you should already have a decent grasp on C++, and partly
-    because I'm lazy)
-    */
     time_t rawtime;
     tm * ptm;
     time ( &rawtime );
@@ -40,4 +53,7 @@ void world_clock(Socket &sock, irc_string *reply){
   }
 
 }
+/**
+ * @}
+ */
 #endif

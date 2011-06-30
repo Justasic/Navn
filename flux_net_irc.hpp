@@ -26,24 +26,23 @@ class irc_string:string{
  * and attempts to decode all the info recieved from the server
  * so as to make it easier to read different kinds of information
  * (ei. who said something, their host, username, etc.)
- * @param variable->params(positive_int)
- * @param variable->raw_string
- * @param variable->usernick
- * @param variable->host
- * @param variable->user
- * @param variable->channel
- * @param variable->message
- * @param variable->said(word_to_be_found)
+ * \param toks Private vector that will contain the words in \a message.
+ * \param raw_string Will hold the exact string that was recieved from the server.
+ * \param usernick Will hold the usernick of the person who sent the message.
+ * \param host Will hold the host of the person who sent the message.
+ * \param user Will hold the user of the person who sent the message.
+ * \param channel Will hold the channel of where the message was said.
+ * \param message Will hold the message (stripped of irc protocol stuff)
  */
   private :
     vector<string> toks;
   public :
-    string raw_string; /**< Will hold the exact string that was recieved from the server */
-    string usernick; /**< Will hold the usernick of the person who sent the message*/
-    string host; /**< Will hold the host of the person who sent the message */
-    string user; /**< Will hold the user of the person who sent the message */
-    string channel; /**< Will hold the channel of where the message was said */
-    string message; /**< Will hold the message (no irc protocol stuff) */
+    string raw_string;
+    string usernick; 
+    string host; 
+    string user; 
+    string channel; 
+    string message; 
     /**
      *\fn irc_string(string reply)
      *Constructor for \a irc_string class
@@ -169,6 +168,8 @@ class irc_string:string{
 
 /**
  * \class IsoHost
+ * \brief Wrapper for an irc host
+ * This was written by Justasic to break up the parts of a messages host for easier use.
  */
 class IsoHost:string{
 public:
@@ -176,6 +177,10 @@ public:
     string nick;
     string host;
     string user;
+    /**
+     * \fn IsoHost(string fullhost)
+     * \param fullhost A string containing the full host of an irc message
+     */
     IsoHost(string fullhost){
       nick = irc_string::isolate(':','!',fullhost);
       raw = fullhost;
@@ -183,9 +188,11 @@ public:
       user = irc_string::isolate('!','@',fullhost);
     }
 };
-/** Search Function
- * This is what generates the search links
- * @param search(origonal-string, command-used) 
+
+/** 
+ * \fn string search(string s, string command)
+ * \brief generates search links for url's
+ * This is what generates the search links.
  */
 string search(string s, string command){
   string raw_searchstring;
@@ -263,10 +270,29 @@ string search(string s, string command){
     }
   }
 }
+
+/** 
+ * \fn string removeCommand(string command, string s)
+ * \brief Removes a command from a string.
+ * \param command String to be taken out.
+ * \param s Original string.
+ * This takes out \a command from \a s and returns \a s without \a command It's very useful when you want 
+ * to use the rest of a string as an argument for a command.
+ * \return A string \a s without \a command.
+ */
 string removeCommand(string command, string s){
   size_t pos = s.find(command);
   return s.substr(pos+(command.size())+1);
 }
+
+/** 
+ * \fn string makeSearchString(string raw_searchstring)
+ * \brief Replaces special chars in a string with url compliant codes.
+ * \param raw_searchstring
+ * Goes through each character in a string and if it finds a special character, 
+ * it replaces it with what would be in a url for that character.
+ * \return A string without any special characters other than %
+ */
 string makeSearchString(string raw_searchstring){
   string searchstring;
   for (int i=0; i < raw_searchstring.length(); i++){
@@ -322,6 +348,13 @@ string makeSearchString(string raw_searchstring){
   }
   return searchstring;
 }
+
+/** 
+ * \fn string execute(const char *cmd)
+ * \brief Sends a command to the OS
+ * \param *cmd A command
+ * \return A string containing the response from the OS.
+ */
 string execute(const char *cmd) {
     #ifdef _WIN32
     FILE* pipe = _popen
@@ -342,6 +375,14 @@ string execute(const char *cmd) {
     #endif
     return result;
 }
+
+/** 
+ * \fn string make_two_digits(int x)
+ * \brief Makes single digit int into a double digit string.
+ * This was really just for the \a world_clock module but it's handy to have around.
+ * \param x A single digit integer.
+ * \return A string containing integer as a double digit.
+ */
 string make_two_digits(int x){
   if (x < 10){
     stringstream dd_ss;
@@ -355,9 +396,11 @@ string make_two_digits(int x){
     return sd_time;
   }
 }
-/** Strip Function
- * Strip \r and \n from a string.
- * @param strip(string_to_strip);
+/** \fn string strip(const string &buf)
+ * \brief Strips \r and \n from a string
+ * Takes out the '\r' and '\n' from a string. Mostly used in messing with irc replies.
+ * \param &buf String to be stripped
+ * \return \a &buf without the '\r' and '\n'.
  */
 string strip(const string &buf){
 	string newbuf = buf;
@@ -368,18 +411,23 @@ string strip(const string &buf){
 	}
 	return newbuf;
 }
-/** Get the operating systems time
- * This is just a simple function that gets the time
- * @param os_time
+
+/**
+ *\fn  string os_time()
+ *\brief Get the operating system's time
+ * This is just a simple function that gets the time.
+ * \return A string of the current system time.
  */
 string os_time(){
   time_t rawtime;
   time ( &rawtime );
   return ctime(&rawtime);
 }
-/** The Log
+
+/** 
+ * \fn void log(const char *fmt, ...)
  * This is what logs everything that goes on with the bot
- * @param log(Message)
+ * \param *fmt
  */
 void log(const char *fmt, ...){
   fstream log;
@@ -405,19 +453,25 @@ void log(const char *fmt, ...){
   va_end(args);
   log.close();
 }
-/**Channel Validation
+
+/**
+ * \fn bool IsValadChannel(const string nerp)
  * This function returns if the channel is valid or not.
- * @param isValadChannel(channel)
+ * \param nerp Channel sring to be tested.
+ * \return True if the string is a valid channel, false otherwise.
  */
 bool IsValadChannel(const string nerp){
  if (nerp[0] != '#')
     return true;
  return false;
 }
-/** Password generator
+
+/** 
+ * \fn string make_pass()
+ * \brief Makes a random password
  * This generates a 5 number random password for the bots
- * quit and other password protected commands
- * @param make_pass()
+ * quit and other password protected commands.
+ * \return A string containing the 5 digit password.
  */
 string make_pass(){
   int p1,p2,p3,p4,p5;
@@ -434,16 +488,21 @@ string make_pass(){
 }
 const string password = make_pass();
 
-/** Kick Function
- * Handles kick requests
- * NOTE: must be used with 'sock'
- * @param kick(channel, nickname, reason)
+/**
+ * \fn string kick(string channel, string user, string reason)
+ * \brief Handles kick requests
+ * NOTE: must be used with \a sock
+ * \param channel Channel to be kicked from.
+ * \param user User to be kicked.
+ * \param reason Reason for the kick.
+ * \return A string that, if sent to the socket, will kick the \a user from \a channel.
  */
 string kick(string channel, string user, string reason){
  stringstream kick_ss;
  kick_ss << "KICK " << channel << " " << user <<" "<< reason << nl;
  return kick_ss.str();
 }
+
 string kick(string Channel, string User, const char *fmt, ...){
 va_list args;
 va_start(args, fmt);
@@ -454,16 +513,24 @@ kick_ss << "KICK " << Channel << " " << User << " :" << buf << nl;
 va_end(args);
 return kick_ss.str();
 }
-/** Action handler
- * handles the IRC action function (/me)
- * NOTE: must be used with 'sock'
- * @param act(destination, message)
+
+/** 
+ * \fn string me(string dest, string message)
+ * \brief Handles the IRC action function (/me)
+ * NOTE: must be used with \a sock
+ * \param dest The channel to perform the 'action'.
+ * \param message The 'action' to be performed.
+ * \return A string that, if sent to the socket, will perform the \a message in channel \a dest.
  */
 string me(string dest, string message){
  stringstream me_ss;
  me_ss << "PRIVMSG " << dest << " :\001ACTION " << message << "\001" << nl;
  return me_ss.str();
 }
+
+/**
+ * \overload string me(string Dest, const char *fmt, ...)
+ */
 string me(string Dest, const char *fmt, ...){
 va_list args;
 va_start(args, fmt);
@@ -474,21 +541,33 @@ me_ss << "PRIVMSG " << Dest << " :\001ACTION " << buf << "\001" << nl;
 va_end(args);
 return me_ss.str();
 }
-/** Privmsg Function
- * Sends a PRIVMSG to a user, service, or channel
- * NOTE: must be sent with 'sock'
- * @param privmsg(destination, message)
+
+/** 
+ * \fn string privmsg(string stringy1, string stringy2)
+ * \brief Sends a PRIVMSG to a user, service, or channel
+ * NOTE: must be sent with \a sock
+ * \param stringy1 Who to send it to.
+ * \param stringy2 What to send
+ * \return A string that, if sent to the socket, will send a message \a stringy2 to a user \a stringy1
  */
 string privmsg(string stringy1, string stringy2){
   stringstream stringy_ss_privmsg;
   stringy_ss_privmsg << "PRIVMSG " << stringy1 << " :" << stringy2 << nl;
   return stringy_ss_privmsg.str();
 }
+
+/**
+ * \overload string privmsg(string Dest, char* message)
+ */
 string privmsg(string Dest, char* message){
   stringstream stringy_ss_privmsg;
   stringy_ss_privmsg << "PRIVMSG " << Dest << " :" << message << nl;
   return stringy_ss_privmsg.str();
 }
+
+/**
+ * \overload string privmsg(string Dest, const char *fmt, ...)
+ */
 string privmsg(string Dest, const char *fmt, ...){
 va_list args;
 va_start(args, fmt);
@@ -499,6 +578,11 @@ privmsg_ss << "PRIVMSG " << Dest << " :" << buf << nl;
 va_end(args);
 return privmsg_ss.str();
 }
+
+/**
+ * \fn string samode(string Dest, const char *fmt, ...)
+ * \brief Sends an IRC /samode command
+ */
 string samode(string Dest, const char *fmt, ...){
 va_list args;
 va_start(args, fmt);
@@ -509,6 +593,10 @@ samode_ss << "SAMODE " << Dest << " :" << buf << nl;
 va_end(args);
 return samode_ss.str();
 }
+
+/**
+ * \overload string topic(string Dest, const char *fmt, ...)
+ */
 string topic(string Dest, const char *fmt, ...){
 va_list args;
 va_start(args, fmt);
@@ -520,11 +608,20 @@ va_end(args);
 return topic_ss.str();
 }
 
+/**
+ * \fn string topic(string Dest, string buf)
+ * \brief Sets channel topic.
+ */
 string topic(string Dest, string buf){
 stringstream topic_ss;
 topic_ss << "TOPIC " << Dest << " :" << buf << nl;
 return topic_ss.str();
 }
+
+/**
+ * \fn string oper(const char *msg, ...)
+ * \brief Sends IRC command /oper
+ */
 string oper(const char *msg, ...){
 va_list args;
 va_start(args, msg);
@@ -535,27 +632,32 @@ oper_ss << "OPER " << buf << nl;
 va_end(args);
 return oper_ss.str();
 }
-/** Channel message Function
- * This function sends a channel message to the pre-defined
- * channel in the defs.h file.
- * NOTE: must be sent with 'sock'
- * @param chanmsg(Message)
+
+/** 
+ * \fn string chanmsg(string stringy)
+ * \brief This function sends a channel message to the pre-defined channel in the defs.h file.
+ * NOTE: must be sent with \a sock
+ * \param stringy String to send to channel.
+ * \deprecated This function is still available but we discourage its use due to the fact that it does not support mutilple channels.
  */
 string chanmsg(string stringy){
   stringstream stringy_ss;
   stringy_ss << "PRIVMSG " << channel << " " << stringy << nl;
   return stringy_ss.str();
 }
-/** Set Nickname Function
- * Sets the bots nickname in IRC.
- * NOTE: must be sent with 'sock'
- * @param setnick("nickname")
+
+/** 
+ * \fn string setnick(string nickname)
+ * \brief Sets the bots nickname in IRC.
+ * NOTE: must be sent with \a sock
+ * \param nickname A string with the new nickname.
  */
 string setnick(string nickname){
  stringstream nick_ss;
  nick_ss << "NICK " << nickname << nl;
  return nick_ss.str();
 }
+
 /** Join channel function
  * Makes the bot join a channel
  * NOTE: must be sent with 'sock'
