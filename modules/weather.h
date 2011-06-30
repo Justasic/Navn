@@ -5,7 +5,31 @@
 using namespace std;
 using namespace flux_net_irc;
 
+/**
+ * \file weather.h Header file holding the \a weather function.
+ * \author Lordofsraam (very proud of his xml pseudo-parsing). Polished by Justasic.
+ */
+
+/**
+ * \defgroup weatherM Weather Module
+ * This is the module for the weather function.
+ * For a better description see the function description.
+ * \section commands Commands associated with this module.
+ * \subsection weather !weather
+ * Follow \a !weather with either a U.S. postal code or a city name and country/state name.
+ * @{
+ */
+
 char * pEnd;
+
+/**
+ * \fn void weather(Socket &sock, string rply)
+ * \brief Says the weather.
+ * This is a good example of how to use the xml pseudo-parser we have in the \a flux_net_irc namespace.
+ * If \a !weather is said then it takes whatever follows that and uses wget to get an xml file from 
+ * the google weather api. From there it pseudo-parses the file using functions from \a flux_net_irc 
+ * and throws the needed contents out of the main socket as a private message (using \a privmsg).
+ */
 
 void weather(Socket &sock, string rply){
   irc_string* reply = new irc_string(rply);
@@ -31,4 +55,8 @@ void weather(Socket &sock, string rply){
   }
   delete reply;
 }
+
+/**
+ * @}
+ */
 #endif
