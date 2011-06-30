@@ -5,13 +5,8 @@
 using namespace std;
 using namespace flux_net_irc;
 /**
-<<<<<<< HEAD
  * \example dummy.h
  * This is an example module showing a simple if-said-that-reply-this situation.
-=======
- * \example dummy.h 
- * This is an example module showing a simple if-said-than-reply-this situation.
->>>>>>> 2a5ec5e4eaaa4bebf7b98352096d984570ad5beb
  * \file dummy.h Header file holding the \a dummy function.
  * \author Lordofsraam
  */
@@ -21,7 +16,7 @@ using namespace flux_net_irc;
  * This is a template or example module.
  * \section commands Commands associated with this module.
  * \subsection test testing testing
- * Say \a testing \a testing to see a test message that navn replies with.
+ * Say "testing testing" to see the current time, the GMT, and the times in New York, California, Beijing, and Sydney.
  * @{
  */
 
@@ -40,4 +35,5 @@ void dummy(Socket &sock, irc_string *reply){
 /**
  * @}
  */
+
 #endif
