@@ -137,13 +137,27 @@ class irc_string:string{
       return to_find;
     }
     
+    /**
+     * \fn bool said(string findee)
+     * \brief Check if something was said.
+     * \param findee The string you want to check if was said.
+     * \return True if \a findee was found, false otherwise.
+     */
     bool said(string findee){
       int i = raw_string.find(findee);
       if (i != string::npos){
 	return true;
       }else{return false;}
     }
-    
+    /**
+     * \overload static bool said(string source, string findee)
+     * \brief Static overload of said() function.
+     * \param source A string that is to be searched through.
+     * \param findee The string that is to be found.
+     * We overloaded the said function and made it static because we thought it would be 
+     *  very useful to have outside of an \a irc_string object.
+     * \return True if \a findee was found, false otherwise.
+     */
     static bool said(string source, string findee){
       int i = source.find(findee);
       if (i != string::npos){
@@ -152,6 +166,10 @@ class irc_string:string{
     }
 
 };
+
+/**
+ * \class IsoHost
+ */
 class IsoHost:string{
 public:
     string raw;
