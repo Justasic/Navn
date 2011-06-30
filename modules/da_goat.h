@@ -4,6 +4,53 @@
 #include "../flux_net_irc.hpp"
 using namespace std;
 using namespace flux_net_irc;
+
+/**
+ * \file da_goat.h Header file holding the \a Da_Goat function.
+ * \author Lordofsraam & Justasic
+ */
+
+/**
+ * \defgroup da_goatM Da Goat Module
+ * This is the module for the Da Goat.
+ * For a better description see the function description.
+ * \section commands Commands associated with this module.
+ * \subsection poke !poke
+ * Say \a !poke to poke Da Goat!
+ * \subsection info !info
+ * Say \a !info to get information about flux-net.
+ * \subsection rename !rename
+ * Say \a !rename to learn how to rename yourself.
+ * \subsection register !register
+ * Say \a !register to learn how to reegister yourself.
+ * \subsection socialinfo !socialinfo
+ * Say \a !socialinfo to learn about contacting flux-net.
+ * \subsection help !help
+ * Say \a !help to get help on IRC.
+ * \subsection ts3 !ts3
+ * Say \a !ts3 to get information about flux-net's TeamSpeak 3 server.
+ * \subsection uptime !uptime
+ * Say \a !uptime to get the uptime of the server that Navn is running on.
+ * \subsection rules !rules
+ * Say \a !rules to learn about our IRC rules.
+ * \subsection spam !spam
+ * Say \a !spam to get flux-net's definition of 
+ * \subsection version !version
+ * Say \a !version to get Navn's verion.
+ * \subsection everything !everything
+ * Say \a !everything
+ * \subsection cum cum
+ * Say \a cum
+ * @{
+ */
+
+/**
+ * \fn void Da_Goat(Socket &sock, irc_string *reply)
+ * \brief Runs Da_Goat
+ * Da Goat is used to repeat a lot of things we got tired of saying, like teaching new people how to do thigns and what the 
+ * rules of the server were.
+ */
+
 void Da_Goat(Socket &sock, irc_string *reply){
 /***************************Da_Goat Functions*******************************/
 	if(reply->said("!poke")){ //Easter egg ;P
@@ -173,4 +220,7 @@ void Da_Goat(Socket &sock, irc_string *reply){
       /***********************End Da_Goat Functions*******************************/
 
 }
+/**
+ * @}
+ */
 #endif

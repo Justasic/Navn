@@ -4,6 +4,40 @@
 #include "../flux_net_irc.hpp"
 using namespace std;
 using namespace flux_net_irc;
+
+/**
+ * \file searcher.h Header file holding the \a searcher function.
+ * \author Lordofsraam. Polished by Justasic.
+ */
+
+/**
+ * \defgroup searcherM Search Engine Module
+ * This is the module for the searcher function.
+ * This allows you to get search links for different sites inside IRC.
+ * \section commands Commands associated with this module.
+ * \subsection google !google
+ * Say \a !google to get a search link for the rest of the message.
+ * For example the message "!google hot footed waffle scooter" will give you the link to a google search for "hot footed waffle scooter"
+ * The rest of the commands work in a similar fashion.
+ * \subsection youtube !youtube
+ * Say \a !youtube to get a results link for a youtube search.
+ * \subsection tpb !tpb
+ * Say \a !tpb to get a results link for a thepiratebay.com torrent search.
+ * \subsection define !define
+ * Say \a !define to get a results link for a dictionary.com word lookup.
+ * \subsection urban !urban
+ * Say \a !urban to get a results link for an urbandictionary.com search.
+ * \subsection movie !movie
+ * Say \a !movie to get a results link for a letmewatchthis.com movie search.
+ * @{
+ */
+
+/**
+ * \fn void searcher(Socket &sock, irc_string *reply, string rply)
+ * \brief Returns search links for different sites.
+ * Searches for the search command, then uses the \a search function from \a flux_net_irc to return search links.
+ */
+
 void searcher(Socket &sock, irc_string *reply, string rply){
 
   if(reply->said("!google") && in_channel){ // if !google is said in the channel
@@ -32,4 +66,7 @@ void searcher(Socket &sock, irc_string *reply, string rply){
       }
   
 }
+/**
+ * @}
+ */
 #endif

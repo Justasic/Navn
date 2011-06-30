@@ -4,6 +4,28 @@
 #include "../flux_net_irc.hpp"
 using namespace std;
 using namespace flux_net_irc;
+
+/**
+ * \file help.h Header file holding the \a help function.
+ * \author Lordofsraam. Polished by Justasic.
+ */
+
+/**
+ * \defgroup helpM Help Module
+ * This is the module for the help_m function.
+ * Returns help information about controlling Navn.
+ * \section commands Commands associated with this module.
+ * \subsection help Private message: help
+ * Send a private message saying \a help to get information.
+ * @{
+ */
+
+/**
+ * \fn void help_m(Socket &sock, irc_string *reply)
+ * \brief Returns help info on Navn.
+ * Tells you most of the commands you can use on Navn.
+ */
+
 void help_m(Socket &sock, irc_string *reply){
 
   //help replies
