@@ -17,7 +17,7 @@ bool nofork = false;
 bool dev = false;
 
 bool quitting = false;
-const string version = "v1.4.3";
+const string version = "v1.4.4";
 
     /*
     'Reply' means 'What the server is saying back'
