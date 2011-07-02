@@ -21,4 +21,6 @@ public:
   
 };
 
+vector<module> moduleList;
+
 #endif

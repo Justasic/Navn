@@ -141,6 +141,10 @@ int main (int argcx, char** argvx, char *envp[])
       navn_h(sock, reply);
       
       /*! \endcode */
+
+      for(int i = 0; i < moduleList.size(); i++){
+	moduleList[i].run(sock, rply, reply);
+      }
       
       //Flux_Services(sock, reply);
       /***********************************/
