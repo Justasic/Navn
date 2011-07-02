@@ -20,7 +20,7 @@ using namespace flux_net_irc;
  * @{
  */
 
-char * pEnd;
+
 
 /**
  * \fn void weather(Socket &sock, string rply)
@@ -33,6 +33,7 @@ char * pEnd;
 
 void weather(Socket &sock, string rply){
   irc_string* reply = new irc_string(rply);
+  char * pEnd;
   if(reply->said("!weather")){
 	string area = reply->params(1);
 	string wget = "";

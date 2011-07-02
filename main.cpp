@@ -132,7 +132,7 @@ int main (int argcx, char** argvx, char *envp[])
       Da_Goat(sock, reply);
       about_me(sock, reply);
       dns_m(sock, reply, rply);
-      world_clock(sock, reply);
+      world_clock(sock, reply, rply);
       ctcp_m(sock, reply);
       Chanlog(reply);
       weather(sock, rply);
