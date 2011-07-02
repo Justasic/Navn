@@ -204,7 +204,7 @@ void Da_Goat(Socket &sock, irc_string *reply){
       if(reply->said("!version")){
         sock << privmsg(chan, "The Current Navn Bot Version is \002\0037%s\017", version.c_str());
         sock << privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ coded from scratch by lordofsraam");
-		sock << privmsg(chan, "Navn's code can be found at \002git://gitorious.org:navn/navn.git");
+		sock << privmsg(chan, "Navn's code can be found at \002git://gitorious.org/navn/navn.git");
 		sock << privmsg(chan, "Report all bugs at: \2http://flux-net.net/bugs/\2");
         sock << privmsg(chan, "Navn is managed by \2%s\2", owner_nick.c_str());
 		sock << privmsg(chan, "If you would like to add a command or function, talk to him.");

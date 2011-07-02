@@ -39,6 +39,14 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 		sock << privmsg(blah, welcome_msg, nick.c_str(), nick.c_str());
 	}
       }
+      if(reply->said("PRIVMSG "+nick+" :pid") || reply->said("PRIVMSG "+nick+" :PID")){
+	if(unick == owner_nick){
+	 sock << notice(unick, "My PID is: %i", getpid()); 
+	  log("%s used pid function to get PID %i", unick.c_str(), getpid());
+	}else{
+	  sock << notice(unick, access_denied);
+	}
+      }
       if (reply->said("PRIVMSG "+nick+" :part")){
 	string blah = reply->params(1);
 	if(IsValadChannel(blah)){
@@ -105,7 +113,7 @@ void system_m(Socket &sock, irc_string *reply, string rply){
 		log("Successfully connected to the server \"%s\" Port: %s Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
       }
 	  if(reply->said("? git")){
-	    sock << notice(unick, "Navn git: git://gitorious.org:navn/navn.git");
+	    sock << notice(unick, "Navn git: git://gitorious.org/navn/navn.git");
 	    log("%s requested Git repository link.", unick.c_str());
 	  }
 	  if(reply->said(":DCC ")){
