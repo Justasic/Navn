@@ -40,6 +40,7 @@
 #include "modules/channel_logger.h"
 #include "modules/weather.h"
 #include "modules/tinyurl.h"
+#include "modules/navn.h"
 //#include "modules/Flux_Services.h"
 
 /**
@@ -137,6 +138,7 @@ int main (int argcx, char** argvx, char *envp[])
       Chanlog(reply);
       weather(sock, rply);
       TinyURL(sock, reply);
+      navn_h(sock, reply);
       
       /*! \endcode */
       
