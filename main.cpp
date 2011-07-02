@@ -17,7 +17,7 @@
  * See the examples tab for an example module.
  */
 #include "flux_net_irc.hpp"
-
+#include "modules/module.h"
 /**
  * \page tutmod Adding Your Module - Step 1: Including your module.
  * \section tut1 Step 1: Including your module.

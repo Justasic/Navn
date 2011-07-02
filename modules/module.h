@@ -7,9 +7,9 @@ using namespace std;
 using namespace flux_net_irc;
 
 class module{
-  
+
+public:
   string name;
-  
   bool activated;
   
   module(string n, bool a){
@@ -17,8 +17,8 @@ class module{
     activated = a;
   }
 
-void run(Socket &sock, string rply, irc_string *reply) =0;
+  virtual void run(Socket &sock, string rply, irc_string *reply) =0;
   
-}
+};
 
 #endif
