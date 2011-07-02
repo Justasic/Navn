@@ -64,6 +64,14 @@ void searcher(Socket &sock, irc_string *reply, string rply){
 		sock << privmsg(chan, search(rply, "!movie"));
 		log("Channel movie Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "!movie").c_str());
       }
+      if(reply->said("!wiki") && in_channel){ 
+		sock << privmsg(chan, search(rply, "!wiki"));
+		log("Channel wiki Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "!wiki").c_str());
+      }
+      if(reply->said("!music") && in_channel){ 
+		sock << privmsg(chan, search(rply, "!music"));
+		log("Channel music Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "!music").c_str());
+      }
   
 }
 /**
