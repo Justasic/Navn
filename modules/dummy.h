@@ -1,7 +1,6 @@
 #ifndef DUMMY_H
 #define DUMMY_H
-#include "../includes.h"
-#include "../flux_net_irc.hpp"
+#include "module.h"
 using namespace std;
 using namespace flux_net_irc;
 /**
@@ -25,13 +24,24 @@ using namespace flux_net_irc;
  * \brief Replies to a test
  * We will try to put as many examples here in the future as we can.
  */
-void dummy(Socket &sock, irc_string *reply){
+class dummy : module{
 
-  if (reply->said("testing testing")){
-    sock << privmsg(reply->channel,"I hear you!");
+public:
+  dummy(string n, bool a):module(n,a){}
+  
+  void run(Socket &sock, string rply, irc_string *reply){
+    
+    if (reply->said("testing testing")){
+      sock << privmsg(reply->channel,"I hear you!");
+    }
+    
   }
+};
 
-}
+dummy _dummy("Dummy Module",true);
+
+//moduleList.insert(dummy("Dummy Module",true));
+
 /**
  * @}
  */

@@ -30,7 +30,7 @@
 #include "modules/da_goat.h"
 #include "modules/dns.h"
 #include "modules/ctcp.h"
-#include "modules/dummy.h"
+//#include "modules/dummy.h"
 #include "modules/ping_pong.h"
 #include "modules/searcher.h"
 #include "modules/help.h"
@@ -43,7 +43,7 @@
 #include "modules/navn.h"
 //#include "modules/Flux_Services.h"
 
-/**
+/**http://www.google.com/search?aq=0&oq=c%2B%2B+object+ve&sourceid=chrome&ie=UTF-8&q=c%2B%2B+object+vector
  *\endcode 
  */
 
@@ -129,7 +129,7 @@ int main (int argcx, char** argvx, char *envp[])
       searcher(sock, reply, rply);
       system_m(sock, reply, rply);
       help_m(sock, reply);
-      dummy(sock, reply);
+      //dummy(sock, reply);
       Da_Goat(sock, reply);
       about_me(sock, reply);
       dns_m(sock, reply, rply);
@@ -143,7 +143,7 @@ int main (int argcx, char** argvx, char *envp[])
       /*! \endcode */
 
       for(int i = 0; i < moduleList.size(); i++){
-	moduleList[i].run(sock, rply, reply);
+	moduleList[i]->run(sock, rply, reply);
       }
       
       //Flux_Services(sock, reply);
