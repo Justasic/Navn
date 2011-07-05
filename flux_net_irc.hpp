@@ -309,6 +309,10 @@ string search(string s, string command){
       return "http://www.urbandictionary.com/define.php?term="+searchstring;
     }else if(command == "!movie"){
       return "www.letmewatchthis.ch/index.php?search_keywords="+searchstring;
+    }else if(command == "!music"){
+      return "http://grooveshark.com/#/search?q="+searchstring;
+    }else if(command == "!wiki"){
+      return ("http://en.wikipedia.org/wiki/Special:Search?search="+searchstring+"&go=Go");
     }else{
       return "http://www.google.com/search?q="+searchstring;
     }
