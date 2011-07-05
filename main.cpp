@@ -17,7 +17,6 @@
  * See the examples tab for an example module.
  */
 #include "flux_net_irc.hpp"
-//#include "modules/module.h"
 /**
  * \page tutmod Adding Your Module - Step 1: Including your module.
  * \section tut1 Step 1: Including your module.
@@ -147,7 +146,9 @@ int main (int argcx, char** argvx, char *envp[])
       /*! \endcode */
 
       for(int i = 0; i < moduleList.size(); i++){
-	moduleList[i]->run(sock, rply, reply);
+	if (moduleList[i]->activated == true){
+	  moduleList[i]->run(sock, rply, reply);
+	}
       }  
       //Flux_Services(sock, reply);
       /***********************************/

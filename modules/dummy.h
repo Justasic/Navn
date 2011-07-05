@@ -1,6 +1,5 @@
 #ifndef DUMMY_H
 #define DUMMY_H
-#include "module.h"
 using namespace std;
 using namespace flux_net_irc;
 /**
@@ -37,8 +36,6 @@ public:
     
   }
 };
-
-//moduleList.insert(dummy("Dummy Module",true));
 
 /**
  * @}
