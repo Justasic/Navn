@@ -38,8 +38,6 @@ public:
   }
 };
 
-dummy _dummy("Dummy Module",true);
-
 //moduleList.insert(dummy("Dummy Module",true));
 
 /**

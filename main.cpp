@@ -17,7 +17,7 @@
  * See the examples tab for an example module.
  */
 #include "flux_net_irc.hpp"
-#include "modules/module.h"
+//#include "modules/module.h"
 /**
  * \page tutmod Adding Your Module - Step 1: Including your module.
  * \section tut1 Step 1: Including your module.
@@ -30,7 +30,7 @@
 #include "modules/da_goat.h"
 #include "modules/dns.h"
 #include "modules/ctcp.h"
-//#include "modules/dummy.h"
+#include "modules/dummy.h"
 #include "modules/ping_pong.h"
 #include "modules/searcher.h"
 #include "modules/help.h"
@@ -99,6 +99,10 @@ int main (int argcx, char** argvx, char *envp[])
     sigaction(SIGINT, &act, 0);
     */
 
+
+    dummy _dummy("Dummy Module",true);
+    
+    
     while (!quitting){ //infi loop to stay connected
       if(quitting)
 	 shutdown(sock, quitmsg);
@@ -144,8 +148,7 @@ int main (int argcx, char** argvx, char *envp[])
 
       for(int i = 0; i < moduleList.size(); i++){
 	moduleList[i]->run(sock, rply, reply);
-      }
-      
+      }  
       //Flux_Services(sock, reply);
       /***********************************/
       delete reply;
