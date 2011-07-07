@@ -32,7 +32,7 @@ bool ppto = false;
 string servername;
 void ping_pong(Socket &sock, irc_string *reply, string re){
   if (reply->said("PING :")){
-    sock << "PONG "+re.substr(6,-1);
+    sock << "PONG "+strip(re.substr(6,-1));
     servername = re.substr(6,-1);
   }
   if(reply->said("ERROR :Closing link:")){
