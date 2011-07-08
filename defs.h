@@ -3,6 +3,8 @@
 #include "includes.h"
 
 #define GetCurrentDir getcwd
+
+#define configfile "bot.conf"
 using namespace std;
 
 /*List the constants used throughout the script.
@@ -15,9 +17,26 @@ int days, hours, mins;
 bool in_channel = false;
 bool nofork = false;
 bool dev = false;
-
 bool quitting = false;
 const string version = "v1.4.4";
+string binary_path, bot_bin, binary_dir;
+string getprogdir(const string &nerp){
+  char buffer[FILENAME_MAX];
+  if (GetCurrentDir(buffer, sizeof(buffer)))
+  {
+    string remainder = nerp;
+    bot_bin = remainder;
+    string::size_type n = bot_bin.rfind("/");
+    string fullpath;
+    if (bot_bin[0] == '/')
+      fullpath = bot_bin.substr(0, n);
+    else
+      fullpath = string(buffer) + "/" + bot_bin.substr(0, n);
+    bot_bin = bot_bin.substr(n + 1, remainder.length());
+    return fullpath;
+  }
+  return "/";
+}
 
     /*
     'Reply' means 'What the server is saying back'

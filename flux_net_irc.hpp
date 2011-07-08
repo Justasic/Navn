@@ -909,6 +909,7 @@ static void DoQuit(){
   log("Logging ended.");
   exit(0);
 }
+
 /** 
  * \fn static void restart(string reason)
  * \brief Restart the bot process
@@ -938,7 +939,7 @@ static void restart(string reason){
  */
 static void shutdown(Socket &sock, string quitmsg){
  if(quitmsg.empty())
-      quitmsg = "Quitting: Unknown reason";
+    quitmsg = "Quitting: Unknown reason";
     cout << quitmsg << endl;
     sock << quit(quitmsg);
     DoQuit(sock, quitmsg); 
@@ -949,7 +950,8 @@ static void shutdown(Socket &sock, string quitmsg){
 static void Rehash(){
  cout << "Rehashing config file." << nl;
  try{
-  INIReader config("bot.conf");
+   binary_dir += "/bot.conf";
+   INIReader config(binary_dir.c_str());
     if (config.ParseError() < 0) {
        throw ConfigException("Cannot load bot.conf");
     }
@@ -968,7 +970,8 @@ static void Rehash(){
 static void Rehash(Socket &sock){
  cout << "Rehashing config file." << nl;
  try{
-  INIReader config("bot.conf");
+   binary_dir += "/bot.conf";
+  INIReader config(binary_dir.c_str());
     if (config.ParseError() < 0) {
        throw ConfigException("Cannot load bot.conf");
     }
@@ -998,12 +1001,28 @@ static void WritePID(){
     atexit(remove_pidfile);
   }
   else
-    throw CoreException("Can not write to PID file "+pid_file);
+    throw CoreException(string("Can not write to PID file ")+pid_file);
 }
 /**This is the startup sequence that starts before the try loop starts
  * @param startup(int, char)
  */
 void startup(int argc, char** argv) {
+  binary_dir = getprogdir(argv[0]);
+  if(binary_dir[binary_dir.length() - 1] == '.')
+    binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
+  try{
+    binary_dir += "/bot.conf";
+    cout << binary_dir << endl;
+    INIReader config(binary_dir.c_str());
+    if (config.ParseError() < 0) {
+       throw ConfigException("Cannot load bot.conf");
+    }
+  ReadConfig(config);
+  }catch(ConfigException &ex){
+    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
+    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
+    DoQuit(1);
+  }
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
   if (argc < 1 || argv[1] == NULL){

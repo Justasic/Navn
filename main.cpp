@@ -45,8 +45,6 @@
 /**http://www.google.com/search?aq=0&oq=c%2B%2B+object+ve&sourceid=chrome&ie=UTF-8&q=c%2B%2B+object+vector
  *\endcode 
  */
-
-string binary_path, services_dir, services_bin;
 using namespace std;
 using namespace flux_net_irc;
 
@@ -54,17 +52,6 @@ int main (int argcx, char** argvx, char *envp[])
 {
   my_av = argvx;
   my_envp = envp;
-  try{
-  INIReader config("bot.conf");
-    if (config.ParseError() < 0) {
-       throw ConfigException("Cannot load bot.conf");
-    }
-  ReadConfig(config);
-  }catch(ConfigException &ex){
-    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
-    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
-    DoQuit(1);
-  }
   startup(argcx, argvx);
   try
   {
