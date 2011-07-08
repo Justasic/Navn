@@ -56,18 +56,22 @@ void CLog(const char *fmt, ...){
 void Chanlog(irc_string *reply){
   if(reply->said("PRIVMSG "+LogChannel+" ")){
      // This is where Justasic plans on starting a channel logger
-     if(reply->said("\001ACTION")){
-       msg = msg.erase(0,7);
-       cout << msg << endl;
-       msg.erase(msg.size()-1, 1);
-       CLog("*** %s %s", unick.c_str(), msg.c_str());
-     }else{
-      CLog("<%s> %s", unick.c_str(), msg.c_str());
+     if(reply->said("#nl")){}else{
+       if(reply->said("\001ACTION")){
+         msg = msg.erase(0,7);
+         cout << msg << endl;
+         msg.erase(msg.size()-1, 1);
+         CLog("*** %s %s", unick.c_str(), msg.c_str());
+       }else{
+        CLog("<%s> %s", unick.c_str(), msg.c_str());
+       }
      }
   }
    if(reply->said("NOTICE "+LogChannel+" ")){
      // This is where Justasic plans on starting a channel logger
-     CLog("-Notice- %s: %s", unick.c_str(), reply->message.c_str());
+     if(reply->said("#nl")){}else{
+      CLog("-Notice- %s: %s", unick.c_str(), reply->message.c_str());
+     }
   }
    if(reply->said("PART "+LogChannel)){
      // This is where Justasic plans on starting a channel logger
