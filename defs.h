@@ -3,8 +3,6 @@
 #include "includes.h"
 
 #define GetCurrentDir getcwd
-
-#define configfile "bot.conf"
 using namespace std;
 
 /*List the constants used throughout the script.

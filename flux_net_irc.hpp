@@ -1012,7 +1012,6 @@ void startup(int argc, char** argv) {
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
   try{
     binary_dir += "/bot.conf";
-    cout << binary_dir << endl;
     INIReader config(binary_dir.c_str());
     if (config.ParseError() < 0) {
        throw ConfigException("Cannot load bot.conf");
