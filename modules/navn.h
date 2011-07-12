@@ -47,16 +47,6 @@ void navn_h(Socket &sock, irc_string *reply){
       sock << part(blah);
     }
   }
-  if (reply->said("rejoin")){ //rejoin the channel
-   if(!in_channel){
-     sock << join(channel);
-     sock << privmsg(channel, welcome_msg, nick.c_str());
-     log("%s made the bot rejoin the channel", unick.c_str());
-   }else{
-     sock << notice(unick, "The bot is already in the channel.");
-     log("%s attempted to rejoin the bot into a channel its already in.", unick.c_str());  
-  }
-  }
   if(reply->said("!bugs")){
     sock.Send(privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/"));
   }
