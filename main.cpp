@@ -58,6 +58,7 @@ int main (int argcx, char** argvx, char *envp[])
     cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
     //Make the socket used to connect to the server
     Socket sock(server,port);
+	flux_net_irc::pSock = &sock;
     //Incase there is no connection, say so
     if (!sock.get_address()) throw SocketException("Could not resolve the IRC server.");
     if (!sock.connect()) throw SocketException("Could not connect to the IRC server.");
@@ -132,11 +133,13 @@ int main (int argcx, char** argvx, char *envp[])
       
       /*! \endcode */
 
-      for(int i = 0; i < moduleList.size(); i++){
-	if (moduleList[i]->activated == true){
-	  moduleList[i]->run(sock, rply, reply);
-	}
-      }  
+      for(int i = 0; i < moduleList.size(); i++)
+	  {
+		if (moduleList[i]->activated == true)
+		{
+		  moduleList[i]->run(rply, reply);
+		}
+      }
       //Flux_Services(sock, reply);
       /***********************************/
       delete reply;

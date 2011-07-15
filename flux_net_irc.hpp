@@ -19,6 +19,7 @@ namespace flux_net_irc{
    * hopefully help anyone else that tries to extend navn.
  */
   using namespace std;
+  Socket * pSock;
 class irc_string:string{
   /** \class irc_string
  * NOTE this MUST be included in the main file.
@@ -1258,7 +1259,7 @@ public:
   
   module (string , bool);
   
-  virtual void run(Socket &sock, string rply, irc_string *reply) =0;
+  virtual void run(string rply, irc_string *reply) =0;
   
 };
 
@@ -1268,6 +1269,14 @@ module::module(string n, bool a){
   name = n;
   activated = a;
   moduleList.push_back(this);
+}
+
+namespace sendMessage
+{
+	void priv(string dest, string msg)
+	{
+		*pSock << privmsg(dest, msg);
+	}
 }
 
 }
