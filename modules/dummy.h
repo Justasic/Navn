@@ -28,11 +28,12 @@ class dummy : module{
 public:
   dummy(string n, bool a):module(n,a){}
   
-  void run(string rply, irc_string *reply){
+  void run(string rply, irc_string *reply)
+  {
     
     if (reply->said("testing testing"))
 	{
-	  sendMessage::priv(reply->channel,"I hear you!");
+	  Send::Message::priv(reply->channel,"I hear you!");
     }
     
   }
