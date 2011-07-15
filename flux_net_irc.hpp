@@ -1273,34 +1273,34 @@ module::module(string n, bool a){
 
 namespace Send
 {
-	Socket rawSock = *pSock;
 	
 	namespace Message
 	{
 	
 	void priv(string dest, string msg)
 	{
-		rawSock << privmsg(dest, msg);
+		*pSock << privmsg(dest, msg);
 	}
 	
 	void notice(string dest, string msg)
 	{
-		rawSock << flux_net_irc::notice(dest, msg);
+		*pSock << flux_net_irc::notice(dest, msg);
 	}
 	
 	}
+	
 	
 	namespace Command
 	{
 	
 	void kick(string channel, string user, string reason)
 	{
-		rawSock << flux_net_irc::kick(channel, user, reason);
+		*pSock << flux_net_irc::kick(channel, user, reason);
 	}
 	
 	void me(string dest, string message)
 	{
-		rawSock << flux_net_irc::me(dest, message);
+		*pSock << flux_net_irc::me(dest, message);
 	}
 	
 	}
