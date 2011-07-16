@@ -88,6 +88,7 @@ int main (int argcx, char** argvx, char *envp[])
 
 
     dummy _dummy("Dummy Module",true);
+	about_me _about_me("About Me Module",true);
     
     
     while (!quitting){ //infi loop to stay connected
@@ -120,9 +121,7 @@ int main (int argcx, char** argvx, char *envp[])
       searcher(sock, reply, rply);
       system_m(sock, reply, rply);
       help_m(sock, reply);
-      //dummy(sock, reply);
       Da_Goat(sock, reply);
-      about_me(sock, reply);
       dns_m(sock, reply, rply);
       world_clock(sock, reply, rply);
       ctcp_m(sock, reply);

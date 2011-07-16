@@ -1282,9 +1282,33 @@ namespace Send
 		*pSock << privmsg(dest, msg);
 	}
 	
+	void priv(string Dest, const char *fmt, ...)
+	{
+		va_list args;
+		va_start(args, fmt);
+		stringstream privmsg_ss;
+		char buf[4096];
+		vsnprintf(buf, sizeof(buf), fmt, args);
+		privmsg_ss << "PRIVMSG " << Dest << " :" << buf << nl;
+		va_end(args);
+		*pSock << privmsg_ss.str();
+	}
+	
 	void notice(string dest, string msg)
 	{
 		*pSock << flux_net_irc::notice(dest, msg);
+	}
+	
+	void notice(string Dest, const char *fmt, ...)
+	{
+	  stringstream notice_ss;
+	  va_list args;
+	  va_start(args, fmt);
+	  char buf[4096];
+	  vsnprintf(buf, sizeof(buf), fmt, args);
+	  notice_ss << "NOTICE " << Dest << " :" << buf << nl;
+	  va_end(args);
+	  *pSock << notice_ss.str();
 	}
 	
 	}
