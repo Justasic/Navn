@@ -2,32 +2,34 @@
 #define TinyURL_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace std;
 using namespace flux_net_irc;
-    
-void TinyURL(Socket &sock, irc_string *reply){
+/* This module was not yet finished, check Navn version 2.0.1 to see if it was completed or removed */
+class TinyURL:module{
+public:
+  TinyURL(bool a):module("TinyURL", a, PRIORITY_LAST){ this->SetDesc("The tinyurl minifier"); }
+  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
 
   if (reply->said("http://") || reply->said("https://")){
-    string http = "http://";
-    string https = "https://";
-    string url;
-    size_t nerp;
+    Flux::string http = "http://";
+    Flux::string https = "https://";
+    Flux::string url;
+    size_t message;
     
-      nerp = msg.find(http);
-      if(nerp!=string::npos){
-	url = reply->params(int(nerp));
-	cout << int(nerp) << endl;
+      message = msg.find(http);
+      if(message!=Flux::string::npos){
+	url = reply->params(int(message));
+	cout << int(message) << endl;
 	cout << url << endl;
 	
       }
-      nerp = msg.find(https);
-      if(nerp!=string::npos){
-	url = reply->params(int(nerp));
-	cout << int(nerp) << endl;
+      message = msg.find(https);
+      if(message!=Flux::string::npos){
+	url = reply->params(int(message));
+	cout << int(message) << endl;
 	cout << url << endl;
 	
       }
   }
-
-}
+ }
+};
 #endif

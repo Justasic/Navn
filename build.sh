@@ -12,7 +12,7 @@ build_it ()
     exit 1
   fi
   echo -e "\033[0m\033[1;34mLinking Files...\033[01;31m"
-  g++ -ansi -pedantic -g -o navn *.o inireader/INIReader.cpp inireader/ini.c -lcares
+  g++ -ansi -pedantic -g -o navn *.o inireader/INIReader.cpp inireader/ini.c
   if [ "$?" != 0 ]; then
     rm -f *.o
     echo -e "\033[0mThere where linking errors. See above."

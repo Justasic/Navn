@@ -20,41 +20,23 @@
  */
 
 /**
- * \fn void ping_pong(Socket &sock, irc_string *reply, string re)
+ * \fn void ping_pong(Socket &sock, irc_string *reply, Flux::string re)
  * \brief Replies to IRC PING
  * Replies to the server's PING request to keep the bot connected
  */
-using namespace std;
-using namespace flux_net_irc;
-#define pingwait 30
-time_t endwait = time(NULL) + pingwait;
-bool ppto = false;
-string servername;
-void ping_pong(Socket &sock, irc_string *reply, string re){
+
+void ping_pong(SocketIO *sock, irc_string *reply, Flux::string re){
+  
   if (reply->said("PING :")){
-    sock << "PONG "+strip(re.substr(6,-1));
-    servername = re.substr(6,-1);
+    sock->send("PONG "+strip(re.substr(6,-1))+nl);
+  }
+  /* Fix for some Undernet connections */
+  if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
+   sock->send("PASS "+strip(reply->params(17))+nl);
   }
   if(reply->said("ERROR :Closing link:")){
    throw SocketException(raw);
   }
-  // This is still a very experemental Ping timer to give ping timeouts when something happens
-  /*
-  if (time(NULL) > endwait){
-   string pingtimestamp = stringify(time(NULL));
-   sock << strip("PING "+ strip(servername));
-   endwait = time(NULL) + pingwait;
-   if(reply->said(" PONG ")){
-    //ping-timeout function still needs to be programmed..
-    cout << "woop woop we're still connected :P" << endl;
-   }
-  }
-  if(reply->said("!endwait")){
-	cout << "Endwait: " << endwait << endl;
-	cout << "Time(): " << time(NULL) << endl;
-	cout << "Remaining: " << endwait - time(NULL) << endl;
-  }
-*/
 }
 /**
  * @}

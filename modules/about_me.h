@@ -2,6 +2,7 @@
 #define ABOUT_ME_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+using namespace flux_net_irc;
 /**
  * \file about_me.h Header file holding the \a about_me function.
  * \author Justasic. Polished by Lordofsraam.
@@ -22,48 +23,39 @@
  */
 
 /**
- * \fn void about_me(Socket &sock, irc_string *reply)
+ * \fn class about_me(bool a):module("About Me", a, PRIORITY_DONTCARE){ this->SetDesc("Returns the information about yourself"); }
  * \brief Tells you about youself (ie. Host, ident, etc.).
  * Uses irc_string and IsoHost to decode the message you said.
  */
-using namespace std;
-using namespace flux_net_irc;
-class about_me : module 
+class about_me : module
 {
-
+  
 public:
-  about_me(string n, bool a):module(n,a){}
+  about_me(bool a):module("About Me", a, PRIORITY_DONTCARE){ this->SetDesc("Returns the information about yourself"); }
   
-  void run(string rply, irc_string *reply)
+  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply)
   {
-  
-		if(reply->said("about me"))
-		{
-			Send::Message::notice(unick, "Raw: "+reply->raw_string);
-			Send::Message::notice(unick, "message: "+msg);
-			Send::Message::notice(unick, "Nickname: "+unick);
-			Send::Message::notice(unick, "Ident: "+reply->user);
-			Send::Message::notice(unick, "Host: "+host);
-			Send::Message::notice(unick, "Channel: "+chan);
-			Send::Message::notice(unick, "Fullhost: "+fullhost);
-			log("%s requested information about themself.", unick.c_str());
-		}
-
-		if(reply->said("!decodehost"))
-		{
-			string nerp = reply->params(1);
-			IsoHost* Host = new IsoHost(nerp);
-			Send::Message::priv(chan, "Nick: %s", Host->nick.c_str());
-			Send::Message::priv(chan, "User: %s", Host->user.c_str());
-			Send::Message::priv(chan, "Host: %s", Host->host.c_str());
-			Send::Message::priv(chan, "Raw: %s", Host->raw.c_str());
-			delete Host;
-		}
-  
+  if(reply->said("about me")){
+	Send->notice(unick, "Raw: "+reply->raw_string);
+	Send->notice(unick, "message: "+msg);
+	Send->notice(unick, "Nickname: "+unick);
+	Send->notice(unick, "Ident: "+reply->user);
+	Send->notice(unick, "Host: "+host);
+	Send->notice(unick, "Channel: "+chan);
+	Send->notice(unick, "Fullhost: "+fullhost);
+	log("%s requested information about themself.", unick.c_str());
   }
-
+  if(reply->said("!decodehost")){
+	Flux::string host = reply->params(1);
+	IsoHost* Host = new IsoHost(host);
+	Send->privmsg(chan, "Nick: %s", Host->nick.c_str());
+	Send->privmsg(chan, "User: %s", Host->user.c_str());
+	Send->privmsg(chan, "Host: %s", Host->host.c_str());
+	Send->privmsg(chan, "Raw: %s", Host->raw.c_str());
+	delete Host;
+  }
+ }
 };
-
 /**
  * @}
  */

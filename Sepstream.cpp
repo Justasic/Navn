@@ -1,19 +1,22 @@
-#include "includes.h"
-#include "Sepstream.h"
-sepstream::sepstream(const std::string &source, char seperator) : tokens(source), sep(seperator)
+#include "flux.h"
+/**
+ *\file  Sepstream.cpp 
+ *\brief Contains the Seperator Stream class.
+ */
+sepstream::sepstream(const Flux::string &source, char seperator) : tokens(source), sep(seperator)
 {
 		last_starting_position = n = tokens.begin();
 }
 
-bool sepstream::GetToken(std::string &token)
+bool sepstream::GetToken(Flux::string &token)
 {
-		std::string::iterator lsp = last_starting_position;
+		Flux::string::iterator lsp = last_starting_position;
 		while (n != tokens.end())
 		{
 			if (*n == sep || n + 1 == tokens.end())
 			{
 				last_starting_position = n + 1;
-				token = std::string(lsp, n + 1 == tokens.end() ? n + 1 : n);
+				token = Flux::string(lsp, n + 1 == tokens.end() ? n + 1 : n);
 				
 				while (token.length() && token.rfind(sep) == token.length() - 1)
                                  token.erase(token.end() - 1);
@@ -27,10 +30,9 @@ bool sepstream::GetToken(std::string &token)
 		token.clear();
 		return false;
 }
-
-const std::string sepstream::GetRemaining()
+const Flux::string sepstream::GetRemaining()
 {
-		return std::string(n, tokens.end());
+		return Flux::string(n, tokens.end());
 }
 bool sepstream::StreamEnd()
 {

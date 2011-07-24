@@ -1,6 +1,5 @@
 #ifndef DUMMY_H
 #define DUMMY_H
-using namespace std;
 using namespace flux_net_irc;
 /**
  * \example dummy.h
@@ -14,26 +13,24 @@ using namespace flux_net_irc;
  * This is a template or example module.
  * \section commands Commands associated with this module.
  * \subsection test testing testing
- * Say "testing testing" to see the current time, the GMT, and the times in New York, California, Beijing, and Sydney.
+ * Say \a testing \a testing to see if the bot replies with \a I \a hear \a you!
  * @{
  */
 
 /**
- * \fn void dummy(Socket &sock, irc_string *reply)
+ * \fn class dummy(bool a):module("Dummy", a, PRIORITY_LAST){ this->SetDesc("Example Dummy module"); }
  * \brief Replies to a test
  * We will try to put as many examples here in the future as we can.
  */
 class dummy : module{
 
 public:
-  dummy(string n, bool a):module(n,a){}
+  dummy(bool a):module("Dummy", a, PRIORITY_LAST){ this->SetDesc("Example Dummy module"); }
   
-  void run(string rply, irc_string *reply)
-  {
+  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
     
-    if (reply->said("testing testing"))
-	{
-	  Send::Message::priv(reply->channel,"I hear you!");
+    if (reply->said("testing testing")){
+      Send->privmsg(reply->channel,"I hear you!");
     }
     
   }

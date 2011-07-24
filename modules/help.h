@@ -2,9 +2,7 @@
 #define HELP_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace std;
 using namespace flux_net_irc;
-
 /**
  * \file help.h Header file holding the \a help function.
  * \author Lordofsraam. Polished by Justasic.
@@ -25,27 +23,30 @@ using namespace flux_net_irc;
  * \brief Returns help info on Navn.
  * Tells you most of the commands you can use on Navn.
  */
-
-void help_m(Socket &sock, irc_string *reply){
-
+class help_m:module{
+public:
+  help_m(bool a):module("Help", a, PRIORITY_DONTCARE){ this->SetDesc("The Help module"); }
+  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
   //help replies
     if(reply->said("PRIVMSG "+nick+" :help")){
-      sock << notice(unick, "There are 11 commands:");
-      sock << notice(unick, "quit \t \t \tQuits the bot (password needed)");
-      sock << notice(unick, "pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
-      sock << notice(unick, "gdb\t \t \t \tDisplays how to use gdb.");
-      sock << notice(unick, "rejoin\t \t Rejoins the bot to the channel.");
-      sock << notice(unick, "chown \t \t Changes ownership over the bot (must be a bot admin)");
-      sock << notice(unick, "join \t \t \tTells the bot to join the specified channel.");
-      sock << notice(unick, "part \t \t \tParts the channel");
-      sock << notice(unick, "kick \t \t \tkicks a user from the channel (must be bot owner)");
-      sock << notice(unick, "restart \t Restarts the Bot (Password needed)");
-      sock << notice(unick, "rehash\t \t Rehashes the Bot (Password needed)");
-      sock << notice(unick, "stats \t \t Shows system statistics.");
+      Send->notice(unick, "There are 11 commands:");
+      Send->notice(unick, "quit \t \t \tQuits the bot (password needed)");
+      Send->notice(unick, "pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
+      Send->notice(unick, "gdb\t \t \t \tDisplays how to use gdb.");
+      Send->notice(unick, "rejoin\t \t Rejoins the bot to the channel.");
+      Send->notice(unick, "chown \t \t Changes ownership over the bot (must be a bot admin)");
+      Send->notice(unick, "join \t \t \tTells the bot to join the specified channel.");
+      Send->notice(unick, "part \t \t \tParts the channel");
+      Send->notice(unick, "kick \t \t \tkicks a user from the channel (must be bot owner)");
+      Send->notice(unick, "restart \t Restarts the Bot (Password needed)");
+      Send->notice(unick, "rehash\t \t Rehashes the Bot (Password needed)");
+      Send->notice(unick, "stats \t \t Shows system statistics.");
+      Send->notice(unick, "nick \t \t \tSets the bots nickname");
+      
       log("%s used help command", unick.c_str());
+   }
   }
-
-}
+};
 /**
  * @}
  */

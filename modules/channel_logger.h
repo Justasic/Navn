@@ -2,6 +2,7 @@
 #define CLOG_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+using namespace flux_net_irc;
 /**
  * \file channel_logger.h Header file holding the \a ChanLog function.
  * \author Justasic.
@@ -21,15 +22,14 @@
  */
 
 /**
- * \fn void Chanlog(irc_string *reply)
+ * \fn class Chanlog(bool a):module("Channel Logger", a, PRIORITY_LAST){ this->SetDesc("Logs what is said in the channel"); }
  * \fn void CLog(const char *fmt, ...)
  * \brief Logs channel messages
  * Logs what is said in the channel to a specified file.
  */
-using namespace std;
-using namespace flux_net_irc;
-const string chanlogfile = LogChannel+".log";
+
 void CLog(const char *fmt, ...){
+  const Flux::string chanlogfile = LogChannel+".log";
   fstream log;
   try{
   log.open(chanlogfile.c_str(), fstream::in | fstream::out | fstream::app);
@@ -53,43 +53,40 @@ void CLog(const char *fmt, ...){
   va_end(args);
   log.close();
 }
-void Chanlog(irc_string *reply){
+class Chanlog:module{
+public:
+  Chanlog(bool a):module("Channel Logger", a, PRIORITY_LAST){ this->SetDesc("Logs what is said in the channel"); }
+ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
   if(reply->said("PRIVMSG "+LogChannel+" ")){
-     // This is where Justasic plans on starting a channel logger
-     if(reply->said("#nl")){}else{
+     if(reply->said("#nl")){return MOD_STOP;}else{
        if(reply->said("\001ACTION")){
          msg = msg.erase(0,7);
-         cout << msg << endl;
          msg.erase(msg.size()-1, 1);
-         CLog("*** %s %s", unick.c_str(), msg.c_str());
+         CLog("*** %s %s", unick.c_str(), Sanitize(msg).c_str());
        }else{
         CLog("<%s> %s", unick.c_str(), msg.c_str());
        }
      }
   }
    if(reply->said("NOTICE "+LogChannel+" ")){
-     // This is where Justasic plans on starting a channel logger
      if(reply->said("#nl")){}else{
-      CLog("-Notice- %s: %s", unick.c_str(), reply->message.c_str());
+      CLog("-Notice- %s: %s", unick.c_str(), Sanitize(reply->message).c_str());
      }
   }
    if(reply->said("PART "+LogChannel)){
-     // This is where Justasic plans on starting a channel logger
      CLog("*** %s has parted %s", unick.c_str(), LogChannel.c_str());
   }
    if(reply->said("JOIN :"+LogChannel)){
-     // This is where Justasic plans on starting a channel logger
      CLog("*** %s has joined %s", unick.c_str(), LogChannel.c_str());
   }
    if(reply->said("QUIT :")){
-     // This is where Justasic plans on starting a channel logger
      CLog("*** %s has quit", unick.c_str(), LogChannel.c_str());
   }
    if(reply->said("MODE "+LogChannel)){
-     // This is where Justasic plans on starting a channel logger
      CLog("*** %s sets mode %s %s", unick.c_str(), reply->params(3).c_str(), reply->params(4).c_str());
   }
 }
+};
 /**
  * @}
  */

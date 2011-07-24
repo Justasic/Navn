@@ -2,6 +2,7 @@
 #define FS
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+using namespace flux_net_irc;
 /**
  * \file Flux_Services.h Header file holding the \a Flux_S3rvices functions.
  * \author DeathBlade. Polished by Justasic.
@@ -23,64 +24,66 @@
  */
 
 /**
- * \fn void Flux_Services(Socket &sock, irc_string *reply)
+ * \fn class Flux_Services(bool a):module("Flux_Services", a, PRIORITY_LAST){ this->SetDesc("DeathBlade's Flux_S3rvices bot"); }
  * \brief Flux_S3rvices module created by DeathBlade
  */
-using namespace std;
-using namespace flux_net_irc;
-int idiots = 0; //define the idiot counter outside of the main loop
-int magiccount = 0;
-void Flux_Services(Socket &sock, irc_string *reply){
+  int idiots = 0; //define the idiot counter outside of the main loop
+  int magiccount = 0;
+class Flux_Services:module
+{
+public:
+  Flux_Services(bool a):module("Flux_Services", a, PRIORITY_LAST){ this->SetDesc("DeathBlade's Flux_S3rvices bot"); }
+ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
 	if(reply->said("!part ")){ 
 		if(unick == owner_nick){
-			sock << privmsg(chan, "im out niggaz!");
-			sock << part(reply->params(1), "I'm leaving this dump.");
+			Send->privmsg(chan, "im out niggaz!");
+			Send->command->part(reply->params(1), "I'm leaving this dump.");
 			log("%s used Flux_S3rvices part %s", unick.c_str(), chan.c_str());
 		}else{
-			sock << notice(unick, access_denied);
+			Send->notice(unick, access_denied);
 		}
 	}
 	if(reply->said("!botadd")){
 		if(unick == owner_nick){
-			string bnick = reply->params(1);
-			string buser = reply->params(2);
-			string bhost = reply->params(3);
-			string breal = reply->params(4);
-			sock << privmsg("BotServ", "add %s %s %s %s", bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str());
+			Flux::string bnick = reply->params(1);
+			Flux::string buser = reply->params(2);
+			Flux::string bhost = reply->params(3);
+			Flux::string breal = reply->params(4);
+			Send->privmsg("BotServ", "add %s %s %s %s", bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str());
 			log("%s used Flux_S3rvices to make bot \"%s!%s@%s :%s\" %s", unick.c_str(), bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str(), chan.c_str());
 		}else{
-		sock << notice(unick, access_denied);
+		Send->notice(unick, access_denied);
 		}
 	}
 	if(reply->said("slaps")){
-	 sock << privmsg(chan, "\0036Oh \0034Hell \0039No...");
+	 Send->privmsg(chan, "\0036Oh \0034Hell \0039No...");
 	 int num = randint(1,6); //make a random number from 1 to 6 (increase 6 to how ever many switch statements below) so messages are random
 	 switch(num){
 	   case 1:
-	     sock << me(chan, "\00313,1Dodges and \0037Pulls out a \0036Energy \0034Sword \0033and stabs\0032 %s \00312in the eye \0034.........what now \0039B1TCH?", unick.c_str());
+	     Send->action(chan, "\00313,1Dodges and \0037Pulls out a \0036Energy \0034Sword \0033and stabs\0032 %s \00312in the eye \0034.........what now \0039B1TCH?", unick.c_str());
 	     break; //break after each case so it doesnt keep trying to get the messages in the switch statement
 	   case 2:
-	     sock << me(chan, "\00313,1Dodges and \0037Shoots\0032 %s \00312in the \0034A\0038$\0039S \0033with a \0039AK47 \0034.......what now \0039B1TCH?", unick.c_str());
+	     Send->action(chan, "\00313,1Dodges and \0037Shoots\0032 %s \00312in the \0034A\0038$\0039S \0033with a \0039AK47 \0034.......what now \0039B1TCH?", unick.c_str());
 	     break;
 	   case 3:
-	     sock << me(chan, "\00313,1Dodges and \0037Pulls out a \0036Ballistic Knife \0033and shoots\0032 %s \00312in the \00313DICK/PUSSY \0034.........what now \0039B1TCH?", unick.c_str());
+	     Send->action(chan, "\00313,1Dodges and \0037Pulls out a \0036Ballistic Knife \0033and shoots\0032 %s \00312in the \00313DICK/PUSSY \0034.........what now \0039B1TCH?", unick.c_str());
 	     break;
 	   case 4:
-	     sock << me(chan, "\00313,1Dodges and \0037Pulls out a \0036Ray \0038Gun \0033and blows\0032 %s's \00312legs off \0034..........what now \0039B1TCH?", unick.c_str());
+	     Send->action(chan, "\00313,1Dodges and \0037Pulls out a \0036Ray \0038Gun \0033and blows\0032 %s's \00312legs off \0034..........what now \0039B1TCH?", unick.c_str());
 	     break;
 	   case 5:
-	     sock << me(chan, "\00313,1Dodges and \0037Pulls out his \0034D1CK \0033and slaps\0032 %s \00312in the \0039Face \0034.........what now \0039B1TCH?", unick.c_str());
+	     Send->action(chan, "\00313,1Dodges and \0037Pulls out his \0034D1CK \0033and slaps\0032 %s \00312in the \0039Face \0034.........what now \0039B1TCH?", unick.c_str());
 	     break;
 	   case 6:
-	     sock << me(chan, "\0034,1bends dows and and \00312 grabs a M2W LAW and \0034 shoots back and \0038 SCORE it a win..................\0030 what now muthafucker!");
+	     Send->action(chan, "\0034,1bends dows and and \00312 grabs a M2W LAW and \0034 shoots back and \0038 SCORE it a win..................\0030 what now muthafucker!");
 	     break;
 	}
 	 idiots++; //add +1 to the already big number of idiots in the list
-	 sock << privmsg(chan, "\2\0034,1Total \0039morons \0033slapped \0038back \00310: %i", idiots); //tell the channel how many idiots where slapped.
+	 Send->privmsg(chan, "\2\0034,1Total \0039morons \0033slapped \0038back \00310: %i", idiots); //tell the channel how many idiots where slapped.
 	}
 	if(reply->said("!magicbox")){
 	 int num = randint(1,20);
-	 string object;
+	 Flux::string object;
 	  switch(num){ //FIXME: This switch statement will become rather large.. perhapse rewriting it to read from a wordlist?
 	    case 1:
 	      object = "toothbrush (Object #"+stringify(num)+")";
@@ -144,20 +147,21 @@ void Flux_Services(Socket &sock, irc_string *reply){
 	      break;	              
 	  }
 	  magiccount++;
-	  sock << me(chan, "%s gives %s a %s", nick.c_str(), unick.c_str(), object.c_str());
-	  sock << privmsg(chan, "MagicBox used %i times", magiccount);
+	  Send->action(chan, "%s gives %s a %s", nick.c_str(), unick.c_str(), object.c_str());
+	  Send->privmsg(chan, "MagicBox used %i times", magiccount);
 	}
 	/*
 	if(reply->said("!umode")){
 		if(unick == owner_nick){
-			string dest = reply->params(1);
+			Flux::string dest = reply->params(1);
 			cout << "final: "<<msg << endl;
-			sock << samode(dest, "%s", msg.c_str());
+			Send->raw(samode(dest, "%s", msg.c_str()).c_str());
 		}else{
-			sock << notice(unick, access_denied);
+			Send->notice(unick, access_denied);
 		}	
 	}*/
 }
+};
 /**
  * @}
  */
