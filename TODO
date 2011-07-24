@@ -1,0 +1,42 @@
+Legend: 
+	x = done
+	? = unsure
+	+ = in progress
+	$ = half completed
+
+
+
+Navn 2.0.0
+----------
+[x] Add SendMessage class or something of the similar
+[$] Make module system that loads physical binary files (.so files)
+[x] Add commands class similar to SendMessage
+[x] Clean out a lot of the useless functions, cluttering up spaces in some files
+[x] Fix topic changer/uploader (this will fully deprecate Da_Goat's old python script)
+[x] Identify when the bot's nick changes
+
+
+
+Navn 2.0.1
+----------
+[ ] Fix --help message showing full execution directory
+[ ] Rewrite the config system (Burn INIreader with fire!)
+[ ] Add python support
+[ ] Make module system load binary files (.so files)
+[ ] Add some kind of command handler so it can list all loaded commands from all modules
+[ ] Add timed pinging (should handle ping timeouts and connection issues)
+[ ] Add better error handling instead of a throw or a error code in some places
+[ ] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
+[ ] Add some sort of buffer processor for the socket engine (make lines process correctly instead of printing the raw buffer)
+
+
+
+
+Future
+------
+[ ] Add some sort of accounts system
+[ ] Rewrite socket engine again for multi-socket support
+[ ] make a makefile compile script that is still as colorful as build.sh
+[ ] Do away with the damn flux_net_irc namespace
+[ ] Add support for GETTEXT so it allows for the program to be translated
+[ ] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
