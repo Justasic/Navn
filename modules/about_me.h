@@ -54,6 +54,7 @@ public:
 	Send->privmsg(chan, "Raw: %s", Host->raw.c_str());
 	delete Host;
   }
+  return MOD_RUN;
  }
 };
 /**

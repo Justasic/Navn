@@ -76,7 +76,7 @@ bool SocketIO::connect()
 {
   struct addrinfo *p;
   int count = 0;
-  int rv, connected;
+  int connected = 0;
   char s[INET6_ADDRSTRLEN];
   
   for(p = servinfo; p != NULL; p = p->ai_next) {
@@ -108,9 +108,8 @@ const int SocketIO::recv(Flux::string& buffer) const{
    printf("--> %s\n", Sanitize(buf).c_str());
   return i;
 }
-
 const int SocketIO::send(const Flux::string buf) const{
- std::cout << "<-- " << Sanitize(buf) << endl;
+ printf("<-- %s\n", Sanitize(buf).c_str());
  int i = ::send(sockn, buf.c_str(), buf.size(), 0);
  return i;
 }

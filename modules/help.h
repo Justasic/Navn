@@ -45,6 +45,7 @@ public:
       
       log("%s used help command", unick.c_str());
    }
+   return MOD_RUN;
   }
 };
 /**

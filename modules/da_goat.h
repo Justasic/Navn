@@ -221,6 +221,7 @@ public:
          Send->privmsg(chan, "ewww..");
       }
       /***********************End Da_Goat Functions*******************************/
+      return MOD_RUN;
   }
 };
 /**

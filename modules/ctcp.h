@@ -53,6 +53,7 @@ public:
     Send->notice(unick, "\1SOURCE git://gitorious.org/navn/navn.git\1");
     log("Recieved CTCP SOURCE from %s", unick.c_str());
   }
+  return MOD_RUN;
   }
 };
 /**

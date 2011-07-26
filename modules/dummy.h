@@ -32,7 +32,7 @@ public:
     if (reply->said("testing")){
       Send->privmsg(reply->channel,"I hear you!\nYES I DO!");
     }
-    
+   return MOD_RUN; 
   }
 };
 

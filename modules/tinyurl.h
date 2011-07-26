@@ -30,6 +30,7 @@ public:
 	
       }
   }
+  return MOD_RUN;
  }
 };
 #endif

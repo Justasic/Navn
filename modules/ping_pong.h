@@ -35,7 +35,7 @@ void ping_pong(SocketIO *sock, irc_string *reply, Flux::string re){
    sock->send("PASS "+strip(reply->params(17))+nl);
   }
   if(reply->said("ERROR :Closing link:")){
-   throw SocketException(raw);
+    throw CoreException(raw);
   }
 }
 /**

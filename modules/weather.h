@@ -62,6 +62,7 @@ public:
 	log("%s used !weather to get weather for area '%s'", unick.c_str(), area.c_str());
       }
     }
+    return MOD_RUN;
   }
 };
 

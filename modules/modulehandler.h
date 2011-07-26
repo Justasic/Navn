@@ -161,7 +161,7 @@ public:
 	}
 	log("%s used \"!modunload normal\" to unload all normal priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
       }
-      if(reply->params(1) == "high" || reply->params(1) == '3' && !request){
+      if((reply->params(1) == "high" || reply->params(1) == '3') && !request){
 	request = true;
 	confPass = make_pass();
 	Send->notice(unick, "\0037WARNING\017: You are requesting an unload of all high priority modules. This cannot be reversed without a restart.");
@@ -214,6 +214,7 @@ public:
 	log("%s used \"!modload normal\" to load all normal priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
       }
     }
+    return MOD_RUN;
   }
 };
 /**

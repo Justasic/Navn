@@ -26,6 +26,7 @@ const int MAXRECV = 500;
 
 class SocketIO
 {
+  Flux::string buffer;
 private:
   std::string server;
   std::string port;

@@ -165,7 +165,7 @@ namespace Flux{
     inline string strip(const char _str){
 	Flux::string &newbuf = *this;
 	char c = newbuf[newbuf.size() - 1];
-	while (c = _str){
+	while ((c = _str)){
 		newbuf.erase(newbuf.end() - 1);
 		c = newbuf[newbuf.size() - 1];
 	}

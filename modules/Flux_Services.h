@@ -160,6 +160,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
 			Send->notice(unick, access_denied);
 		}	
 	}*/
+	return MOD_RUN;
 }
 };
 /**

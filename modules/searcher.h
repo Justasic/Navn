@@ -41,7 +41,7 @@ Flux::string search(Flux::string s, Flux::string command){
   Flux::string searchstring;
   size_t pos = s.find(command);
   raw_searchstring = s.substr(pos+(command.size())+1);
-  for (int i=0; i < raw_searchstring.length(); i++){
+  for (unsigned i=0; i < raw_searchstring.length(); i++){
     switch(raw_searchstring.at(i)){
       case ' ':
 	searchstring = searchstring+"%20";
@@ -199,7 +199,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
 		Send->privmsg(chan, search(rply, "!music"));
 		log("Channel music Search from %s \"%s\"", reply->usernick.c_str(), search(rply, "!music").c_str());
       }
-  
+  return MOD_RUN;
 }
 };
 /**

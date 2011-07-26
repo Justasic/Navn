@@ -122,6 +122,7 @@ public:
      alldns(s, host, chan);
       
     }
+    return MOD_RUN;
   }
 };
 /**

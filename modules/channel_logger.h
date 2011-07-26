@@ -85,6 +85,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
    if(reply->said("MODE "+LogChannel)){
      CLog("*** %s sets mode %s %s", unick.c_str(), reply->params(3).c_str(), reply->params(4).c_str());
   }
+  return MOD_RUN;
 }
 };
 /**

@@ -60,7 +60,7 @@ class irc_string:Flux::string{
       Flux::string space = " ";
       size_t pos = reply.find(" :");
       pos += 2;
-      for (int i = pos; i < reply.length(); i++){
+      for (unsigned i = pos; i < reply.size(); i++){
 	if (reply.at(i) == ' '){
 	  message.append(space);
 	}else{message = message+reply.at(i);}
@@ -88,7 +88,7 @@ class irc_string:Flux::string{
      * \param i An integer value.
      * \return A Flux::string with the single specified word.
      */
-    Flux::string params(int i){
+    Flux::string params(unsigned i){
       if (i >= toks.size()){
 	return " ";
       }else{return toks[i];}
@@ -102,7 +102,7 @@ class irc_string:Flux::string{
      * \param e An integer value describing the place of the last word wanted.
      * \return A Flux::string withing the range of words specified by \a b and \a e
      */
-    Flux::string params(int b, int e){
+    Flux::string params(unsigned b, unsigned e){
       Flux::string buf = "";
       if (b >= toks.size()){
 	b = toks.size();
@@ -110,7 +110,7 @@ class irc_string:Flux::string{
       if (e >= toks.size()){
 	e = toks.size() - 1;
       }
-      for (int i = b; i <= (e); i++){
+      for (unsigned i = b; i <= (e); i++){
 	buf += toks[i];
 	buf.append(" ");
       }
@@ -129,7 +129,7 @@ class irc_string:Flux::string{
       Flux::string to_find;
       size_t pos = msg.find(begin);
       pos += 1;
-      for (int i = pos; i < msg.length(); i++){
+      for (unsigned i = pos; i < msg.length(); i++){
 	if (msg.at(i) == end){
 	  break;
 	}else{to_find = to_find+msg.at(i);}
@@ -144,7 +144,7 @@ class irc_string:Flux::string{
      * \return True if \a findee was found, false otherwise.
      */
     bool said(Flux::string findee){
-      int i = raw_string.find(findee);
+      unsigned i = raw_string.find(findee);
       if (i != Flux::string::npos){
 	return true;
       }else{return false;}
@@ -159,7 +159,7 @@ class irc_string:Flux::string{
      * \return True if \a findee was found, false otherwise.
      */
     static bool said(Flux::string source, Flux::string findee){
-      int i = source.find(findee);
+      unsigned i = source.find(findee);
       if (i != Flux::string::npos){
 	return true;
       }else{return false;}
@@ -212,7 +212,7 @@ Flux::string removeCommand(Flux::string command, Flux::string s){
  */
 Flux::string makeSearchString(Flux::string raw_searchstring){
   Flux::string searchstring;
-  for (int i=0; i < raw_searchstring.length(); i++){
+  for (unsigned i=0; i < raw_searchstring.length(); i++){
      switch(raw_searchstring.at(i)){
       case ' ':
 	searchstring = searchstring+"%20";
@@ -845,7 +845,7 @@ Flux::string findInXML(Flux::string node, Flux::string info, Flux::string fileSt
   int a = 0;
   while(!foundInfo){
     Flux::string infoFound = "";
-    for(int m = 0; m < info.length(); m++){
+    for(unsigned m = 0; m < info.length(); m++){
       infoFound += fileString.at(p+a+m);
     }
     if (infoFound == info){

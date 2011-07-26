@@ -160,6 +160,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
   if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
     throw CoreException("killed by "+unick);
   }
+  return MOD_RUN;
 }
 };
 /**

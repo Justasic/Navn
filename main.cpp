@@ -103,36 +103,38 @@ int main (int argcx, char** argvx, char *envp[])
     modulehandler _modulehandler(true);
     /**       MODULES          */
     /*! \endcode */
-    
+
     while (!quitting){
       while(!quitting && sock->is_valid()){
-      sock->recv(rply);
-      irc_string* reply = new irc_string(rply);
-      
-      host = reply->host;
-      fullhost = reply->usernick+"!"+reply->user+"@"+host;
-      chan = reply->channel; //sets the variables.
-      unick = reply->usernick;
-      msg = reply->message;
-      ident = reply->user;
-      raw = reply->raw_string;
+	sock->recv(rply);
+	irc_string* reply = new irc_string(rply);
+	
+	host = reply->host;
+	fullhost = reply->usernick+"!"+reply->user+"@"+host;
+	chan = reply->channel; //sets the variables.
+	unick = reply->usernick;
+	msg = reply->message;
+	ident = reply->user;
+	raw = reply->raw_string;
 
-      ping_pong(sock, reply, rply);
+	ping_pong(sock, reply, rply);
 
-      for(int i = 0; i < moduleList.size(); i++){
-	if (moduleList[i]->activated == true){
-	  moduleList[i]->run(Send, rply, reply);
-	}
-      }  
-      /***********************************/
-      delete reply;
+	for(unsigned i = 0; i < moduleList.size(); i++){
+	  if (moduleList[i]->activated == true){
+	    moduleList[i]->run(Send, rply, reply);
+	  }
+	} 
+	/***********************************/
+	delete reply;
+	rply.clear();
       }
       if(quitting)
 	shutdown(sock, quitmsg);
       if(!sock->is_valid()){
 	sock->close();
-	delete sock;
-	SocketIO *sock = new SocketIO(server, port);
+	SocketIO *oldsock = sock;
+	delete oldsock;
+	sock = new SocketIO(server, port);
       }
     }//while loop ends here
     shutdown(sock, quitmsg);

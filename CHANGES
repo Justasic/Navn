@@ -8,6 +8,7 @@ Made small code changes due to the SendMessage fix
 Updated some of Da_Goat's info
 Updated versions, names, etc. for next release
 Changed Module handler commands from a channel prefix command to a /msg command
+Fixed socket engine not printing buffer correctly in debug output
 
 Navn 2.0.0
 ==========

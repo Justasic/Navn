@@ -89,6 +89,7 @@ public:
      Send->privmsg(unick, access_denied); 
     }
   }
+  return MOD_RUN;
 }
 };
 /**
