@@ -5,25 +5,16 @@ Legend:
 	$ = half completed
 
 
-
-Navn 2.0.0
-----------
-[x] Add SendMessage class or something of the similar
-[$] Make module system that loads physical binary files (.so files)
-[x] Add commands class similar to SendMessage
-[x] Clean out a lot of the useless functions, cluttering up spaces in some files
-[x] Fix topic changer/uploader (this will fully deprecate Da_Goat's old python script)
-[x] Identify when the bot's nick changes
-
-
-
 Navn 2.0.1
 ----------
 [ ] Fix --help message showing full execution directory
 [ ] Rewrite the config system (Burn INIreader with fire!)
+[ ] Multithread timer function
 [ ] Add python support
-[ ] Make module system load binary files (.so files)
-[ ] Add some kind of command handler so it can list all loaded commands from all modules
+[$] Make module system load binary files (.so files)
+[+] Add some kind of command handler so it can list all loaded commands from all modules
+[+] Make default channel's in the config
+[ ] Make a server numeric catcher
 [ ] Add timed pinging (should handle ping timeouts and connection issues)
 [ ] Add better error handling instead of a throw or a error code in some places
 [ ] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules

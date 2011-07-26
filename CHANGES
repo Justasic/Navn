@@ -1,6 +1,14 @@
 Code by Justasic, Lordofsraam, and DeathBlade
 Changes For Navn
 
+Navn 2.0.1
+==========
+Fixed SendMessage using sepstream incorrectly
+Made small code changes due to the SendMessage fix
+Updated some of Da_Goat's info
+Updated versions, names, etc. for next release
+Changed Module handler commands from a channel prefix command to a /msg command
+
 Navn 2.0.0
 ==========
 Fixed weather module

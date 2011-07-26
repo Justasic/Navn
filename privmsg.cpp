@@ -32,7 +32,7 @@ void SendMessage::privmsg(Flux::string where, Flux::string msg){
  Flux::string tok;
  while(sep.GetToken(tok))
  {
-   this->raw("PRIVMSG %s :%s\n", where.c_str(), msg.c_str());
+   this->raw("PRIVMSG %s :%s\n", where.c_str(), tok.c_str());
  }
 }
 /**
@@ -60,7 +60,7 @@ void SendMessage::notice(Flux::string where, Flux::string msg){
  Flux::string tok;
  while(sep.GetToken(tok))
  {
-   this->raw("NOTICE %s :%s\n", where.c_str(), msg.c_str());
+   this->raw("NOTICE %s :%s\n", where.c_str(), tok.c_str());
  }
 }
 /**
@@ -88,7 +88,7 @@ void SendMessage::action(Flux::string where, Flux::string msg){
  Flux::string tok;
  while(sep.GetToken(tok))
  {
-   this->raw("PRIVMSG %s :\001ACTION %s\001\n", where.c_str(), msg.c_str());
+   this->raw("PRIVMSG %s :\001ACTION %s\001\n", where.c_str(), tok.c_str());
  }
 }
 /**

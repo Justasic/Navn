@@ -37,7 +37,7 @@ public:
   {
     bool request = false;
     Flux::string confPass;
-    if (reply->said("!flipmod") && reply->said(password))
+    if (reply->said("PRIVMSG "+nick+" :modflip") && reply->said(password))
     {
       for (int i = 0; i < (int)moduleList.size(); i++)
       {
@@ -50,7 +50,7 @@ public:
       }
     }
     /**************************************************************************************************/
-    if(reply->params(0) == "!modlist")
+    if(reply->said("PRIVMSG "+nick+" :modlist"))
     {
       if(reply->params(1) == "low" || reply->params(1) == '1'){
 	Send->notice(unick, "Current Low Priority Module list:");
@@ -130,7 +130,7 @@ public:
       }
     }
     /***********************************************************************************************************/
-    if(reply->params(0) == "!modunload" && reply->said(password)){
+    if(reply->said("PRIVMSG "+nick+" :modunload") && reply->said(password)){
       if(reply->params(1) == "all"){
 	Send->notice(unick, "Unloading all non-high priority modules.");
 	int count = 0;
@@ -182,7 +182,7 @@ public:
 	log("Module's system frozen in current state until next restart, Module Handler disabled!");
     }
     /***********************************************************************************************************/
-    if(reply->params(0) == "!modload"){
+    if(reply->said("PRIVMSG "+nick+" :modload")){
       if(reply->params(1) == "all"){
 	Send->notice(unick, "Loading all non-high priority modules.");
 	int count = 0;

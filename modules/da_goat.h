@@ -69,18 +69,18 @@ public:
 		  log("%s used Da_Goats !poke command in %s to poke %s", unick.c_str(), chan.c_str(), person.c_str());
 		}
       }
-	if(reply->said("!info")){
+	if(reply->params(0) == "!info"){
 		Send->privmsg(chan, "Our forum is at \037castawaycrew.hyperboards.com\017");
 		Send->privmsg(chan, "Our Website is \002Flux-Net.net\017");
 		Send->privmsg(chan, "Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
 		log("%s used Da_Goats !info command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!rename")){
+      if(reply->params(0) == "!rename"){
 		Send->privmsg(chan, "This channel is a Nickname only channel. This means that you MUST have your own Nickname! If you do not choose your own nick name you WILL be kicked.");
 		Send->privmsg(chan, "To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
 		log("%s used Da_Goats !rename command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!register")){
+      if(reply->params(0) == "!register"){
 		Send->privmsg(chan, "To Register your nickname type:");
 		Send->privmsg(chan, "\0034If this is the nick you want then skip step 1.\017");
 		Send->privmsg(chan, "\0034Do not include brackets when registering, this will cause errors\017");
@@ -93,18 +93,16 @@ public:
 		Send->privmsg(chan, "Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
 		log("%s used Da_Goats !register command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!socialinfo")){
-		Send->privmsg(chan, "Ventrilo Server:\002 5.110.166.75 Port:\00313 3784");
-		Send->privmsg(chan, "Our IRC server: \002irc.Flux-Net.net\002 port\00313 6667\017 or\00313 8067\017");
+      if(reply->params(0) == "!socialinfo"){
+		Send->privmsg(chan, "Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.flux-net.net:6667");
 		log("%s used Da_Goats !socialinfo command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!help")){
+      if(reply->params(0) == "!help"){
 		Send->privmsg(chan, "Local %s commands are:", chan.c_str());
-		Send->privmsg(chan, "!help !info !register !socialinfo !version !time");
-		Send->privmsg(chan, "!uptime !rules !spam !rename !bugs");
+		Send->privmsg(chan, "!help !info !register !socialinfo !version !time\n!uptime !rules !spam !rename !bugs");
 		log("%s used Da_Goats !help command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!ts3")){
+      if(reply->params(0) == "!ts3"){
 		Send->privmsg(chan, "The Flux-Net TeamSpeak 3 server is: ");
 		Send->privmsg(chan, "Galaxy.Flux-Net.net:9987");
 		log("%s used Da_Goats !ts3 command in %s", unick.c_str(), chan.c_str());
@@ -182,7 +180,7 @@ public:
 		Send->notice(unick, strip(execute("grep 'model name' /proc/cpuinfo")));
 		log("%s used stats command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!uptime")){
+      if(reply->params(0) == "!uptime"){
 		if(sysinfo(&sys_info) != 0)
 			perror("sysinfo");
  
@@ -194,7 +192,7 @@ public:
 		Send->privmsg(chan, "Uptime: %d days, %d hours, %d minutes, %ld seconds",days, hours, mins, sys_info.uptime % 60);
 		log("%s used !uptime command in %s", unick.c_str(), chan.c_str());
 	  }
-      if(reply->said("!rules")){
+      if(reply->params(0) == "!rules"){
 	Send->privmsg(chan, "There are only a few simple rules for %s.", chan.c_str());
         Send->privmsg(chan, "Do NOT hate on others in any way. Basically do not troll in any shape or form.");
         Send->privmsg(chan, "Do not ask for op status. you will be granted op status when the moderators feel you deserve op status.");
@@ -203,21 +201,20 @@ public:
 	Send->privmsg(chan, "If you violate any of these rules you will be kicked and possably banned from %s.", chan.c_str());
 	log("%s used Da_Goats !rules command in %s", unick.c_str(), chan.c_str());
       }
-      if(reply->said("!spam")){
+      if(reply->params(0) == "!spam"){
 	log("%s used Da_Goats !spam command in %s", unick.c_str(), chan.c_str());
         Send->privmsg(chan, "Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
       }
-      if(reply->said("!version")){
+      if(reply->params(0) == "!version"){
         Send->privmsg(chan, "The Current Navn Bot Version is \002\0037%s\017", version.c_str());
-        Send->privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ coded from scratch by lordofsraam");
+        Send->privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ code by lordofsraam\n and is further developed with Justasic");
 	Send->privmsg(chan, "Navn's code can be found at \002git://gitorious.org/navn/navn.git");
 	Send->privmsg(chan, "Report all bugs at: \2http://flux-net.net/bugs/\2");
         Send->privmsg(chan, "Navn is managed by \2%s\2", owner_nick.c_str());
-	Send->privmsg(chan, "If you would like to add a command or function, talk to him.");
 	log("%s used Da_Goats !version command in %s", unick.c_str(), chan.c_str());
       }
       /*******************************Easter Eggs*********************************/
-      if(reply->said("!everything")){
+      if(reply->params(0) == "!everything"){
 	Send->privmsg(chan, "Yes, there is a script for everything..\007");
       }
       if(reply->said("cum ")){
