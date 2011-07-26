@@ -101,8 +101,11 @@ const int SocketIO::recv(Flux::string& buffer) const{
   char tbuf[NET_BUFSIZE + 1] = "";
   memset(tbuf, 0, NET_BUFSIZE + 1);
   size_t i = ::recv(sockn, tbuf, NET_BUFSIZE, 0);
+  sepstream sep(tbuf, '\n');
+  Flux::string buf;
   buffer = tbuf;
-  printf("%s\n", Sanitize(tbuf).c_str());
+  while(sep.GetToken(buf))
+   printf("--> %s\n", Sanitize(buf).c_str());
   return i;
 }
 
