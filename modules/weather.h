@@ -57,8 +57,9 @@ public:
 	Flux::string loc = findInXML("city","data",ff);
 	Flux::string cond = findInXML("condition","data",ff);
 	Flux::string tempf = findInXML("temp_f","data",ff);
+	Flux::string tempc = findInXML("temp_c","data",ff);
 	remove(filename.c_str());
-	Send->privmsg(chan, "The current condition in %s is %s with a temperature of %s degrees Fahrenheit", loc.c_str(), cond.c_str(), tempf.c_str());
+	Send->privmsg(chan, "The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
 	log("%s used !weather to get weather for area '%s'", unick.c_str(), area.c_str());
       }
     }
