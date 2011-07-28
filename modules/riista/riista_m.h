@@ -234,7 +234,7 @@ bool in_player_list(string n){
 }
 
 void delete_from_playersV(string n){
-  for (int i = 0; i < playersV.size(); i++){
+  for (unsigned i = 0; i < playersV.size(); i++){
     if (playersV[i] == n){
       playersV.erase(playersV.begin()+i);
     }
@@ -556,7 +556,7 @@ void riista_m(Socket &sock, irc_string *reply){
 	if (in_player_list(unick) && players[unick]->alive()) {
 	  if (reply->said("heal")){
 	    bool already_cast = false;
-	    for(int i = 0; i < playersV.size(); i++){
+	    for(unsigned i = 0; i < playersV.size(); i++){
 	      if (reply->said(playersV[i]) && playersV[i] != unick && players[playersV[i]]->alive()){		
 		if (players[unick]->mp >= 8) {
 		  stringstream output;

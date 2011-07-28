@@ -43,7 +43,7 @@ class irc_string:string{
       
       size_t pos = reply.find(" :");
       pos += 2;
-      for (int i = pos; i < reply.length(); i++){
+      for (unsigned i = pos; i < reply.length(); i++){
 	if (reply.at(i) == ' '){
 	  message = message+' ';
 	}else{message = message+reply.at(i);}
@@ -62,8 +62,8 @@ class irc_string:string{
       }
     }
     
-    string params(int i){
-      if (i >= toks.size()){
+    string params(unsigned i){
+      if ((i >= toks.size())){
 	return " ";
       }else{return toks[i];}
     }
@@ -72,7 +72,7 @@ class irc_string:string{
       string to_find;
       size_t pos = msg.find(begin);
       pos += 1;
-      for (int i = pos; i < msg.length(); i++){
+      for (unsigned i = pos; i < msg.length(); i++){
 	if (msg.at(i) == end){
 	  break;
 	}else{to_find = to_find+msg.at(i);}
@@ -81,7 +81,7 @@ class irc_string:string{
     }
     
     bool said(string findee){
-      int i = raw_string.find(findee);
+      unsigned i = raw_string.find(findee);
       if (i != string::npos){
 	return true;
       }else{return false;}
@@ -97,7 +97,7 @@ string search(string s, string command){
   string searchstring;
   size_t pos = s.find(command);
   raw_searchstring = s.substr(pos+(command.size())+1);
-  for (int i=0; i < raw_searchstring.length(); i++){
+  for (unsigned i=0; i < raw_searchstring.length(); i++){
     if (raw_searchstring.at(i) == ' '){
       searchstring = searchstring+"%20";
     }else if (raw_searchstring.at(i) == '+'){
@@ -594,89 +594,7 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
 }
-string trim(string const& source, char const* delims = " \t\r\n") {
-  string result(source);
-  string::size_type index = result.find_last_not_of(delims);
-  if(index != string::npos)
-    result.erase(++index);
 
-  index = result.find_first_not_of(delims);
-  if(index != string::npos)
-    result.erase(0, index);
-  else
-    result.erase();
-  return result;
-}
-string get_weather(string area){
- string wget = "wget -q -O temp.xml - http://www.google.com/ig/api?weather="+area;
- system(wget.c_str());
- ifstream file("temp.xml");
- string line;
- string value;
- string city;
- string postalcode;
- string date;
- string system;
- string condition;
- string temp_f;
- string humidity;
- string wind;
- while(getline(file,line)){
- irc_string* reply = new irc_string(line);
-
- if(reply->said("<city")){
-	if(line[11] = '='){
-		city=trim(line.substr(11,line.find('=')-1));
-		continue;
-	}
- }
-	if(reply->said("<postal_code")){
-	if(line[18] = '='){
-		postalcode=trim(line.substr(18,line.find('=')-1));
-		continue;
-	}
-	}
-	if(reply->said("<forcast_date")){
-	if(line[11] = '='){
-		date=trim(line.substr(11,line.find('=')-1));
-		continue;
-	}
- }
-if(reply->said("unit_system")){
-	if(line[18] = '='){
-		system=trim(line.substr(18,line.find('=')-1));
-		continue;
-	}
- }
-if(reply->said("condition")){
-	if(line[16] = '='){
-		condition=trim(line.substr(16,line.find('=')-1));
-		continue;
-	}
- }
- if(reply->said("temp_f")){
-	if(line[13] = '='){
-		temp_f=trim(line.substr(13,line.find('=')-1));
-		continue;
-	}
- }
- if(reply->said("humidity")){
-	if(line[18] = '='){
-		humidity=trim(line.substr(18,line.find('=')-1));
-		continue;
-	}
- }
- if(reply->said("wind_condition")){
-	if(line[22] = '='){
-		wind=trim(line.substr(22,line.find('=')-1));
-		continue;
-	}
- }
- delete reply;
- }
- remove("temp.xml");
- return "Weather for "+city+" "+postalcode+" "+date+" "+system+" "+condition+" "+wind+" "+humidity+" "+temp_f;
-}
 /**Random Number Generator
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(1,5)

@@ -41,7 +41,7 @@ void *get_in_addr(struct sockaddr *sa)
 bool Socket::connect ()
 {
   struct addrinfo *p;
-  int rv, connected;
+  int connected = 0;
   char s[INET6_ADDRSTRLEN];
 
   for(p = servinfo; p != NULL; p = p->ai_next) {
