@@ -32,6 +32,8 @@ public:
     if (reply->said("testing")){
       Send->privmsg(reply->channel,"I hear you!\nYES I DO!");
     }
+    if(reply->isnumeric(005))
+      printf("YAAAAAY!!!\n");
    return MOD_RUN; 
   }
 };

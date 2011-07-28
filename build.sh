@@ -12,7 +12,7 @@ build_it ()
     exit 1
   fi
   echo -e "\033[0m\033[1;34mLinking Files...\033[01;31m"
-  g++ -Wall -ansi -pedantic -g -o riista *.o inireader/INIReader.cpp inireader/ini.c -lcares
+  g++ -Wall -ansi -pedantic -g -o navn *.o inireader/INIReader.cpp inireader/ini.c
   if [ "$?" != 0 ]; then
     rm -f *.o
     echo -e "\033[0mThere where linking errors. See above."
@@ -32,19 +32,19 @@ build_it ()
   echo "Build time: $bt seconds"
   echo "<=====================================>"
   echo " "
-  echo "Bash 'riista' to run the bot (./riista)"
+  echo "Bash 'navn' to run the bot (./navn)"
   echo "This bot was created in C++ by Lordofsraam from Flux-Net"
   echo "and further developed by Justasic and Lordofsraam."
   echo " "
 }
-if [ -f riista ]; then
+if [ -f navn ]; then
   echo -n "A previous build was found, would you like to overwrite it (y/n)? "; read answer
   if [ "$answer" = "y" ]; then
     clear
     echo "Removing the old Navn build..."
-    rm -f riista
+    rm -f navn
     if [ "$?" != 0 ]; then
-      echo -e "\033[0mThere was an error removing the old executable (rm -f riista)"
+      echo -e "\033[0mThere was an error removing the old executable (rm -f navn)"
     fi
     echo "Rebuilding the Navn bot..."
     echo "Build started at: `date +%T` "

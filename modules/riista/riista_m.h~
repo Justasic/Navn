@@ -588,11 +588,11 @@ void riista_m(SendMessage *Send, irc_string *reply){
 		  int ri = rand()%100;
 		  if (ri >= (100-((players[unick]->INT * 8)-(riista->AGI * 2)))){
 		    riista->paralyzed = true;
-		    Send->privmsg(channel, "The paralysis succeeded! "+riista->name+" is paralyzed!");
-		  }else{Send->privmsg(channel, "The paralysis failed!");}
+		    sock << chanmsg("The paralysis succeeded! "+riista->name+" is paralyzed!");
+		  }else{sock << chanmsg("The paralysis failed!");}
 		}
-	      }else{Send->privmsg(channel, "Not enough MP!");}
-	    }elseSend->privmsg(channel, "You need to be a mage or a rogue to use this spell "+unick);}
+	      }else{sock << chanmsg("Not enough MP!");}
+	    }else{sock << chanmsg("You need to be a mage or a rogue to use this spell "+unick);}
 	  }
 	  else if(reply->said("concentrate")){
 	    if (players[unick]->job == "Mage"){

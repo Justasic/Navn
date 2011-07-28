@@ -4,15 +4,15 @@
 class sepstream
 {
  private:
-		std::string tokens;
-		std::string::iterator last_starting_position;
-		std::string::iterator n;
+		Flux::string tokens;
+		Flux::string::iterator last_starting_position;
+		Flux::string::iterator n;
 		char sep;
  public:
-		sepstream(const std::string &source, char seperator);
+		sepstream(const Flux::string &source, char seperator);
 		virtual ~sepstream() { }
-		virtual bool GetToken(std::string &token);
-		virtual const std::string GetRemaining();
+		virtual bool GetToken(Flux::string &token);
+		virtual const Flux::string GetRemaining();
 		virtual bool StreamEnd();
 };
 #endif

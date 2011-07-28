@@ -2,12 +2,6 @@
 #define defs_h
 #include "includes.h"
 
-#define MST (-6)
-#define UTC (0)
-#define CCT (+8)
-#define EST (-4)
-#define PST (-7)
-#define AUS (+10)
 #define GetCurrentDir getcwd
 using namespace std;
 
@@ -21,47 +15,66 @@ int days, hours, mins;
 bool in_channel = false;
 bool nofork = false;
 bool dev = false;
-bool game_started = false;
 bool quitting = false;
-const string version = "v2.0.5";
+const Flux::string version = "v2.0.1";
+Flux::string binary_path, bot_bin, binary_dir;
+/**Runtime directory finder
+ * This will get the bots runtime directory
+ * @param getprogdir(const Flux::string dir)
+ */
+Flux::string getprogdir(const Flux::string dir){
+  char buffer[FILENAME_MAX];
+  if (GetCurrentDir(buffer, sizeof(buffer))) {
+    Flux::string remainder = dir;
+    bot_bin = remainder;
+    Flux::string::size_type n = bot_bin.rfind("/");
+    Flux::string fullpath;
+    if (bot_bin[0] == '/')
+      fullpath = bot_bin.substr(0, n);
+    else
+      fullpath = Flux::string(buffer) + "/" + bot_bin.substr(0, n);
+    bot_bin = bot_bin.substr(n + 1, remainder.length());
+    return fullpath;
+  }
+  return "/";
+}
 
-    /*
-    'Reply' means 'What the server is saying back'
-    'unick' means that whatever user is saying to the bot or whoever said
-    something or did something.
-    Note the 'reply' is the raw IRC server reply incase you want
-    to expand on my code
-    */
-string unick;
-string rply;
-string host;
-string arg;
-string chan;
-string msg;
-string quitmsg;
-string fullhost;
-string ident;
-string myhost;
+Flux::string unick;
+Flux::string rply;
+Flux::string host;
+Flux::string chan;
+Flux::string raw;
+Flux::string msg;
+Flux::string quitmsg;
+Flux::string fullhost;
+Flux::string ident;
+Flux::string myhost;
 /******************Configuration variables***********************/
-string logfile;
-string nsacc;
-string nspass;
-string owner_nick;
-string realname;
-string usrname;
-string nick;
-string channel;
-string port;
-string server;
-string pid_file;
-string usrpass;
-
+Flux::string logfile;
+Flux::string nsacc;
+Flux::string nspass;
+Flux::string owner_nick;
+Flux::string realname;
+Flux::string usrname;
+Flux::string nick;
+Flux::string channel;
+Flux::string port;
+Flux::string server;
+Flux::string LogChannel;
+Flux::string pid_file;
+Flux::string usrpass;
+Flux::string ouser;
+Flux::string opass;
+/**Rehash void
+ * This will re-read the config file values when told to do so
+ * @param ReadConfig(INIReader &config)
+ */
 void ReadConfig(INIReader &config){
 logfile = config.Get("Log","Log_File","navn.log");
 nsacc = config.Get("Bot","NickServ_Account","");
 nspass = config.Get("Bot","NickServ_Password","");
 owner_nick = config.Get("Bot","Owner","Derp");
-realname = config.Get("Connect","Realname","The Navn Bot "+version);
+realname = config.Get("Connect","Realname","The Navn Bot "+version.tostd());
 usrname = config.Get("Connect","Ident","Navn");
 nick = config.Get("Bot","Nick","Navn");
 channel = config.Get("Bot","Channel","#Test");
@@ -69,50 +82,36 @@ port = config.Get("Connect","Port","6667");
 server = config.Get("Connect", "Server", "irc.flux-net.net");
 pid_file = config.Get("Log","PID_File","navn.pid");
 usrpass = config.Get("Bot","Password","Navn");
+ouser = config.Get("Oper","Oper_Username","");
+opass = config.Get("Oper","Oper_Password","");
+LogChannel = config.Get("Modules", "LogChannel","");
 }
 /******************End Configuration variables********************/
 
-#define welcome_msg "%s has joined. Type message me the word 'help' to see the commands."
-//433 replies that the nick is taken
-const string nick_taken_rsl = "433 * "+nick+" :Nickname is already in use.";
-const string in_the_channel = "252 "+nick;
-const string ChanJoin = "366"+nick;
+#define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
+const Flux::string in_the_channel = "252 "+nick;
+const Flux::string ChanJoin = "366"+nick;
 //005 is just the generic welcome message saying you have logged in to the server.
-const string killed = "KILL "+nick;
-const string con_closed_nick = "[Registration timeout]";
-const string CTCP_VERS = " :\001VERSION\001";
-const string CTCP_TIME = " :\001TIME\001";
-const string join_req = "PRIVMSG "+nick+" :join";
-const string part_req = "PRIVMSG "+nick+" :part";
-const string pass_req = "PRIVMSG "+nick+" :pass";
-const string gdb_req = "PRIVMSG "+nick+" :gdb";
-const string quitmsg_req = "PRIVMSG "+nick+" :quit";
-const string pmsggoogle = "PRIVMSG "+nick+" :google";
-const string pmsgyoutube = "PRIVMSG "+nick+" :youtube";
-const string gdb_msg = "gdb#: (1) From the directory that you would do ./program from, do the following instead: gdb ./program (2) Do: r -paramiters (3) Upon crash, do: bt full to see all the output of the crash.";
-const string access_denied = "Access is Denied.";
-const string nl = "\r\n";
+const Flux::string killed = "KILL "+nick;
+const Flux::string access_denied = "Access is Denied.";
+const Flux::string nl = "\n";
 
 /**Command Line Help
  * for when someone does --help or -h with the bot
  * @param ./navn --help
  * @param ./navn -h
  */
-void help(){
- cout << "\t Navn Internet Relay Chat Bot" << nl;
- cout << "\t \t "<< version << nl; 
- cout << nl;
- cout << "Paramiters \t   Function" << nl; 
- cout << "--help \t -h \t Displays this message." << nl; 
- cout << "--developer  -d\t Starts the bot in debug mode." << nl; 
- cout << "--dev \t -x \t Starts the bot in developer mode." << nl; 
- cout << "--nofork \t-f \t Keep" << nl;
- cout << "" <<nl;
- cout << nl;
- cout << "\t This bot does have Epic Powers." << nl;
+void help(char** argv){
+ printf("Navn Internet Relay Chat Bot %s\n", version.c_str());
+ printf("Usage: %s [options]\n", argv[0]);
+ printf("-h, --help\n");
+ printf("-d, --developer\n");
+ printf("-f, --nofork\n");
+ printf("This bot does have Epic Powers.\n");
  exit(0);
 }
 
 struct sysinfo sys_info;
 
 #endif
+

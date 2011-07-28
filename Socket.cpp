@@ -1,30 +1,66 @@
 /* Socket.cpp */
-
+/**
+ *\file  Socket.cpp 
+ *\brief Contains the Socket engine.
+ */
 #include "Socket.h"
 #include "string.h"
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <iostream>
+#define NET_BUFSIZE 65535
 
-Socket::Socket(const std::string s, const std::string p) : m_sock(-1), server(s), port(p)
-{
-  memset ( &hints, 0, sizeof ( hints ) );
+using namespace std;
+
+Flux::string Sanitize(const Flux::string &string){
+ static struct special_chars{
+   Flux::string character;
+   Flux::string replace;
+   special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
+ }
+ special[] = {
+  special_chars("\n",""),
+  special_chars("\002",""),
+  special_chars("\003",""),
+  special_chars("\035",""),
+  special_chars("\037",""),
+  special_chars("\026",""),
+  special_chars("\001",""),
+  special_chars("","")
+ };
+  Flux::string ret = string.c_str();
+  for(int i = 0; special[i].character.empty() == false; ++i){
+    ret = ret.replace_all_cs(special[i].character, special[i].replace);
+  }
+  return ret.c_str(); 
+}
+/*********************************************************************************************/
+
+int recvlen;
+/* FIXME: please god, when will the hurting stop? This class is so
+   f*cking broken it's not even funny */
+SocketIO::SocketIO(const Flux::string cserver, const Flux::string cport) : sockn(-1){
+  this->server = cserver.tostd();
+  this->port = cport.tostd();
+  
+  memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
 }
 
-Socket::~Socket()
-{
-  if ( is_valid() ) ::close ( m_sock );
+SocketIO::~SocketIO(){
+ if(is_valid()) 
+   ::close(sockn);
 }
-
-
-bool Socket::get_address()
+void SocketIO::close(){
+ ::close(sockn);
+}
+bool SocketIO::get_address()
 {
   int rv = 1;
-  rv = getaddrinfo(server.c_str(), port.c_str(), &hints, &servinfo);
-// for debugging:  fprintf(stderr, "getaddrinfo: %i\n", rv);
+  rv = getaddrinfo(this->server.c_str(), this->port.c_str(), &hints, &servinfo);
+  //fprintf(stderr, "getaddrinfo: %i\n", rv);
   if (rv != 0) return false;
   return true;
 }
@@ -34,48 +70,52 @@ void *get_in_addr(struct sockaddr *sa)
     if (sa->sa_family == AF_INET) {
         return &(((struct sockaddr_in*)sa)->sin_addr);
     }
-
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-bool Socket::connect ()
+bool SocketIO::connect()
 {
   struct addrinfo *p;
+  int count = 0;
   int connected = 0;
   char s[INET6_ADDRSTRLEN];
-
+  printf("Connecting..\n");
+  
   for(p = servinfo; p != NULL; p = p->ai_next) {
-    m_sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-    if (m_sock == -1) continue;
-    int connected = ::connect(m_sock, p->ai_addr, p->ai_addrlen);
+    count++;
+    sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+    if (sockn == -1) continue;
+    int connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
     if (connected == -1){
-      close(m_sock);
-      continue;}
+      ::close(sockn);
+      printf("Connection failed.\n");
+      continue;
+    }
     break;
   }
-
+  
   if (connected == -1) return false;
-
+  
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
+  printf("Connected!\n");
   return true;
 }
-const Socket& Socket::operator >> (std::string& s) const
-{
-  char buf [ MAXRECV + 1 ];
-  s = "";
-  memset ( buf, 0, MAXRECV + 1 );
-  ::recv ( m_sock, buf, MAXRECV, 0 );
-  s = buf;
-  std::cout << s << "\n";
-  return *this;
+
+const int SocketIO::recv(Flux::string& buffer) const{
+  char tbuf[NET_BUFSIZE + 1] = "";
+  memset(tbuf, 0, NET_BUFSIZE + 1);
+  size_t i = ::recv(sockn, tbuf, NET_BUFSIZE, 0);
+  sepstream sep(tbuf, '\n');
+  Flux::string buf;
+  buffer = tbuf;
+  while(sep.GetToken(buf)){
+    buf.trim();
+    printf("--> %s\n", Sanitize(buf).c_str());
+  }
+  return i;
 }
-const Socket& Socket::operator << (const std::string& s) const
-{
-  ::send ( m_sock, s.c_str(), s.size(), 0 );
-  std::cout << "<-- " + s << "\n";
-}
-void Socket::Send(const std::string& s) const
-{
-	::send ( m_sock, s.c_str(), s.size(), 0 );
-	std::cout << "<-- " << s << "\n";
+const int SocketIO::send(const Flux::string buf) const{
+ printf("<-- %s\n", Sanitize(buf).c_str());
+ int i = ::send(sockn, buf.c_str(), buf.size(), 0);
+ return i;
 }

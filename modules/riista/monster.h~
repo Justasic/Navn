@@ -35,13 +35,13 @@ public :
   int paralyzed_count;
   bool paralyzed;
   
-  Flux::string name;
-  Flux::string last_attacker;
-  Flux::string last_attacker2;
-  Flux::string last_attacker3;
+  string name;
+  string last_attacker;
+  string last_attacker2;
+  string last_attacker3;
   
   //constructor
-  monster(Flux::string n){
+  monster(string n){
     name = n;
     STR = 15;
     END = 10;
@@ -71,14 +71,14 @@ public :
     }else{return true;}
   }
   
-  Flux::string get_health(){
-   stringstream health;
+  string get_health(){
+    stringstream health;
     health << name << "'s HP: " << hp << "/" << maxHp;
-    Flux::string output = health.str();
+    string output = health.str();
     return output;
   }
   
-  Flux::string hurt(Flux::string uname, Flux::string attack_name){  
+  string hurt(string uname, string attack_name){  
       last_attacker3 = last_attacker2;
       last_attacker2 = last_attacker;
       last_attacker = uname;
@@ -146,13 +146,13 @@ public :
       }
   }
   
-  Flux::string retaliate(){
+  string retaliate(){
     stringstream output;
     if (!paralyzed){
       srand(time(NULL));
       int p1;
       int p2;
-      Flux::string victim;
+      string victim;
       do{
       p1 = playersV.size();
       p2 = rand()%p1;
@@ -183,7 +183,7 @@ public :
     return output.str();
   }
   
-  Flux::string retaliate(Flux::string uname){
+  string retaliate(string uname){
     stringstream output;
     if (!paralyzed){
       int hit = randint(1,100);

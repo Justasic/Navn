@@ -41,7 +41,7 @@ Flux::string search(Flux::string s, Flux::string command){
   Flux::string searchstring;
   size_t pos = s.find(command);
   raw_searchstring = s.substr(pos+(command.size())+1);
-  for (unsigned i=0; i < raw_searchstring.length(); i++){
+  for (int i=0; i < raw_searchstring.length(); i++){
     switch(raw_searchstring.at(i)){
       case ' ':
 	searchstring = searchstring+"%20";

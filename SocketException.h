@@ -1,7 +1,11 @@
 /* SocketException.h */
+/**
+ *\file  SocketException.h
+ *\brief Contains the Exception throw classes.
+ */
 #ifndef SOCKET_EXCEPTION_H
 #define SOCKET_EXCEPTION_H
-#include <string>
+#include "flux.h"
 /** SocketExceptions are to be thrown with anything Socket related
  * Throws Socket Exception
  * @param throw SocketException(message)
@@ -9,12 +13,12 @@
 class SocketException
 {
  public:
-  SocketException ( std::string s ) : m_s ( s ) {};
+  SocketException ( Flux::string s ) : m_s ( s ) {};
   ~SocketException (){};
 
-  std::string description() { return m_s; }
+  Flux::string description() { return m_s; }
  private:
-  std::string m_s;
+  Flux::string m_s;
 };
 
 /**CoreExceptions are to be thrown with everything else
@@ -31,25 +35,25 @@ class CoreException : public std::exception
  public:
 	/** Holds the error message to be displayed
 	 */
-	const std::string err;
+	const Flux::string err;
 	/** Source of the exception
 	 */
-	const std::string source;
+	const Flux::string source;
 	/** Default constructor, just uses the error mesage 'Core threw an exception'.
 	 */
-	CoreException() : err("Core threw an exception"), source("The core") {}
+	CoreException() : err("Core threw an exception"), source("The core") { }
 	/** This constructor can be used to specify an error message before throwing.
 	 */
-	CoreException(const std::string &message) : err(message), source("The core") {}
+	CoreException(const Flux::string &message) : err(message), source("The core") { }
 	/** This constructor can be used to specify an error message before throwing,
 	 * and to specify the source of the exception.
 	 */
-	CoreException(const std::string &message, const std::string &src) : err(message), source(src) {}
+	CoreException(const Flux::string &message, const Flux::string &src) : err(message), source(src) { }
 	/** This destructor solves world hunger, cancels the world debt, and causes the world to end.
 	 * Actually no, it does nothing. Never mind.
 	 * @throws Nothing!
 	 */
-	virtual ~CoreException() throw() {};
+	virtual ~CoreException() throw() { };
 	/** Returns the reason for the exception.
 	 * The module should probably put something informative here as the user will see this upon failure.
 	 */
@@ -67,7 +71,7 @@ class CoreException : public std::exception
 class LogException : public CoreException
 {
  public:
-		LogException(const std::string &message) : CoreException(message, "A Log") { }
+		LogException(const Flux::string &message) : CoreException(message, "A Log") { }
 		virtual ~LogException() throw() { }
 };
 
@@ -75,7 +79,7 @@ class ConfigException : public CoreException
 {
  public:
  		ConfigException() : CoreException("Config threw an exception", "Config Parser") { }
-		ConfigException(const std::string &msg) : CoreException(msg, "A Config") { }
+		ConfigException(const Flux::string &msg) : CoreException(msg, "A Config") { }
 		virtual ~ConfigException() throw() { }
 };
 #endif
