@@ -111,7 +111,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
    * This is so you can make things happen only if you know you are in
    * a channel.
    */
-  if(reply->said("252 "+nick)){
+  if((reply->said("353 "+nick))){
     cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
     cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
     cout << "\033[22;31mSending password to owner\033[22;30m... \033[22;32mCHECK\033[22;36m"<<nl;;
@@ -121,24 +121,26 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
     Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
     in_channel = true;
   }
-  if(reply->said("005 "+nick)){
+  if((reply->said("376 "+nick))){
     Send->command->mode(nick, "+B");
     Send->command->join(channel);
     if(ouser.empty() || opass.empty()){
     }else{
       Send->command->oper(ouser, opass);
+      IsOper = true;
     }if(nsacc.empty() || nspass.empty()){
+      return MOD_RUN;
     }else{
       Send->privmsg("NickServ", "identify "+nsacc+" "+nspass);
     }
-    log("Successfully connected to the server \"%s\" Port: %s Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
+    log("Successfully connected to the server \"%s:%s\" Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
   }
   if(reply->said("PRIVMSG "+nick+":DCC ")){
     Send->notice(unick, "I do not accept or support DCC connections.");
   }
-  if(reply->said("482 "+nick+" "+chan+" :You must be a channel operator")){
+  if(reply->isnumeric(482)){
     cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
-    Send->privmsg(owner_nick, "I require op to run the last command!");
+    Send->notice(owner_nick, "I require op to run the last command!");
     log("Op is required in %s", chan.c_str());  
   }
   if(reply->said("This nickname is registered and protected")){

@@ -3,9 +3,11 @@
  *\file  privmsg.cpp 
  *\brief Contains the SendMessage class.
  */
-SendMessage::SendMessage(SocketIO *sock, Command *cmd){
+SendMessage::SendMessage(SocketIO *sock){
+  /* TODO: this is obviously not right ... this whole f*cking module
+   sucks anyway */
   this->s = sock;
-  this->command = cmd;
+  this->command = new Command(sock);
 }
 /**
  * \brief Sends a IRC private message to the user or channel

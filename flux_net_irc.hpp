@@ -10,6 +10,7 @@ template<typename T> inline Flux::string stringify(const T &x){
 		throw CoreException("Stringify Fail");
 	return stream.str();
 }
+SendMessage *Send;
 namespace flux_net_irc{
   /** 
    * \namespace flux_net_irc
@@ -92,6 +93,20 @@ class irc_string:Flux::string{
       if (i >= toks.size()){
 	return " ";
       }else{return toks[i];}
+    }
+    
+    bool isnumeric(int i){
+      if(this->said(stringify(i))){
+	Flux::string tok = toks[2];
+	tok.trim();
+	  if (tok.is_number_only()){
+	    int a = atoi(tok.c_str());
+	    if((a = i)){
+	      return true;
+	    }
+	  }
+	}
+      return false;
     }
     /**
      * \overload Flux::string params(int b, int e)
@@ -318,6 +333,12 @@ Flux::string makeSearchString(Flux::string raw_searchstring){
  * \return A Flux::string containing the response from the OS.
  */
 Flux::string execute(const char *cmd) {
+  /* 
+ * Roses are red,
+ * Violets are blue,
+ * I read StackOverflow
+ * And so do you!
+*/
     #ifdef _WIN32
     FILE* pipe = _popen
     #else
@@ -564,6 +585,7 @@ static void Rehash(){
     log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
   } 
 }
+
 /** 
  * \fn static void Rehash(Socket &sock)
  * \brief Reload the bot config file
@@ -608,7 +630,7 @@ void sigact(int sig)
       signal(sig, SIG_IGN);
       quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
-      throw CoreException(quitmsg);
+      //throw CoreException(quitmsg);
       break;
     default:
       quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);
@@ -871,6 +893,8 @@ enum ModulePriority{
   PRIORITY_DONTCARE,
   PRIORITY_LAST
 };
+//This code sucks, you know it and I know it. 
+//Move on and call me an idiot later.
 class module{ 
   Flux::string desc;
 protected:
@@ -903,6 +927,27 @@ module::module(Flux::string n, bool a, ModulePriority p){
 
 
 } //namespace end
+#define FOREACH_MOD(y, x) \
+if(true) \
+{ \
+    std::vector<Module*>::iterator safei; \
+    for (std::vector<Module*>::iterator _i = ModuleManager::EventHandlers[y].begin(); _i != ModuleManager::EventHandlers[y].end(); ) \
+    { \
+       safei = _i; \
+       ++safei; \
+       try \
+       { \
+          (*_i)->x ; \
+       } \
+       catch (const ModuleException &modexcept) \
+       { \
+          Log() << "Exception caught: " << modexcept.GetReason(); \
+       } \
+        _i = safei; \
+    } \
+} \
+else \
+      static_cast<void>(0)
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const Flux::string &modname, const bool activated) \
         { \

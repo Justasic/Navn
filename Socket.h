@@ -36,7 +36,6 @@ private:
 public:
   SocketIO(const Flux::string server, const Flux::string port);
   ~SocketIO();
-  void close();
   bool get_address();
   const int recv(Flux::string&) const;
   const int send(const Flux::string buf) const;

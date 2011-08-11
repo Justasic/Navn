@@ -82,8 +82,8 @@ void Command::topic(Flux::string chan, Flux::string msg){
  * \brief Sets the bots nickname in IRC.
  * \param nickname A Flux::string with the new nickname.
  */
-void Command::nick(Flux::string nick){
-  this->raw("NICK %s\n", nick.c_str());
+void Command::nick(Flux::string bnick){
+  this->raw("NICK %s\n", bnick.c_str());
 }
 /**
  * \fn void command::oper(Flux::string oper, Flux::string password)
@@ -97,16 +97,16 @@ void Command::oper(Flux::string oper, Flux::string password){
  * \brief Makes the bot join a channel
  * \param stringy_chan A Flux::string with the channel you want to join.
  */
-void Command::join(Flux::string chan){
-  this->raw("JOIN %s\n", chan.c_str());
+void Command::join(Flux::string dchan){
+  this->raw("JOIN %s\n", dchan.c_str());
 }
 /** 
  * \overload void command::part(Flux::string channel)
  * \brief Parts channel w/o reason.
  * \param channel Channel to part from.
  */
-void Command::part(Flux::string chan){
-  this->raw("PART %s\n", chan.c_str()); 
+void Command::part(Flux::string fchan){
+  this->raw("PART %s\n", fchan.c_str()); 
 }
 /** 
  * \fn void command::whois(Flux::string Nick)

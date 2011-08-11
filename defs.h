@@ -16,6 +16,7 @@ bool in_channel = false;
 bool nofork = false;
 bool dev = false;
 bool quitting = false;
+bool IsOper = false;
 const Flux::string version = "v2.0.1";
 Flux::string binary_path, bot_bin, binary_dir;
 /**Runtime directory finder

@@ -8,7 +8,7 @@ class SendMessage
 public:
   SocketIO *s;
   Command *command;
-  SendMessage(SocketIO *sock, Command *command);
+  SendMessage(SocketIO *sock);
   void privmsg(Flux::string where, const char *fmt, ...);
   void privmsg(Flux::string where, Flux::string msg);
   void notice(Flux::string where, const char *fmt, ...);

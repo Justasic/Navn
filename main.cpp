@@ -68,13 +68,8 @@ int main (int argcx, char** argvx, char *envp[])
     //Set the username and nick
     sock->send("USER "+usrname+" * * :"+realname+nl);
     sock->send("NICK "+nick+nl);
-    sock->recv(rply);
       
-    irc_string* reply = new irc_string(rply);
-    Command *cmd = new Command(sock);
-    SendMessage *Send = new SendMessage(sock, cmd);
-    
-    ping_pong(sock, reply, rply);
+    Send = new SendMessage(sock);
     /**
       * \page tutmod2 Adding Your Module - Step 2: Running your module.
       * \section tut2 Step 2: Running your module.
@@ -109,9 +104,9 @@ int main (int argcx, char** argvx, char *envp[])
 	sock->recv(rply);
 	irc_string* reply = new irc_string(rply);
 	
-	host = reply->host;
+	host = reply->host;//sets the variables.
 	fullhost = reply->usernick+"!"+reply->user+"@"+host;
-	chan = reply->channel; //sets the variables.
+	chan = reply->channel;
 	unick = reply->usernick;
 	msg = reply->message;
 	ident = reply->user;
@@ -129,9 +124,8 @@ int main (int argcx, char** argvx, char *envp[])
 	rply.clear();
       }
       if(quitting)
-	shutdown(sock, quitmsg);
+	break;
       if(!sock->is_valid()){
-	sock->close();
 	SocketIO *oldsock = sock;
 	delete oldsock;
 	sock = new SocketIO(server, port);

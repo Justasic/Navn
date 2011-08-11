@@ -46,6 +46,9 @@ Fixed /msg topic not correctly setting topic
 Fixed xmlToString not reading the xml temp file
 Added error handling to findInXML and to the modules that use it (clock and weather)
 Cleaned up clock and weather modules
+Made socket engine non-blocking, this fixes lots of broken stuff
+Made SendMessage *Send a global include, now modules can use Send-> without needing to include SendMessage in the void
+Made timed ping function, fixing ping-timeout issues
 
 Navn 1.4.3
 ==========
