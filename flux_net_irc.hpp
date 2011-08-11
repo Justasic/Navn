@@ -721,7 +721,7 @@ void startup(int argc, char** argv) {
 	if(i < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		cout << "Navn IRC Bot " << version << " Started." << nl;
+		cout << "Navn IRC Bot v" << version << " Started." << nl;
 		cout << "Forking to background. PID: "<< i << nl;
 		exit(0);
 	}

@@ -38,7 +38,7 @@ public:
 	    //perror("uname() error");
 	    throw CoreException("uname() Error");
 
-    Send->notice(unick, "\001VERSION Navn Bot %s %s %s\001",version.c_str(), uts.sysname, uts.machine);
+    Send->notice(unick, "\001VERSION Navn Bot v%s %s %s\001",version.c_str(), uts.sysname, uts.machine);
     log("Recieved CTCP VERSION from %s", unick.c_str());
    }
   if(reply->said("\001TIME\001")){ // for CTCP TIME reply
