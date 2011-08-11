@@ -159,9 +159,6 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
     in_channel = false;
     log("%s kicked bot out of channel %s", unick.c_str(), chan.c_str());
   }
-  if (reply->said(killed)){ // if the bot is killed.. throw a core exception saying so.
-    throw CoreException("killed by "+unick);
-  }
   return MOD_RUN;
 }
 };

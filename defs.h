@@ -93,7 +93,6 @@ LogChannel = config.Get("Modules", "LogChannel","");
 const Flux::string in_the_channel = "252 "+nick;
 const Flux::string ChanJoin = "366"+nick;
 //005 is just the generic welcome message saying you have logged in to the server.
-const Flux::string killed = "KILL "+nick;
 const Flux::string access_denied = "Access is Denied.";
 const Flux::string nl = "\n";
 
