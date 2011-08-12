@@ -97,6 +97,9 @@ class irc_string:Flux::string{
     
     bool isnumeric(int i){
       if(this->said(stringify(i))){
+	if(2 >= toks.size()){
+	  return false;
+	}
 	Flux::string tok = toks[2];
 	tok.trim();
 	  if (tok.is_number_only()){
@@ -930,8 +933,8 @@ module::module(Flux::string n, bool a, ModulePriority p){
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
-    std::vector<Module*>::iterator safei; \
-    for (std::vector<Module*>::iterator _i = ModuleManager::EventHandlers[y].begin(); _i != ModuleManager::EventHandlers[y].end(); ) \
+    std::vector<module*>::iterator safei; \
+    for (std::vector<module*>::iterator _i = ModuleManager::EventHandlers[y].begin(); _i != ModuleManager::EventHandlers[y].end(); ) \
     { \
        safei = _i; \
        ++safei; \
@@ -948,6 +951,7 @@ if(true) \
 } \
 else \
       static_cast<void>(0)
+/***********************************************************************/
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const Flux::string &modname, const bool activated) \
         { \

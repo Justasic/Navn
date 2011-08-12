@@ -78,6 +78,8 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
     Flux::string newnick = Host->nick;
     if (newnick == nick)
       nick = reply->params(2);
+    if(newnick == owner_nick)
+      owner_nick = reply->params(2);
   }
   if (reply->said("PRIVMSG "+nick+" :quit "+password)){ //quits the bot.
     Send->notice(unick, "Quitting..");

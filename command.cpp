@@ -134,3 +134,82 @@ void Command::mode(Flux::string chan, Flux::string mode, Flux::string user){
 void Command::mode(Flux::string dest, Flux::string mode){
   this->raw("MODE %s %s\n", dest.c_str(), mode.c_str()); 
 }
+Oper::Oper(SocketIO *sock){
+  this->s = sock;
+}
+void Oper::raw(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->s->send(buffer);
+  va_end(args);
+}
+void samode(Flux::string, Flux::string){
+  
+  
+}
+void samode(Flux::string, Flux::string, Flux::string){
+  
+  
+}
+void sajoin(Flux::string, Flux::string){
+  
+  
+}
+void sapart(Flux::string, Flux::string){
+  
+}
+void sanick(Flux::string, Flux::string){
+  
+  
+}
+void sakick(Flux::string, Flux::string, Flux::string){
+  
+  
+}
+void satopic(Flux::string, Flux::string){
+  
+  
+}
+void sahost(Flux::string, Flux::string){
+  
+  
+}
+void saident(Flux::string, Flux::string){
+  
+  
+}
+void kill(Flux::string, Flux::string){
+  
+  
+}
+void saname(Flux::string, Flux::string){
+  
+  
+  
+}
+void wallops(Flux::string){
+  
+  
+  
+}
+void globops(Flux::string){
+  
+  
+}
+void zline(Flux::string, Flux::string, Flux::string){
+  
+  
+}
+void qline(Flux::string, Flux::string, Flux::string){
+  
+}
+void kline(Flux::string, Flux::string, Flux::string){
+  
+  
+}
+void gline(Flux::string, Flux::string, Flux::string){
+  
+  
+}

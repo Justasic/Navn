@@ -26,5 +26,28 @@ public:
   void whois(Flux::string);
   
 };
-
+class Oper
+{
+public:
+  SocketIO *s;
+  Oper(SocketIO *sock);
+  void raw(const char *fmt, ...);
+  void samode(Flux::string, Flux::string);
+  void samode(Flux::string, Flux::string, Flux::string);
+  void sajoin(Flux::string, Flux::string);
+  void sapart(Flux::string, Flux::string);
+  void sanick(Flux::string, Flux::string);
+  void sakick(Flux::string, Flux::string, Flux::string);
+  void satopic(Flux::string, Flux::string);
+  void sahost(Flux::string, Flux::string);
+  void saident(Flux::string, Flux::string);
+  void kill(Flux::string, Flux::string);
+  void saname(Flux::string, Flux::string);
+  void wallops(Flux::string);
+  void globops(Flux::string);
+  void zline(Flux::string, Flux::string, Flux::string);
+  void qline(Flux::string, Flux::string, Flux::string);
+  void kline(Flux::string, Flux::string, Flux::string);
+  void gline(Flux::string, Flux::string, Flux::string);
+};
 #endif

@@ -29,7 +29,7 @@ public:
   
   ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
     
-    if (reply->said("testing")){
+    if (reply->said("testing testing")){
       Send->privmsg(reply->channel,"I hear you!\nYES I DO!");
     }
    return MOD_RUN; 
