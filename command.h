@@ -39,11 +39,15 @@ public:
   void sanick(Flux::string, Flux::string);
   void sakick(Flux::string, Flux::string, Flux::string);
   void satopic(Flux::string, Flux::string);
+  void satopic(Flux::string, const char *fmt, ...);
   void sahost(Flux::string, Flux::string);
   void saident(Flux::string, Flux::string);
   void kill(Flux::string, Flux::string);
   void saname(Flux::string, Flux::string);
+  void saname(Flux::string, const char *fmt, ...);
   void wallops(Flux::string);
+  void wallops(const char *fmt, ...);
+  void globops(const char *fmt, ...);
   void globops(Flux::string);
   void zline(Flux::string, Flux::string, Flux::string);
   void qline(Flux::string, Flux::string, Flux::string);
