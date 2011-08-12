@@ -3,8 +3,8 @@
  *\file  Socket.h 
  *\brief Socket header for Socket.cpp
  */
-#ifndef nerp
-#define nerp
+#ifndef SOCKET
+#define SOCKET
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -23,7 +23,6 @@
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 const int MAXRECV = 500;
-
 class SocketIO
 {
   Flux::string buffer;

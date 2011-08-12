@@ -1,5 +1,6 @@
 #ifndef DERP_H
 #define DERP_H
+#include "isoper.h"
 #include "includes.h"
 #include "defs.h"
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')

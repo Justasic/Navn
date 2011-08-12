@@ -49,7 +49,7 @@ using namespace flux_net_irc;
  * Da Goat is used to repeat a lot of things we got tired of saying, like teaching new people how to do thigns and what the 
  * rules of the server were.
  */
-
+struct sysinfo sys_info;
 class Da_Goat:module
 {
 public:

@@ -1,13 +1,14 @@
 #ifndef PRIVMSG_H
 #define PRIVMSG_H
 #include "includes.h"
-
 class Command;
+class Oper;
 class SendMessage
 {
 public:
   SocketIO *s;
   Command *command;
+  Oper *o;
   SendMessage(SocketIO *sock);
   void privmsg(Flux::string where, const char *fmt, ...);
   void privmsg(Flux::string where, Flux::string msg);

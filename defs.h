@@ -16,8 +16,8 @@ bool in_channel = false;
 bool nofork = false;
 bool dev = false;
 bool quitting = false;
-bool IsOper = false;
 const Flux::string version = "2.0.1";
+bool IsOper = false;
 Flux::string binary_path, bot_bin, binary_dir;
 /**Runtime directory finder
  * This will get the bots runtime directory
@@ -110,8 +110,6 @@ void help(char** argv){
  printf("This bot does have Epic Powers.\n");
  exit(0);
 }
-
-struct sysinfo sys_info;
 
 #endif
 
