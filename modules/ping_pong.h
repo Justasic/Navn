@@ -41,7 +41,7 @@ public:
   ModuleReturn run(SendMessage *Send, Flux::string re, irc_string *reply){
     if (reply->said("PING :")){
       Send->s->send("PONG "+strip(re.substr(6,-1))+nl);
-    }
+    } 
      /*for some Undernet connections */
     if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
     Send->s->send("PASS "+strip(reply->params(16))+nl);
