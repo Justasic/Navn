@@ -9,6 +9,7 @@
  * way then do so.
  */
 #include "Socket.h"
+#include "timers.h"
 #include "SocketException.h"
 #include "inireader/INIReader.h"
 #include "flux.h"

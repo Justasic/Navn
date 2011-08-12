@@ -70,6 +70,7 @@ int main (int argcx, char** argvx, char *envp[])
     sock->send("NICK "+nick+nl);
       
     Send = new SendMessage(sock);
+    time_t last_check = time(NULL);
     /**
       * \page tutmod2 Adding Your Module - Step 2: Running your module.
       * \section tut2 Step 2: Running your module.
@@ -95,6 +96,7 @@ int main (int argcx, char** argvx, char *envp[])
     world_clock _world_clock(true);
     Chanlog _Chanlog(true);
     weather _weather(true);
+    Ping_pong _Ping(true);
     modulehandler _modulehandler(true);
     /**       MODULES          */
     /*! \endcode */
@@ -112,8 +114,10 @@ int main (int argcx, char** argvx, char *envp[])
 	ident = reply->user;
 	raw = reply->raw_string;
 
-	ping_pong(sock, reply, rply);
-
+	if(time(NULL) - last_check >= 3){
+	 TimerManager::TickTimers(time(NULL));
+	 last_check = time(NULL);
+	}
 	for(unsigned i = 0; i < moduleList.size(); i++){
 	  if (moduleList[i]->activated == true){
 	    moduleList[i]->run(Send, rply, reply);

@@ -13,6 +13,8 @@ Made socket engine non-blocking, this fixes lots of broken stuff
 Made SendMessage *Send a global include, now modules can use Send-> without needing to include SendMessage in the void
 Made timed ping function, fixing ping-timeout issues
 Fixed version string having a 'v' in it
+Added oper commands
+Added FOREACH_MOD macro
 
 Navn 2.0.0
 ==========
