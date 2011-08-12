@@ -25,17 +25,15 @@
  * Replies to the server's PING request to keep the bot connected
  */
 using namespace flux_net_irc;
-#define pingwait 30
 class PingTimer:public Timer
 {
 public:
-  PingTimer() : Timer(pingwait, time(NULL), true) {}
+  PingTimer() : Timer(30, time(NULL), true) {}
   
   void Tick(time_t){
     Send->raw("PING :%i\n", time(NULL));
   }
 };
-//time_t endwait = time(NULL) + pingwait;
 class Ping_pong:module{
 public:
   Ping_pong(bool a):module("Ping", a, PRIORITY_FIRST){ this->SetDesc("Sends a ping to the server, keeping the bot connected");}
@@ -44,12 +42,7 @@ public:
     if (reply->said("PING :")){
       Send->s->send("PONG "+strip(re.substr(6,-1))+nl);
     }
-    /*if((time(NULL) > endwait)){
-    int timestamp = time(NULL);
-    Send->raw("PING :%i\n", timestamp);
-    endwait = time(NULL) + pingwait;
-    }*/
-    /* Fix for some Undernet connections */
+     /*for some Undernet connections */
     if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
     Send->s->send("PASS "+strip(reply->params(16))+nl);
     }
