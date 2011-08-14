@@ -2,7 +2,7 @@
 #define DA_GOAT_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 
 /**
  * \file da_goat.h Header file holding the \a Da_Goat function.

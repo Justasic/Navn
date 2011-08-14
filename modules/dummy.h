@@ -1,6 +1,6 @@
 #ifndef DUMMY_H
 #define DUMMY_H
-using namespace flux_net_irc;
+
 /**
  * \example dummy.h
  * This is an example module showing a simple if-said-that-reply-this situation.

@@ -2,7 +2,7 @@
 #define FS
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file Flux_Services.h Header file holding the \a Flux_S3rvices functions.
  * \author DeathBlade. Polished by Justasic.

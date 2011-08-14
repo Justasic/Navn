@@ -29,7 +29,7 @@
  * \brief Tells the world time.
  * Uses C++ time functions to tell the time around the world.
  */
-using namespace flux_net_irc;
+
 class world_clock:module{
 public:
   world_clock(bool a):module("World Clock", a, PRIORITY_DONTCARE){ this->SetDesc("Shows time for your area or for the preset ones"); }

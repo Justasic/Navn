@@ -2,7 +2,7 @@
 #define SEARCHER_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 
 /**
  * \file searcher.h Header file holding the \a searcher function.

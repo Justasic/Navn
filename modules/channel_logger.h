@@ -2,7 +2,7 @@
 #define CLOG_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file channel_logger.h Header file holding the \a ChanLog function.
  * \author Justasic.
@@ -62,7 +62,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
        if(reply->said("\001ACTION")){
          msg = msg.erase(0,7);
          msg.erase(msg.size()-1, 1);
-         CLog("*** %s %s", unick.c_str(), Sanitize(msg).c_str());
+         CLog("*** %s %s", unick.c_str(), Flux::Sanitize(msg).c_str());
        }else{
         CLog("<%s> %s", unick.c_str(), msg.c_str());
        }
@@ -70,7 +70,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
   }
    if(reply->said("NOTICE "+LogChannel+" ")){
      if(reply->said("#nl")){}else{
-      CLog("-Notice- %s: %s", unick.c_str(), Sanitize(reply->message).c_str());
+      CLog("-Notice- %s: %s", unick.c_str(), Flux::Sanitize(reply->message).c_str());
      }
   }
    if(reply->said("PART "+LogChannel)){

@@ -174,6 +174,7 @@ namespace Flux{
     
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     }; //end of string class
+    extern Flux::string Sanitize(const Flux::string&);
     inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
     inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
     inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }

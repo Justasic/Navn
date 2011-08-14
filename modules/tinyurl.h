@@ -2,7 +2,7 @@
 #define TinyURL_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /* This module was not yet finished, check Navn version 2.0.1 to see if it was completed or removed */
 class TinyURL:module{
 public:

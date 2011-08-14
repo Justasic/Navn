@@ -2,7 +2,7 @@
 #define ABOUT_ME_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file about_me.h Header file holding the \a about_me function.
  * \author Justasic. Polished by Lordofsraam.

@@ -2,7 +2,7 @@
 #define CTCP_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file ctcp.h Header file holding the \a ctcp functions.
  * \author Lordofsraam. Polished by Justasic.

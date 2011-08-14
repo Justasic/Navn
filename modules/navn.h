@@ -2,7 +2,7 @@
 #define NAVN_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file navn.h Header file holding the \a Navn functions.
  * \author Justasic.

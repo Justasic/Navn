@@ -2,7 +2,7 @@
 #define HELP_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file help.h Header file holding the \a help function.
  * \author Lordofsraam. Polished by Justasic.

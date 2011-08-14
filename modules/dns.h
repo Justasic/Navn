@@ -5,7 +5,7 @@
 #ifndef NI_MAXHOST
 #define NI_MAXHOST 1025
 #endif
-using namespace flux_net_irc;
+
 /**
  * \file dns.h Header file holding the \a DNS functions.
  * \author Justasic.

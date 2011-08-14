@@ -5,31 +5,7 @@
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 
 SendMessage *Send;
-namespace flux_net_irc{
-    
-Flux::string Sanitize(const Flux::string &string){
- static struct special_chars{
-   Flux::string character;
-   Flux::string replace;
-   special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
- }
- special[] = {
-  special_chars("\n",""),
-  special_chars("\002",""),
-  special_chars("\003",""),
-  special_chars("\035",""),
-  special_chars("\037",""),
-  special_chars("\026",""),
-  special_chars("\001",""),
-  special_chars("","")
- };
-  Flux::string ret = string.c_str();
-  for(int i = 0; special[i].character.empty() == false; ++i){
-    ret = ret.replace_all_cs(special[i].character, special[i].replace);
-  }
-  return ret.c_str(); 
-}
-}
+
   /** 
    * \namespace flux_net_irc
    * \brief This is where we keep all our algorithms

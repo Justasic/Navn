@@ -1,7 +1,7 @@
 #ifndef MODULEHANDLER_H
 #define MODULEHANDLER_H
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file modulehandler.h Header file holding the \a module \a handling functions.
  * \author Justasic and Lordofsraam.

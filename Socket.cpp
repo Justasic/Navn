@@ -10,10 +10,7 @@
 #include <fcntl.h>
 #include <iostream>
 #define NET_BUFSIZE 65535
-
-using namespace std;
-
-Flux::string Sanitize(const Flux::string &string){
+Flux::string Flux::Sanitize(const Flux::string &string){
  static struct special_chars{
    Flux::string character;
    Flux::string replace;
@@ -35,6 +32,7 @@ Flux::string Sanitize(const Flux::string &string){
   }
   return ret.c_str(); 
 }
+
 /*********************************************************************************************/
 
 int recvlen;
@@ -131,12 +129,12 @@ const int SocketIO::recv(Flux::string& buffer) const{
   while(sep.GetToken(buf)){
     buf.trim();
     //buffer = buf;
-    printf("--> %s\n", Sanitize(buf).c_str());
+    printf("--> %s\n", Flux::Sanitize(buf).c_str());
   }
   return i;
 }
 const int SocketIO::send(const Flux::string buf) const{
- printf("<-- %s\n", Sanitize(buf).c_str());
+ printf("<-- %s\n", Flux::Sanitize(buf).c_str());
  //int i = ::send(sockn, buf.c_str(), buf.size(), 0);
  int i = write(sockn, buf.c_str(), buf.size());
  return i;

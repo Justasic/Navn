@@ -2,7 +2,7 @@
 #define SYSTEM_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
-using namespace flux_net_irc;
+
 /**
  * \file system.h Header file holding the \a core \a bot \a functions.
  * \author Justasic. Polished by Lordofsraam.
