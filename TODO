@@ -15,7 +15,7 @@ Navn 2.0.1
 [+] Make default channel's in the config
 [+] Make a server numeric catcher
 [x] Add timed pinging (should handle ping timeouts and connection issues)
-[ ] Add better error handling instead of a throw or a error code in some places
+[+] Add better error handling instead of a throw or a error code in some places
 [+] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
 [x] Add some sort of buffer processor for the socket engine (make lines process correctly instead of printing the raw buffer)
 
@@ -29,7 +29,7 @@ Future
 ------
 [ ] Add some sort of accounts system
 [ ] make a makefile compile script that is still as colorful as build.sh
-[+] Do away with the damn flux_net_irc namespace
+[x] Do away with the damn flux_net_irc namespace
 [ ] Add support for GETTEXT so it allows for the program to be translated
 [ ] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
 [ ] Add python support

@@ -20,7 +20,8 @@ Fixed sending 2 quit messages on signal
 Moved irc_string class to its own file
 Removed DoQuit()
 Removed old samode api as old api is depracated
-
+Added DEPRECATED() macro for deprecated functions
+Removed flux_net_irc namespace
 
 Navn 2.0.0
 ==========
