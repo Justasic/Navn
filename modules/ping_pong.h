@@ -24,12 +24,10 @@
  * \brief Replies to IRC PING
  * Replies to the server's PING request to keep the bot connected
  */
-using namespace flux_net_irc;
 class PingTimer:public Timer
 {
 public:
-  PingTimer() : Timer(30, time(NULL), true) {}
-  
+  PingTimer():Timer(30, time(NULL), true) {}
   void Tick(time_t){
     Send->raw("PING :%i\n", time(NULL));
   }
@@ -47,7 +45,8 @@ public:
     Send->s->send("PASS "+strip(reply->params(16))+nl);
     }
     if(reply->said("ERROR :Closing link:")){
-      throw CoreException(raw);
+      //throw CoreException(raw);
+      reconnect(Send->s);
     }
     return MOD_RUN;
   }

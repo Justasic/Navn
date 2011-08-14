@@ -15,6 +15,12 @@ Made timed ping function, fixing ping-timeout issues
 Fixed version string having a 'v' in it
 Added oper commands
 Added FOREACH_MOD macro
+Added Anope's Timer manager
+Fixed sending 2 quit messages on signal
+Moved irc_string class to its own file
+Removed DoQuit()
+Removed old samode api as old api is depracated
+
 
 Navn 2.0.0
 ==========
@@ -52,7 +58,7 @@ Fixed /msg topic not correctly setting topic
 Fixed xmlToString not reading the xml temp file
 Added error handling to findInXML and to the modules that use it (clock and weather)
 Cleaned up clock and weather modules
-
+----------
 
 Navn 1.4.3
 ==========
@@ -127,7 +133,7 @@ Added beginning of TinyURL maker (Module)
 Added some code for DeathBlade so he can learn how C++ works better
 Added !magicbox command to Flux_S3rvices as another example for DeathBlade
 Removed gdb help reply, it was never used
-
+----------
 
 
 Navn 1.3.6
@@ -164,7 +170,7 @@ Moved all functions into a namespace called flux_net_irc in flux_net_irc.cpp
 Added movie search (!movies)
 Deprecated who_said() in irc_string class
 Ported Da_Goat's Python script to Navn
-
+----------
 
 
 
@@ -212,7 +218,7 @@ Renamed ircnick() to setnick()
 Changed some exit()'s to throw's where errors should be thrown
 Added multichan support (/msg join and /msg part)
 Finished up Signal Handler
-
+----------
 
 Navn 1.0 (known as C++ time bot)
 ================================
@@ -232,3 +238,4 @@ Added exit() to exit the bot properly instead of a return statement
 Added color coding to terminal output
 Added some documentation comments
 Added a quit messages showing the bots random quit password
+---------

@@ -84,7 +84,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
   if (reply->said("PRIVMSG "+nick+" :quit "+password)){ //quits the bot.
     Send->notice(unick, "Quitting..");
     log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
-    DoQuit(Send, "Requested From \2"+unick+"\17. Pass: \00320"+password+"\017");
+    shutdown("Requested From \2"+unick+"\17. Pass: \00320"+password+"\017");
   }
   if(reply->said("PRIVMSG "+nick+" :rehash")){
     Flux::string getpass = reply->params(1);

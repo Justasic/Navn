@@ -130,6 +130,7 @@ const int SocketIO::recv(Flux::string& buffer) const{
   buffer = tbuf;
   while(sep.GetToken(buf)){
     buf.trim();
+    //buffer = buf;
     printf("--> %s\n", Sanitize(buf).c_str());
   }
   return i;

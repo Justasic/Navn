@@ -17,6 +17,7 @@
  * See the examples tab for an example module.
  */
 #include "flux_net_irc.hpp"
+#include "modules.h"
 /**
  * \page tutmod Adding Your Module - Step 1: Including your module.
  * \section tut1 Step 1: Including your module.
@@ -98,13 +99,14 @@ int main (int argcx, char** argvx, char *envp[])
     weather _weather(true);
     Ping_pong _Ping(true);
     modulehandler _modulehandler(true);
+    
     /**       MODULES          */
     /*! \endcode */
 
     while (!quitting){
       while(!quitting && sock->is_valid()){
 	sock->recv(rply);
-	irc_string* reply = new irc_string(rply);
+	irc_string *reply = new irc_string(rply);
 	
 	host = reply->host;//sets the variables.
 	fullhost = reply->usernick+"!"+reply->user+"@"+host;
@@ -113,7 +115,7 @@ int main (int argcx, char** argvx, char *envp[])
 	msg = reply->message;
 	ident = reply->user;
 	raw = reply->raw_string;
-
+	
 	if(time(NULL) - last_check >= 3){
 	 TimerManager::TickTimers(time(NULL));
 	 last_check = time(NULL);
@@ -122,31 +124,28 @@ int main (int argcx, char** argvx, char *envp[])
 	  if (moduleList[i]->activated == true){
 	    moduleList[i]->run(Send, rply, reply);
 	  }
-	} 
+	}
 	/***********************************/
 	delete reply;
 	rply.clear();
       }
       if(quitting)
-	break;
+	shutdown(quitmsg);
       if(!sock->is_valid()){
-	SocketIO *oldsock = sock;
-	delete oldsock;
-	sock = new SocketIO(server, port);
+	reconnect(sock);
       }
     }//while loop ends here
-    shutdown(sock, quitmsg);
   }//try ends here
   catch (SocketException& e) //catch any Exceptions sent.
   {
     cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
     log("Socket Exception Caught: %s", e.description().c_str());
-    DoQuit(1);
+    exit(1);
   }
   catch(CoreException& e){
     cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log("Core Exception Caught: ", stringify(e.GetReason()).c_str());
-    DoQuit(1);
+    exit(1);
   }
   return EXIT_SUCCESS;
 }

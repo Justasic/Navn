@@ -29,6 +29,7 @@ using namespace flux_net_irc;
  * \brief Module Handler for navn
  * The Module handler for navn, handles all the module enabling and disabling
  */
+std::vector<module*> moduleList;
 class modulehandler:module
 {
 public:

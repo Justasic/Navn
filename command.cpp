@@ -45,6 +45,19 @@ void Command::topic(Flux::string channel, const char *fmt, ...){
   this->topic(channel, Flux::string(buffer));
   va_end(args);
 }
+/**
+ * \fn void Command::quit(const char *fmt, ...)
+ * \brief Handles quitting of irc
+ * \param message Quit message
+ */
+void Command::quit(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->quit(Flux::string(buffer));
+  va_end(args);
+}
 /** 
  * \fn void command::part(Flux::string channel, Flux::string reason)
  * \brief Sends part with message
@@ -66,10 +79,16 @@ void Command::kick(Flux::string chan, Flux::string user, Flux::string msg){
   this->raw("KICK %s %s :%s\n", chan.c_str(), user.c_str(), msg.c_str());
 }
 /**
+ * \overload void Command::quit(Flux::string message)
+ */
+void Command::quit(Flux::string message){
+ this->raw("QUIT :%s", message.c_str());
+}
+/**
  * \overload void Command::part(Flux::string channel, Flux::string msg)
  */
 void Command::part(Flux::string channel, Flux::string msg){
-  this->raw("PART %s %s\n", channel.c_str(), msg.c_str());
+  this->raw("PART %s :%s\n", channel.c_str(), msg.c_str());
 }
 /**
  * \overload void command::topic(Flux::string channel, Flux::string msg)

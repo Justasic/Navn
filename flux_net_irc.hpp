@@ -1,16 +1,9 @@
 #ifndef DERP_H
 #define DERP_H
-#include "isoper.h"
 #include "includes.h"
 #include "defs.h"
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 
-template<typename T> inline Flux::string stringify(const T &x){
-	std::ostringstream stream;
-	if(!(stream << x))
-		throw CoreException("Stringify Fail");
-	return stream.str();
-}
 SendMessage *Send;
 namespace flux_net_irc{
   /** 
@@ -22,190 +15,6 @@ namespace flux_net_irc{
    * hopefully help anyone else that tries to extend navn.
  */
   using namespace std;
-class irc_string:Flux::string{
-  /** \class irc_string
- * NOTE this MUST be included in the main file.
- * This class wraps around a Flux::string (usually revieved from the irc server)
- * and attempts to decode all the info recieved from the server
- * so as to make it easier to read different kinds of information
- * (ei. who said something, their host, username, etc.)
- * \param toks Private vector that will contain the words in \a message.
- * \param raw_Flux::string Will hold the exact Flux::string that was recieved from the server.
- * \param usernick Will hold the usernick of the person who sent the message.
- * \param host Will hold the host of the person who sent the message.
- * \param user Will hold the user of the person who sent the message.
- * \param channel Will hold the channel of where the message was said.
- * \param message Will hold the message (stripped of irc protocol stuff)
- */
-  private :
-    vector<Flux::string> toks;
-  public :
-    Flux::string raw_string;
-    Flux::string usernick; 
-    Flux::string host; 
-    Flux::string user; 
-    Flux::string channel; 
-    Flux::string message; 
-    /**
-     *\fn irc_string(Flux::string reply)
-     *Constructor for \a irc_string class
-     * This is where the magic happens. The constructor takes the Flux::string
-     * and breaks it down into its component parts to find the 
-     * \a usernick \a host \a user \a channel and \a message
-     */   
-    irc_string(Flux::string reply){
-      raw_string = reply;
-      usernick = isolate(':','!',reply);
-      host = isolate('@',' ',reply);
-      user = isolate('!','@',reply);
-      channel = '#'+isolate('#',' ',reply);
-      Flux::string space = " ";
-      size_t pos = reply.find(" :");
-      pos += 2;
-      for (unsigned i = pos; i < reply.size(); i++){
-	if (reply.at(i) == ' '){
-	  message.append(space);
-	}else{message = message+reply.at(i);}
-      }
-      if(message.size()>2){
-	message.resize(message.size()-2);
-      }
-      
-      Flux::string fmessage = message;
-      char * cmessage = (char *)fmessage.c_str();
-      char * pch;
-      pch = strtok (cmessage," ");
-      while (pch != NULL)
-      {
-	toks.push_back(pch);
-	pch = strtok (NULL, " ");
-      }
-    }
-    /**
-     * \fn Flux::string params(int i)
-     * \brief Returns individual words from the message of a reply
-     * Because \a toks is private, this is its "get" function.
-     * We made this so someone writing a module doesn't try to go out 
-     * of bounds while accessing an array.
-     * \param i An integer value.
-     * \return A Flux::string with the single specified word.
-     */
-    Flux::string params(unsigned i){
-      if (i >= toks.size()){
-	return " ";
-      }else{return toks[i];}
-    }
-    
-    bool isnumeric(int i){
-      if(this->said(stringify(i))){
-	if(2 >= toks.size()){
-	  return false;
-	}
-	Flux::string tok = toks[2];
-	tok.trim();
-	  if (tok.is_number_only()){
-	    int a = atoi(tok.c_str());
-	    if((a = i)){
-	      return true;
-	    }
-	  }
-	}
-      return false;
-    }
-    /**
-     * \overload Flux::string params(int b, int e)
-     * \brief Overload of params. Returns a range of words.
-     * We overloaded \a params() so that you could get a range of words from the message
-     *  as requeseted by Justasic.
-     * \param b An integer value describing the place of the first word wanted.
-     * \param e An integer value describing the place of the last word wanted.
-     * \return A Flux::string withing the range of words specified by \a b and \a e
-     */
-    Flux::string params(unsigned b, unsigned e){
-      Flux::string buf = "";
-      if (b >= toks.size()){
-	b = toks.size();
-      }
-      if (e >= toks.size()){
-	e = toks.size() - 1;
-      }
-      for (unsigned i = b; i <= (e); i++){
-	buf += toks[i];
-	buf.append(" ");
-      }
-      return buf;
-    }
-    /**
-     * \fn static Flux::string isolate(char begin, char end, Flux::string msg)
-     * \brief Isolates a Flux::string between two characters
-     * Finds the first character, then begins to add every consecutive character from there to a Flux::string
-     *  until it reaches the end character.
-     * \param begin The character saying where the cut should begin.
-     * \param end The character saying where the cut should end.
-     * \param msg The Flux::string you are wanting to isolate from.
-     */
-    static Flux::string isolate(char begin, char end, Flux::string msg){
-      Flux::string to_find;
-      size_t pos = msg.find(begin);
-      pos += 1;
-      for (unsigned i = pos; i < msg.length(); i++){
-	if (msg.at(i) == end){
-	  break;
-	}else{to_find = to_find+msg.at(i);}
-      }
-      return to_find;
-    }
-    
-    /**
-     * \fn bool said(Flux::string findee)
-     * \brief Check if something was said.
-     * \param findee The Flux::string you want to check if was said.
-     * \return True if \a findee was found, false otherwise.
-     */
-    bool said(Flux::string findee){
-      unsigned i = raw_string.find(findee);
-      if (i != Flux::string::npos){
-	return true;
-      }else{return false;}
-    }
-    /**
-     * \overload static bool said(Flux::string source, Flux::string findee)
-     * \brief Static overload of said() function.
-     * \param source A Flux::string that is to be searched through.
-     * \param findee The Flux::string that is to be found.
-     * We overloaded the said function and made it static because we thought it would be 
-     *  very useful to have outside of an \a irc_string object.
-     * \return True if \a findee was found, false otherwise.
-     */
-    static bool said(Flux::string source, Flux::string findee){
-      unsigned i = source.find(findee);
-      if (i != Flux::string::npos){
-	return true;
-      }else{return false;}
-    }
-};
-/**
- * \class IsoHost
- * \brief Wrapper for an irc host
- * This was written by Justasic to break up the parts of a messages host for easier use.
- */
-class IsoHost:Flux::string{
-public:
-    Flux::string raw;
-    Flux::string nick;
-    Flux::string host;
-    Flux::string user;
-    /**
-     * \fn IsoHost(Flux::string fullhost)
-     * \param fullhost A Flux::string containing the full host of an irc message
-     */
-    IsoHost(Flux::string fullhost){
-      nick = irc_string::isolate(':','!',fullhost);
-      raw = fullhost;
-      host = irc_string::isolate('@',' ',fullhost);
-      user = irc_string::isolate('!','@',fullhost);
-    }
-};
 
 /** 
  * \fn Flux::string removeCommand(Flux::string command, Flux::string s)
@@ -475,22 +284,6 @@ Flux::string make_pass(){
 }
 const Flux::string password = make_pass();
 
-/**
- * \fn Flux::string samode(Flux::string Dest, const char *fmt, ...)
- * \brief Sends an IRC /samode command
- * \deprecated
- */
-Flux::string samode(Flux::string Dest, const char *fmt, ...){
-va_list args;
-va_start(args, fmt);
-stringstream samode_ss;
-char buf[4096];
-vsnprintf(buf, sizeof(buf), fmt, args);
-samode_ss << "SAMODE " << Dest << " :" << buf << nl;
-va_end(args);
-return samode_ss.str();
-}
-
 /** 
  * \fn static void remove_pidfile()
  * \brief Removes the PID file on exit
@@ -499,64 +292,32 @@ static void remove_pidfile()
 {
  remove(pid_file.c_str());
 }
-
-/** 
- * \fn static void DoQuit(Socket &s, const Flux::string msg)
- * \brief Send quit to server and exit.
- * \param Socket The socket class.
- * \param msg The quit message
- * \param K the exit status code
- */
-void DoQuit(SendMessage *Send, const Flux::string msg){
-  Send->raw("QUIT :%s\n",msg.c_str());
-  log("Quitting: %s", msg.c_str());
-  log("Logging ended.");
-  exit(0);
-}
-/**
- * \overload DoQuit(Socket &s, const Flux::string msg, int K)
- */
-void DoQuit(SocketIO *s, const Flux::string msg){
-  s->send("QUIT :"+msg+nl);
-  log("Quitting: %s", msg.c_str());
-  log("Logging ended.");
-  delete s;
-  exit(0);
-}
-/**
- * \overload static void DoQuit(int K)
- */
-void DoQuit(int K){
-  log("Logging ended.");
-  exit(K);
-}
-/**
- * \overload static void DoQuit()
- */
-void DoQuit(){
-  log("Logging ended.");
-  exit(0);
-}
 /** 
  * \fn static void restart(Flux::string reason)
  * \brief Restart the bot process
  * \param reason The reason for the restart
  */
 static void restart(Flux::string reason){
-   char CurrentPath[FILENAME_MAX];
-   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
- if(reason.empty()){
-  throw CoreException("Recieved an empty Flux::string on shutdown.");
+  char CurrentPath[FILENAME_MAX];
+  GetCurrentDir(CurrentPath, sizeof(CurrentPath));
+  if(reason.empty()){
+    reason = "No Reason";
   }else{
     log("Restarting: %s", reason.c_str());
-	chdir(CurrentPath);
+    Send->command->quit("Restarting: %s", reason.c_str());
+    chdir(CurrentPath);
     int execvpret = execvp(my_av[0], my_av);
-	if(execvpret > 0){
-		throw CoreException("Restart Failed, Exiting");
-	}
-	remove_pidfile();
-	exit(1);
+    if(execvpret > 0){
+      throw CoreException("Restart Failed, Exiting");
+    }
+    remove_pidfile();
+    exit(1);
   }
+}
+void reconnect(SocketIO *sock){
+ SocketIO *oldsock = sock;
+ delete oldsock;
+ sock = new SocketIO(server, port); 
 }
 /** 
  * \fn static void shutdown(Socket &sock, Flux::string quitmsg)
@@ -564,12 +325,13 @@ static void restart(Flux::string reason){
  * \param quitmsg The reason for the shutdown.
  * \param sock The Socket class
  */
-static void shutdown(SocketIO *sock, Flux::string quitmsg){
+static void shutdown(Flux::string quitmsg){
  if(quitmsg.empty())
-      quitmsg = "Quitting: Unknown reason";
-    cout << quitmsg << endl;
-    sock->send("QUIT :"+quitmsg);
-    DoQuit(sock, quitmsg); 
+      quitmsg = "Quitting: No Reason";
+  cout << quitmsg << endl;
+  Send->command->quit(quitmsg);
+  log(quitmsg.c_str());
+  log("Logging ended.");
 }
 /**
  * \overload static void Rehash()
@@ -620,21 +382,21 @@ void sigact(int sig)
   Flux::string sigstr;
   switch (sig){
     case SIGHUP:
-    {
       signal(sig, SIG_IGN);
       Rehash();
       break;
-    }
+    case SIGPIPE:
+      signal(sig, SIG_IGN);
+      break;
     case SIGINT:
     case SIGTERM:
       signal(sig, SIG_IGN);
       signal(SIGHUP, SIG_IGN);
       cout << "\r\n\033[0m";
-      sigstr = "Someone killed me";
+      sigstr = "Someone used Ctrl + C";
       signal(sig, SIG_IGN);
       quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
-      //throw CoreException(quitmsg);
       break;
     default:
       quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);
@@ -679,7 +441,7 @@ void startup(int argc, char** argv) {
   }catch(ConfigException &ex){
     cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
     log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
-    DoQuit(1);
+    exit(1);
   }
     signal(SIGTERM, sigact);
     signal(SIGINT, sigact);
@@ -765,7 +527,7 @@ Flux::string Sanitize(const Flux::string &string){
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(int x, int y)
  */
-int randint(int x, int y) {
+int randint(int x, int y){
   srand(time(NULL));
   return rand()%(y-x+1)+x;
 }
@@ -888,78 +650,6 @@ Flux::string findInXML(Flux::string node, Flux::string info, Flux::string fileSt
   return output;
 }
 /*******************************************************************/
-enum ModuleReturn{
-  MOD_RUN,
-  MOD_STOP
-};
-enum ModulePriority{
-  PRIORITY_FIRST,
-  PRIORITY_DONTCARE,
-  PRIORITY_LAST
-};
-//This code sucks, you know it and I know it. 
-//Move on and call me an idiot later.
-class module{ 
-  Flux::string desc;
-protected:
-  void SetDesc(const Flux::string&);
-public:
-  Flux::string name;
-  const Flux::string GetDesc() const;
-  bool activated;
-  ModulePriority priority;
-  Flux::string author;
-  module (Flux::string , bool, ModulePriority);
-  
-  virtual ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply) =0;
-  
-};
-
-vector<module*> moduleList;
-void module::SetDesc(const Flux::string &desc){
-  this->desc = desc;
-}
-const Flux::string module::GetDesc() const{
- return this->desc; 
-}
-module::module(Flux::string n, bool a, ModulePriority p){
-  name = n;
-  activated = a;
-  priority = p;
-  moduleList.push_back(this);
-}
-
 
 } //namespace end
-#define FOREACH_MOD(y, x) \
-if(true) \
-{ \
-    std::vector<module*>::iterator safei; \
-    for (std::vector<module*>::iterator _i = ModuleManager::EventHandlers[y].begin(); _i != ModuleManager::EventHandlers[y].end(); ) \
-    { \
-       safei = _i; \
-       ++safei; \
-       try \
-       { \
-          (*_i)->x ; \
-       } \
-       catch (const ModuleException &modexcept) \
-       { \
-          Log() << "Exception caught: " << modexcept.GetReason(); \
-       } \
-        _i = safei; \
-    } \
-} \
-else \
-      static_cast<void>(0)
-/***********************************************************************/
-#define MODULE_HOOK(x) \
-extern "C" module *ModInit(const Flux::string &modname, const bool activated) \
-        { \
-                return new x(modname, activated); \
-        } \
-        extern "C" void Modunini(x *m) \
-        { \
-                delete m; \
-        }
 #endif
