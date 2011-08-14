@@ -5,16 +5,7 @@
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 
 SendMessage *Send;
-
-  /** 
-   * \namespace flux_net_irc
-   * \brief This is where we keep all our algorithms
-   * 
-   * We made this namespace so we could group all the common functions
-   * and algorithms we use really often in one place. These will 
-   * hopefully help anyone else that tries to extend navn.
- */
-  using namespace std;
+using namespace std;
 
 /** 
  * \fn Flux::string removeCommand(Flux::string command, Flux::string s)
