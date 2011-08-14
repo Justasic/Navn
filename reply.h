@@ -1,10 +1,7 @@
 #ifndef REPLY_H
 #define REPLY_H
-#include "flux.h"
-#include <stdio.h>
-#include <cstring>
+#include "includes.h"
 #include <sstream>
-#include <cstdlib>
 template<typename T> inline Flux::string stringify(const T &x){
 	std::ostringstream stream;
 	if(!(stream << x))

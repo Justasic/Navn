@@ -6,6 +6,30 @@
 
 SendMessage *Send;
 namespace flux_net_irc{
+    
+Flux::string Sanitize(const Flux::string &string){
+ static struct special_chars{
+   Flux::string character;
+   Flux::string replace;
+   special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
+ }
+ special[] = {
+  special_chars("\n",""),
+  special_chars("\002",""),
+  special_chars("\003",""),
+  special_chars("\035",""),
+  special_chars("\037",""),
+  special_chars("\026",""),
+  special_chars("\001",""),
+  special_chars("","")
+ };
+  Flux::string ret = string.c_str();
+  for(int i = 0; special[i].character.empty() == false; ++i){
+    ret = ret.replace_all_cs(special[i].character, special[i].replace);
+  }
+  return ret.c_str(); 
+}
+}
   /** 
    * \namespace flux_net_irc
    * \brief This is where we keep all our algorithms
@@ -500,29 +524,6 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
 }
-  
-Flux::string Sanitize(const Flux::string &string){
- static struct special_chars{
-   Flux::string character;
-   Flux::string replace;
-   special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
- }
- special[] = {
-  special_chars("\n",""),
-  special_chars("\002",""),
-  special_chars("\003",""),
-  special_chars("\035",""),
-  special_chars("\037",""),
-  special_chars("\026",""),
-  special_chars("\001",""),
-  special_chars("","")
- };
-  Flux::string ret = string.c_str();
-  for(int i = 0; special[i].character.empty() == false; ++i){
-    ret = ret.replace_all_cs(special[i].character, special[i].replace);
-  }
-  return ret.c_str(); 
-}
 /**Random Number Generator
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(int x, int y)
@@ -651,5 +652,4 @@ Flux::string findInXML(Flux::string node, Flux::string info, Flux::string fileSt
 }
 /*******************************************************************/
 
-} //namespace end
 #endif

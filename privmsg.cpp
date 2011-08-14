@@ -1,5 +1,4 @@
 #include "includes.h"
-#include "isoper.h"
 /**
  *\file  privmsg.cpp 
  *\brief Contains the SendMessage class.

@@ -2,6 +2,7 @@
 #define PING_PONG_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+#include "../reply.h"
 /**
  * \file ping_pong.h Header file holding the \a Ping-Pong function.
  * \author Lordofsraam. Polished by Justasic.
@@ -42,7 +43,7 @@ public:
     } 
      /*for some Undernet connections */
     if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
-    Send->s->send("PASS "+strip(reply->params(16))+nl);
+      Send->s->send("PASS "+strip(reply->params(16))+nl);
     }
     if(reply->said("ERROR :Closing link:")){
       //throw CoreException(raw);

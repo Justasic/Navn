@@ -1,4 +1,4 @@
-#include "reply.h"
+#include "includes.h"
 /**
   *\fn irc_string(Flux::string reply)
   *Constructor for \a irc_string class
