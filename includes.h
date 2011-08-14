@@ -10,8 +10,6 @@
  */
 #include "Socket.h"
 #include "timers.h"
-//#include "modules.h"
-#include "reply.h"
 #include "SocketException.h"
 #include "inireader/INIReader.h"
 #include "flux.h"
