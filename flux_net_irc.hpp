@@ -7,6 +7,7 @@
 SendMessage *Send;
 using namespace std;
 
+
 class irc_string:Flux::string{
   /** \class irc_string
  * NOTE this MUST be included in the main file.

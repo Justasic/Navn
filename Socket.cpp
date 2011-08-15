@@ -115,9 +115,9 @@ bool SocketIO::connect()
   printf("Connected!\n");
   return true;
 }
-std::queue<Flux::string> recv_queue;
 
-const int SocketIO::recv(Flux::string &buffer) const{
+std::queue<Flux::string> recv_queue;
+const int SocketIO::recv() const{
   char tbuf[NET_BUFSIZE + 1] = "";
   memset(tbuf, 0, NET_BUFSIZE + 1);
   size_t i = read(sockn, tbuf, NET_BUFSIZE);
@@ -125,37 +125,29 @@ const int SocketIO::recv(Flux::string &buffer) const{
     return i;
   sepstream sep(tbuf, '\n');
   Flux::string buf;
-  //buffer = tbuf;
   while(sep.GetToken(buf)){
     buf.trim();
-    buffer = buf;
     recv_queue.push(buf);
-    /*if(!recv_queue.empty()){
-      printf("queue: %i\n", recv_queue.size());
-      printf("front: %s\n",recv_queue.front().c_str());
-      printf("back: %s\n",recv_queue.back().c_str());
-      //recv_queue.pop();
-    }*/
     //printf("buf: --> %s\n", Flux::Sanitize(buf).c_str());
-    //printf("buffer: --> %s\n", Flux::Sanitize(buffer).c_str());
   }
   return i;
 }
-Flux::string SocketIO::GetBuffer(){
+bool SocketIO::GetBuffer(Flux::string &recv){
+  this->recv();
+  while(!recv_queue.empty()){
   if(recv_queue.empty())
-      return "";
-  /*printf("queue: %i\n", recv_queue.size());
-  printf("front: %s\n",recv_queue.front().c_str());
-  printf("back: %s\n",recv_queue.back().c_str());*/
-  return recv_queue.front();
-  //recv_queue.pop();
+    break;
+  recv = recv_queue.front();
+  recv_queue.pop();
+  return true;
+  }
+  return false;
 }
 void SocketIO::popque(){
   recv_queue.pop();
 }
 const int SocketIO::send(const Flux::string buf) const{
  printf("<-- %s\n", Flux::Sanitize(buf).c_str());
- //int i = ::send(sockn, buf.c_str(), buf.size(), 0);
  int i = write(sockn, buf.c_str(), buf.size());
  return i;
 }

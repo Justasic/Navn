@@ -34,10 +34,10 @@ private:
 public:
   SocketIO(const Flux::string server, const Flux::string port);
   ~SocketIO();
-  Flux::string GetBuffer();
+  bool GetBuffer(Flux::string&);
   bool get_address();
   void popque();
-  const int recv(Flux::string&) const;
+  const int recv() const;
   const int send(const Flux::string buf) const;
   bool connect();
   bool is_valid()  const { return sockn != -1; }

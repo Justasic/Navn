@@ -2,6 +2,7 @@
 #define PING_PONG_H
 #include "../includes.h"
 #include "../flux_net_irc.hpp"
+
 /**
  * \file ping_pong.h Header file holding the \a Ping-Pong function.
  * \author Lordofsraam. Polished by Justasic.

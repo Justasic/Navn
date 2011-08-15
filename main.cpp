@@ -62,10 +62,7 @@ int main (int argcx, char** argvx, char *envp[])
       throw SocketException("Could not resolve server");
     if(!sock->connect())
       throw SocketException("Could not create a socket to connect to the IRC server");
-
-    //Accept some server replies after connecting
     
-    sock->recv(rply);
     //Set the username and nick
     sock->send("USER "+usrname+" * * :"+realname+nl);
     sock->send("NICK "+nick+nl);
@@ -102,15 +99,12 @@ int main (int argcx, char** argvx, char *envp[])
     
     /**       MODULES          */
     /*! \endcode */
-
+    
     while (!quitting){
       while(!quitting && sock->is_valid()){
-	sock->recv(rply);
-	/*if(!rply.empty())
-	  printf("rply: --> %s\n", Flux::Sanitize(rply).c_str());*/
-	if(!sock->GetBuffer().empty()){
-	  printf("sockbuf: --> %s\n", Flux::Sanitize(sock->GetBuffer()).c_str());
-	  sock->popque();
+	if(sock->GetBuffer(rply)){
+	  /* print whats recevied from the buffer */
+	  printf("--> %s\n", Flux::Sanitize(rply).c_str());
 	}
 	irc_string *reply = new irc_string(rply);
 	

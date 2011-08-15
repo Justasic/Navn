@@ -41,6 +41,7 @@
  * \brief module hook
  * Module hook for the module
  */
+
 class system_m:module{
 public:
   system_m(bool a):module("System", a, PRIORITY_FIRST){ this->SetDesc("The system module"); }
