@@ -79,7 +79,7 @@ int main (int argcx, char** argvx, char *envp[])
       * Example:
       * \code 
       */
-      
+    irc_string *reply = new irc_string(rply);
     dummy _dummy(true);
     about_me _about_me(true);
     ctcp _ctcp(true);
@@ -101,40 +101,39 @@ int main (int argcx, char** argvx, char *envp[])
     /*! \endcode */
     
     while (!quitting){
-      while(!quitting && sock->is_valid()){
-	if(sock->GetBuffer(rply)){
-	  /* print whats recevied from the buffer */
-	  printf("--> %s\n", Flux::Sanitize(rply).c_str());
-	}
-	irc_string *reply = new irc_string(rply);
-	
-	host = reply->host;//sets the variables.
-	fullhost = reply->usernick+"!"+reply->user+"@"+host;
-	chan = reply->channel;
-	unick = reply->usernick;
-	msg = reply->message;
-	ident = reply->user;
-	raw = reply->raw_string;
-	
-	if(time(NULL) - last_check >= 3){
-	 TimerManager::TickTimers(time(NULL));
-	 last_check = time(NULL);
-	}
-	for(unsigned i = 0; i < moduleList.size(); i++){
-	  if (moduleList[i]->activated == true){
-	    moduleList[i]->run(Send, rply, reply);
-	  }
-	}
-	/***********************************/
-	delete reply;
-	rply.clear();
+      if(sock->GetBuffer(rply)){
+	/* print whats recevied from the buffer */
+	printf("--> %s\n", Flux::Sanitize(rply).c_str());
+	process(rply);
       }
+      
+      
+      host = reply->host;//sets the variables.
+      fullhost = reply->usernick+"!"+reply->user+"@"+host;
+      chan = reply->channel;
+      unick = reply->usernick;
+      msg = reply->message;
+      ident = reply->user;
+      raw = reply->raw_string;
+      
+      if(time(NULL) - last_check >= 3){
+	TimerManager::TickTimers(time(NULL));
+	last_check = time(NULL);
+      }
+      for(unsigned i = 0; i < moduleList.size(); i++){
+	if (moduleList[i]->activated == true){
+	  moduleList[i]->run(Send, rply, reply);
+	}
+      }
+      /***********************************/
+      rply.clear();
       if(quitting)
 	shutdown(quitmsg);
       if(!sock->is_valid()){
 	reconnect(sock);
       }
     }//while loop ends here
+    delete reply;
   }//try ends here
   catch (SocketException& e) //catch any Exceptions sent.
   {

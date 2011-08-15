@@ -641,7 +641,13 @@ void startup(int argc, char** argv) {
          log("Navn is started With No Forking enabled. (%s)", arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
-        help(argv);
+	  printf("Navn Internet Relay Chat Bot v%s\n", VERSION.c_str());
+	  printf("Usage: %s [options]\n", argv[0]);
+	  printf("-h, --help\n");
+	  printf("-d, --developer\n");
+	  printf("-f, --nofork\n");
+	  printf("This bot does have Epic Powers.\n");
+	  exit(0);
        }
        else if (arg == "--version" || arg == "-v"){
          cout << "Navn IRC C++ Bot Version " << VERSION << nl;
@@ -656,6 +662,15 @@ void startup(int argc, char** argv) {
          cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
          exit(0);
        }
+       else if(arg == "--protocoldebug" || "-p"){
+	 protocoldebug = true;
+	 nofork = true;
+	 log("Navn is started in Protocol Debug mode. (%s)", arg.c_str());
+       }
+       else{
+	printf("Unknown option %s", arg.c_str());
+	exit(0);
+       }
   }
   }
    WritePID();
@@ -665,7 +680,7 @@ void startup(int argc, char** argv) {
 	if(i < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		cout << "Navn IRC Bot v" << VERSION << " Started." << nl;
+		cout << "Navn IRC Bot v" << VERSION_SHORT << " Started." << nl;
 		cout << "Forking to background. PID: "<< i << nl;
 		exit(0);
 	}
@@ -878,6 +893,15 @@ void process(const Flux::string &buffer){
     }
     else
       params.push_back(bufferseparator_token);
+  }
+  if(protocoldebug){
+   printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
+   printf("Command: %s\n", command.c_str());
+   if(params.empty())
+     printf("No Params\n");
+   else
+     for(unsigned i =0; i < params.size(); ++i)
+       printf("Params %i: %s\n", i, params[i].c_str());
   }
 }
 #define FOREACH_MOD(y, x) \

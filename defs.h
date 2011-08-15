@@ -24,9 +24,7 @@ connects to, do so here, NOT in the main code.
 char **my_av;
 char ** my_envp;
 int days, hours, mins;
-bool in_channel = false;
-bool nofork = false;
-bool dev = false;
+bool in_channel, nofork, dev, protocoldebug = false;
 bool quitting = false;
 
 bool IsOper = false;
@@ -107,21 +105,6 @@ const Flux::string ChanJoin = "366"+nick;
 //005 is just the generic welcome message saying you have logged in to the server.
 const Flux::string access_denied = "Access is Denied.";
 const Flux::string nl = "\n";
-
-/**Command Line Help
- * for when someone does --help or -h with the bot
- * @param ./navn --help
- * @param ./navn -h
- */
-void help(char** argv){
- printf("Navn Internet Relay Chat Bot v%s\n", VERSION.c_str());
- printf("Usage: %s [options]\n", argv[0]);
- printf("-h, --help\n");
- printf("-d, --developer\n");
- printf("-f, --nofork\n");
- printf("This bot does have Epic Powers.\n");
- exit(0);
-}
 
 #endif
 
