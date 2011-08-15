@@ -22,6 +22,8 @@ Removed DoQuit()
 Removed old samode api as old api is depracated
 Added DEPRECATED() macro for deprecated functions
 Removed flux_net_irc namespace
+Changed how version string works, now has version major, minor, patch, and extra
+Fixed buffer processing incorrectly once and for all!
 
 Navn 2.0.0
 ==========

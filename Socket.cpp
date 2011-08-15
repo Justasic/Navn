@@ -135,11 +135,11 @@ const int SocketIO::recv() const{
 bool SocketIO::GetBuffer(Flux::string &recv){
   this->recv();
   while(!recv_queue.empty()){
-  if(recv_queue.empty())
-    break;
-  recv = recv_queue.front();
-  recv_queue.pop();
-  return true;
+    if(recv_queue.empty())
+      break;
+    recv = recv_queue.front();
+    recv_queue.pop();
+    return true;
   }
   return false;
 }

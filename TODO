@@ -7,7 +7,7 @@ Legend:
 
 Navn 2.0.1
 ----------
-[?] Fix --help message showing full execution directory
+[+] Fix --help message showing full execution directory
 [ ] Rewrite the config system (Burn INIreader with fire!)
 [x] timer function
 [$] Make module system load binary files (.so files)
