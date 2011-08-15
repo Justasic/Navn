@@ -31,12 +31,12 @@ private:
   int sockn;
   size_t recvlen;
   struct addrinfo hints, *servinfo;
-  std::queue<Flux::string> recv_queue;
 public:
   SocketIO(const Flux::string server, const Flux::string port);
   ~SocketIO();
   Flux::string GetBuffer();
   bool get_address();
+  void popque();
   const int recv(Flux::string&) const;
   const int send(const Flux::string buf) const;
   bool connect();

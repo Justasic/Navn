@@ -106,10 +106,12 @@ int main (int argcx, char** argvx, char *envp[])
     while (!quitting){
       while(!quitting && sock->is_valid()){
 	sock->recv(rply);
-	if(!rply.empty())
-	  printf("rply: --> %s\n", Flux::Sanitize(rply).c_str());
-	if(!sock->GetBuffer().empty())
+	/*if(!rply.empty())
+	  printf("rply: --> %s\n", Flux::Sanitize(rply).c_str());*/
+	if(!sock->GetBuffer().empty()){
 	  printf("sockbuf: --> %s\n", Flux::Sanitize(sock->GetBuffer()).c_str());
+	  sock->popque();
+	}
 	irc_string *reply = new irc_string(rply);
 	
 	host = reply->host;//sets the variables.
