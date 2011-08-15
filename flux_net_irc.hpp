@@ -852,6 +852,40 @@ module::module(Flux::string n, bool a, ModulePriority p){
   priority = p;
   modulelist.push_back(this);
 }
+void process(const Flux::string &buffer){
+  Flux::string buf = buffer;
+  buf = buf.replace_all_cs("  ", " ");
+  if(buf.empty())
+    return;
+  Flux::string source;
+  if(buf[0] == ':'){
+   size_t space = buf.find_first_of(" ");
+   if(space == Flux::string::npos)
+     return;
+   source = buf.substr(1, space - 1);
+   buf = buf.substr(space + 1);
+   if(source.empty() || buf.empty())
+     return;
+  }
+  sepstream bufferseparator(buf, ' ');
+  Flux::string bufferseparator_token;
+  Flux::string command = buf;
+  if(bufferseparator.GetToken(bufferseparator_token))
+    command = bufferseparator_token;
+  std::vector<Flux::string> params;
+  
+  while(bufferseparator.GetToken(bufferseparator_token)){
+    if(bufferseparator_token[0] == ':'){
+      if(!bufferseparator.StreamEnd())
+	params.push_back(bufferseparator_token.substr(1)+" "+bufferseparator.GetRemaining());
+      else
+	params.push_back(bufferseparator_token.substr(1));
+      break;
+    }
+    else
+      params.push_back(bufferseparator_token);
+  }
+}
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
