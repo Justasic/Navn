@@ -206,7 +206,7 @@ public:
         Send->privmsg(chan, "Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
       }
       if(reply->params(0) == "!version"){
-        Send->privmsg(chan, "The Current Navn Bot Version is \002\0037v%s\017", version.c_str());
+        Send->privmsg(chan, "The Current Navn Bot Version is \002\0037v%s\017", VERSION_SHORT.c_str());
         Send->privmsg(chan, "Navn (which includes Dah_Goat) is Full C++ code by lordofsraam\n and is further developed with Justasic");
 	Send->privmsg(chan, "Navn's code can be found at \002git://gitorious.org/navn/navn.git");
 	Send->privmsg(chan, "Report all bugs at: \2http://flux-net.net/bugs/\2");

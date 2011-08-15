@@ -134,8 +134,7 @@ const int SocketIO::recv(Flux::string &buffer) const{
   while(sep.GetToken(buf)){
     buf.trim();
     buffer = buf;
-    size_t e = buf.rfind('\n');
-    recv_queue.push(Flux::string(buf.c_str()+0, e));
+    //recv_queue.push();
     //printf("buf: --> %s\n", Flux::Sanitize(buf).c_str());
     printf("buffer: --> %s\n", Flux::Sanitize(buffer).c_str());
   }

@@ -7,13 +7,6 @@
 SendMessage *Send;
 using namespace std;
 
-template<typename T> inline Flux::string stringify(const T &x){
-	std::ostringstream stream;
-	if(!(stream << x))
-		throw;
-	return stream.str();
-}
-
 class irc_string:Flux::string{
   /** \class irc_string
  * NOTE this MUST be included in the main file.
@@ -650,7 +643,7 @@ void startup(int argc, char** argv) {
         help(argv);
        }
        else if (arg == "--version" || arg == "-v"){
-         cout << "Navn IRC C++ Bot Version " << version << nl;
+         cout << "Navn IRC C++ Bot Version " << VERSION << nl;
          cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
          cout << nl;
          cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
@@ -671,7 +664,7 @@ void startup(int argc, char** argv) {
 	if(i < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		cout << "Navn IRC Bot v" << version << " Started." << nl;
+		cout << "Navn IRC Bot v" << VERSION << " Started." << nl;
 		cout << "Forking to background. PID: "<< i << nl;
 		exit(0);
 	}

@@ -3,6 +3,18 @@
 #include "includes.h"
 
 #define GetCurrentDir getcwd
+template<typename T> inline Flux::string stringify(const T &x){
+	std::ostringstream stream;
+	if(!(stream << x))
+		throw;
+	return stream.str();
+}
+#define VERSION_MAJOR "2"
+#define VERSION_MINOR "0"
+#define VERSION_PATCH "1"
+#define VERSION_EXTRA "-with-netflix-and-chicken"
+const Flux::string VERSION_SHORT = stringify(VERSION_MAJOR)+"."+stringify(VERSION_MINOR)+"."+stringify(VERSION_PATCH);
+const Flux::string VERSION = stringify(VERSION_MAJOR)+"."+stringify(VERSION_MINOR)+"."+stringify(VERSION_PATCH)+stringify(VERSION_EXTRA);
 using namespace std;
 
 /*List the constants used throughout the script.
@@ -16,7 +28,7 @@ bool in_channel = false;
 bool nofork = false;
 bool dev = false;
 bool quitting = false;
-const Flux::string version = "2.0.1";
+
 bool IsOper = false;
 Flux::string binary_path, bot_bin, binary_dir;
 /**Runtime directory finder
@@ -75,7 +87,7 @@ logfile = config.Get("Log","Log_File","navn.log");
 nsacc = config.Get("Bot","NickServ_Account","");
 nspass = config.Get("Bot","NickServ_Password","");
 owner_nick = config.Get("Bot","Owner","Derp");
-realname = config.Get("Connect","Realname","The Navn Bot "+version.tostd());
+realname = config.Get("Connect","Realname","The Navn Bot "+VERSION_SHORT.tostd());
 usrname = config.Get("Connect","Ident","Navn");
 nick = config.Get("Bot","Nick","Navn");
 channel = config.Get("Bot","Channel","#Test");
@@ -102,7 +114,7 @@ const Flux::string nl = "\n";
  * @param ./navn -h
  */
 void help(char** argv){
- printf("Navn Internet Relay Chat Bot v%s\n", version.c_str());
+ printf("Navn Internet Relay Chat Bot v%s\n", VERSION.c_str());
  printf("Usage: %s [options]\n", argv[0]);
  printf("-h, --help\n");
  printf("-d, --developer\n");
