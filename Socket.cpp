@@ -115,21 +115,29 @@ bool SocketIO::connect()
   printf("Connected!\n");
   return true;
 }
-
-const int SocketIO::recv(Flux::string& buffer) const{
+Flux::string SocketIO::GetBuffer(){
+  while(!recv_queue.empty()){
+    return recv_queue.front().c_str();
+    recv_queue.pop();
+  }
+  return "";
+}
+const int SocketIO::recv(Flux::string &buffer) const{
   char tbuf[NET_BUFSIZE + 1] = "";
   memset(tbuf, 0, NET_BUFSIZE + 1);
-  //size_t i = ::recv(sockn, tbuf, NET_BUFSIZE, 0);
-  int i = read(sockn, tbuf, NET_BUFSIZE);
+  size_t i = read(sockn, tbuf, NET_BUFSIZE);
   if(i <= 0)
     return i;
   sepstream sep(tbuf, '\n');
   Flux::string buf;
-  buffer = tbuf;
+  //buffer = tbuf;
   while(sep.GetToken(buf)){
     buf.trim();
-    //buffer = buf;
-    printf("--> %s\n", Flux::Sanitize(buf).c_str());
+    buffer = buf;
+    size_t e = buf.rfind('\n');
+    recv_queue.push(Flux::string(buf.c_str()+0, e));
+    //printf("buf: --> %s\n", Flux::Sanitize(buf).c_str());
+    printf("buffer: --> %s\n", Flux::Sanitize(buffer).c_str());
   }
   return i;
 }

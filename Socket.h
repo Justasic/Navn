@@ -17,24 +17,25 @@
 #include <istream>
 #include <cstdarg>
 #include <ostream>
+#include <queue>
 #include <arpa/inet.h>
 #include "flux.h"
 
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
-const int MAXRECV = 500;
 class SocketIO
 {
-  Flux::string buffer;
 private:
   std::string server;
   std::string port;
   int sockn;
   size_t recvlen;
   struct addrinfo hints, *servinfo;
+  std::queue<Flux::string> recv_queue;
 public:
   SocketIO(const Flux::string server, const Flux::string port);
   ~SocketIO();
+  Flux::string GetBuffer();
   bool get_address();
   const int recv(Flux::string&) const;
   const int send(const Flux::string buf) const;
