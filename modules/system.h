@@ -130,7 +130,7 @@ ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::st
     Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
     in_channel = true;
   }
-  if(command == "005"){
+  if(command == "004"){
     Send->command->mode(nick, "+B");
     Send->command->join(channel);
     if(ouser.empty() || opass.empty()){

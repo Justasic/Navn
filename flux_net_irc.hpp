@@ -968,7 +968,9 @@ void process(const Flux::string &buffer){
   /***************************************/
   host = irc_string::isolate('@',' ',source);//sets the variables.
   fullhost == source;
-  //chan = reply->channel;
+  Flux::string temp = params.empty()? "":params[0]; /* sanity check so we dont segfault */
+  if(!temp.empty())
+   chan = IsValidChannel(temp)?temp:"";
   unick = irc_string::isolate(':','!',source);
   ident = irc_string::isolate('!','@',source);
   raw == buffer;
@@ -976,7 +978,8 @@ void process(const Flux::string &buffer){
     if(protocoldebug){
       printf("--> %s\n", Flux::Sanitize(buffer).c_str());
     }else
-      printf("<%s> %s\n", unick.c_str(), params[1].c_str());
+      if(!temp.empty() && !params[1].empty())
+      printf("<%s-%s> %s\n", unick.c_str(), temp.c_str(), params[1].c_str());
     User *u = finduser(unick);
     if(u)
       u->SendMessage("Derp!\n");
