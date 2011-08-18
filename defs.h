@@ -1,7 +1,9 @@
 #ifndef defs_h
 #define defs_h
-#include "includes.h"
-
+#include "inireader/INIReader.h"
+#include <sstream>
+#include <cstdio>
+#include "flux.h"
 #define GetCurrentDir getcwd
 template<typename T> inline Flux::string stringify(const T &x){
 	std::ostringstream stream;
@@ -29,26 +31,6 @@ bool quitting = false;
 
 bool IsOper = false;
 Flux::string binary_path, bot_bin, binary_dir;
-/**Runtime directory finder
- * This will get the bots runtime directory
- * @param getprogdir(const Flux::string dir)
- */
-Flux::string getprogdir(const Flux::string dir){
-  char buffer[FILENAME_MAX];
-  if (GetCurrentDir(buffer, sizeof(buffer))) {
-    Flux::string remainder = dir;
-    bot_bin = remainder;
-    Flux::string::size_type n = bot_bin.rfind("/");
-    Flux::string fullpath;
-    if (bot_bin[0] == '/')
-      fullpath = bot_bin.substr(0, n);
-    else
-      fullpath = Flux::string(buffer) + "/" + bot_bin.substr(0, n);
-    bot_bin = bot_bin.substr(n + 1, remainder.length());
-    return fullpath;
-  }
-  return "/";
-}
 
 Flux::string unick;
 Flux::string rply;
@@ -100,9 +82,6 @@ LogChannel = config.Get("Modules", "LogChannel","");
 /******************End Configuration variables********************/
 
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
-const Flux::string in_the_channel = "252 "+nick;
-const Flux::string ChanJoin = "366"+nick;
-//005 is just the generic welcome message saying you have logged in to the server.
 const Flux::string access_denied = "Access is Denied.";
 const Flux::string nl = "\n";
 

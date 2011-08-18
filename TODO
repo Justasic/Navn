@@ -18,12 +18,14 @@ Navn 2.0.1
 [+] Add better error handling instead of a throw or a error code in some places
 [+] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
 [x] Add some sort of buffer processor for the socket engine (make lines process correctly instead of printing the raw buffer)
+[ ] Add Select() multiplexing to stop high cpu usage
 
 
 Navn 2.0.2
 ----------
 [ ] Multisocket the socket engine
 [ ] User Account system
+[ ] Add a flags system like channel/user modes
 
 Future
 ------

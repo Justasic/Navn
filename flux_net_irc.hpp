@@ -1,13 +1,32 @@
 #ifndef DERP_H
 #define DERP_H
-#include "includes.h"
+#include "user.h"
 #include "defs.h"
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
-
 SendMessage *Send;
+SocketIO *sock;
 using namespace std;
-
-
+/**Runtime directory finder
+ * This will get the bots runtime directory
+ * @param getprogdir(const Flux::string dir)
+ */
+//SendMessage *Send;
+Flux::string getprogdir(const Flux::string dir){
+  char buffer[FILENAME_MAX];
+  if (GetCurrentDir(buffer, sizeof(buffer))) {
+    Flux::string remainder = dir;
+    bot_bin = remainder;
+    Flux::string::size_type n = bot_bin.rfind("/");
+    Flux::string fullpath;
+    if (bot_bin[0] == '/')
+      fullpath = bot_bin.substr(0, n);
+    else
+      fullpath = Flux::string(buffer) + "/" + bot_bin.substr(0, n);
+    bot_bin = bot_bin.substr(n + 1, remainder.length());
+    return fullpath;
+  }
+  return "/";
+}
 class irc_string:Flux::string{
   /** \class irc_string
  * NOTE this MUST be included in the main file.
@@ -525,8 +544,8 @@ static void Rehash(){
   cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
   ReadConfig(config);
   }catch(ConfigException &ex){
-    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
-    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
+    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
+    log("Config Exception Caught: %s", ex.GetReason());
   } 
 }
 
@@ -546,9 +565,9 @@ static void Rehash(SendMessage *Send){
   cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
   ReadConfig(config);
   }catch(ConfigException &ex){
-    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
-    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
-    Send->notice(owner_nick, "Config Exception Caught: %s", stringify(ex.GetReason()).c_str());
+    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
+    log("Config Exception Caught: %s", ex.GetReason());
+    Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
   } 
 }
 /** Terminal Signal Handler
@@ -572,7 +591,6 @@ void sigact(int sig)
       signal(SIGHUP, SIG_IGN);
       cout << "\r\n\033[0m";
       sigstr = "Someone used Ctrl + C";
-      signal(sig, SIG_IGN);
       quitmsg = "Recieved Signal: "+sigstr;
       quitting = true;
       break;
@@ -820,6 +838,11 @@ Flux::string findInXML(Flux::string node, Flux::string info, Flux::string fileSt
   return output;
 }
 /*******************************************************************/
+enum Implementation{
+  I_BEGIN,
+	I_OnPrivmsg,
+  I_END
+};
 enum ModuleReturn{
   MOD_RUN,
   MOD_STOP
@@ -844,7 +867,8 @@ public:
   Flux::string author;
   module (Flux::string , bool, ModulePriority);
   
-  virtual ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply) =0;
+  virtual ModuleReturn run(Flux::string rply, Flux::string command, std::vector<Flux::string> &params) =0;
+  virtual void OnPrivmsg(const Flux::string &nick, const std::vector<Flux::string> &params) { }
   
 };
 void module::SetDesc(const Flux::string &desc){
@@ -861,6 +885,45 @@ module::module(Flux::string n, bool a, ModulePriority p){
   priority = p;
   modulelist.push_back(this);
 }
+Flux::string isolate(char begin, char end, Flux::string msg){
+  Flux::string to_find;
+  size_t pos = msg.find(begin);
+  pos += 1;
+  for (unsigned i = pos; i < msg.length(); i++){
+    if (msg.at(i) == end){
+      break;
+    }else{to_find = to_find+msg.at(i);}
+  }
+  return to_find;
+}
+std::vector<module *> EventHandlers[I_END];
+#define FOREACH_MOD(y, x) \
+if(true) \
+{ \
+    std::vector<module*>::iterator safei; \
+    for (std::vector<module*>::iterator _i = EventHandlers[y].begin(); _i != EventHandlers[y].end(); ) \
+    { \
+       safei = _i; \
+       ++safei; \
+       try \
+       { \
+          (*_i)->x ; \
+       } \
+       catch (const ModuleException &modexcept) \
+       { \
+          log("Exception caught: %s", modexcept.GetReason()); \
+       } \
+        _i = safei; \
+    } \
+} \
+else \
+      static_cast<void>(0)
+/**
+ * \brief main processing loop
+ * 
+ * 
+ * 
+ */
 void process(const Flux::string &buffer){
   Flux::string buf = buffer;
   buf = buf.replace_all_cs("  ", " ");
@@ -896,35 +959,35 @@ void process(const Flux::string &buffer){
   }
   if(protocoldebug){
    printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
-   printf("Command: %s\n", command.c_str());
+   printf("%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
    if(params.empty())
      printf("No Params\n");
    else
      for(unsigned i =0; i < params.size(); ++i)
        printf("Params %i: %s\n", i, params[i].c_str());
   }
+  /***************************************/
+  IsoHost *Host = new IsoHost(source);
+  host = Host->host;//sets the variables.
+  fullhost == source;
+  //chan = reply->channel;
+  unick = Host->nick;
+  ident = Host->user;
+  raw == buffer;
+  delete Host;
+  if(command == "PRIVMSG"){
+   FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(unick, params));
+  }
+  User *u = finduser(unick);
+  if(u)
+    printf("User %s\n", u->nick.c_str());
+  /******************************************/
+  for(unsigned i = 0; i < modulelist.size(); i++){
+    if (modulelist[i]->activated == true){
+      modulelist[i]->run(source, command, params);
+    }
+  }
 }
-#define FOREACH_MOD(y, x) \
-if(true) \
-{ \
-    std::vector<module*>::iterator safei; \
-    for (std::vector<module*>::iterator _i = ModuleManager::EventHandlers[y].begin(); _i != ModuleManager::EventHandlers[y].end(); ) \
-    { \
-       safei = _i; \
-       ++safei; \
-       try \
-       { \
-          (*_i)->x ; \
-       } \
-       catch (const ModuleException &modexcept) \
-       { \
-          Log() << "Exception caught: " << modexcept.GetReason(); \
-       } \
-        _i = safei; \
-    } \
-} \
-else \
-      static_cast<void>(0)
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const Flux::string &modname, const bool activated) \
         { \

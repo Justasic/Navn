@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <map>
 #ifdef __GNUC__
 #define DEPRECATED(func) func __attribute__ ((deprecated))
 #elif defined(_MSC_VER)
@@ -11,6 +12,7 @@
 #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 #define DEPRECATED(func) func
 #endif
+class SendMessage;
 /**
  *\file flux.h Flux::string header file
  *\brief The Flux::string namespace ported from Anope::string
@@ -182,6 +184,7 @@ namespace Flux{
     
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     }; //end of string class
+    template<typename T> class map : public std::map<string, T> { };
     extern Flux::string Sanitize(const Flux::string&);
     inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
     inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }

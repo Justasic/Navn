@@ -1,6 +1,7 @@
 #ifndef PRIVMSG_H
 #define PRIVMSG_H
 #include "includes.h"
+#include "command.h"
 class Command;
 class Oper;
 class SendMessage
@@ -18,5 +19,4 @@ public:
   void action(Flux::string where, Flux::string msg);
   void raw(const char *fmt, ...);
 };
-  
 #endif

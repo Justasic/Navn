@@ -34,22 +34,29 @@ public:
   }
 };
 class Ping_pong:module{
-public:
-  Ping_pong(bool a):module("Ping", a, PRIORITY_FIRST){ this->SetDesc("Sends a ping to the server, keeping the bot connected");}
   PingTimer pingtimer;
-  ModuleReturn run(SendMessage *Send, Flux::string re, irc_string *reply){
-    if (reply->said("PING :")){
-      Send->s->send("PONG "+strip(re.substr(6,-1))+nl);
+public:
+  Ping_pong(bool a):module("Ping", a, PRIORITY_FIRST){ 
+    this->SetDesc("Sends a ping to the server, keeping the bot connected");
+    Implementation i[] = { I_OnPrivmsg };
+  }
+  ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::string> &params){
+    if (command == "PING"){
+      Send->raw("PONG :%i", time(NULL));
     } 
      /*for some Undernet connections */
-    if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
+    /*if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
       Send->s->send("PASS "+strip(reply->params(16))+nl);
-    }
-    if(reply->said("ERROR :Closing link:")){
+    }*/
+    if(command == "ERROR"){
       //throw CoreException(raw);
-      reconnect(Send->s);
+      restart("Killed");
+      //reconnect(Send->s);
     }
     return MOD_RUN;
+  }
+  void OnPrivmsg(Flux::string Sender, std::vector<Flux::string> &params){
+   printf("I WIN!");
   }
 };
 /**

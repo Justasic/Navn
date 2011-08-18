@@ -56,7 +56,7 @@ int main (int argcx, char** argvx, char *envp[])
     startup(argcx, argvx);
     cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
     //Make the socket used to connect to the server
-    SocketIO *sock = new SocketIO(server, port);
+    sock = new SocketIO(server, port);
         //Incase there is no connection
     if(!sock->get_address())
       throw SocketException("Could not resolve server");
@@ -80,6 +80,9 @@ int main (int argcx, char** argvx, char *envp[])
       * \code 
       */
     irc_string *reply = new irc_string(rply);
+    Ping_pong _Ping(true);
+    system_m _system_m(true);
+    /*
     dummy _dummy(true);
     about_me _about_me(true);
     ctcp _ctcp(true);
@@ -89,13 +92,12 @@ int main (int argcx, char** argvx, char *envp[])
     help_m _help_m(true);
     navn _navn(true);
     searcher _searcher(true);
-    system_m _system_m(true);
     TinyURL _TinyURL(false);
     world_clock _world_clock(true);
     Chanlog _Chanlog(true);
     weather _weather(true);
     Ping_pong _Ping(true);
-    modulehandler _modulehandler(true);
+    modulehandler _modulehandler(true);*/
     
     /**       MODULES          */
     /*! \endcode */
@@ -105,35 +107,20 @@ int main (int argcx, char** argvx, char *envp[])
 	/* print whats recevied from the buffer */
 	printf("--> %s\n", Flux::Sanitize(rply).c_str());
 	process(rply);
+	rply.clear();
       }
-      
-      
-      host = reply->host;//sets the variables.
-      fullhost = reply->usernick+"!"+reply->user+"@"+host;
-      chan = reply->channel;
-      unick = reply->usernick;
-      msg = reply->message;
-      ident = reply->user;
-      raw = reply->raw_string;
-      
       if(time(NULL) - last_check >= 3){
 	TimerManager::TickTimers(time(NULL));
 	last_check = time(NULL);
       }
-      for(unsigned i = 0; i < moduleList.size(); i++){
-	if (moduleList[i]->activated == true){
-	  moduleList[i]->run(Send, rply, reply);
-	}
-      }
       /***********************************/
-      rply.clear();
-      if(quitting)
+      if(quitting){
 	shutdown(quitmsg);
-      if(!sock->is_valid()){
-	reconnect(sock);
       }
     }//while loop ends here
     delete reply;
+    delete Send;
+    delete sock;
   }//try ends here
   catch (SocketException& e) //catch any Exceptions sent.
   {

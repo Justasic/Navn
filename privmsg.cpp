@@ -1,4 +1,4 @@
-#include "includes.h"
+#include "privmsg.h"
 /**
  *\file  privmsg.cpp 
  *\brief Contains the SendMessage class.

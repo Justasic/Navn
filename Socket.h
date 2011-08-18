@@ -36,10 +36,10 @@ public:
   ~SocketIO();
   bool GetBuffer(Flux::string&);
   bool get_address();
-  void popque();
   const int recv() const;
   const int send(const Flux::string buf) const;
   bool connect();
   bool is_valid()  const { return sockn != -1; }
 };
+//SocketIO *sock;
 #endif

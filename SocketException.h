@@ -57,7 +57,7 @@ class CoreException : public std::exception
 	/** Returns the reason for the exception.
 	 * The module should probably put something informative here as the user will see this upon failure.
 	 */
-	virtual const char* GetReason()
+	virtual const char* GetReason() const
 	{
 		return err.c_str();
 	}
