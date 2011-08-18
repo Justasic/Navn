@@ -30,7 +30,7 @@ class PingTimer:public Timer
 public:
   PingTimer():Timer(30, time(NULL), true) {}
   void Tick(time_t){
-    Send->raw("PING :%i\n", time(NULL));
+    Send->raw("PING :%i\n", time(NULL)); 
   }
 };
 class Ping_pong:module{
