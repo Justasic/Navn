@@ -48,10 +48,10 @@ public:
 ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::string> &params){
   /* use string to prevent segmentation faults */
   Flux::string cmd;
-  if (params.size() < 1){
+  if(params.size() <= 1)
     cmd = "";
-  }else
-    cmd = params[1];
+  else
+    cmd = params.empty()?"":params[1];
   
   if (cmd == "pass"){
     if (unick == owner_nick){
