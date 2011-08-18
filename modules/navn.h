@@ -34,7 +34,7 @@
  * \brief Most of navn's function code.
  * Navn's basic functions.
  */
-class navn:module{
+class navn:public module{
 public:
   navn(bool a):module("Navn", a, PRIORITY_DONTCARE){ this->SetDesc("Where some of the navn specific functions are");}
   ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){

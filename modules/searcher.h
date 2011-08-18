@@ -162,7 +162,7 @@ Flux::string search(Flux::string s, Flux::string command){
  * \brief Returns search links for different sites.
  * Searches for the search command, then uses the \a search function from \a flux_net_irc to return search links.
  */
-class searcher:module{
+class searcher:public module{
 public:
   searcher(bool a):module("Searcher Handler", a, PRIORITY_DONTCARE){ this->SetDesc("Search Module used to search for stuff"); }
 ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){

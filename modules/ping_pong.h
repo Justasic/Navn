@@ -33,7 +33,7 @@ public:
     Send->raw("PING :%i\n", time(NULL)); 
   }
 };
-class Ping_pong:module{
+class Ping_pong:public module{
   PingTimer pingtimer;
 public:
   Ping_pong(bool a):module("Ping", a, PRIORITY_FIRST){ 
@@ -56,7 +56,7 @@ public:
     return MOD_RUN;
   }
   void OnPrivmsg(Flux::string Sender, std::vector<Flux::string> &params){
-   printf("I WIN!");
+   printf("I WIN!\n");
   }
 };
 /**

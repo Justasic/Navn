@@ -30,7 +30,7 @@
  * Uses C++ time functions to tell the time around the world.
  */
 
-class world_clock:module{
+class world_clock:public module{
 public:
   world_clock(bool a):module("World Clock", a, PRIORITY_DONTCARE){ this->SetDesc("Shows time for your area or for the preset ones"); }
   ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){

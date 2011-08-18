@@ -29,7 +29,7 @@
  */
   int idiots = 0; //define the idiot counter outside of the main loop
   int magiccount = 0;
-class Flux_Services:module
+class Flux_Services:public module
 {
 public:
   Flux_Services(bool a):module("Flux_Services", a, PRIORITY_LAST){ this->SetDesc("DeathBlade's Flux_S3rvices bot"); }

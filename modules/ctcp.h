@@ -25,7 +25,7 @@
  * Replies to CTCP requests in IRC
  */
 
-class ctcp:module
+class ctcp:public module
 {
 public:
   ctcp(bool a):module("CTCP", a, PRIORITY_FIRST){ this->SetDesc("CTCP Handler"); }

@@ -23,7 +23,7 @@
  * \brief Returns help info on Navn.
  * Tells you most of the commands you can use on Navn.
  */
-class help_m:module{
+class help_m:public module{
 public:
   help_m(bool a):module("Help", a, PRIORITY_DONTCARE){ this->SetDesc("The Help module"); }
   ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){

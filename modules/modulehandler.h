@@ -30,7 +30,7 @@
  * The Module handler for navn, handles all the module enabling and disabling
  */
 std::vector<module*> moduleList;
-class modulehandler:module
+class modulehandler:public module
 {
 public:
   modulehandler(bool a):module("Modulehandler", a, PRIORITY_FIRST){ this->SetDesc("Module Handler"); }

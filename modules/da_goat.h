@@ -50,7 +50,7 @@
  * rules of the server were.
  */
 struct sysinfo sys_info;
-class Da_Goat:module
+class Da_Goat:public module
 {
 public:
     Da_Goat(bool a):module("Da_Goat", a, PRIORITY_DONTCARE){ this->SetDesc("Da_Goat bot"); }

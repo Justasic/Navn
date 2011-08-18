@@ -4,7 +4,7 @@
 #include "../flux_net_irc.hpp"
 
 /* This module was not yet finished, check Navn version 2.0.1 to see if it was completed or removed */
-class TinyURL:module{
+class TinyURL:public module{
 public:
   TinyURL(bool a):module("TinyURL", a, PRIORITY_LAST){ this->SetDesc("The tinyurl minifier"); }
   ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){

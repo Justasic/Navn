@@ -53,7 +53,7 @@ void CLog(const char *fmt, ...){
   va_end(args);
   log.close();
 }
-class Chanlog:module{
+class Chanlog:public module{
 public:
   Chanlog(bool a):module("Channel Logger", a, PRIORITY_LAST){ this->SetDesc("Logs what is said in the channel"); }
 ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){

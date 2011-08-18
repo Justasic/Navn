@@ -28,7 +28,7 @@
  * the google weather api. From there it pseudo-parses the file using functions from \a flux_net_irc 
  * and throws the needed contents out of the main socket as a private message (using \a privmsg).
  */
-class weather:module{
+class weather:public module{
 public:
   weather(bool act):module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
   ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){

@@ -41,5 +41,6 @@ public:
   bool connect();
   bool is_valid()  const { return sockn != -1; }
 };
-//SocketIO *sock;
+void send_cmd(const char *fmt, ...); /* we make this global beyond flux_net_irc.hpp so we can send almost anywhere in navn */
+extern SocketIO *sock;
 #endif

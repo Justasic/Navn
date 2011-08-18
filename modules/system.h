@@ -42,7 +42,7 @@
  * Module hook for the module
  */
 
-class system_m:module{
+class system_m:public module{
 public:
   system_m(bool a):module("System", a, PRIORITY_FIRST){ this->SetDesc("The system module"); }
 ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::string> &params){

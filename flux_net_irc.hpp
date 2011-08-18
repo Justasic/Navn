@@ -10,7 +10,6 @@ using namespace std;
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
  */
-//SendMessage *Send;
 Flux::string getprogdir(const Flux::string dir){
   char buffer[FILENAME_MAX];
   if (GetCurrentDir(buffer, sizeof(buffer))) {
@@ -967,26 +966,37 @@ void process(const Flux::string &buffer){
        printf("Params %i: %s\n", i, params[i].c_str());
   }
   /***************************************/
-  IsoHost *Host = new IsoHost(source);
-  host = Host->host;//sets the variables.
+  host = irc_string::isolate('@',' ',source);//sets the variables.
   fullhost == source;
   //chan = reply->channel;
-  unick = Host->nick;
-  ident = Host->user;
+  unick = irc_string::isolate(':','!',source);
+  ident = irc_string::isolate('!','@',source);
   raw == buffer;
-  delete Host;
   if(command == "PRIVMSG"){
+    if(protocoldebug){
+      printf("--> %s\n", Flux::Sanitize(buffer).c_str());
+    }else
+      printf("<%s> %s\n", unick.c_str(), params[1].c_str());
+    User *u = finduser(unick);
+    if(u)
+      u->SendMessage("Derp!\n");
    FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(unick, params));
-  }
-  User *u = finduser(unick);
-  if(u)
-    printf("User %s\n", u->nick.c_str());
+  }else
+    printf("--> %s\n", Flux::Sanitize(buffer).c_str());
   /******************************************/
   for(unsigned i = 0; i < modulelist.size(); i++){
     if (modulelist[i]->activated == true){
       modulelist[i]->run(source, command, params);
     }
   }
+}
+void send_cmd(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  sock->send(buffer);
+  va_end(args);
 }
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const Flux::string &modname, const bool activated) \

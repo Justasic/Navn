@@ -27,7 +27,7 @@
  * \brief Tells you about youself (ie. Host, ident, etc.).
  * Uses irc_string and IsoHost to decode the message you said.
  */
-class about_me : module
+class about_me : public module
 {
   
 public:

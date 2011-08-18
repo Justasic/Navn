@@ -100,12 +100,10 @@ int main (int argcx, char** argvx, char *envp[])
     modulehandler _modulehandler(true);*/
     
     /**       MODULES          */
-    /*! \endcode */
-    
+    /*! \endcode */ 
     while (!quitting){
       if(sock->GetBuffer(rply)){
-	/* print whats recevied from the buffer */
-	printf("--> %s\n", Flux::Sanitize(rply).c_str());
+	/* Process the buffer and modules */
 	process(rply);
 	rply.clear();
       }

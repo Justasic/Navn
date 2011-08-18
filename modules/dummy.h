@@ -22,7 +22,7 @@
  * \brief Replies to a test
  * We will try to put as many examples here in the future as we can.
  */
-class dummy : module{
+class dummy : public module{
 
 public:
   dummy(bool a):module("Dummy", a, PRIORITY_LAST){ this->SetDesc("Example Dummy module"); }

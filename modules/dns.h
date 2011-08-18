@@ -104,7 +104,7 @@ void alldns(SendMessage *Send, Flux::string host, Flux::string dest){
   }
 }
 
-class dns_m:module
+class dns_m:public module
 {
 public:
   dns_m(bool a):module("DNS Resolver", a, PRIORITY_DONTCARE){ this->SetDesc("Reverse DNS or Forward DNS resolve an address"); }
