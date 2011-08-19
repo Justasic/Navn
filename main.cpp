@@ -63,12 +63,13 @@ int main (int argcx, char** argvx, char *envp[])
     if(!sock->connect())
       throw SocketException("Could not create a socket to connect to the IRC server");
     
-    //Set the username and nick
-    sock->send("USER "+usrname+" * * :"+realname+nl);
-    sock->send("NICK "+nick+nl);
-      
     Send = new SendMessage(sock);
     time_t last_check = time(NULL);
+    
+    //Set the username and nick
+    Send->command->user(usrname, realname);
+    sock->command-nick(nick);
+
     /**
       * \page tutmod2 Adding Your Module - Step 2: Running your module.
       * \section tut2 Step 2: Running your module.

@@ -144,6 +144,15 @@ void Command::whois(Flux::string user){
 void Command::mode(Flux::string chan, Flux::string mode, Flux::string user){
   this->raw("MODE %s %s %s\n", chan.c_str(), mode.c_str(), user.c_str());
 }
+/** 
+ * \fn void Command::user(Flux::string ident, Flux::string realname)
+ * \brief Sends the user gecos to the server
+ * \param ident The ident at the beginning of the IRC host.
+ * \param realname The real name gecos used in irc.
+ */
+void Command::user(Flux::string ident, Flux::string realname){
+ this->raw("USER %s * * :%s\n", ident.c_str(), realname.c_str());
+}
 /**
  *\overload void command::mode(Flux:;string dest, Flux::string mode)
  * \brief Sends a mode to the server
