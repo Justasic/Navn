@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
-#include <string>
+#include <errno.h>
 #include <fstream>
 #include <iostream>
 #include <istream>
@@ -20,7 +20,6 @@
 #include <queue>
 #include <arpa/inet.h>
 #include "flux.h"
-
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 class SocketIO
@@ -41,6 +40,11 @@ public:
   bool connect();
   bool is_valid()  const { return sockn != -1; }
 };
+/* just cuz i am hella lazy, i am defining them in the socket engine to make them global */
+struct CommandSource;
 void send_cmd(const char *fmt, ...); /* we make this global beyond flux_net_irc.hpp so we can send almost anywhere in navn */
 extern SocketIO *sock;
+void log(const char *fmt, ...);
+void ProcessModules(CommandSource&, std::vector<Flux::string>&);
+extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 #endif

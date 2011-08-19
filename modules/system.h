@@ -45,14 +45,13 @@
 class system_m:public module{
 public:
   system_m(bool a):module("System", a, PRIORITY_FIRST){ this->SetDesc("The system module"); }
-ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::string> &params){
+ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   /* use string to prevent segmentation faults */
   Flux::string cmd;
-  if(params.size() <= 1)
-    cmd = "";
-  else
-    cmd = params.empty()?"":params[1];
-  
+  if(!params.size() > 0 && !params.empty())
+    cmd = params.empty()?"":params[0];
+  if(!cmd.empty())
+    printf("CMD: %s\n", cmd.c_str());
   if (cmd == "pass"){
     if (unick == owner_nick){
       Send->notice(unick, "The password is:\2 "+password);
@@ -79,23 +78,29 @@ ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::st
       Send->notice(unick, access_denied);
     }
   }
-  if(command == "NICK"){
-    Flux::string newnickhost = params[0].substr(0,-1);
-    IsoHost *Host = new IsoHost(newnickhost);
+  if(source.command == "NICK"){
+    IsoHost *Host = new IsoHost(source.u);
     Flux::string newnick = Host->nick;
     if (newnick == nick)
-      nick = params[0];
+      nick = newnick;
     if(newnick == owner_nick)
-      owner_nick = params[0];
+      owner_nick = newnick;
     delete Host;
   }
-  if (cmd == "quit "+password){ //quits the bot.
-    Send->notice(unick, "Quitting..");
-    log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
-    shutdown("Requested From \2"+unick+"\17. Pass: \00320"+password+"\017");
+  if (cmd == "quit"){ //quits the bot.
+    Flux::string pass = params.size() > 0 ? params[0] : "";
+    if(pass == password || pass == usrpass){
+      Send->notice(unick, "Quitting..");
+      log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
+      shutdown("Requested From \2"+unick+"\17. Pass: \00320"+password+"\017");
+    }else{
+      Send->notice(unick, access_denied);
+      log("%s attempted to change ownership of the bot", unick.c_str());
+    }
   }
   if(cmd == "rehash"){
-    if(unick == owner_nick){
+    Flux::string pass = params.size() > 0 ? params[0] : "";
+    if(unick == owner_nick || pass == password || pass == usrpass){
       Send->notice(unick, "Rehashing config file.");
       log("%s rehashed config file.", unick.c_str());
       Rehash(Send);
@@ -105,10 +110,10 @@ ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::st
     }
   }
   if(cmd == "chown"){
-    Flux::string givinpass = "i am broken";
-    if(givinpass == usrpass){
+    Flux::string pass = params.size() > 0 ? params[0] : "";
+    if(pass == password || pass == usrpass){
       log("Changing ownership from %s to %s", owner_nick.c_str(), unick.c_str());
-      //owner_nick = ; FIXME: i am broken from the new API!
+      owner_nick = unick; //FIXME: i am broken from the new API!
       Send->notice(unick, "New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
     }else{
       Send->notice(unick, access_denied);
@@ -120,7 +125,7 @@ ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::st
    * This is so you can make things happen only if you know you are in
    * a channel.
    */
-  if(command == "366"){
+  if(source.command == "366"){
     cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
     cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
     cout << "\033[22;31mSending password to owner\033[22;30m... \033[22;32mCHECK\033[22;36m"<<nl;;
@@ -130,7 +135,7 @@ ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::st
     Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
     in_channel = true;
   }
-  if(command == "004"){
+  if(source.command == "004"){
     Send->command->mode(nick, "+B");
     Send->command->join(channel);
     if(ouser.empty() || opass.empty()){
@@ -147,7 +152,7 @@ ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::st
   if(cmd == "DCC"){
     Send->notice(unick, "I do not accept or support DCC connections.");
   }
-  if(command == "482"){
+  if(source.command == "482"){
     cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
     Send->notice(owner_nick, "I require op to run the last command!");
     log("Op is required in %s", chan.c_str());  
@@ -156,17 +161,17 @@ ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::st
     Send->privmsg(unick, "identify %s %s", nsacc.c_str(), nspass.c_str());
     log("Identified to NickServ with account \"%s\"", nsacc.c_str());
   }
-  if (command == "JOIN" && in_channel){ //welcomes everyone who joins the channel
+  if (source.command == "JOIN" && in_channel){ //welcomes everyone who joins the channel
     if(unick == nick){return MOD_RUN;}else{
       Send->notice(unick, "Welcome "+unick+" to "+strip(chan)+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.");
       log("%s joined %s", unick.c_str(), strip(chan).c_str());
     }
   }
-  if(command == "KICK" && params[1] == nick){
+  if(source.command == "KICK" && unick == nick){
     Send->notice(owner_nick, "%s kicked me from %s!", unick.c_str(), params[0].c_str());
-    Send->command->join(params[0]);
+    Send->command->join(source.c);
     in_channel = false;
-    log("%s kicked bot out of channel %s", unick.c_str(), params[0].c_str());
+    log("%s kicked bot out of channel %s", unick.c_str(), source.c.c_str());
   }
   return MOD_RUN;
 }

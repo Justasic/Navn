@@ -19,4 +19,5 @@ public:
   void action(Flux::string where, Flux::string msg);
   void raw(const char *fmt, ...);
 };
+extern SendMessage *Send;
 #endif

@@ -9,7 +9,6 @@
  */
 
 #include "includes.h"
-
 std::vector<Timer *> TimerManager::Timers;
 
 /** Default constructor, initializes the triggering time

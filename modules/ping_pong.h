@@ -40,23 +40,18 @@ public:
     this->SetDesc("Sends a ping to the server, keeping the bot connected");
     //Implementation i[] = { I_OnPrivmsg };
   }
-  ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::string> &params){
-    if (command == "PING"){
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    if (source.command == "PING"){
       Send->raw("PONG :%i", time(NULL));
     } 
      /*for some Undernet connections */
     /*if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
       Send->s->send("PASS "+strip(reply->params(16))+nl);
     }*/
-    if(command == "ERROR"){
-      //throw CoreException(raw);
+    if(source.command == "ERROR"){
       restart("Killed");
-      //reconnect(Send->s);
     }
     return MOD_RUN;
-  }
-  void OnPrivmsg(Flux::string Sender, std::vector<Flux::string> &params){
-   printf("I WIN!\n");
   }
 };
 /**

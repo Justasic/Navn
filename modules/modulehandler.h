@@ -33,12 +33,18 @@ std::vector<module*> moduleList;
 class modulehandler:public module
 {
 public:
+  irc_string *reply;
   modulehandler(bool a):module("Modulehandler", a, PRIORITY_FIRST){ this->SetDesc("Module Handler"); }
-  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply)
+  ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::string> &params)
   {
+  /* use string to prevent segmentation faults */
+  Flux::string cmd;
+  if(!params.size() > 1 && !params.empty())
+    cmd = params.empty()?"":params[1];
+  
     bool request = false;
     Flux::string confPass;
-    if (reply->said("PRIVMSG "+nick+" :modflip") && reply->said(password))
+    if (cmd == "modflip")
     {
       for (int i = 0; i < (int)moduleList.size(); i++)
       {

@@ -26,9 +26,9 @@ connects to, do so here, NOT in the main code.
 char **my_av;
 char ** my_envp;
 int days, hours, mins;
-bool in_channel, nofork, dev, protocoldebug = false;
+bool in_channel = false;
 bool quitting = false;
-
+bool nofork, dev, protocoldebug = false;
 bool IsOper = false;
 Flux::string binary_path, bot_bin, binary_dir;
 
@@ -41,7 +41,6 @@ Flux::string msg;
 Flux::string quitmsg;
 Flux::string fullhost;
 Flux::string ident;
-Flux::string myhost;
 /******************Configuration variables***********************/
 Flux::string logfile;
 Flux::string nsacc;

@@ -19,21 +19,12 @@
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <time.h>
-#include <iostream>
 #include <sstream>
 #include <csignal>
 #include <unistd.h>
-#include <fstream>
 #include <cstdlib>
-#include <cstring>
 #include <sys/sysinfo.h>
-#include <sys/types.h>
 #include <sys/utsname.h>
-#include <unistd.h>
 #include <cstdio>
 #include <alloca.h>
 #endif

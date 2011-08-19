@@ -24,6 +24,9 @@ Added DEPRECATED() macro for deprecated functions
 Removed flux_net_irc namespace
 Changed how version string works, now has version major, minor, patch, and extra
 Fixed buffer processing incorrectly once and for all!
+Added new message parsing system that uses vectors
+Added new CommandSource structure
+Processed modules a little differently
 
 Navn 2.0.0
 ==========

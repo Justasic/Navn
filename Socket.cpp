@@ -4,9 +4,6 @@
  *\brief Contains the Socket engine.
  */
 #include "Socket.h"
-#include "string.h"
-#include <string.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <iostream>
 #define NET_BUFSIZE 65535

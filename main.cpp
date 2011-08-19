@@ -26,9 +26,10 @@
  * Example:
  *\code
  */
-
-#include "modules/da_goat.h"
 #include "modules/ping_pong.h"
+#include "modules/system.h"
+/*
+#include "modules/da_goat.h"
 #include "modules/dns.h"
 #include "modules/navn.h"
 #include "modules/about_me.h"
@@ -36,14 +37,13 @@
 #include "modules/ctcp.h"
 #include "modules/Flux_Services.h"
 #include "modules/searcher.h"
-#include "modules/system.h"
 #include "modules/tinyurl.h"
 #include "modules/help.h"
 #include "modules/weather.h"
 #include "modules/world_clock.h"
 #include "modules/dummy.h"
 #include "modules/modulehandler.h"
-
+*/
 /**
  *\endcode 
  */
@@ -54,21 +54,29 @@ int main (int argcx, char** argvx, char *envp[])
   try
   {
     startup(argcx, argvx);
-    cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
-    //Make the socket used to connect to the server
-    sock = new SocketIO(server, port);
-        //Incase there is no connection
-    if(!sock->get_address())
-      throw SocketException("Could not resolve server");
-    if(!sock->connect())
-      throw SocketException("Could not create a socket to connect to the IRC server");
-    
-    Send = new SendMessage(sock);
+    SocketStart:
+    try{
+      cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
+      //Make the socket used to connect to the server
+      sock = new SocketIO(server, port);
+	  //Incase there is no connection
+      if(!sock->get_address())
+	throw SocketException("Could not resolve server");
+      if(!sock->connect())
+	throw SocketException("Could not create a socket to connect to the IRC server");
+      Send = new SendMessage(sock);
+    }catch(SocketException &e){
+      cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
+      log("Socket Exception Caught: %s", e.description().c_str());
+      goto SocketStart;
+    }
+    if(!sock)
+      goto SocketStart;
     time_t last_check = time(NULL);
     
     //Set the username and nick
     Send->command->user(usrname, realname);
-    sock->command-nick(nick);
+    Send->command->nick(nick);
 
     /**
       * \page tutmod2 Adding Your Module - Step 2: Running your module.

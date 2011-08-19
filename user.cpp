@@ -26,11 +26,30 @@ void User::Privmsg(const Flux::string &message){
   send_cmd("PRIVMSG %s :%s", this->nick.c_str(), message.c_str());
 }
 User::~User(){
- UserList.erase(this->nick);
+  log("%s left", this->nick.c_str());
+  UserList.erase(this->nick);
 }
 User *finduser(const Flux::string &nick){
   Flux::map<User *>::iterator it = UserList.find(nick);
   if(it != UserList.end())
     return it->second;
   return NULL;
+}
+void CommandSource::Reply(const char *fmt, ...){
+  va_list args;
+  char buf[4096];
+  if(fmt){
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    this->Reply(Flux::string(buf));
+    va_end(args);
+  }
+}
+void CommandSource::Reply(const Flux::string &msg){
+ sepstream sep(msg, '\n');
+ Flux::string tok;
+ while(sep.GetToken(tok))
+ {
+   Send->notice(this->u, tok.c_str());
+ }
 }

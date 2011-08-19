@@ -50,14 +50,15 @@ class irc_string:Flux::string{
     Flux::string user; 
     Flux::string channel; 
     Flux::string message;
-    /**
+/**
   *\fn irc_string(Flux::string reply)
+  * \deprecated
   *Constructor for \a irc_string class
   * This is where the magic happens. The constructor takes the Flux::string
   * and breaks it down into its component parts to find the 
   * \a usernick \a host \a user \a channel and \a message
   */
- irc_string(Flux::string reply){
+ DEPRECATED(irc_string(Flux::string reply)){
   raw_string = reply;
   usernick = isolate(':','!',reply);
   host = isolate('@',' ',reply);
@@ -88,44 +89,29 @@ class irc_string:Flux::string{
 /**
   * \fn Flux::string params(int i)
   * \brief Returns individual words from the message of a reply
+  * \deprecated
   * Because \a toks is private, this is its "get" function.
   * We made this so someone writing a module doesn't try to go out 
   * of bounds while accessing an array.
   * \param i An integer value.
   * \return A Flux::string with the single specified word.
   */
-Flux::string params(unsigned i){
+DEPRECATED(Flux::string params(unsigned i)){
   if (i >= toks.size()){
     return " ";
   }else{return toks[i];}
 }
-
-bool isnumeric(int i){
-  if(said(stringify(i))){
-    if(2 >= toks.size()){
-      return false;
-    }
-    Flux::string tok = toks[2];
-    tok.trim();
-      if (tok.is_number_only()){
-	int a = atoi(tok.c_str());
-	if((a = i)){
-	  return true;
-	}
-      }
-    }
-  return false;
-}
 /**
   * \overload Flux::string params(int b, int e)
   * \brief Overload of params. Returns a range of words.
+  * \deprecated
   * We overloaded \a params() so that you could get a range of words from the message
   *  as requeseted by Justasic.
   * \param b An integer value describing the place of the first word wanted.
   * \param e An integer value describing the place of the last word wanted.
   * \return A Flux::string withing the range of words specified by \a b and \a e
   */
-Flux::string params(unsigned b, unsigned e){
+DEPRECATED(Flux::string params(unsigned b, unsigned e)){
   Flux::string buf = "";
   if (b >= toks.size()){
     b = toks.size();
@@ -162,10 +148,11 @@ static Flux::string isolate(char begin, char end, Flux::string msg){
 /**
   * \fn bool said(Flux::string findee)
   * \brief Check if something was said.
+  * \deprecated
   * \param findee The Flux::string you want to check if was said.
   * \return True if \a findee was found, false otherwise.
   */
-bool said(Flux::string findee){
+DEPRECATED(bool said(Flux::string findee)){
   unsigned i = raw_string.find(findee);
   if (i != Flux::string::npos){
     return true;
@@ -354,36 +341,6 @@ Flux::string os_time(){
   time_t rawtime;
   time(&rawtime);
   return ctime(&rawtime);
-}
-
-/** 
- * \fn void log(const char *fmt, ...)
- * This is what logs everything that goes on with the bot
- * \param *fmt
- */
-void log(const char *fmt, ...){
-  fstream log;
-  try{
-  log.open(logfile.c_str(), fstream::in | fstream::out | fstream::app);
-  if(!log.is_open())
-     throw LogException("Failed to open log file.");
-  }catch (LogException &e){
-   cerr << "Log Exception Caught: " << e.GetReason() << nl;
-  }
-  va_list args;
-  va_start(args, fmt);
-  
-  time_t t = time(NULL);
-  struct tm *tm = localtime(&t);
-  
-  char buf[512];
-  strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
-  log << buf;
-  vsnprintf(buf, sizeof(buf), fmt, args);
-  log << strip(buf) << endl;
-  va_end(args);
-  va_end(args);
-  log.close();
 }
 
 /**
@@ -761,7 +718,7 @@ public:
   Flux::string author;
   module (Flux::string , bool, ModulePriority);
   
-  virtual ModuleReturn run(Flux::string rply, Flux::string command, std::vector<Flux::string> &params) =0;
+  virtual ModuleReturn run(CommandSource&, std::vector<Flux::string>&) =0;
   virtual void OnPrivmsg(const Flux::string &nick, const std::vector<Flux::string> &params) { }
   
 };
@@ -779,18 +736,14 @@ module::module(Flux::string n, bool a, ModulePriority p){
   priority = p;
   modulelist.push_back(this);
 }
-Flux::string isolate(char begin, char end, Flux::string msg){
-  Flux::string to_find;
-  size_t pos = msg.find(begin);
-  pos += 1;
-  for (unsigned i = pos; i < msg.length(); i++){
-    if (msg.at(i) == end){
-      break;
-    }else{to_find = to_find+msg.at(i);}
-  }
-  return to_find;
-}
 std::vector<module *> EventHandlers[I_END];
+void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
+  for(unsigned i = 0; i < modulelist.size(); i++){
+    if (modulelist[i]->activated == true){
+      modulelist[i]->run(source, params);
+    }
+  } 
+}
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
@@ -852,6 +805,7 @@ void process(const Flux::string &buffer){
       params.push_back(bufferseparator_token);
   }
   if(protocoldebug){
+   printf("--> %s\n", Flux::Sanitize(buffer).c_str());
    printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
    printf("%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
    if(params.empty())
@@ -859,34 +813,37 @@ void process(const Flux::string &buffer){
    else
      for(unsigned i =0; i < params.size(); ++i)
        printf("Params %i: %s\n", i, params[i].c_str());
+     
   }
-  /***************************************/
-  host = irc_string::isolate('@',' ',source);//sets the variables.
+  /**************************************/
+  const Flux::string &reciever = params.size() > 0 ? params[0] : "";
+  Flux::string message = params.size() > 1? params[1] : "";
+  raw == buffer;
   fullhost == source;
-  Flux::string temp = params.empty()? "":params[0]; /* sanity check so we dont segfault */
-  if(!temp.empty())
-   chan = IsValidChannel(temp)?temp:"";
+  msg = message;
+  host = irc_string::isolate('@',' ',source);//sets the variables.
   unick = irc_string::isolate(':','!',source);
   ident = irc_string::isolate('!','@',source);
-  raw == buffer;
+  
+  if(!reciever.empty())
+     chan = IsValidChannel(reciever)?reciever:"";
+  
   if(command == "PRIVMSG"){
     if(protocoldebug){
-      printf("--> %s\n", Flux::Sanitize(buffer).c_str());
     }else
-      if(!temp.empty() && !params[1].empty())
-      printf("<%s-%s> %s\n", unick.c_str(), temp.c_str(), params[1].c_str());
-    User *u = finduser(unick);
-    if(u)
-      u->SendMessage("Derp!\n");
-   FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(unick, params));
-  }else
-    printf("--> %s\n", Flux::Sanitize(buffer).c_str());
-  /******************************************/
-  for(unsigned i = 0; i < modulelist.size(); i++){
-    if (modulelist[i]->activated == true){
-      modulelist[i]->run(source, command, params);
-    }
+      if(!reciever.empty() && !params[1].empty())
+       printf("<%s-%s> %s\n", unick.c_str(), reciever.c_str(), params[1].c_str());
   }
+  /**************************************/
+  CommandSource Source;
+  Source.u = source;
+  Source.c = chan;
+  Source.command = command;
+  Source.message = message;
+  std::vector<Flux::string> params2 = StringVector(message, ' ');
+  if(source.empty() || message.empty() || params2.empty())
+    return;
+  ProcessModules(Source, params2);
 }
 void send_cmd(const char *fmt, ...){
   char buffer[4096] = "";

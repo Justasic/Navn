@@ -1,6 +1,7 @@
 #ifndef FLUX_H
 #define FLUX_H
 #include <string>
+#include <cstring>
 #include <vector>
 #include <set>
 #include <map>
