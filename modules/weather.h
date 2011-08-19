@@ -44,7 +44,7 @@ public:
       if(area.is_number_only())
 	wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+area;
       else
-	wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+makeSearchString(removeCommand("!weather",rply));
+	wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",rply));
       system(wget.c_str());
       if(!irc_string::said(xmlToString(filename),"problem_cause")){
 	Flux::string ff = xmlToString(filename);

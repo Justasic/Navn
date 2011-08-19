@@ -14,6 +14,7 @@
 #include "SocketException.h"
 #include "inireader/INIReader.h"
 #include "flux.h"
+//#include "thread.h"
 #include <list>
 #include <arpa/nameser.h>
 #include <resolv.h>

@@ -60,7 +60,7 @@ public:
       	if(location.is_number_only())
 	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+location;
 	else
-	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+makeSearchString(removeCommand("!time", rply));
+	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!time", rply));
 	system(wget.c_str());
 	if(!irc_string::said(xmlToString(filename),"problem_cause")){
 	  Flux::string ff = xmlToString(filename);

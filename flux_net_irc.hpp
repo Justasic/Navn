@@ -227,107 +227,47 @@ Flux::string removeCommand(Flux::string command, Flux::string s){
 }
 
 /** 
- * \fn Flux::string makeSearchString(Flux::string raw_searchstring)
+ * \fn Flux::string urlify(Flux::string raw_searchstring)
  * \brief Replaces special chars in a Flux::string with url compliant codes.
  * \param raw_searchstring
  * Goes through each character in a Flux::string and if it finds a special character, 
  * it replaces it with what would be in a url for that character.
  * \return A Flux::string without any special characters other than %
  */
-Flux::string makeSearchString(Flux::string raw_searchstring){
+Flux::string urlify(Flux::string raw_searchstring){
   Flux::string searchstring;
   for (unsigned i=0; i < raw_searchstring.length(); i++){
      switch(raw_searchstring.at(i)){
-      case ' ':
-	searchstring = searchstring+"%20";
-	break;
-      case '+':
-	searchstring = searchstring+"%2B";
-	break;
-      case '$':
-	searchstring = searchstring+"%24";
-	break;
-      case '&':
-	searchstring = searchstring+"%26";
-	break;
-      case ',':
-	searchstring = searchstring+"%2C";
-	break;
-      case '/':
-	searchstring = searchstring+"%2F";
-	break;
-      case ':':
-	searchstring = searchstring+"%3A";
-	break;
-      case ';':
-	searchstring = searchstring+"%3B";
-	break;
-      case '=':
-	searchstring = searchstring+"%3D";
-	break;
-      case '?':
-	searchstring = searchstring+"%3F";
-	break;
-      case '@':
-	searchstring = searchstring+"%40";
-	break;
-      case '#':
-	searchstring = searchstring+"%23";
-	break;
-      case '>':
-	searchstring = searchstring+"%3E";
-	break;
-      case '<':
-	searchstring = searchstring+"%3C";
-	break;
-      case '%':
-	searchstring = searchstring+"%25";
-	break;
-      case '{':
-	searchstring = searchstring+"%7B";
-	break;
-      case '}':
-	searchstring = searchstring+"%7D";
-	break;
-      case '|':
-	searchstring = searchstring+"%7C";
-	break;
-      case '\\':
-	searchstring = searchstring+"%5C";
-	break;
-      case '^':
-	searchstring = searchstring+"%5E";
-	break;
-      case '~':
-	searchstring = searchstring+"%7E";
-	break;
-      case '[':
-	searchstring = searchstring+"%5B";
-	break;
-      case ']':
-	searchstring = searchstring+"%5D";
-	break;
-      case '`':
-	searchstring = searchstring+"%60";
-	break;
-      case '*':
-	searchstring = searchstring+"%2A";
-	break;
-      case '(':
-	searchstring = searchstring+"%28";
-	break;
-      case ')':
-	searchstring = searchstring+"%29";
-	break;
-      case '"':
-	searchstring = searchstring+"%22";
-	break;
-      case '\'':
-	searchstring = searchstring+"%27";
-	break;
-      case '.':
-	searchstring = searchstring+"%2E";
-	break;
+      case ' ': searchstring += "%20"; break;
+      case '+': searchstring += "%2B"; break;
+      case '$': searchstring += "%24"; break;
+      case '&': searchstring += "%26"; break;
+      case ',': searchstring += "%2C"; break;
+      case '/': searchstring += "%2F"; break;
+      case ':': searchstring += "%3A"; break;
+      case ';': searchstring += "%3B"; break;
+      case '=': searchstring += "%3D"; break;
+      case '?': searchstring += "%3F"; break;
+      case '@': searchstring += "%40"; break;
+      case '#': searchstring += "%23"; break;
+      case '>': searchstring += "%3E"; break;
+      case '<': searchstring += "%3C"; break;
+      case '%': searchstring += "%25"; break;
+      case '{': searchstring += "%7B"; break;
+      case '}': searchstring += "%7D"; break;
+      case '|': searchstring += "%7C"; break;
+      case '\\':searchstring += "%5C"; break;
+      case '^': searchstring += "%5E"; break;
+      case '~': searchstring += "%7E"; break;
+      case '[': searchstring += "%5B"; break;
+      case ']': searchstring += "%5D"; break;
+      case '`': searchstring += "%60"; break;
+      case '*': searchstring += "%2A"; break;
+      case '(': searchstring += "%28"; break;
+      case ')': searchstring += "%29"; break;
+      case '"': searchstring += "%22"; break;
+      case '\'': searchstring += "%27"; break;
+      case '.': searchstring += "%2E"; break;
       default:
 	searchstring = searchstring+raw_searchstring.at(i);
     }
@@ -509,11 +449,6 @@ static void restart(Flux::string reason){
     remove_pidfile();
     exit(1);
   }
-}
-void reconnect(SocketIO *sock){
- SocketIO *oldsock = sock;
- delete oldsock;
- sock = new SocketIO(server, port); 
 }
 /** 
  * \fn static void shutdown(Socket &sock, Flux::string quitmsg)
@@ -725,66 +660,26 @@ int randint(int x, int y){
 Flux::string siginit(int sigstring){
   Flux::string message;
   switch(sigstring){
-    case 1:
-      message = "Read on an empty pipe (ENOTOBACCO)";
-      break;
-    case 2:
-      message = "Invalid syntax (EBEFOREI)";
-      break;
-    case 3:
-      message = "Core dumped (ECHERNOBYL)";
-      break;
-    case 4:
-      message = "Program exited before being run (ECRAY)";
-      break;
-    case 5:
-      message = "The daemon is dead (EDINGDONG)";
-      break;
-    case 6:
-      message = "System needs tuning (EFLAT)";
-      break;
-    case 7:
-      message = "Program written by inept Frat member (EGEEK)";
-      break;
-    case 8:
-      message = "Here-a-bug, there-a-bug, .... (EIEIO)";
-      break;
-    case 9:
-      message = "Missing period (EIUD)";
-      break;
-    case 10:
-      message = "Your code could stand to be cleaned up (ELECTROLUX)";
-      break;
-    case 11:
-      message = "Wrong fork (EMILYPOST)";
-      break;
-    case 12:
-      message = "Silo overflow (END.ARMS.CONTROL)";
-      break;
-    case 13:
-      message = "Mount failed (ENOHORSE)";
-      break;
-    case 14:
-      message = "C program not derived from main(){printf(\"Hello, world\"); (ENONSEQUETOR)";
-      break;
-    case 15:
-      message = "Extended tape gap (EWATERGATE)";
-      break;
-    case 16:
-      message = "Aliens sighted (EWOK)";
-      break;
-    case 17:
-      message = "Your code appears to have been stir-fried (EWOK)";
-      break;
-    case 18:
-      message = "The feature you want has not been implemented yet (EWOULDBNICE)";
-      break;
-    case 19:
-      message = "Nuclear event occurred (SIGNUKE)";
-      break;
-    case 20:
-      message = "Someone pressed CTRL + C..";
-      break;
+    case 1: message = "Read on an empty pipe (ENOTOBACCO)"; break;
+    case 2: message = "Invalid syntax (EBEFOREI)"; break;
+    case 3: message = "Core dumped (ECHERNOBYL)"; break;
+    case 4: message = "Program exited before being run (ECRAY)"; break;
+    case 5: message = "The daemon is dead (EDINGDONG)"; break;
+    case 6: message = "System needs tuning (EFLAT)"; break;
+    case 7: message = "Program written by inept Frat member (EGEEK)"; break;
+    case 8: message = "Here-a-bug, there-a-bug, .... (EIEIO)"; break;
+    case 9: message = "Missing period (EIUD)"; break;
+    case 10: message = "Your code could stand to be cleaned up (ELECTROLUX)"; break;
+    case 11: message = "Wrong fork (EMILYPOST)"; break;
+    case 12: message = "Silo overflow (END.ARMS.CONTROL)"; break;
+    case 13: message = "Mount failed (ENOHORSE)"; break;
+    case 14: message = "C program not derived from main(){printf(\"Hello, world\"); (ENONSEQUETOR)"; break;
+    case 15: message = "Extended tape gap (EWATERGATE)"; break;
+    case 16: message = "Aliens sighted (EWOK)"; break;
+    case 17: message = "Your code appears to have been stir-fried (EWOK)"; break;
+    case 18: message = "The feature you want has not been implemented yet (EWOULDBNICE)"; break;
+    case 19: message = "Nuclear event occurred (SIGNUKE)"; break;
+    case 20: message = "Someone pressed CTRL + C.."; break;
   }
   return message;
 }

@@ -41,120 +41,24 @@ Flux::string search(Flux::string s, Flux::string command){
   Flux::string searchstring;
   size_t pos = s.find(command);
   raw_searchstring = s.substr(pos+(command.size())+1);
-  for (unsigned i=0; i < raw_searchstring.length(); i++){
-    switch(raw_searchstring.at(i)){
-      case ' ':
-	searchstring = searchstring+"%20";
-	break;
-      case '+':
-	searchstring = searchstring+"%2B";
-	break;
-      case '$':
-	searchstring = searchstring+"%24";
-	break;
-      case '&':
-	searchstring = searchstring+"%26";
-	break;
-      case ',':
-	searchstring = searchstring+"%2C";
-	break;
-      case '/':
-	searchstring = searchstring+"%2F";
-	break;
-      case ':':
-	searchstring = searchstring+"%3A";
-	break;
-      case ';':
-	searchstring = searchstring+"%3B";
-	break;
-      case '=':
-	searchstring = searchstring+"%3D";
-	break;
-      case '?':
-	searchstring = searchstring+"%3F";
-	break;
-      case '@':
-	searchstring = searchstring+"%40";
-	break;
-      case '#':
-	searchstring = searchstring+"%23";
-	break;
-      case '>':
-	searchstring = searchstring+"%3E";
-	break;
-      case '<':
-	searchstring = searchstring+"%3C";
-	break;
-      case '%':
-	searchstring = searchstring+"%25";
-	break;
-      case '{':
-	searchstring = searchstring+"%7B";
-	break;
-      case '}':
-	searchstring = searchstring+"%7D";
-	break;
-      case '|':
-	searchstring = searchstring+"%7C";
-	break;
-      case '\\':
-	searchstring = searchstring+"%5C";
-	break;
-      case '^':
-	searchstring = searchstring+"%5E";
-	break;
-      case '~':
-	searchstring = searchstring+"%7E";
-	break;
-      case '[':
-	searchstring = searchstring+"%5B";
-	break;
-      case ']':
-	searchstring = searchstring+"%5D";
-	break;
-      case '`':
-	searchstring = searchstring+"%60";
-	break;
-      case '*':
-	searchstring = searchstring+"%2A";
-	break;
-      case '(':
-	searchstring = searchstring+"%28";
-	break;
-      case ')':
-	searchstring = searchstring+"%29";
-	break;
-      case '"':
-	searchstring = searchstring+"%22";
-	break;
-      case '\'':
-	searchstring = searchstring+"%27";
-	break;
-      case '.':
-	searchstring = searchstring+"%2E";
-	break;
-      default:
-	searchstring = searchstring+raw_searchstring.at(i);
-    }
-  }
-  if (searchstring.empty()){
-    return "Empty search Flux::string.";
-  }else{
-    if(command == "!google"){
+  searchstring = urlify(raw_searchstring);
+  if (searchstring.empty())
+    return "Empty searchstring.";
+  else{
+    if(command == "!google")
       return "http://www.google.com/search?q="+searchstring;
-    }else if(command == "!youtube"){
+    else if(command == "!youtube")
       return "http://www.youtube.com/results?search_query="+searchstring;
-    }else if(command == "!tpb"){
+    else if(command == "!tpb")
       return "http://thepiratebay.org/search/"+searchstring;
-    }else if(command == "!define"){
+    else if(command == "!define")
       return "http://dictionary.reference.com/browse/"+searchstring;
-    }else if(command == "!urban"){
+    else if(command == "!urban")
       return "http://www.urbandictionary.com/define.php?term="+searchstring;
-    }else if(command == "!movie"){
+    else if(command == "!movie")
       return "www.letmewatchthis.ch/index.php?search_keywords="+searchstring;
-    }else{
+    else
       return "http://www.google.com/search?q="+searchstring;
-    }
   }
 }
 /**

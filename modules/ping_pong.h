@@ -38,7 +38,7 @@ class Ping_pong:public module{
 public:
   Ping_pong(bool a):module("Ping", a, PRIORITY_FIRST){ 
     this->SetDesc("Sends a ping to the server, keeping the bot connected");
-    Implementation i[] = { I_OnPrivmsg };
+    //Implementation i[] = { I_OnPrivmsg };
   }
   ModuleReturn run(Flux::string source, Flux::string command, std::vector<Flux::string> &params){
     if (command == "PING"){
