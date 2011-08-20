@@ -1,4 +1,4 @@
-#ifndef THREAD_H
+/*#ifndef THREAD_H
 #define THREAD_H
 #include "includes.h"
 
@@ -8,8 +8,6 @@ public:
   pthread_t t1;
   virtual void Run() = 0;
   void *inthread(void*);
-  void Start();
-  void Join();
 };
 
-#endif
+#endif*/

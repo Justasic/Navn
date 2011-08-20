@@ -27,6 +27,8 @@ Fixed buffer processing incorrectly once and for all!
 Added new message parsing system that uses vectors
 Added new CommandSource structure
 Processed modules a little differently
+Deprecated irc_string class as it works inefficiently
+
 
 Navn 2.0.0
 ==========
