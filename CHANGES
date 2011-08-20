@@ -29,6 +29,12 @@ Added new CommandSource structure
 Processed modules a little differently
 Deprecated irc_string class as it works inefficiently
 Added select(), this fixes a MASSIVE CPU leak
+Removed Rehash(SendMessage*)
+Removed junk from startup void
+Made ConfigException return the error code
+Removed some junk from the socket engine
+Changed how navn recognizes joins so it does not announce in every channel it joins that it joined a new channel
+Removed in_channel boolean
 
 
 Navn 2.0.0
