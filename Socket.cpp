@@ -30,9 +30,6 @@ Flux::string Flux::Sanitize(const Flux::string &string){
   return ret.c_str(); 
 }
 
-/*********************************************************************************************/
-
-int recvlen;
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
 SocketIO::SocketIO(const Flux::string cserver, const Flux::string cport) : sockn(-1){
@@ -141,13 +138,18 @@ bool SocketIO::GetBuffer(Flux::string &recv){
   FD_SET(sockn, &read);
   FD_SET(sockn, &write);
   FD_SET(sockn, &except);
-  select(1, &read, NULL, NULL, &timeout);
-  this->recv();
-  if(recv_queue.empty())
-    return false;
-  recv = recv_queue.front();
-  recv_queue.pop();
-  return true;
+  int sres = select(1, &read, NULL, NULL, &timeout);
+  if(sres == -1){
+    //some day there will be error logging here
+    if(sres == EINTR){ }else
+      printf("Select() error: %s\n", strerror(errno));
+  }
+    this->recv();
+    if(recv_queue.empty())
+      return false;
+    recv = recv_queue.front();
+    recv_queue.pop();
+    return true;
 }
 const int SocketIO::send(const Flux::string buf) const{
  printf("<-- %s\n", Flux::Sanitize(buf).c_str());

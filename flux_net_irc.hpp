@@ -421,44 +421,29 @@ static void shutdown(Flux::string quitmsg){
   log(quitmsg.c_str());
   log("Logging ended.");
 }
-/**
- * \overload static void Rehash()
- */
-static void Rehash(){
- cout << "Rehashing config file." << nl;
- try{
-   binary_dir += "/bot.conf";
-   INIReader config(binary_dir.c_str());
-   if (config.ParseError() < 0) {
-       throw ConfigException("Cannot load bot.conf");
-   }
-  cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-  ReadConfig(config);
-  }catch(ConfigException &ex){
-    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
-    log("Config Exception Caught: %s", ex.GetReason());
-  } 
-}
 
 /** 
  * \fn static void Rehash(Socket &sock)
  * \brief Reload the bot config file
  * \param sock The Socket class
  */
-static void Rehash(SendMessage *Send){
- cout << "Rehashing config file." << nl;
- try{
-   binary_dir += "/bot.conf";
-   INIReader config(binary_dir.c_str());
-   if (config.ParseError() < 0) {
-       throw ConfigException("Cannot load bot.conf");
-   }
-  cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-  ReadConfig(config);
+static void Rehash(bool onstart = false){
+  if(!onstart)
+    cout << "Rehashing config file." << nl;
+  try{
+    binary_dir += "/bot.conf";
+    INIReader config(binary_dir.c_str());
+    if (config.ParseError() < 0) {
+      Flux::string error = "Cannot load bot.conf: ";
+      error += stringify(config.ParseError());
+	throw ConfigException(error);
+    }
+    ReadConfig(config);
   }catch(ConfigException &ex){
-    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
-    log("Config Exception Caught: %s", ex.GetReason());
-    Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
+      cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
+      log("Config Exception Caught: %s", ex.GetReason());
+      if(!onstart)
+        Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
   } 
 }
 /** Terminal Signal Handler
@@ -471,24 +456,21 @@ void sigact(int sig)
   switch (sig){
     case SIGHUP:
       signal(sig, SIG_IGN);
-      Rehash();
-      break;
-    case SIGPIPE:
-      signal(sig, SIG_IGN);
+      Rehash(false);
       break;
     case SIGINT:
+    case SIGKILL:
     case SIGTERM:
       signal(sig, SIG_IGN);
       signal(SIGHUP, SIG_IGN);
-      cout << "\r\n\033[0m";
       sigstr = "Someone used Ctrl + C";
       quitmsg = "Recieved Signal: "+sigstr;
+      Send->command->quit(quitmsg);
+      cout << "\r\n\033[0m";
       quitting = true;
       break;
     default:
-      quitmsg = "Recieved weird signal from terminal. Sig Number: "+stringify(sig);
-      cout << "\r\n\033[0m";
-      throw CoreException("Recieved weird signal from terminal. Signal Number: "+stringify(sig));
+      printf("Recieved weird signal from terminal. Sig Number: %i\n",sig);
   }
 }
 /** 
@@ -518,27 +500,16 @@ void startup(int argc, char** argv) {
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
-  try{
-    binary_dir += "/bot.conf";
-    INIReader config(binary_dir.c_str());
-    if (config.ParseError() < 0) {
-       throw ConfigException("Cannot load bot.conf");
-    }
-    ReadConfig(config);
-  }catch(ConfigException &ex){
-    cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;37m" << nl;
-    log("Config Exception Caught: ", stringify(ex.GetReason()).c_str());
-    exit(1);
-  }
-    signal(SIGTERM, sigact);
-    signal(SIGINT, sigact);
-    signal(SIGHUP, sigact);
+  Rehash(true);
+  signal(SIGTERM, sigact);
+  signal(SIGINT, sigact);
+  signal(SIGHUP, sigact);
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
   if (argc < 1 || argv[1] == NULL){
   }else{
     Flux::string arg = argv[1];
-    for(int Arg=0; Arg < argc; Arg++){
+    for(int Arg=0; Arg < argc; ++Arg){
        if(arg == "--developer" || arg == "--dev" || arg == "-d")
        {
          dev = true;
@@ -551,7 +522,7 @@ void startup(int argc, char** argv) {
        }
        else if (arg == "--help" || arg == "-h"){
 	  printf("Navn Internet Relay Chat Bot v%s\n", VERSION.c_str());
-	  printf("Usage: %s [options]\n", argv[0]);
+	  printf("Usage: %s [options]\n", getprogdir(argv[0]));
 	  printf("-h, --help\n");
 	  printf("-d, --developer\n");
 	  printf("-f, --nofork\n");
@@ -585,8 +556,8 @@ void startup(int argc, char** argv) {
    WritePID();
    log("Navn Started. PID: %d", getpid());
    if (!nofork){
-	int i = fork();
-	if(i < 0)
+	int i;
+	if((i = fork()) < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
 		cout << "Navn IRC Bot v" << VERSION_SHORT << " Started." << nl;
@@ -834,7 +805,7 @@ void process(const Flux::string &buffer){
       if(!reciever.empty() && !params[1].empty())
        printf("<%s-%s> %s\n", unick.c_str(), reciever.c_str(), params[1].c_str());
   }else
-    printf("--> %s\n", Flux::Sanitize(buffer).c_str());
+    if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
   /**************************************/
   CommandSource Source;
   Source.u = source;

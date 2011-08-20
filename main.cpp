@@ -28,10 +28,10 @@
  */
 #include "modules/ping_pong.h"
 #include "modules/system.h"
+#include "modules/navn.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/dns.h"
-#include "modules/navn.h"
 #include "modules/about_me.h"
 #include "modules/channel_logger.h"
 #include "modules/ctcp.h"
@@ -88,9 +88,9 @@ int main (int argcx, char** argvx, char *envp[])
       * Example:
       * \code 
       */
-    irc_string *reply = new irc_string(rply);
     Ping_pong _Ping(true);
     system_m _system_m(true);
+    navn _navn(true);
     /*
     dummy _dummy(true);
     about_me _about_me(true);
@@ -121,11 +121,7 @@ int main (int argcx, char** argvx, char *envp[])
 	last_check = time(NULL);
       }
       /***********************************/
-      if(quitting){
-	shutdown(quitmsg);
-      }
     }//while loop ends here
-    delete reply;
     delete Send;
     delete sock;
   }//try ends here

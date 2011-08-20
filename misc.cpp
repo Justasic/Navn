@@ -40,6 +40,10 @@ void log(const char *fmt, ...){
      logmsg = "Failed to open log file: "+stringify(strerror(errno));
      throw LogException(logmsg);
   }catch (LogException &e){
+    Flux::string reason = e.GetReason();
+    reason.trim();
+    if(reason.empty())
+      return;
    std::cout << "Log Exception Caught: " << e.GetReason() << "\n";
   }
   va_list args;

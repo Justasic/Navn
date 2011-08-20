@@ -26,10 +26,10 @@ connects to, do so here, NOT in the main code.
 char **my_av;
 char ** my_envp;
 int days, hours, mins;
-bool in_channel = false;
 bool quitting = false;
 bool nofork, dev, protocoldebug = false;
 bool IsOper = false;
+const Flux::string nl = "\n";
 Flux::string binary_path, bot_bin, binary_dir;
 
 Flux::string unick;
@@ -77,12 +77,12 @@ usrpass = config.Get("Bot","Password","Navn");
 ouser = config.Get("Oper","Oper_Username","");
 opass = config.Get("Oper","Oper_Password","");
 LogChannel = config.Get("Modules", "LogChannel","");
+cout << "\033[22;31mReading Config File\033[22;30m...\033[22;36m" << endl;
 }
 /******************End Configuration variables********************/
 
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 const Flux::string access_denied = "Access is Denied.";
-const Flux::string nl = "\n";
 
 #endif
 

@@ -100,7 +100,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     if(unick == owner_nick || pass == password || pass == usrpass){
       Send->notice(unick, "Rehashing config file.");
       log("%s rehashed config file.", unick.c_str());
-      Rehash(Send);
+      Rehash(false);
     }else{
       Send->notice(unick, access_denied);
       log("%s attempted a rehash.", unick.c_str());
@@ -122,19 +122,15 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
    * This is so you can make things happen only if you know you are in
    * a channel.
    */
-  if(source.command == "366"){
-    cout << "\033[22;31mChannel join confirmation\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-    cout << "\033[22;31mReading Config File\033[22;30m... \033[1m\033[22;32mCHECK\033[1m\033[22;36m"<<nl;
-    cout << "\033[22;31mSending password to owner\033[22;30m... \033[22;32mCHECK\033[22;36m"<<nl;;
+  if(source.command == "376"){
     cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
     cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
     Send->notice(owner_nick, "The randomly generated password is: "+password);
-    Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
-    in_channel = true;
   }
   if(source.command == "004"){
     Send->command->mode(nick, "+B");
     Send->command->join(channel);
+    Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
     if(ouser.empty() || opass.empty()){
     }else{
       Send->command->oper(ouser, opass);
@@ -158,9 +154,9 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Send->privmsg(unick, "identify %s %s", nsacc.c_str(), nspass.c_str());
     log("Identified to NickServ with account \"%s\"", nsacc.c_str());
   }
-  if (source.command == "JOIN" && in_channel){ //welcomes everyone who joins the channel
+  if (source.command == "JOIN"){ //welcomes everyone who joins the channel
     if(unick == nick){return MOD_RUN;}else{
-      Send->notice(unick, "Welcome "+unick+" to "+strip(chan)+". Type !time for time or \"/msg "+nick+" help\" for help on more commands.");
+      Send->notice(unick, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), strip(chan).c_str(), nick.c_str());
       log("%s joined %s", unick.c_str(), strip(chan).c_str());
     }
   }

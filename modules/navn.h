@@ -37,9 +37,13 @@
 class navn:public module{
 public:
   navn(bool a):module("Navn", a, PRIORITY_DONTCARE){ this->SetDesc("Where some of the navn specific functions are");}
-  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
-    if (reply->said("PRIVMSG "+nick+" :part")){
-      Flux::string blah = reply->params(1);
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    Flux::string cmd = params.empty()?"":params[0];
+    
+    if (cmd == "part"){
+      Flux::string blah = params.size() == 2 ? params[1] : "";
+      if(blah.empty())
+	Send->notice(unick, "Syntax: \2part \37channel\15");
       if(!IsValidChannel(blah)){
         Send->notice(unick, "Channel %s is not a valad channel.", blah.c_str());
         log("%s attempted to make bot part %s", unick.c_str(), blah.c_str());
@@ -48,26 +52,34 @@ public:
         Send->command->part(blah);
       }
     }
-  if(reply->said("!bugs")){
+  if(cmd == "!bugs"){
     Send->privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/");
   }
-  if(reply->said("!git")){
+  if(cmd == "!git"){
     Send->notice(unick, "Navn git: git://gitorious.org/navn/navn.git");
     log("%s requested Git repository link.", unick.c_str());
   }
-  if(reply->said("PRIVMSG "+nick+" :kick")){
+  if(cmd == "kick"){
     if(unick == owner_nick){
-      Flux::string kickee = reply->params(2);
-      Flux::string kickchan = reply->params(1);
+      Flux::string kickee = params.size() == 2 ? params[2] : "";
+      Flux::string kickchan = params.size() == 2 ? params[1] : "";
+      if(kickee.empty() || kickchan.empty())
+	Send->notice(unick, "Syntax: \2kick channel \37nick\15"); return MOD_STOP;
+      if(!IsValidChannel(kickchan))
+	Send->notice(unick, "Channel \2%s\2 is not a valad channel.", kickchan.c_str()); return MOD_STOP;
+      
       Send->command->kick(kickchan, kickee, "Kick from %s", unick.c_str());
     }else{
       Send->notice(unick, access_denied);
     }
   }
-  if (reply->said("PRIVMSG "+nick+" :join")){
-    Flux::string blah = reply->params(1);
+  if (cmd == "join"){
+    printf("derp\n");
+    Flux::string blah = params.size() == 2 ? params[1] : "";
+    if(blah.empty())
+      Send->notice(unick, "Syntax: \2Join \37channel\15"); return MOD_STOP;
     if(!IsValidChannel(blah)){
-      Send->notice(unick, "Channel %s is not a valad channel.", blah.c_str());
+      Send->notice(unick, "Channel \2%s\2 is not a valad channel.", blah.c_str());
       log("%s attempted to make bot join %s", unick.c_str(), blah.c_str());
     }else{
       log("%s made the bot join %s", unick.c_str(), blah.c_str());
@@ -75,8 +87,10 @@ public:
       Send->privmsg(blah, welcome_msg, nick.c_str(), nick.c_str());
     }
   }
-  if(reply->said("PRIVMSG "+nick+" :nick")){
-    Flux::string newnick = reply->params(1).c_str();
+  if(cmd == "nick"){
+    Flux::string newnick = params.size() == 2 ? params[1]:"";
+    if(newnick.empty())
+      Send->notice(unick, "Syntax: \002nick \37newnickname\15"); return MOD_STOP;
     for(unsigned i = 0, end = newnick.length(); i < end; i++){
       if(!isvalidnick(newnick[i])){
 	Send->notice(unick, "\2%s\2 is an invalid nickname.");
