@@ -130,6 +130,17 @@ const int SocketIO::recv() const{
   return i;
 }
 bool SocketIO::GetBuffer(Flux::string &recv){
+  timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 500;
+  fd_set read, write, except;
+  FD_ZERO(&read);
+  FD_ZERO(&write);
+  FD_ZERO(&except);
+  FD_SET(sockn, &read);
+  FD_SET(sockn, &write);
+  FD_SET(sockn, &except);
+  select(1, &read, NULL, NULL, &timeout);
   this->recv();
   if(recv_queue.empty())
     return false;
