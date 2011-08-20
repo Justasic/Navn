@@ -28,6 +28,7 @@ Added new message parsing system that uses vectors
 Added new CommandSource structure
 Processed modules a little differently
 Deprecated irc_string class as it works inefficiently
+Added select(), this fixes a MASSIVE CPU leak
 
 
 Navn 2.0.0

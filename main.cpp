@@ -129,12 +129,6 @@ int main (int argcx, char** argvx, char *envp[])
     delete Send;
     delete sock;
   }//try ends here
-  catch (SocketException& e) //catch any Exceptions sent.
-  {
-    cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
-    log("Socket Exception Caught: %s", e.description().c_str());
-    exit(1);
-  }
   catch(CoreException& e){
     cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log("Core Exception Caught: ", stringify(e.GetReason()).c_str());

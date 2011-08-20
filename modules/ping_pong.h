@@ -48,8 +48,6 @@ public:
     /*if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
       Send->s->send("PASS "+strip(reply->params(16))+nl);
     }*/
-    for(unsigned i=0; params.size() > i; i++)
-      printf("mparams %i: %s\n", i, params[i].c_str());
     if(source.command == "ERROR"){
       restart("Killed");
     }

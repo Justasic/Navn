@@ -20,6 +20,7 @@ struct CommandSource
  Flux::string c; /* Channel name, this will be replaced with channel class */
  Flux::string command;
  Flux::string message;
+ std::vector<Flux::string> params;
  
  void Reply(const char *fmt, ...);
  void Reply(const Flux::string&);

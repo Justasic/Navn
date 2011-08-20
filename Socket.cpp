@@ -62,7 +62,7 @@ int setNonblocking(int fd)
 
 SocketIO::~SocketIO(){
  if(is_valid()) 
-   ::close(sockn);
+   close(sockn);
 }
 bool SocketIO::get_address()
 {
@@ -97,7 +97,7 @@ bool SocketIO::connect()
     if (sockn < 0) continue;
     int connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
     if (connected == -1){
-      ::close(sockn);
+      close(sockn);
       printf("Connection failed.\n");
       continue;
     }
@@ -130,9 +130,10 @@ const int SocketIO::recv() const{
   return i;
 }
 bool SocketIO::GetBuffer(Flux::string &recv){
+  this->recv();
   timeval timeout;
   timeout.tv_sec = 0;
-  timeout.tv_usec = 500;
+  timeout.tv_usec = 500; //this timeout keeps the bot from being a CPU hog for no reason :)
   fd_set read, write, except;
   FD_ZERO(&read);
   FD_ZERO(&write);

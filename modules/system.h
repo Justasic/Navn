@@ -47,11 +47,8 @@ public:
   system_m(bool a):module("System", a, PRIORITY_FIRST){ this->SetDesc("The system module"); }
 ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   /* use string to prevent segmentation faults */
-  Flux::string cmd;
-  if(!params.size() > 0 && !params.empty())
-    cmd = params.empty()?"":params[0];
-  if(!cmd.empty())
-    printf("CMD: %s\n", cmd.c_str());
+  Flux::string cmd = params.empty()?"":params[0];
+
   if (cmd == "pass"){
     if (unick == owner_nick){
       Send->notice(unick, "The password is:\2 "+password);
@@ -149,7 +146,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     }
     log("Successfully connected to the server \"%s:%s\" Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
   }
-  if(cmd == "DCC"){
+  if(cmd == "\001DCC"){
     Send->notice(unick, "I do not accept or support DCC connections.");
   }
   if(source.command == "482"){
@@ -167,11 +164,14 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       log("%s joined %s", unick.c_str(), strip(chan).c_str());
     }
   }
-  if(source.command == "KICK" && unick == nick){
-    Send->notice(owner_nick, "%s kicked me from %s!", unick.c_str(), params[0].c_str());
-    Send->command->join(source.c);
-    in_channel = false;
-    log("%s kicked bot out of channel %s", unick.c_str(), source.c.c_str());
+  if(source.command == "KICK"){
+    Flux::string reason = source.params[2].empty()?"":source.params[2];
+    printf("%s kicked %s (%s)\n", unick.c_str(), cmd.c_str(), reason.c_str());
+    if(source.params[1] == nick){
+      Send->notice(owner_nick, "%s kicked me from %s! (%s)", unick.c_str(), params[0].c_str(), reason.c_str());
+      Send->command->join(source.c);
+      log("%s kicked bot out of channel %s (%s)", unick.c_str(), source.c.c_str(), reason.c_str());
+    }
   }
   return MOD_RUN;
 }

@@ -833,13 +833,15 @@ void process(const Flux::string &buffer){
     }else
       if(!reciever.empty() && !params[1].empty())
        printf("<%s-%s> %s\n", unick.c_str(), reciever.c_str(), params[1].c_str());
-  }
+  }else
+    printf("--> %s\n", Flux::Sanitize(buffer).c_str());
   /**************************************/
   CommandSource Source;
   Source.u = source;
   Source.c = chan;
   Source.command = command;
   Source.message = message;
+  Source.params = params;
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
     return;
