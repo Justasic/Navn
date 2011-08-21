@@ -522,7 +522,7 @@ void startup(int argc, char** argv) {
        }
        else if (arg == "--help" || arg == "-h"){
 	  printf("Navn Internet Relay Chat Bot v%s\n", VERSION.c_str());
-	  printf("Usage: %s [options]\n", getprogdir(argv[0]));
+	  printf("Usage: %s [options]\n", getprogdir(argv[0]).c_str());
 	  printf("-h, --help\n");
 	  printf("-d, --developer\n");
 	  printf("-f, --nofork\n");

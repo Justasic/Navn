@@ -42,8 +42,10 @@ public:
     
     if (cmd == "part"){
       Flux::string blah = params.size() == 2 ? params[1] : "";
-      if(blah.empty())
+      if(blah.empty()){
 	Send->notice(unick, "Syntax: \2part \37channel\15");
+	return MOD_STOP;
+      }
       if(!IsValidChannel(blah)){
         Send->notice(unick, "Channel %s is not a valad channel.", blah.c_str());
         log("%s attempted to make bot part %s", unick.c_str(), blah.c_str());
@@ -61,12 +63,20 @@ public:
   }
   if(cmd == "kick"){
     if(unick == owner_nick){
-      Flux::string kickee = params.size() == 2 ? params[2] : "";
+      if(params.size() > 2 || params.empty() || params.size() < 2){
+	Send->notice(unick, "Syntax: \2kick channel \37nick\15"); 
+	return MOD_STOP;
+      }
       Flux::string kickchan = params.size() == 2 ? params[1] : "";
-      if(kickee.empty() || kickchan.empty())
-	Send->notice(unick, "Syntax: \2kick channel \37nick\15"); return MOD_STOP;
-      if(!IsValidChannel(kickchan))
-	Send->notice(unick, "Channel \2%s\2 is not a valad channel.", kickchan.c_str()); return MOD_STOP;
+      Flux::string kickee = params.size() == 2 ? params[2] : "";
+      if(kickee.empty() || kickchan.empty()){
+	Send->notice(unick, "Syntax: \2kick channel \37nick\15");
+	return MOD_STOP;
+      }
+      if(!IsValidChannel(kickchan)){
+	Send->notice(unick, "Channel \2%s\2 is not a valad channel.", kickchan.c_str()); 
+	return MOD_STOP;
+      }
       
       Send->command->kick(kickchan, kickee, "Kick from %s", unick.c_str());
     }else{
@@ -74,10 +84,11 @@ public:
     }
   }
   if (cmd == "join"){
-    printf("derp\n");
     Flux::string blah = params.size() == 2 ? params[1] : "";
-    if(blah.empty())
-      Send->notice(unick, "Syntax: \2Join \37channel\15"); return MOD_STOP;
+    if(blah.empty()){
+      Send->notice(unick, "Syntax: \2Join \37channel\15"); 
+      return MOD_STOP;
+    }
     if(!IsValidChannel(blah)){
       Send->notice(unick, "Channel \2%s\2 is not a valad channel.", blah.c_str());
       log("%s attempted to make bot join %s", unick.c_str(), blah.c_str());
@@ -89,8 +100,10 @@ public:
   }
   if(cmd == "nick"){
     Flux::string newnick = params.size() == 2 ? params[1]:"";
-    if(newnick.empty())
-      Send->notice(unick, "Syntax: \002nick \37newnickname\15"); return MOD_STOP;
+    if(newnick.empty()){
+      Send->notice(unick, "Syntax: \002nick \37newnickname\15"); 
+      return MOD_STOP;
+    }
     for(unsigned i = 0, end = newnick.length(); i < end; i++){
       if(!isvalidnick(newnick[i])){
 	Send->notice(unick, "\2%s\2 is an invalid nickname.");

@@ -29,6 +29,7 @@
 #include "modules/ping_pong.h"
 #include "modules/system.h"
 #include "modules/navn.h"
+#include "modules/modulehandler.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/dns.h"
@@ -42,7 +43,6 @@
 #include "modules/weather.h"
 #include "modules/world_clock.h"
 #include "modules/dummy.h"
-#include "modules/modulehandler.h"
 */
 /**
  *\endcode 
@@ -91,6 +91,7 @@ int main (int argcx, char** argvx, char *envp[])
     Ping_pong _Ping(true);
     system_m _system_m(true);
     navn _navn(true);
+    modulehandler _modulehandler(true);
     /*
     dummy _dummy(true);
     about_me _about_me(true);
@@ -106,7 +107,7 @@ int main (int argcx, char** argvx, char *envp[])
     Chanlog _Chanlog(true);
     weather _weather(true);
     Ping_pong _Ping(true);
-    modulehandler _modulehandler(true);*/
+    */
     
     /**       MODULES          */
     /*! \endcode */ 
