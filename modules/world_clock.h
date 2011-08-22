@@ -33,10 +33,15 @@
 class world_clock:public module{
 public:
   world_clock(bool a):module("World Clock", a, PRIORITY_DONTCARE){ this->SetDesc("Shows time for your area or for the preset ones"); }
-  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
-  if (reply->said("!time") && in_channel){
-    Flux::string location = reply->params(1);
-    if(msg == "!time"){
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+  Flux::string cmd = params.empty()?"":params[0];
+  if (cmd == "!time"){
+    Flux::string location;
+    if(params.size() > 2)
+      location = params[params.size() -1];
+    else
+      location = params.size() == 2?params[1]:"";
+    if(location.empty()){
       time_t rawtime;
       tm * ptm;
       time(&rawtime);
@@ -54,6 +59,7 @@ public:
       strftime(buf,100,"Navn's Time: %Z %c",ptm);
       Send->privmsg(chan, buf);
       log("%s requested !time command in %s", unick.c_str(), chan.c_str());
+      return MOD_RUN;
     }else{
       Flux::string wget, filename;
       filename = "temp.xml";

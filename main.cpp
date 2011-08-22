@@ -31,6 +31,7 @@
 #include "modules/navn.h"
 #include "modules/modulehandler.h"
 #include "modules/weather.h"
+#include "modules/world_clock.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/dns.h"
@@ -41,7 +42,6 @@
 #include "modules/searcher.h"
 #include "modules/tinyurl.h"
 #include "modules/help.h"
-#include "modules/world_clock.h"
 #include "modules/dummy.h"
 */
 /**
@@ -93,6 +93,7 @@ int main (int argcx, char** argvx, char *envp[])
     navn _navn(true);
     modulehandler _modulehandler(true);
     weather _weather(true);
+    world_clock _world_clock(true);
     /*
     dummy _dummy(true);
     about_me _about_me(true);
@@ -104,7 +105,6 @@ int main (int argcx, char** argvx, char *envp[])
     navn _navn(true);
     searcher _searcher(true);
     TinyURL _TinyURL(false);
-    world_clock _world_clock(true);
     Chanlog _Chanlog(true);
     */
     
