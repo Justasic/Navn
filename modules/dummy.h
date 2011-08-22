@@ -28,9 +28,7 @@ public:
   dummy(bool a):module("Dummy", a, PRIORITY_LAST){ this->SetDesc("Example Dummy module"); }
   
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
-    Flux::string cmd = params.empty()?"":params[0];
-    
-    if (cmd == "!testing-testing"){
+    if (source.message == "testing testing"){
       Send->privmsg(chan,"I hear you!\nYES I DO!");
     }
    return MOD_RUN; 
