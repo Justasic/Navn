@@ -192,7 +192,6 @@ namespace Flux{
     inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
     
 }//end of namespace
-
 class sepstream {
  private:
 		Flux::string tokens;

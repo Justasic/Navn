@@ -5,7 +5,6 @@
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 SendMessage *Send;
 SocketIO *sock;
-using namespace std;
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
@@ -691,6 +690,8 @@ public:
   ModulePriority priority;
   Flux::string author;
   module (Flux::string , bool, ModulePriority);
+  int AddCommand(Command *c);
+  int DelCommand(Command *c);
   
   virtual ModuleReturn run(CommandSource&, std::vector<Flux::string>&) =0;
   virtual void OnPrivmsg(const Flux::string &nick, const std::vector<Flux::string> &params) { }
@@ -709,6 +710,19 @@ module::module(Flux::string n, bool a, ModulePriority p){
   activated = a;
   priority = p;
   moduleList.push_back(this);
+}
+int module::AddCommand(Command *c){
+ if(!c)
+   return -1;
+ c->mod = this;
+  return 0;
+}
+int module::DelCommand(Command *c){
+  if(!c)
+    return -1;
+  
+  c->mod = NULL;
+  return 0;
 }
 std::vector<module *> EventHandlers[I_END];
 void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
