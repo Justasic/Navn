@@ -31,16 +31,17 @@
 class weather:public module{
 public:
   weather(bool act):module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
-  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
-    if(reply->params(0) == "!weather"){
-      Flux::string area = reply->params(1);
-      Flux::string filename = "temp.xml";
-      Flux::string wget;
-      area.trim();
-      if(area.empty()){
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    Flux::string cmd = params.empty()?"":params[0];
+    if(cmd == "!weather"){
+      if(params.size() < 2){
 	Send->privmsg(chan, "Syntax: \2!weather \037area\037\2");
 	return MOD_STOP;
       }
+      Flux::string area = params[params.size() - 1];
+      Flux::string filename = "temp.xml";
+      Flux::string wget;
+      area.trim();
       if(area.is_number_only())
 	wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+area;
       else
@@ -59,6 +60,7 @@ public:
 	Flux::string tempf = findInXML("temp_f","data",ff);
 	Flux::string tempc = findInXML("temp_c","data",ff);
 	remove(filename.c_str());
+	loc.trim();
 	Send->privmsg(chan, "The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
 	log("%s used !weather to get weather for area '%s'", unick.c_str(), area.c_str());
       }

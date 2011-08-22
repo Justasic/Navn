@@ -30,6 +30,7 @@
 #include "modules/system.h"
 #include "modules/navn.h"
 #include "modules/modulehandler.h"
+#include "modules/weather.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/dns.h"
@@ -40,7 +41,6 @@
 #include "modules/searcher.h"
 #include "modules/tinyurl.h"
 #include "modules/help.h"
-#include "modules/weather.h"
 #include "modules/world_clock.h"
 #include "modules/dummy.h"
 */
@@ -92,6 +92,7 @@ int main (int argcx, char** argvx, char *envp[])
     system_m _system_m(true);
     navn _navn(true);
     modulehandler _modulehandler(true);
+    weather _weather(true);
     /*
     dummy _dummy(true);
     about_me _about_me(true);
@@ -105,8 +106,6 @@ int main (int argcx, char** argvx, char *envp[])
     TinyURL _TinyURL(false);
     world_clock _world_clock(true);
     Chanlog _Chanlog(true);
-    weather _weather(true);
-    Ping_pong _Ping(true);
     */
     
     /**       MODULES          */
