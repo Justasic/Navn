@@ -32,6 +32,7 @@
 #include "modules/modulehandler.h"
 #include "modules/weather.h"
 #include "modules/world_clock.h"
+#include "modules/searcher.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/dns.h"
@@ -39,7 +40,6 @@
 #include "modules/channel_logger.h"
 #include "modules/ctcp.h"
 #include "modules/Flux_Services.h"
-#include "modules/searcher.h"
 #include "modules/tinyurl.h"
 #include "modules/help.h"
 #include "modules/dummy.h"
@@ -94,6 +94,7 @@ int main (int argcx, char** argvx, char *envp[])
     modulehandler _modulehandler(true);
     weather _weather(true);
     world_clock _world_clock(true);
+    searcher _searcher(true);
     /*
     dummy _dummy(true);
     about_me _about_me(true);
@@ -103,7 +104,6 @@ int main (int argcx, char** argvx, char *envp[])
     Flux_Services _Flux_Services(false);
     help_m _help_m(true);
     navn _navn(true);
-    searcher _searcher(true);
     TinyURL _TinyURL(false);
     Chanlog _Chanlog(true);
     */
