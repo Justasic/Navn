@@ -35,6 +35,7 @@
 #include "modules/searcher.h"
 #include "modules/help.h"
 #include "modules/dns.h"
+#include "modules/dummy.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/about_me.h"
@@ -42,7 +43,7 @@
 #include "modules/ctcp.h"
 #include "modules/Flux_Services.h"
 #include "modules/tinyurl.h"
-#include "modules/dummy.h"
+
 */
 /**
  *\endcode 
@@ -97,8 +98,9 @@ int main (int argcx, char** argvx, char *envp[])
     searcher _searcher(true);
     help_m _help_m(true);
     dns_m _dns_m(true);
-    /*
     dummy _dummy(true);
+    /*
+    
     about_me _about_me(true);
     ctcp _ctcp(true);
     Da_Goat _Da_Goat(true);

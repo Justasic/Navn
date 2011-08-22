@@ -27,10 +27,11 @@ class dummy : public module{
 public:
   dummy(bool a):module("Dummy", a, PRIORITY_LAST){ this->SetDesc("Example Dummy module"); }
   
-  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    Flux::string cmd = params.empty()?"":params[0];
     
-    if (reply->said("testing testing")){
-      Send->privmsg(reply->channel,"I hear you!\nYES I DO!");
+    if (cmd == "!testing-testing"){
+      Send->privmsg(chan,"I hear you!\nYES I DO!");
     }
    return MOD_RUN; 
   }
