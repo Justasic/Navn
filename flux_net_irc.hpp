@@ -521,8 +521,11 @@ void startup(int argc, char** argv) {
          log("Navn is started With No Forking enabled. (%s)", arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
-	  printf("Navn Internet Relay Chat Bot v%s\n", VERSION.c_str());
-	  printf("Usage: %s [options]\n", getprogdir(argv[0]).c_str());
+	  printf("\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION.c_str());
+	  Flux::string dir = argv[0];
+	  Flux::string::size_type n = dir.rfind('/');
+	  dir = "." + dir.substr(n);
+	  printf("Usage: %s [options]\n", dir.c_str());
 	  printf("-h, --help\n");
 	  printf("-d, --developer\n");
 	  printf("-f, --nofork\n");
@@ -530,7 +533,7 @@ void startup(int argc, char** argv) {
 	  exit(0);
        }
        else if (arg == "--version" || arg == "-v"){
-         cout << "Navn IRC C++ Bot Version " << VERSION << nl;
+         cout << "\033[22;37mNavn IRC C++ Bot Version " << VERSION << nl;
          cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
          cout << nl;
          cout << "IRC: IRC.Flux-Net.net #Computers" << nl;

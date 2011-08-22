@@ -35,6 +35,9 @@ Made ConfigException return the error code
 Removed some junk from the socket engine
 Changed how navn recognizes joins so it does not announce in every channel it joins that it joined a new channel
 Removed in_channel boolean
+Updated all modules with new api
+Removed 'cum' reply
+
 
 
 Navn 2.0.0
