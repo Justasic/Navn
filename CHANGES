@@ -37,7 +37,7 @@ Changed how navn recognizes joins so it does not announce in every channel it jo
 Removed in_channel boolean
 Updated all modules with new api
 Removed 'cum' reply
-
+Added Command class, renamed conflicting Command class to Commands
 
 
 Navn 2.0.0

@@ -50,33 +50,33 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];
 
   if (cmd == "pass"){
-    if (unick == owner_nick){
-      Send->notice(unick, "The password is:\2 "+password);
-      log("%s requested the navn quit password: %s", unick.c_str(), password.c_str());
+    if (source.u == owner_nick){
+      Send->notice(source.u, "The password is:\2 "+password);
+      log("%s requested the navn quit password: %s", source.u.c_str(), password.c_str());
     }else{
-      Send->notice(unick, access_denied);
-      log("%s attempted to request the navn quit password.", unick.c_str());
+      Send->notice(source.u, access_denied);
+      log("%s attempted to request the navn quit password.", source.u.c_str());
     }
   }
   if (cmd == "restart"){
-    if(unick == owner_nick){
+    if(source.u == owner_nick){
       //Flux::string reason = "-no reason-";
       Send->raw("QUIT :Restarting..\n");
       restart("Restarting..");
     }else{
-      Send->notice(unick, access_denied);
+      Send->notice(source.u, access_denied);
     }
   }
   if(cmd == "pid"){
-    if(unick == owner_nick){
-      Send->notice(unick, "My PID is: %i", getpid()); 
-      log("%s used pid function to get PID %i", unick.c_str(), getpid());
+    if(source.u == owner_nick){
+      Send->notice(source.u, "My PID is: %i", getpid()); 
+      log("%s used pid function to get PID %i", source.u.c_str(), getpid());
     }else{
-      Send->notice(unick, access_denied);
+      Send->notice(source.u, access_denied);
     }
   }
   if(source.command == "NICK"){
-    IsoHost *Host = new IsoHost(source.u);
+    IsoHost *Host = new IsoHost(source.fullhost);
     Flux::string newnick = Host->nick;
     if (newnick == nick)
       nick = newnick;
@@ -87,38 +87,37 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   if (cmd == "quit"){ //quits the bot.
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(pass == password || pass == usrpass){
-      Send->notice(unick, "Quitting..");
-      log("%s quit the bot with password: \"%s\"", unick.c_str(), password.c_str());
-      shutdown("Requested From \2"+unick+"\17. Pass: \00320"+password+"\017");
+      Send->notice(source.u, "Quitting..");
+      log("%s quit the bot with password: \"%s\"", source.u.c_str(), password.c_str());
+      shutdown("Requested From \2"+source.u+"\17. Pass: \00320"+password+"\017");
     }else{
-      Send->notice(unick, access_denied);
-      log("%s attempted to change ownership of the bot", unick.c_str());
+      Send->notice(source.u, access_denied);
+      log("%s attempted to change ownership of the bot", source.u.c_str());
     }
   }
   if(cmd == "rehash"){
     Flux::string pass = params.size() > 0 ? params[0] : "";
-    if(unick == owner_nick || pass == password || pass == usrpass){
-      Send->notice(unick, "Rehashing config file.");
-      log("%s rehashed config file.", unick.c_str());
+    if(source.u == owner_nick || pass == password || pass == usrpass){
+      Send->notice(source.u, "Rehashing config file.");
+      log("%s rehashed config file.", source.u.c_str());
       Rehash(false);
     }else{
-      Send->notice(unick, access_denied);
-      log("%s attempted a rehash.", unick.c_str());
+      Send->notice(source.u, access_denied);
+      log("%s attempted a rehash.", source.u.c_str());
     }
   }
   if(cmd == "chown"){
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(pass == password || pass == usrpass){
-      log("Changing ownership from %s to %s", owner_nick.c_str(), unick.c_str());
-      owner_nick = unick; //FIXME: i am broken from the new API!
-      Send->notice(unick, "New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
+      log("Changing ownership from %s to %s", owner_nick.c_str(), source.u.c_str());
+      owner_nick = source.u; //FIXME: i am broken from the new API!
+      Send->notice(source.u, "New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
     }else{
-      Send->notice(unick, access_denied);
-      log("%s attempted to change ownership of the bot", unick.c_str());
+      Send->notice(source.u, access_denied);
+      log("%s attempted to change ownership of the bot", source.u.c_str());
     }
   }
-  /*Find the join numeric (252)
-   * If found it makes in_channel true.
+  /*Find the join numeric (376)
    * This is so you can make things happen only if you know you are in
    * a channel.
    */
@@ -143,30 +142,30 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     log("Successfully connected to the server \"%s:%s\" Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
   }
   if(cmd == "\001DCC"){
-    Send->notice(unick, "I do not accept or support DCC connections.");
+    Send->notice(source.u, "I do not accept or support DCC connections.");
   }
   if(source.command == "482"){
     cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
     Send->notice(owner_nick, "I require op to run the last command!");
-    log("Op is required in %s", chan.c_str());  
+    log("Op is required in %s", source.c.c_str());  
   }
   if(cmd == "This nickname is registered and protected. If it is your"){
-    Send->privmsg(unick, "identify %s %s", nsacc.c_str(), nspass.c_str());
+    Send->privmsg(source.u, "identify %s %s", nsacc.c_str(), nspass.c_str());
     log("Identified to NickServ with account \"%s\"", nsacc.c_str());
   }
   if (source.command == "JOIN"){ //welcomes everyone who joins the channel
-    if(unick == nick){return MOD_RUN;}else{
-      Send->notice(unick, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", unick.c_str(), strip(chan).c_str(), nick.c_str());
-      log("%s joined %s", unick.c_str(), strip(chan).c_str());
+    if(source.u == nick){return MOD_RUN;}else{
+      Send->notice(source.u, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", source.u.c_str(), strip(source.c).c_str(), nick.c_str());
+      log("%s joined %s", source.u.c_str(), strip(source.c).c_str());
     }
   }
   if(source.command == "KICK"){
     Flux::string reason = source.params[2].empty()?"":source.params[2];
-    printf("%s kicked %s (%s)\n", unick.c_str(), cmd.c_str(), reason.c_str());
+    printf("%s kicked %s (%s)\n", source.u.c_str(), cmd.c_str(), reason.c_str());
     if(source.params[1] == nick){
-      Send->notice(owner_nick, "%s kicked me from %s! (%s)", unick.c_str(), params[0].c_str(), reason.c_str());
+      Send->notice(owner_nick, "%s kicked me from %s! (%s)", source.u.c_str(), params[0].c_str(), reason.c_str());
       Send->command->join(source.c);
-      log("%s kicked bot out of channel %s (%s)", unick.c_str(), source.c.c_str(), reason.c_str());
+      log("%s kicked bot out of channel %s (%s)", source.u.c_str(), source.c.c_str(), reason.c_str());
     }
   }
   return MOD_RUN;

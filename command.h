@@ -1,15 +1,16 @@
 #ifndef command_h
 #define command_h
 #include "includes.h"
+#include "user.h"
 /**
  *\file  command.h
  *\brief Contains the command class header.
  */
-class Command
+class Commands
 {
 public:
   SocketIO *s;
-  Command(SocketIO *sock);
+  Commands(SocketIO *sock);
   void raw(const char *fmt, ...);
   void quit(const char *fmt, ...);
   void kick(Flux::string, Flux::string, const char *fmt, ...);
@@ -56,5 +57,28 @@ public:
   void qline(Flux::string, Flux::string, Flux::string);
   void kline(Flux::string, Flux::string, Flux::string);
   void gline(Flux::string, Flux::string, Flux::string);
+};
+class module;
+extern Flux::string nick;
+class Command
+{
+  Flux::string desc;
+  std::vector<Flux::string> syntax;
+public:
+  size_t MaxParams;
+  size_t MinParams;
+  module *mod;
+  Command(module *owner, const Flux::string &sname, size_t min_params, size_t max_params=0);
+  virtual ~Command();
+protected:
+  void SetDesc(const Flux::string&);
+  void SetSyntax(const Flux::string&);
+  void SendSyntax(CommandSource&);
+  void SendSyntax(CommandSource&, const Flux::string&);
+public:
+  const Flux::string &GetDesc() const;
+  virtual void Execute(CommandSource&, const std::vector<Flux::string> &params)=0;
+  virtual bool OnHelp(CommandSource&, const Flux::string&);
+  virtual void OnSyntaxError(CommandSource&, const Flux::string&);
 };
 #endif

@@ -811,7 +811,8 @@ void process(const Flux::string &buffer){
     if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
   /**************************************/
   CommandSource Source;
-  Source.u = source;
+  Source.u = unick;
+  Source.fullhost = source;
   Source.c = chan;
   Source.command = command;
   Source.message = message;

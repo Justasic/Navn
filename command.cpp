@@ -3,14 +3,14 @@
  *\file  command.cpp 
  *\brief Contains the command class.
  */
-Command::Command(SocketIO *sock){
+Commands::Commands(SocketIO *sock){
   this->s = sock;
 }
 /**
  * \fn void command::raw(const char *fmt, ...)
  * \brief Sends data straight to the socket engine
  */
-void Command::raw(const char *fmt, ...){
+void Commands::raw(const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -25,7 +25,7 @@ void Command::raw(const char *fmt, ...){
  * \param user User to be kicked.
  * \param reason Reason for the kick.
  */
-void Command::kick(Flux::string Channel, Flux::string User, const char *fmt, ...){
+void Commands::kick(Flux::string Channel, Flux::string User, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -37,7 +37,7 @@ void Command::kick(Flux::string Channel, Flux::string User, const char *fmt, ...
  * \fn void command::topic(Flux::string channel, const char *fmt, ...)
  * \brief Sets channel topic.
  */
-void Command::topic(Flux::string channel, const char *fmt, ...){
+void Commands::topic(Flux::string channel, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -46,11 +46,11 @@ void Command::topic(Flux::string channel, const char *fmt, ...){
   va_end(args);
 }
 /**
- * \fn void Command::quit(const char *fmt, ...)
+ * \fn void Commands::quit(const char *fmt, ...)
  * \brief Handles quitting of irc
  * \param message Quit message
  */
-void Command::quit(const char *fmt, ...){
+void Commands::quit(const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -64,7 +64,7 @@ void Command::quit(const char *fmt, ...){
  * \param channel Channel to part from.
  * \param reason Reason for parting.
  */
-void Command::part(Flux::string channel, const char *fmt, ...){
+void Commands::part(Flux::string channel, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -75,25 +75,25 @@ void Command::part(Flux::string channel, const char *fmt, ...){
 /**
  * \overload void command::kick(Flux::string channel, Flux::string user, Flux::string reason)
  */
-void Command::kick(Flux::string chan, Flux::string user, Flux::string msg){
+void Commands::kick(Flux::string chan, Flux::string user, Flux::string msg){
   this->raw("KICK %s %s :%s\n", chan.c_str(), user.c_str(), msg.c_str());
 }
 /**
- * \overload void Command::quit(Flux::string message)
+ * \overload void Commands::quit(Flux::string message)
  */
-void Command::quit(Flux::string message){
+void Commands::quit(Flux::string message){
  this->raw("QUIT :%s", message.c_str());
 }
 /**
- * \overload void Command::part(Flux::string channel, Flux::string msg)
+ * \overload void Commands::part(Flux::string channel, Flux::string msg)
  */
-void Command::part(Flux::string channel, Flux::string msg){
+void Commands::part(Flux::string channel, Flux::string msg){
   this->raw("PART %s :%s\n", channel.c_str(), msg.c_str());
 }
 /**
  * \overload void command::topic(Flux::string channel, Flux::string msg)
  */
-void Command::topic(Flux::string chan, Flux::string msg){
+void Commands::topic(Flux::string chan, Flux::string msg){
   this->raw("TOPIC %s :%s\n", chan.c_str(), msg.c_str());
 }
 /** 
@@ -101,14 +101,14 @@ void Command::topic(Flux::string chan, Flux::string msg){
  * \brief Sets the bots nickname in IRC.
  * \param nickname A Flux::string with the new nickname.
  */
-void Command::nick(Flux::string bnick){
+void Commands::nick(Flux::string bnick){
   this->raw("NICK %s\n", bnick.c_str());
 }
 /**
  * \fn void command::oper(Flux::string oper, Flux::string password)
  * \brief Sends IRC command /oper
  */
-void Command::oper(Flux::string oper, Flux::string password){
+void Commands::oper(Flux::string oper, Flux::string password){
   this->raw("OPER %s %s\n", oper.c_str(), password.c_str());
 }
 /** 
@@ -116,7 +116,7 @@ void Command::oper(Flux::string oper, Flux::string password){
  * \brief Makes the bot join a channel
  * \param stringy_chan A Flux::string with the channel you want to join.
  */
-void Command::join(Flux::string dchan){
+void Commands::join(Flux::string dchan){
   this->raw("JOIN %s\n", dchan.c_str());
 }
 /** 
@@ -124,7 +124,7 @@ void Command::join(Flux::string dchan){
  * \brief Parts channel w/o reason.
  * \param channel Channel to part from.
  */
-void Command::part(Flux::string fchan){
+void Commands::part(Flux::string fchan){
   this->raw("PART %s\n", fchan.c_str()); 
 }
 /** 
@@ -132,7 +132,7 @@ void Command::part(Flux::string fchan){
  * \brief Sends a IRC Whois to Server.
  * \param Nick Nick to query
  */
-void Command::whois(Flux::string user){
+void Commands::whois(Flux::string user){
   this->raw("WHOIS %s\n", user.c_str());
 }
 /** 
@@ -141,16 +141,16 @@ void Command::whois(Flux::string user){
  * \param nickname Nickname of who we are setting a more to.
  * \param mode The mode to set.
  */
-void Command::mode(Flux::string chan, Flux::string mode, Flux::string user){
+void Commands::mode(Flux::string chan, Flux::string mode, Flux::string user){
   this->raw("MODE %s %s %s\n", chan.c_str(), mode.c_str(), user.c_str());
 }
 /** 
- * \fn void Command::user(Flux::string ident, Flux::string realname)
+ * \fn void Commands::user(Flux::string ident, Flux::string realname)
  * \brief Sends the user gecos to the server
  * \param ident The ident at the beginning of the IRC host.
  * \param realname The real name gecos used in irc.
  */
-void Command::user(Flux::string ident, Flux::string realname){
+void Commands::user(Flux::string ident, Flux::string realname){
  this->raw("USER %s * * :%s\n", ident.c_str(), realname.c_str());
 }
 /**
@@ -159,7 +159,7 @@ void Command::user(Flux::string ident, Flux::string realname){
  * @param dest where to set the mode
  * @param mode mode to set
  */
-void Command::mode(Flux::string dest, Flux::string mode){
+void Commands::mode(Flux::string dest, Flux::string mode){
   this->raw("MODE %s %s\n", dest.c_str(), mode.c_str()); 
 }
 /***************************************************************************************/
@@ -256,4 +256,37 @@ void Oper::kline(Flux::string target, Flux::string time, Flux::string reason){
 }
 void Oper::gline(Flux::string target, Flux::string time, Flux::string reason){
   this->raw("GLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
+}
+/*******************************************************************************************/
+Command::Command(module *owner, const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), mod(owner)
+{
+}
+Command::~Command()
+{
+}
+void Command::SetDesc(const Flux::string &d){
+ this->desc = d; 
+}
+void Command::SetSyntax(const Flux::string &s){
+ this->syntax.push_back(s); 
+}
+void Command::SendSyntax(CommandSource &source){
+ if(!this->syntax.empty()){
+  Send->notice(source.u, "Syntax: \2%s %s\2", source.command.c_str(), this->syntax[0].c_str());
+  for(unsigned i=1, j = this->syntax.size(); i < j; ++i)
+    Send->notice(source.u, "        \002%s %s\002", source.command.c_str(), this->syntax[i].c_str());
+ }
+}
+void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
+  Send->notice(source.u, "Syntax: \2%s %s\2", source.command.c_str(), syn.c_str());
+  Send->notice(source.u, "\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
+}
+const Flux::string &Command::GetDesc() const{
+ return this->desc; 
+}
+bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand) { return false; }
+void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
+{
+ this->SendSyntax(source);
+ Send->notice(source.u, "\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
 }

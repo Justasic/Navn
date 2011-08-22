@@ -44,10 +44,11 @@ public:
       Flux::string mod = params.size() == 2 ? params[1]:"";
       if(mod.empty()){
 	Send->notice(unick, "Syntax: \2modflip \37module\15");
+	return MOD_STOP;
       }
       for (int i = 0; i < (int)moduleList.size(); i++)
       {
-	if (mod == moduleList[i]->name && moduleList[i]->priority < PRIORITY_FIRST)
+	if (mod == moduleList[i]->name && moduleList[i]->priority != PRIORITY_FIRST)
 	{
 	  moduleList[i]->activated = !moduleList[i]->activated;
 	  Send->privmsg(chan, "%s is now %sactivated.", moduleList[i]->name.c_str(), moduleList[i]->activated ? "" : "de-");

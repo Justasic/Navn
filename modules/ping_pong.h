@@ -37,7 +37,7 @@ class Ping_pong:public module{
   PingTimer pingtimer;
 public:
   Ping_pong(bool a):module("Ping", a, PRIORITY_FIRST){ 
-    this->SetDesc("Sends a ping to the server, keeping the bot connected");
+    this->SetDesc("Handles ping pong events");
     //Implementation i[] = { I_OnPrivmsg };
   }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){

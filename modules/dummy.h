@@ -22,6 +22,7 @@
  * \brief Replies to a test
  * We will try to put as many examples here in the future as we can.
  */
+
 class dummy : public module{
 
 public:

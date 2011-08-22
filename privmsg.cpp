@@ -5,7 +5,7 @@
  */
 SendMessage::SendMessage(SocketIO *sock){
   this->s = sock;
-  this->command = new Command(sock);
+  this->command = new Commands(sock);
   this->o = new Oper(sock);
 }
 /**

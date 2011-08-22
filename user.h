@@ -17,6 +17,7 @@ User *finduser(const Flux::string &nick);
 struct CommandSource
 {
  Flux::string u; /* User name, this will be replaced with above class*/
+ Flux::string fullhost;
  Flux::string c; /* Channel name, this will be replaced with channel class */
  Flux::string command;
  Flux::string message;
