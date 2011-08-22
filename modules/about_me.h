@@ -33,20 +33,26 @@ class about_me : public module
 public:
   about_me(bool a):module("About Me", a, PRIORITY_DONTCARE){ this->SetDesc("Returns the information about yourself"); }
   
-  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply)
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
   {
-  if(reply->said("about me")){
-	Send->notice(unick, "Raw: "+reply->raw_string);
+    Flux::string cmd = params.empty()?"":params[0];
+  if(source.message == "about me"){
+	Send->notice(unick, "Raw: "+source.raw);
 	Send->notice(unick, "message: "+msg);
 	Send->notice(unick, "Nickname: "+unick);
-	Send->notice(unick, "Ident: "+reply->user);
+	Send->notice(unick, "Ident: "+ident);
 	Send->notice(unick, "Host: "+host);
 	Send->notice(unick, "Channel: "+chan);
-	Send->notice(unick, "Fullhost: "+fullhost);
+	Send->notice(unick, "Fullhost: "+source.u);
 	log("%s requested information about themself.", unick.c_str());
   }
-  if(reply->said("!decodehost")){
-	Flux::string host = reply->params(1);
+  if(cmd == "!decodehost"){
+    Flux::string cmd = params.size() == 2?params[0]:"";
+    if(cmd.empty()){
+     Send->notice(unick, "Syntax: \2!decodehost \37nick!ident@host.name\15"); 
+     return MOD_STOP;
+    }
+	Flux::string host = params[1];
 	IsoHost* Host = new IsoHost(host);
 	Send->privmsg(chan, "Nick: %s", Host->nick.c_str());
 	Send->privmsg(chan, "User: %s", Host->user.c_str());

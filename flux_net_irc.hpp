@@ -813,6 +813,7 @@ void process(const Flux::string &buffer){
   Source.command = command;
   Source.message = message;
   Source.params = params;
+  Source.raw = buffer;
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
     return;
