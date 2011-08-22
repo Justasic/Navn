@@ -37,10 +37,10 @@
 #include "modules/dns.h"
 #include "modules/dummy.h"
 #include "modules/ctcp.h"
+#include "modules/channel_logger.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/about_me.h"
-#include "modules/channel_logger.h"
 #include "modules/Flux_Services.h"
 #include "modules/tinyurl.h"
 
@@ -100,13 +100,12 @@ int main (int argcx, char** argvx, char *envp[])
     dns_m _dns_m(true);
     dummy _dummy(true);
     ctcp _ctcp(true);
+    Chanlog _Chanlog(true);
     /*
     about_me _about_me(true);
     Da_Goat _Da_Goat(true);
     Flux_Services _Flux_Services(false);
-    navn _navn(true);
     TinyURL _TinyURL(false);
-    Chanlog _Chanlog(true);
     */
     
     /**       MODULES          */
