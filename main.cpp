@@ -34,9 +34,9 @@
 #include "modules/world_clock.h"
 #include "modules/searcher.h"
 #include "modules/help.h"
+#include "modules/dns.h"
 /*
 #include "modules/da_goat.h"
-#include "modules/dns.h"
 #include "modules/about_me.h"
 #include "modules/channel_logger.h"
 #include "modules/ctcp.h"
@@ -96,12 +96,12 @@ int main (int argcx, char** argvx, char *envp[])
     world_clock _world_clock(true);
     searcher _searcher(true);
     help_m _help_m(true);
+    dns_m _dns_m(true);
     /*
     dummy _dummy(true);
     about_me _about_me(true);
     ctcp _ctcp(true);
     Da_Goat _Da_Goat(true);
-    dns_m _dns_m(true);
     Flux_Services _Flux_Services(false);
     navn _navn(true);
     TinyURL _TinyURL(false);

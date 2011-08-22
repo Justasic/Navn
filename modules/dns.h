@@ -1,6 +1,5 @@
 #ifndef DNS_H
 #define DNS_H
-#include "../includes.h"
 #include "../flux_net_irc.hpp"
 #ifndef NI_MAXHOST
 #define NI_MAXHOST 1025
@@ -39,7 +38,7 @@
 * Looks up a domain name to ip address
 * @Param(Socket, Destination, Domain Name)
 */
-void dns(SendMessage *Send, Flux::string dest, Flux::string host){
+void dns(Flux::string dest, Flux::string host){
   struct hostent *he;
   he = gethostbyname(host.c_str());
   if (he <= 0){
@@ -53,7 +52,7 @@ void dns(SendMessage *Send, Flux::string dest, Flux::string host){
 * @Param rdns(Socket, rawircFlux::string, Destination, ipaddress)
 */
 // http://en.wikipedia.org/wiki/Getaddrinfo
-void rdns(SendMessage *Send, Flux::string dest, Flux::string host){
+void rdns(Flux::string dest, Flux::string host){
   struct addrinfo *result;
   struct addrinfo *res;
   int error;
@@ -77,7 +76,7 @@ void rdns(SendMessage *Send, Flux::string dest, Flux::string host){
 * Looks up an IP address to all the host
 * @Param rdns(SendMessage, Flux::string hostname, Flux::string destination)
 */
-void alldns(SendMessage *Send, Flux::string host, Flux::string dest){
+void alldns(Flux::string host, Flux::string dest){
   struct addrinfo *result;
   struct addrinfo *res;
   int error;
@@ -107,19 +106,32 @@ void alldns(SendMessage *Send, Flux::string host, Flux::string dest){
 class dns_m:public module
 {
 public:
-  dns_m(bool a):module("DNS Resolver", a, PRIORITY_DONTCARE){ this->SetDesc("Reverse DNS or Forward DNS resolve an address"); }
-  ModuleReturn run(SendMessage *s, Flux::string rply, irc_string *reply){
-    if(reply->said("!rdns")){
-      Flux::string ip = reply->params(1);
-      rdns(s, chan, ip);
+  dns_m(bool a):module("DNS Resolver", a, PRIORITY_DONTCARE){ this->SetDesc("Reverse/forward resolve a DNS hostname"); }
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    Flux::string cmd = params.empty()?"":params[0];
+    if(cmd == "!rdns"){
+     if(params.size() < 2){
+       Send->notice(unick, "Syntax: \2!rdns \37ipaddress\15");
+       return MOD_RUN;
+     }
+      Flux::string ip = params[params.size() -1];
+      rdns(chan, ip);
     }
-    if(reply->said("!dns")){
-      Flux::string host = reply->params(1);
-      dns(s, chan, host);
+    if(cmd == "!dns"){
+     if(params.size() < 2){
+       Send->notice(unick, "Syntax: \2!dns \37hostname\15");
+       return MOD_RUN;
+     }
+      Flux::string host = params[params.size() -1];
+      dns(chan, host);
     }
-    if(reply->said("!ardns")){
-     Flux::string host = reply->params(1);
-     alldns(s, host, chan);
+    if(cmd == "!ardns"){
+     if(params.size() < 2){
+       Send->notice(unick, "Syntax: \2!ardns \37hostname\15");
+       return MOD_RUN;
+     }
+     Flux::string host = params[params.size() -1];
+     alldns(host, chan);
       
     }
     return MOD_RUN;
