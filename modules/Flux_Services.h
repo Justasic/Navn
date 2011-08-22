@@ -33,29 +33,44 @@ class Flux_Services:public module
 {
 public:
   Flux_Services(bool a):module("Flux_Services", a, PRIORITY_LAST){ this->SetDesc("DeathBlade's Flux_S3rvices bot"); }
-ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
-	if(reply->said("!part ")){ 
+ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+  Flux::string cmd = params.empty()?"":params[0];
+	if(cmd == "!part"){ 
 		if(unick == owner_nick){
-			Send->privmsg(chan, "im out niggaz!");
-			Send->command->part(reply->params(1), "I'm leaving this dump.");
-			log("%s used Flux_S3rvices part %s", unick.c_str(), chan.c_str());
+		  Flux::string pchannel = params.size() == 2?params[1]:"";
+		  if(pchannel.empty()){
+		    Send->privmsg(chan, "im out niggaz!");
+		   Send->command->part(chan, "I'm leaving this dump."); 
+		   log("%s used Flux_S3rvices part %s", unick.c_str(), chan.c_str());
+		   return MOD_STOP;
+		  }
+		  if(!IsValidChannel(pchannel)){
+		    Send->notice(unick, "Channel \2%s\2 is not a valid channel", pchannel.c_str());
+		    return MOD_STOP;
+		  }
+			Send->privmsg(pchannel, "im out niggaz!");
+			Send->command->part(pchannel, "I'm leaving this dump.");
+			log("%s used Flux_S3rvices part %s", unick.c_str(), pchannel.c_str());
 		}else{
 			Send->notice(unick, access_denied);
 		}
 	}
-	if(reply->said("!botadd")){
+	if(cmd == "!botadd"){
 		if(unick == owner_nick){
-			Flux::string bnick = reply->params(1);
-			Flux::string buser = reply->params(2);
-			Flux::string bhost = reply->params(3);
-			Flux::string breal = reply->params(4);
-			Send->privmsg("BotServ", "add %s %s %s %s", bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str());
+		  if(params.size() < 5){
+		   return MOD_STOP; 
+		  }
+			Flux::string bnick = params[1];
+			Flux::string buser = params[2];
+			Flux::string bhost = params[3];
+			Flux::string breal = params[4];
+			Send->privmsg("BotServ", "bot add %s %s %s %s", bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str());
 			log("%s used Flux_S3rvices to make bot \"%s!%s@%s :%s\" %s", unick.c_str(), bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str(), chan.c_str());
 		}else{
 		Send->notice(unick, access_denied);
 		}
 	}
-	if(reply->said("slaps")){
+	if(irc_string::said(source.message, "slaps")){
 	 Send->privmsg(chan, "\0036Oh \0034Hell \0039No...");
 	 int num = randint(1,6); //make a random number from 1 to 6 (increase 6 to how ever many switch statements below) so messages are random
 	 switch(num){
@@ -81,7 +96,7 @@ ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
 	 idiots++; //add +1 to the already big number of idiots in the list
 	 Send->privmsg(chan, "\2\0034,1Total \0039morons \0033slapped \0038back \00310: %i", idiots); //tell the channel how many idiots where slapped.
 	}
-	if(reply->said("!magicbox")){
+	if(cmd == "!magicbox"){
 	 int num = randint(1,20);
 	 Flux::string object;
 	  switch(num){ //FIXME: This switch statement will become rather large.. perhapse rewriting it to read from a wordlist?

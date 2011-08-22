@@ -506,7 +506,7 @@ void startup(int argc, char** argv) {
   signal(SIGHUP, sigact);
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-  if (argc < 1 || argv[1] == NULL){
+  if (argc < 1){
   }else{
     Flux::string arg = argv[1];
     for(int Arg=0; Arg < argc; ++Arg){
