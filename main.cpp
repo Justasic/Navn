@@ -103,7 +103,7 @@ int main (int argcx, char** argvx, char *envp[])
     Chanlog _Chanlog(true);
     about_me _about_me(true);
     Da_Goat _Da_Goat(true);
-    Flux_Services _Flux_Services(true);
+    Flux_Services _Flux_Services(false);
     /*
     TinyURL _TinyURL(false);
     */

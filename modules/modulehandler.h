@@ -29,7 +29,6 @@
  * \brief Module Handler for navn
  * The Module handler for navn, handles all the module enabling and disabling
  */
-std::vector<module*> moduleList;
 class modulehandler:public module
 {
 public:

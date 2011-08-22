@@ -702,19 +702,19 @@ void module::SetDesc(const Flux::string &desc){
 const Flux::string module::GetDesc() const{
  return this->desc; 
 }
-std::vector<module*> modulelist;
+std::vector<module*> moduleList;
 
 module::module(Flux::string n, bool a, ModulePriority p){
   name = n;
   activated = a;
   priority = p;
-  modulelist.push_back(this);
+  moduleList.push_back(this);
 }
 std::vector<module *> EventHandlers[I_END];
 void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
-  for(unsigned i = 0; i < modulelist.size(); i++){
-    if (modulelist[i]->activated == true){
-      modulelist[i]->run(source, params);
+  for(unsigned i = 0; i < moduleList.size(); i++){
+    if (moduleList[i]->activated == true){
+      moduleList[i]->run(source, params);
     }
   } 
 }
