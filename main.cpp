@@ -33,6 +33,7 @@
 #include "modules/weather.h"
 #include "modules/world_clock.h"
 #include "modules/searcher.h"
+#include "modules/help.h"
 /*
 #include "modules/da_goat.h"
 #include "modules/dns.h"
@@ -41,7 +42,6 @@
 #include "modules/ctcp.h"
 #include "modules/Flux_Services.h"
 #include "modules/tinyurl.h"
-#include "modules/help.h"
 #include "modules/dummy.h"
 */
 /**
@@ -95,6 +95,7 @@ int main (int argcx, char** argvx, char *envp[])
     weather _weather(true);
     world_clock _world_clock(true);
     searcher _searcher(true);
+    help_m _help_m(true);
     /*
     dummy _dummy(true);
     about_me _about_me(true);
@@ -102,7 +103,6 @@ int main (int argcx, char** argvx, char *envp[])
     Da_Goat _Da_Goat(true);
     dns_m _dns_m(true);
     Flux_Services _Flux_Services(false);
-    help_m _help_m(true);
     navn _navn(true);
     TinyURL _TinyURL(false);
     Chanlog _Chanlog(true);

@@ -26,13 +26,13 @@
 class help_m:public module{
 public:
   help_m(bool a):module("Help", a, PRIORITY_DONTCARE){ this->SetDesc("The Help module"); }
-  ModuleReturn run(SendMessage *Send, Flux::string rply, irc_string *reply){
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    Flux::string cmd = params.empty()?"":params[0];
   //help replies
-    if(reply->said("PRIVMSG "+nick+" :help")){
-      Send->notice(unick, "There are 11 commands:");
+    if(cmd == "help"){
+      Send->notice(unick, "There are 10 commands:");
       Send->notice(unick, "quit \t \t \tQuits the bot (password needed)");
       Send->notice(unick, "pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
-      Send->notice(unick, "gdb\t \t \t \tDisplays how to use gdb.");
       Send->notice(unick, "rejoin\t \t Rejoins the bot to the channel.");
       Send->notice(unick, "chown \t \t Changes ownership over the bot (must be a bot admin)");
       Send->notice(unick, "join \t \t \tTells the bot to join the specified channel.");
