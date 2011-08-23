@@ -829,6 +829,12 @@ void process(const Flux::string &buffer){
     if(unick.empty() || ident.empty() || host.empty()){ }else
       u = new User(unick, ident, host);
   }
+  if(command == "QUIT"){
+    User *u = finduser(unick);
+   if(!u){}else{
+     delete u;
+   }
+  }
   CommandSource Source;
   Source.u = unick;
   Source.fullhost = source;

@@ -26,7 +26,8 @@ void User::Privmsg(const Flux::string &message){
   send_cmd("PRIVMSG %s :%s", this->nick.c_str(), message.c_str());
 }
 User::~User(){
-  log("%s left", this->nick.c_str());
+  printf("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+  log("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
   UserNickList.erase(this->nick);
 }
 User *finduser(const Flux::string &nick){
