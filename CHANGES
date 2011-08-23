@@ -38,6 +38,7 @@ Removed in_channel boolean
 Updated all modules with new api
 Removed 'cum' reply
 Added Command class, renamed conflicting Command class to Commands
+Added AddCommand and DelCommand into module class
 
 
 Navn 2.0.0

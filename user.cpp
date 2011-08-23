@@ -1,5 +1,5 @@
 #include "user.h"
-Flux::map<User *> UserList;
+Flux::map<User *> UserNickList;
 User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname){
  /* check to see if a empty string was passed into the constructor */
  if(snick.empty() || sident.empty() || shost.empty())
@@ -9,8 +9,8 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  this->ident = sident;
  this->host = shost;
  this->realname = srealname;
- UserList[snick] = this;
- printf("passed into user constructor\n");
+ UserNickList[snick] = this;
+ printf("New user! %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
 }
 void User::Kick(const Flux::string &channel, const Flux::string &reason){
   send_cmd("KICK %s %s :%s", this->nick.c_str(), channel.c_str(), reason.c_str());
@@ -27,11 +27,11 @@ void User::Privmsg(const Flux::string &message){
 }
 User::~User(){
   log("%s left", this->nick.c_str());
-  UserList.erase(this->nick);
+  UserNickList.erase(this->nick);
 }
 User *finduser(const Flux::string &nick){
-  Flux::map<User *>::iterator it = UserList.find(nick);
-  if(it != UserList.end())
+  Flux::map<User *>::iterator it = UserNickList.find(nick);
+  if(it != UserNickList.end())
     return it->second;
   return NULL;
 }

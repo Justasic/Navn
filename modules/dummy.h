@@ -29,8 +29,17 @@ public:
   dummy(bool a):module("Dummy", a, PRIORITY_LAST){ this->SetDesc("Example Dummy module"); }
   
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    User *u = finduser(source.u);
+    if(!u){
+      return MOD_STOP;
+    }
+    if(source.message == "usertest"){
+     u->SendMessage("TEST!");
+     source.Reply("TEST! 2");
+    }
     if (source.message == "testing testing"){
-      Send->privmsg(chan,"I hear you!\nYES I DO!");
+      //Send->privmsg(chan,"I hear you!\nYES I DO!");
+      source.Reply("I hear you!\nYES I DO!");
     }
    return MOD_RUN; 
   }

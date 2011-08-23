@@ -10,6 +10,7 @@ Navn 2.0.1
 [?] Fix --help message showing full execution directory
 [ ] Rewrite the config system (Burn INIreader with fire!)
 [x] timer function
+[ ] Case Insensitivity
 [$] Make module system load binary files (.so files)
 [+] Add some kind of command handler so it can list all loaded commands from all modules
 [+] Make default channel's in the config

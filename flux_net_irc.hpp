@@ -824,6 +824,11 @@ void process(const Flux::string &buffer){
   }else
     if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
   /**************************************/
+  User *u = finduser(unick);
+  if(!u){
+    if(unick.empty() || ident.empty() || host.empty()){ }else
+      u = new User(unick, ident, host);
+  }
   CommandSource Source;
   Source.u = unick;
   Source.fullhost = source;
