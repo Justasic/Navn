@@ -31,16 +31,7 @@ bool nofork, dev, protocoldebug = false;
 bool IsOper = false;
 const Flux::string nl = "\n";
 Flux::string binary_path, bot_bin, binary_dir;
-
-Flux::string unick;
-Flux::string rply;
-Flux::string host;
-Flux::string chan;
-Flux::string raw;
-Flux::string msg;
 Flux::string quitmsg;
-Flux::string fullhost;
-Flux::string ident;
 /******************Configuration variables***********************/
 Flux::string logfile;
 Flux::string nsacc;

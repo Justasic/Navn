@@ -32,27 +32,28 @@ public:
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
   {
     Flux::string cmd = params.empty()?"":params[0];
+    User *u = source.u;
   if(cmd == "\001VERSION\001"){ // for CTCP VERSION reply
-    cout << "\033[22;31mRecieved CTCP VERSION from "+unick+"\033[22;36m\r\n";
+    cout << "\033[22;31mRecieved CTCP VERSION from "+u->nick+"\033[22;36m\r\n";
     struct utsname uts;
     if(uname(&uts) < 0)
 	    //perror("uname() error");
 	    throw CoreException("uname() Error");
 
     source.Reply("\001VERSION Navn-%s %s %s\001",VERSION.c_str(), uts.sysname, uts.machine);
-    log("Recieved CTCP VERSION from %s", unick.c_str());
+    log("Recieved CTCP VERSION from %s", u->nick.c_str());
    }
   if(cmd == "\001TIME\001"){ // for CTCP TIME reply
-    cout << "\033[22;31mRecieved CTCP TIME from "+unick+"\033[22;36m\r\n";
+    cout << "\033[22;31mRecieved CTCP TIME from "+u->nick+"\033[22;36m\r\n";
     source.Reply("\001TIME "+strip(os_time())+"\001");
-    log("Recieved CTCP TIME from %s", unick.c_str());
+    log("Recieved CTCP TIME from %s", u->nick.c_str());
   }
   if(cmd == "\001SOURCE\001"){
-    cout << "\033[22;31mRecieved CTCP SOURCE from "+unick+"\033[22;36m\r\n";
+    cout << "\033[22;31mRecieved CTCP SOURCE from "+u->nick+"\033[22;36m\r\n";
     source.Reply("\001SOURCE https://gitorious.org/navn/navn\001");
     source.Reply("\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
     source.Reply("\1SOURCE git://gitorious.org/navn/navn.git\1");
-    log("Recieved CTCP SOURCE from %s", unick.c_str());
+    log("Recieved CTCP SOURCE from %s", u->nick.c_str());
   }
   return MOD_RUN;
   }

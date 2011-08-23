@@ -39,6 +39,9 @@ Updated all modules with new api
 Removed 'cum' reply
 Added Command class, renamed conflicting Command class to Commands
 Added AddCommand and DelCommand into module class
+Removed unick, chan, ident, host, msg, rply as they caused more issues than they solved
+Added channel class
+Added module->AddCommand(Command*) and module->DelCommand(Command*) to module class
 
 
 Navn 2.0.0

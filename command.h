@@ -2,6 +2,7 @@
 #define command_h
 #include "includes.h"
 #include "user.h"
+class module;
 /**
  *\file  command.h
  *\brief Contains the command class header.
@@ -58,8 +59,9 @@ public:
   void kline(Flux::string, Flux::string, Flux::string);
   void gline(Flux::string, Flux::string, Flux::string);
 };
-class module;
 extern Flux::string nick;
+class Command;
+typedef std::map<Flux::string, Command *, std::less<Flux::string> > CommandMap;
 class Command
 {
   Flux::string desc;
@@ -67,8 +69,9 @@ class Command
 public:
   size_t MaxParams;
   size_t MinParams;
+  Flux::string name;
   module *mod;
-  Command(module *owner, const Flux::string &sname, size_t min_params, size_t max_params=0);
+  Command(const Flux::string &sname, size_t min_params, size_t max_params=0);
   virtual ~Command();
 protected:
   void SetDesc(const Flux::string&);
@@ -81,4 +84,5 @@ public:
   virtual bool OnHelp(CommandSource&, const Flux::string&);
   virtual void OnSyntaxError(CommandSource&, const Flux::string&);
 };
+Command *FindCommand(const Flux::string &name);
 #endif

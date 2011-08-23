@@ -259,7 +259,7 @@ void Oper::gline(Flux::string target, Flux::string time, Flux::string reason){
 }
 /*******************************************************************************************/
 /* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
-Command::Command(module *owner, const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), mod(owner)
+Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
 {
 }
 Command::~Command()
@@ -279,7 +279,7 @@ void Command::SendSyntax(CommandSource &source){
  }
 }
 void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
-  Send->notice(source.u, "Syntax: \2%s %s\2", source.command.c_str(), syn.c_str());
+  source.Reply("Syntax: \2%s %s\2", source.command.c_str(), syn.c_str());
   source.Reply("\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
 }
 const Flux::string &Command::GetDesc() const{

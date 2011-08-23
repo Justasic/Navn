@@ -33,6 +33,7 @@ public:
   weather(bool act):module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Flux::string cmd = params.empty()?"":params[0];
+    User *u = source.u;
     if(cmd == "!weather"){
       if(params.size() < 2){
 	source.Reply("Syntax: \2!weather \037area\037\2");
@@ -45,13 +46,13 @@ public:
       if(area.is_number_only())
 	wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+area;
       else
-	wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",rply));
+	wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",source.raw));
       system(wget.c_str());
       if(!irc_string::said(xmlToString(filename),"problem_cause")){
 	Flux::string ff = xmlToString(filename);
 	ff.trim();
 	if(ff.empty()){
-	  Send->privmsg(chan, "Could not download/read %s", filename.c_str());
+	  Send->privmsg(source.c, "Could not download/read %s", filename.c_str());
 	  log("%s attempted to use !weather but downloading/reading the file '%s' failed.", filename.c_str());
 	  return MOD_STOP;
 	}
@@ -61,8 +62,8 @@ public:
 	Flux::string tempc = findInXML("temp_c","data",ff);
 	remove(filename.c_str());
 	loc.trim();
-	Send->privmsg(chan, "The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
-	log("%s used !weather to get weather for area '%s'", unick.c_str(), area.c_str());
+	Send->privmsg(source.c, "The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
+	log("%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());
       }
     }
     return MOD_RUN;

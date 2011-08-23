@@ -110,6 +110,7 @@ int main (int argcx, char** argvx, char *envp[])
     
     /**       MODULES          */
     /*! \endcode */ 
+    Flux::string rply;
     while (!quitting){
       if(sock->GetBuffer(rply)){
 	/* Process the buffer and modules */

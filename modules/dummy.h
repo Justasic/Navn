@@ -22,14 +22,29 @@
  * \brief Replies to a test
  * We will try to put as many examples here in the future as we can.
  */
-
+/*class CommandDummy : public Command
+{
+public: 
+  CommandDummy() : Command("test", 0,0)
+  {
+   this->SetDesc("Test command for new command class");
+   this->SetSyntax("\37test\37");
+  }
+  void Execute(CommandSource &source, const std::vector<Flux::string> &params){
+   source.Reply("YAAY!");
+   return;
+  }
+};*/
 class dummy : public module{
-
+//CommandDummy cmddummy;
 public:
-  dummy(bool a):module("Dummy", a, PRIORITY_LAST){ this->SetDesc("Example Dummy module"); }
+  dummy(bool a):module("Dummy", a, PRIORITY_LAST){ 
+    this->SetDesc("Example Dummy module"); 
+    //this->AddCommand(&cmddummy);
+  }
   
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
-    User *u = finduser(source.u);
+    User *u = source.u;
     if(!u){
       return MOD_STOP;
     }
@@ -43,7 +58,7 @@ public:
    return MOD_RUN; 
   }
 };
-
+//MODULE_HOOK(dummy)
 /**
  * @}
  */

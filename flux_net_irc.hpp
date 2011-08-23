@@ -711,16 +711,33 @@ module::module(Flux::string n, bool a, ModulePriority p){
   priority = p;
   moduleList.push_back(this);
 }
+module *FindModule(const Flux::string &name){
+ for(std::vector<module*>::const_iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
+  module *m = *it;
+  if(m->name == name)
+    return m;
+ }
+ return NULL;
+}
+/***********************************************************************/
+/* commands stuff */
+CommandMap Commandsmap;
 int module::AddCommand(Command *c){
  if(!c)
-   return -1;
+   return 1;
+ std::pair<CommandMap::iterator, bool> it = Commandsmap.insert(std::make_pair(c->name, c));
+ if(it.second != true){
+   log("Command %s already loaded!", c->name.c_str());
+   return 2;
+ }
  c->mod = this;
-  return 0;
+ return 0;
 }
 int module::DelCommand(Command *c){
   if(!c)
-    return -1;
-  
+    return 1;
+  if(!Commandsmap.erase(c->name))
+    return 2;
   c->mod = NULL;
   return 0;
 }
@@ -732,6 +749,15 @@ void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
     }
   } 
 }
+Command *FindCommand(const Flux::string &name){
+ if(name.empty())
+   return NULL;
+ CommandMap::iterator it = Commandsmap.find(name);
+ if(it != Commandsmap.end())
+   return it->second;
+ return NULL;
+}
+/***************************************************************************/
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
@@ -806,52 +832,50 @@ void process(const Flux::string &buffer){
   /**************************************/
   const Flux::string &reciever = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
-  raw == buffer;
-  fullhost == source;
-  msg = message;
-  host = irc_string::isolate('@',' ',source);//sets the variables.
-  unick = irc_string::isolate(':','!',source);
-  ident = irc_string::isolate('!','@',source);
-  
-  if(!reciever.empty())
-     chan = IsValidChannel(reciever)?reciever:"";
   
   if(command == "PRIVMSG"){
     if(protocoldebug){
     }else
       if(!reciever.empty() && !params[1].empty())
-       printf("<%s-%s> %s\n", unick.c_str(), reciever.c_str(), params[1].c_str());
+       printf("<%s-%s> %s\n", irc_string::isolate(':','!',source).c_str(), reciever.c_str(), params[1].c_str());
   }else
     if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
   /**************************************/
-  User *u = finduser(unick);
+  /* make local variables instead of global ones */
+  Flux::string nickname = irc_string::isolate(':','!',source),
+  uident = irc_string::isolate('!','@',source),
+  uhost = irc_string::isolate('@',' ',source);
+  
+  User *u = finduser(nickname);
   if(!u){
-    if(unick.empty() || ident.empty() || host.empty()){ }else
-      u = new User(unick, ident, host);
+    if(nickname.empty() || uident.empty() || uhost.empty()){ }else
+      u = new User(nickname, uident, uhost);
   }
   if(command == "QUIT"){
-    User *u = finduser(unick);
+    User *u = finduser(nickname);
    if(!u){}else{
      delete u;
    }
   }
   CommandSource Source;
-  Source.u = unick;
+  Source.u = u;
   Source.fullhost = source;
-  Source.c = chan;
   Source.command = command;
   Source.message = message;
   Source.params = params;
   Source.raw = buffer;
+  if(!reciever.empty())
+    Source.c = IsValidChannel(reciever)?reciever:"";
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
     return;
   ProcessModules(Source, params2);
 }
+//const Flux::string &modname,
 #define MODULE_HOOK(x) \
-extern "C" module *ModInit(const Flux::string &modname, const bool activated) \
+extern "C" module *ModInit(const bool activated) \
         { \
-                return new x(modname, activated); \
+                return new x(activated); \
         } \
         extern "C" void Modunini(x *m) \
         { \

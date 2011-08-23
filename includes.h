@@ -16,6 +16,7 @@
 #include "flux.h"
 //#include "thread.h"
 #include <utility>
+#include <stdint.h> 
 #include <list>
 #include <arpa/nameser.h>
 #include <resolv.h>

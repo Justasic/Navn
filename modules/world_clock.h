@@ -35,6 +35,7 @@ public:
   world_clock(bool a):module("World Clock", a, PRIORITY_DONTCARE){ this->SetDesc("Shows time for your area or for the preset ones"); }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];
+  User *u = source.u;
   if (cmd == "!time"){
     Flux::string location;
     if(params.size() > 2)
@@ -48,17 +49,17 @@ public:
       ptm = gmtime(&rawtime);
       int minutes = (ptm->tm_min);
       int seconds = (ptm->tm_sec);
-      Send->privmsg(chan, "Current time around the World:");
-      Send->privmsg(chan, "GMT == %2d:%02d:%02d", (ptm->tm_hour+UTC)%24, minutes, seconds);
-      Send->privmsg(chan, "New York (USA) == %2d:%02d:%02d", (ptm->tm_hour+EST)%24, minutes, seconds);
-      Send->privmsg(chan, "California (USA) == %2d:%02d:%02d", (ptm->tm_hour+PST)%24, minutes, seconds);
-      Send->privmsg(chan, "Beijing (China) == %2d:%02d:%02d", (ptm->tm_hour+CCT)%24, minutes, seconds);
-      Send->privmsg(chan, "Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);	
+      Send->privmsg(source.c, "Current time around the World:");
+      Send->privmsg(source.c, "GMT == %2d:%02d:%02d", (ptm->tm_hour+UTC)%24, minutes, seconds);
+      Send->privmsg(source.c, "New York (USA) == %2d:%02d:%02d", (ptm->tm_hour+EST)%24, minutes, seconds);
+      Send->privmsg(source.c, "California (USA) == %2d:%02d:%02d", (ptm->tm_hour+PST)%24, minutes, seconds);
+      Send->privmsg(source.c, "Beijing (China) == %2d:%02d:%02d", (ptm->tm_hour+CCT)%24, minutes, seconds);
+      Send->privmsg(source.c, "Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);	
       char buf[100];
       ptm = localtime(&rawtime);
       strftime(buf,100,"Navn's Time: %Z %c",ptm);
-      Send->privmsg(chan, buf);
-      log("%s requested !time command in %s", unick.c_str(), chan.c_str());
+      Send->privmsg(source.c, buf);
+      log("%s requested !time command in %s", u->nick.c_str(), source.c.c_str());
       return MOD_RUN;
     }else{
       Flux::string wget, filename;
@@ -66,21 +67,21 @@ public:
       	if(location.is_number_only())
 	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+location;
 	else
-	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!time", rply));
+	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!time", source.raw));
 	system(wget.c_str());
 	if(!irc_string::said(xmlToString(filename),"problem_cause")){
 	  Flux::string ff = xmlToString(filename);
 	  ff.trim();
 	  if(ff.empty()){
-	   Send->privmsg(chan, "Could not download/read %s", filename.c_str());
+	   Send->privmsg(source.c, "Could not download/read %s", filename.c_str());
 	   log("%s attempted to use !time but downloading/reading the file '%s' failed.", filename.c_str());
 	   return MOD_STOP;
 	  }
 	  Flux::string loc = findInXML("city","data",ff);
 	  Flux::string time = findInXML("current_date_time","data",ff);
-	  Send->privmsg(chan, "The current time in %s is %s", loc.c_str(), time.c_str());
+	  Send->privmsg(source.c, "The current time in %s is %s", loc.c_str(), time.c_str());
 	  remove(filename.c_str());
-	  log("%s used !time to get time for %s", unick.c_str(), location.c_str());
+	  log("%s used !time to get time for %s", u->nick.c_str(), location.c_str());
 	  }
 	}
       }

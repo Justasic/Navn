@@ -115,7 +115,7 @@ public:
        return MOD_RUN;
      }
       Flux::string ip = params[params.size() -1];
-      rdns(chan, ip);
+      rdns(source.c, ip);
     }
     if(cmd == "!dns"){
      if(params.size() < 2){
@@ -123,7 +123,7 @@ public:
        return MOD_RUN;
      }
       Flux::string host = params[params.size() -1];
-      dns(chan, host);
+      dns(source.c, host);
     }
     if(cmd == "!ardns"){
      if(params.size() < 2){
@@ -131,7 +131,7 @@ public:
        return MOD_RUN;
      }
      Flux::string host = params[params.size() -1];
-     alldns(host, chan);
+     alldns(host, source.c);
       
     }
     return MOD_RUN;

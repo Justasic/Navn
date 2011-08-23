@@ -43,7 +43,7 @@ public:
       source.Reply("stats \t \t Shows system statistics.");
       source.Reply("nick \t \t \tSets the bots nickname");
       
-      log("%s used help command", unick.c_str());
+      log("%s used help command", source.u->nick.c_str());
    }
    return MOD_RUN;
   }

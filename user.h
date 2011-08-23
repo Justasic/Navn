@@ -6,17 +6,23 @@ class User
 public:
   User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "");
   virtual ~User();
-  Flux::string nick, host, realname, ident;
+  Flux::string nick, host, realname, ident, fullhost;
   void Kick(const Flux::string&, const Flux::string&);
   void Kill(const Flux::string&);
   void SendMessage(const Flux::string&);
   void Privmsg(const Flux::string&);
 };
-extern Flux::map<User *> UserNickList;
+extern Flux::map<User *> UserNickList; //this makes the variable global for later use..
 User *finduser(const Flux::string &nick);
+class Channel
+{
+  
+  
+  
+};
 struct CommandSource
 {
- Flux::string u; /* User name, this will be replaced with above class*/
+ User *u; /* User name, this will be replaced with above class*/
  Flux::string fullhost;
  Flux::string c; /* Channel name, this will be replaced with channel class */
  Flux::string command;

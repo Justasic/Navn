@@ -1,5 +1,6 @@
 #include "user.h"
 Flux::map<User *> UserNickList;
+size_t usercnt = 0, maxusercnt = 0;
 User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname){
  /* check to see if a empty string was passed into the constructor */
  if(snick.empty() || sident.empty() || shost.empty())
@@ -9,8 +10,14 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  this->ident = sident;
  this->host = shost;
  this->realname = srealname;
+ this->fullhost = snick+"!"+sident+"@"+shost;
  UserNickList[snick] = this;
  printf("New user! %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+ ++usercnt;
+ if(usercnt > maxusercnt){
+  maxusercnt = usercnt;
+  printf("New maximum user count: %i\n", maxusercnt);
+ }
 }
 void User::Kick(const Flux::string &channel, const Flux::string &reason){
   Send->command->kick(channel, this->nick, reason);
@@ -54,6 +61,7 @@ void CommandSource::Reply(const Flux::string &msg){
  Flux::string tok;
  while(sep.GetToken(tok))
  {
-   Send->notice(this->u, tok.c_str());
+   this->u->SendMessage(tok);
+   //Send->notice(this->u->nick, tok.c_str());
  }
 }

@@ -48,18 +48,19 @@ public:
 ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   /* use string to prevent segmentation faults */
   Flux::string cmd = params.empty()?"":params[0];
-
+  User *u = source.u;
+  
   if (cmd == "pass"){
-    if (source.u == owner_nick){
-      source.Reply("The password is:\2 "+password);
-      log("%s requested the navn quit password: %s", source.u.c_str(), password.c_str());
+    if (u->nick == owner_nick){
+      source.Reply("The password is:\2 %s", password.c_str());
+      log("%s requested the navn quit password: %s", u->nick.c_str(), password.c_str());
     }else{
       source.Reply(access_denied);
-      log("%s attempted to request the navn quit password.", source.u.c_str());
+      log("%s attempted to request the navn quit password.", u->nick.c_str());
     }
   }
   if (cmd == "restart"){
-    if(source.u == owner_nick){
+    if(u->nick == owner_nick){
       //Flux::string reason = "-no reason-";
       Send->raw("QUIT :Restarting..\n");
       restart("Restarting..");
@@ -68,9 +69,9 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     }
   }
   if(cmd == "pid"){
-    if(source.u == owner_nick){
+    if(u->nick == owner_nick){
       source.Reply("My PID is: %i", getpid()); 
-      log("%s used pid function to get PID %i", source.u.c_str(), getpid());
+      log("%s used pid function to get PID %i", u->nick.c_str(), getpid());
     }else{
       source.Reply(access_denied);
     }
@@ -88,33 +89,33 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(pass == password || pass == usrpass){
       source.Reply("Quitting..");
-      log("%s quit the bot with password: \"%s\"", source.u.c_str(), password.c_str());
-      shutdown("Requested From \2"+source.u+"\17. Pass: \00320"+password+"\017");
+      log("%s quit the bot with password: \"%s\"", u->nick.c_str(), password.c_str());
+      shutdown("Requested From \2"+u->nick+"\17. Pass: \00320"+password+"\017");
     }else{
       source.Reply(access_denied);
-      log("%s attempted to change ownership of the bot", source.u.c_str());
+      log("%s attempted to change ownership of the bot", u->nick.c_str());
     }
   }
   if(cmd == "rehash"){
     Flux::string pass = params.size() > 0 ? params[0] : "";
-    if(source.u == owner_nick || pass == password || pass == usrpass){
+    if(u->nick == owner_nick || pass == password || pass == usrpass){
       source.Reply("Rehashing config file.");
-      log("%s rehashed config file.", source.u.c_str());
+      log("%s rehashed config file.", u->nick.c_str());
       Rehash(false);
     }else{
       source.Reply(access_denied);
-      log("%s attempted a rehash.", source.u.c_str());
+      log("%s attempted a rehash.", u->nick.c_str());
     }
   }
   if(cmd == "chown"){
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(pass == password || pass == usrpass){
-      log("Changing ownership from %s to %s", owner_nick.c_str(), source.u.c_str());
-      owner_nick = source.u; //FIXME: i am broken from the new API!
+      log("Changing ownership from %s to %s", owner_nick.c_str(), u->nick.c_str());
+      owner_nick = u->nick; //FIXME: i am broken from the new API!
       source.Reply("New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
     }else{
       source.Reply(access_denied);
-      log("%s attempted to change ownership of the bot", source.u.c_str());
+      log("%s attempted to change ownership of the bot", u->nick.c_str());
     }
   }
   /*Find the join numeric (376)
@@ -150,22 +151,22 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     log("Op is required in %s", source.c.c_str());  
   }
   if(cmd == "This nickname is registered and protected. If it is your"){
-    Send->privmsg(source.u, "identify %s %s", nsacc.c_str(), nspass.c_str());
+    Send->privmsg(u->nick, "identify %s %s", nsacc.c_str(), nspass.c_str());
     log("Identified to NickServ with account \"%s\"", nsacc.c_str());
   }
   if (source.command == "JOIN"){ //welcomes everyone who joins the channel
-    if(source.u == nick){return MOD_RUN;}else{
-      source.Reply("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", source.u.c_str(), strip(source.c).c_str(), nick.c_str());
-      log("%s joined %s", source.u.c_str(), strip(source.c).c_str());
+    if(u->nick == nick){return MOD_RUN;}else{
+      source.Reply("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(), strip(source.c).c_str(), nick.c_str());
+      log("%s joined %s", u->nick.c_str(), strip(source.c).c_str());
     }
   }
   if(source.command == "KICK"){
     Flux::string reason = source.params[2].empty()?"":source.params[2];
-    printf("%s kicked %s (%s)\n", source.u.c_str(), cmd.c_str(), reason.c_str());
+    printf("%s kicked %s (%s)\n", u->nick.c_str(), cmd.c_str(), reason.c_str());
     if(source.params[1] == nick){
-      Send->notice(owner_nick, "%s kicked me from %s! (%s)", source.u.c_str(), params[0].c_str(), reason.c_str());
+      Send->notice(owner_nick, "%s kicked me from %s! (%s)", u->nick.c_str(), params[0].c_str(), reason.c_str());
       Send->command->join(source.c);
-      log("%s kicked bot out of channel %s (%s)", source.u.c_str(), source.c.c_str(), reason.c_str());
+      log("%s kicked bot out of channel %s (%s)", u->nick.c_str(), source.c.c_str(), reason.c_str());
     }
   }
   return MOD_RUN;

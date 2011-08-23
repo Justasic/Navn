@@ -36,28 +36,29 @@ public:
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
   {
     Flux::string cmd = params.empty()?"":params[0];
+    User *u = source.u;
   if(source.message == "about me"){
 	source.Reply("Raw: %s", source.raw.c_str());
-	source.Reply("message: %s", msg.c_str());
-	source.Reply("Nickname: %s", unick.c_str());
-	source.Reply("Ident: %s", ident.c_str());
-	source.Reply("Host: %s"+host);
-	source.Reply("Channel: "+chan);
-	source.Reply("Fullhost: "+source.u);
-	log("%s requested information about themself.", unick.c_str());
+	source.Reply("message: %s", source.message.c_str());
+	source.Reply("Nickname: %s", u->nick.c_str());
+	source.Reply("Ident: %s", u->ident.c_str());
+	source.Reply("Host: %s", u->host.c_str());
+	source.Reply("Channel: "+source.c);
+	source.Reply("Fullhost: %s", u->fullhost.c_str());
+	log("%s requested information about themself.", u->nick.c_str());
   }
   if(cmd == "!decodehost"){
     Flux::string cmd = params.size() == 2?params[0]:"";
     if(cmd.empty()){
-     source.Reply("Syntax: \2!decodehost \37nick!ident@host.name\15"); 
+     source.Reply("Syntax: \2!decodehost \37hostname\15"); 
      return MOD_STOP;
     }
 	Flux::string host = params[1];
 	IsoHost* Host = new IsoHost(host);
-	Send->privmsg(chan, "Nick: %s", Host->nick.c_str());
-	Send->privmsg(chan, "User: %s", Host->user.c_str());
-	Send->privmsg(chan, "Host: %s", Host->host.c_str());
-	Send->privmsg(chan, "Raw: %s", Host->raw.c_str());
+	Send->privmsg(source.c, "Nick: %s", Host->nick.c_str());
+	Send->privmsg(source.c, "User: %s", Host->user.c_str());
+	Send->privmsg(source.c, "Host: %s", Host->host.c_str());
+	Send->privmsg(source.c, "Raw: %s", Host->raw.c_str());
 	delete Host;
   }
   return MOD_RUN;

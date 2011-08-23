@@ -36,6 +36,7 @@ public:
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
   {
     Flux::string cmd = params.empty()?"":params[0];
+    User *u = source.u;
 
     bool request = false;
     Flux::string confPass;
@@ -51,8 +52,8 @@ public:
 	if (mod == moduleList[i]->name && moduleList[i]->priority != PRIORITY_FIRST)
 	{
 	  moduleList[i]->activated = !moduleList[i]->activated;
-	  Send->privmsg(chan, "%s is now %sactivated.", moduleList[i]->name.c_str(), moduleList[i]->activated ? "" : "de-");
-	  log("%s used \"flipmob\" to %sactivate module '%s'", unick.c_str(), moduleList[i]->activated ? "" : "de-", moduleList[i]->name.c_str());
+	  source.Reply("%s is now %sactivated.", moduleList[i]->name.c_str(), moduleList[i]->activated ? "" : "de-");
+	  log("%s used \"flipmob\" to %sactivate module '%s'", u->nick.c_str(), moduleList[i]->activated ? "" : "de-", moduleList[i]->name.c_str());
 	}
       }
     }
@@ -74,7 +75,7 @@ public:
 	  }
 	}
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
-	log("%s used \"modlist low\" to show %i loaded module%.", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modlist low\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       else if(lpriority == "deactivated"){
       source.Reply("Current Deactivated Modules list:");
@@ -87,7 +88,7 @@ public:
 	  }
 	}
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
-	log("%s used \"modlist low\" to show %i loaded module%.", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modlist low\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       else if(lpriority == "activated"){
       source.Reply("Current Activated Modules list:");
@@ -100,7 +101,7 @@ public:
 	  }
 	}
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
-	log("%s used \"modlist low\" to show %i loaded module%.", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modlist low\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       else if(lpriority == "normal" || lpriority == '2'){
 	source.Reply("Current Normal Priority Module list:");
@@ -113,7 +114,7 @@ public:
 	  }
 	}
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
-	log("%s used \"modlist normal\" to show %i loaded module%.", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modlist normal\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       else if(lpriority == "high" || lpriority == '3'){
 	source.Reply("Current High Priority Module list:");
@@ -126,7 +127,7 @@ public:
 	  }
 	}
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
-	log("%s used \"modlist high\" to show %i loaded module%.", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modlist high\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
 	
       }else{
 	listall:
@@ -138,7 +139,7 @@ public:
 	  count++;
 	}
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
-	log("%s used \"modlist\" to show %s %i loaded module%.", unick.c_str(), count == 1 ? "one" : "all", count, count == 1 ? "" : "s");
+	log("%s used \"modlist\" to show %s %i loaded module%.", u->nick.c_str(), count == 1 ? "one" : "all", count, count == 1 ? "" : "s");
       }
     }
     /***********************************************************************************************************/
@@ -155,7 +156,7 @@ public:
 	  if (moduleList[i]->priority < PRIORITY_FIRST) moduleList[i]->activated = false;
 	  count++;
 	}
-	log("%s used \"modunload all\" to unload all non-high priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modunload all\" to unload all non-high priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       if(type == "low" || type == '1'){
 	source.Reply("Unloading all low priority modules.");
@@ -165,7 +166,7 @@ public:
 	  if (moduleList[i]->priority == PRIORITY_LAST) moduleList[i]->activated = false;
 	  count++;
 	}
-	log("%s used \"modunload low\" to unload all normal priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modunload low\" to unload all normal priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       if(type == "normal" || type == '2'){
 	source.Reply("Unloading all normal priority modules.");
@@ -175,14 +176,14 @@ public:
 	  if (moduleList[i]->priority == PRIORITY_DONTCARE) moduleList[i]->activated = false;
 	  count++;
 	}
-	log("%s used \"modunload normal\" to unload all normal priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modunload normal\" to unload all normal priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       if((type == "high" || type == '3') && !request){
 	request = true;
 	confPass = make_pass();
 	source.Reply("\0037WARNING\017: You are requesting an unload of all high priority modules. This cannot be reversed without a restart.");
 	source.Reply("To confirm type \"/msg %s modconfirm %s\"", nick.c_str(), confPass.c_str());
-	log("%s requested that all high priority modules be unloaded.", unick.c_str());
+	log("%s requested that all high priority modules be unloaded.", u->nick.c_str());
       }
     }
     if (cmd == "modconfirm")
@@ -200,7 +201,7 @@ public:
 	  if (moduleList[i]->priority == PRIORITY_FIRST) moduleList[i]->activated = false;
 	  count++;
 	}
-	log("%s used \"modunload high\" to unload all high priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modunload high\" to unload all high priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
 	log("Module's system frozen in current state until next restart, Module Handler disabled!");
     }
     /***********************************************************************************************************/
@@ -218,7 +219,7 @@ public:
 	  if (moduleList[i]->priority < PRIORITY_FIRST) moduleList[i]->activated = true;
 	  count++;
 	}
-	log("%s used \"modload all\" to load all modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modload all\" to load all modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       if(priority == '1' || priority == "low"){
 	source.Reply("loading all low priority modules.");
@@ -228,7 +229,7 @@ public:
 	  if (moduleList[i]->priority == 1) moduleList[i]->activated = true;
 	  count++;
 	}
-	log("%s used \"modload low\" to load all low priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modload low\" to load all low priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
       if(priority == '2' || priority == "normal"){
 	source.Reply("loading all priority 2 modules.");
@@ -238,7 +239,7 @@ public:
 	  if (moduleList[i]->priority == 2) moduleList[i]->activated = true;
 	  count++;
 	}
-	log("%s used \"modload normal\" to load all normal priority modules (%i Module%s)", unick.c_str(), count, count == 1 ? "" : "s");
+	log("%s used \"modload normal\" to load all normal priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
     }
     return MOD_RUN;

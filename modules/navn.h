@@ -38,7 +38,8 @@ class navn:public module{
 public:
   navn(bool a):module("Navn", a, PRIORITY_DONTCARE){ this->SetDesc("Where some of the navn specific functions are");}
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
-    Flux::string cmd = params.empty()?"":params[0];
+    Flux::string cmd = params.empty()?"":params[0], chan = source.c;
+    User *u = source.u;
     
     if (cmd == "part"){
       Flux::string blah = params.size() == 2 ? params[1] : "";
@@ -48,9 +49,9 @@ public:
       }
       if(!IsValidChannel(blah)){
         source.Reply("Channel %s is not a valad channel.", blah.c_str());
-        log("%s attempted to make bot part %s", unick.c_str(), blah.c_str());
+        log("%s attempted to make bot part %s", u->nick.c_str(), blah.c_str());
       }else{
-        log("%s made the bot part %s", unick.c_str(), blah.c_str());
+        log("%s made the bot part %s", u->nick.c_str(), blah.c_str());
         Send->command->part(blah);
       }
     }
@@ -59,10 +60,10 @@ public:
   }
   if(cmd == "!git"){
     source.Reply("Navn git: git://gitorious.org/navn/navn.git");
-    log("%s requested Git repository link.", unick.c_str());
+    log("%s requested Git repository link.", u->nick.c_str());
   }
   if(cmd == "kick"){
-    if(unick == owner_nick){
+    if(u->nick == owner_nick){
       if(params.size() > 2 || params.empty() || params.size() < 2){
 	source.Reply("Syntax: \2kick channel \37nick\15"); 
 	return MOD_STOP;
@@ -78,7 +79,7 @@ public:
 	return MOD_STOP;
       }
       
-      Send->command->kick(kickchan, kickee, "Kick from %s", unick.c_str());
+      Send->command->kick(kickchan, kickee, "Kick from %s", u->nick.c_str());
     }else{
       source.Reply(access_denied);
     }
@@ -91,9 +92,9 @@ public:
     }
     if(!IsValidChannel(blah)){
       source.Reply("Channel \2%s\2 is not a valad channel.", blah.c_str());
-      log("%s attempted to make bot join %s", unick.c_str(), blah.c_str());
+      log("%s attempted to make bot join %s", u->nick.c_str(), blah.c_str());
     }else{
-      log("%s made the bot join %s", unick.c_str(), blah.c_str());
+      log("%s made the bot join %s", u->nick.c_str(), blah.c_str());
       Send->command->join(blah);
       Send->privmsg(blah, welcome_msg, nick.c_str(), nick.c_str());
     }
@@ -110,10 +111,10 @@ public:
 	nick = newnick;
       }
     }
-    if(unick == owner_nick){
+    if(u->nick == owner_nick){
       Send->command->nick(newnick);
     }else{
-     Send->privmsg(unick, access_denied); 
+     Send->privmsg(u->nick, access_denied); 
     }
   }
   return MOD_RUN;
