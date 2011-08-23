@@ -43,11 +43,11 @@ public:
     if (cmd == "part"){
       Flux::string blah = params.size() == 2 ? params[1] : "";
       if(blah.empty()){
-	Send->notice(unick, "Syntax: \2part \37channel\15");
+	source.Reply("Syntax: \2part \37channel\15");
 	return MOD_STOP;
       }
       if(!IsValidChannel(blah)){
-        Send->notice(unick, "Channel %s is not a valad channel.", blah.c_str());
+        source.Reply("Channel %s is not a valad channel.", blah.c_str());
         log("%s attempted to make bot part %s", unick.c_str(), blah.c_str());
       }else{
         log("%s made the bot part %s", unick.c_str(), blah.c_str());
@@ -58,39 +58,39 @@ public:
     Send->privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/");
   }
   if(cmd == "!git"){
-    Send->notice(unick, "Navn git: git://gitorious.org/navn/navn.git");
+    source.Reply("Navn git: git://gitorious.org/navn/navn.git");
     log("%s requested Git repository link.", unick.c_str());
   }
   if(cmd == "kick"){
     if(unick == owner_nick){
       if(params.size() > 2 || params.empty() || params.size() < 2){
-	Send->notice(unick, "Syntax: \2kick channel \37nick\15"); 
+	source.Reply("Syntax: \2kick channel \37nick\15"); 
 	return MOD_STOP;
       }
       Flux::string kickchan = params.size() == 2 ? params[1] : "";
       Flux::string kickee = params.size() == 2 ? params[2] : "";
       if(kickee.empty() || kickchan.empty()){
-	Send->notice(unick, "Syntax: \2kick channel \37nick\15");
+	source.Reply("Syntax: \2kick channel \37nick\15");
 	return MOD_STOP;
       }
       if(!IsValidChannel(kickchan)){
-	Send->notice(unick, "Channel \2%s\2 is not a valad channel.", kickchan.c_str()); 
+	source.Reply("Channel \2%s\2 is not a valad channel.", kickchan.c_str()); 
 	return MOD_STOP;
       }
       
       Send->command->kick(kickchan, kickee, "Kick from %s", unick.c_str());
     }else{
-      Send->notice(unick, access_denied);
+      source.Reply(access_denied);
     }
   }
   if (cmd == "join"){
     Flux::string blah = params.size() == 2 ? params[1] : "";
     if(blah.empty()){
-      Send->notice(unick, "Syntax: \2Join \37channel\15"); 
+      source.Reply("Syntax: \2Join \37channel\15"); 
       return MOD_STOP;
     }
     if(!IsValidChannel(blah)){
-      Send->notice(unick, "Channel \2%s\2 is not a valad channel.", blah.c_str());
+      source.Reply("Channel \2%s\2 is not a valad channel.", blah.c_str());
       log("%s attempted to make bot join %s", unick.c_str(), blah.c_str());
     }else{
       log("%s made the bot join %s", unick.c_str(), blah.c_str());
@@ -101,12 +101,12 @@ public:
   if(cmd == "nick"){
     Flux::string newnick = params.size() == 2 ? params[1]:"";
     if(newnick.empty()){
-      Send->notice(unick, "Syntax: \002nick \37newnickname\15"); 
+      source.Reply("Syntax: \002nick \37newnickname\15"); 
       return MOD_STOP;
     }
     for(unsigned i = 0, end = newnick.length(); i < end; i++){
       if(!isvalidnick(newnick[i])){
-	Send->notice(unick, "\2%s\2 is an invalid nickname.");
+	source.Reply("\2%s\2 is an invalid nickname.");
 	nick = newnick;
       }
     }

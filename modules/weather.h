@@ -35,7 +35,7 @@ public:
     Flux::string cmd = params.empty()?"":params[0];
     if(cmd == "!weather"){
       if(params.size() < 2){
-	Send->privmsg(chan, "Syntax: \2!weather \037area\037\2");
+	source.Reply("Syntax: \2!weather \037area\037\2");
 	return MOD_STOP;
       }
       Flux::string area = params[params.size() - 1];

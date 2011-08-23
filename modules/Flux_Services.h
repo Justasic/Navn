@@ -38,20 +38,20 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		if(unick == owner_nick){
 		  Flux::string pchannel = params.size() == 2?params[1]:"";
 		  if(pchannel.empty()){
-		    Send->privmsg(chan, "im out niggaz!");
+		   Send->privmsg(chan, "im out niggaz!");
 		   Send->command->part(chan, "I'm leaving this dump."); 
 		   log("%s used Flux_S3rvices part %s", unick.c_str(), chan.c_str());
 		   return MOD_STOP;
 		  }
 		  if(!IsValidChannel(pchannel)){
-		    Send->notice(unick, "Channel \2%s\2 is not a valid channel", pchannel.c_str());
+		    source.Reply("Channel \2%s\2 is not a valid channel", pchannel.c_str());
 		    return MOD_STOP;
 		  }
 			Send->privmsg(pchannel, "im out niggaz!");
 			Send->command->part(pchannel, "I'm leaving this dump.");
 			log("%s used Flux_S3rvices part %s", unick.c_str(), pchannel.c_str());
 		}else{
-			Send->notice(unick, access_denied);
+			source.Reply(access_denied);
 		}
 	}
 	if(cmd == "!botadd"){

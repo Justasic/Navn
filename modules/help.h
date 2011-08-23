@@ -30,18 +30,18 @@ public:
     Flux::string cmd = params.empty()?"":params[0];
   //help replies
     if(cmd == "help"){
-      Send->notice(unick, "There are 10 commands:");
-      Send->notice(unick, "quit \t \t \tQuits the bot (password needed)");
-      Send->notice(unick, "pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
-      Send->notice(unick, "rejoin\t \t Rejoins the bot to the channel.");
-      Send->notice(unick, "chown \t \t Changes ownership over the bot (must be a bot admin)");
-      Send->notice(unick, "join \t \t \tTells the bot to join the specified channel.");
-      Send->notice(unick, "part \t \t \tParts the channel");
-      Send->notice(unick, "kick \t \t \tkicks a user from the channel (must be bot owner)");
-      Send->notice(unick, "restart \t Restarts the Bot (Password needed)");
-      Send->notice(unick, "rehash\t \t Rehashes the Bot (Password needed)");
-      Send->notice(unick, "stats \t \t Shows system statistics.");
-      Send->notice(unick, "nick \t \t \tSets the bots nickname");
+      source.Reply("There are 10 commands:");
+      source.Reply("quit \t \t \tQuits the bot (password needed)");
+      source.Reply("pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
+      source.Reply("rejoin\t \t Rejoins the bot to the channel.");
+      source.Reply("chown \t \t Changes ownership over the bot (must be a bot admin)");
+      source.Reply("join \t \t \tTells the bot to join the specified channel.");
+      source.Reply("part \t \t \tParts the channel");
+      source.Reply("kick \t \t \tkicks a user from the channel (must be bot owner)");
+      source.Reply("restart \t Restarts the Bot (Password needed)");
+      source.Reply("rehash\t \t Rehashes the Bot (Password needed)");
+      source.Reply("stats \t \t Shows system statistics.");
+      source.Reply("nick \t \t \tSets the bots nickname");
       
       log("%s used help command", unick.c_str());
    }

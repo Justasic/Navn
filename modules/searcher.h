@@ -75,7 +75,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       if(cmd == "!google"){
 		// if !google is said in the channel
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!google \37message\15");
+		 source.Reply("Syntax: \2!google \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!google"));
@@ -83,7 +83,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       }
       if(cmd == "!youtube"){ // if !youtube is said in the channel
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!youtube \37message\15");
+		 source.Reply("Syntax: \2!youtube \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!youtube"));
@@ -91,7 +91,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       }
       if(cmd == "!tpb"){ // if !tpb xor !thepiratebay is said in the channel
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!tpb \37message\15");
+		 source.Reply("Syntax: \2!tpb \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!tpb"));
@@ -99,7 +99,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       }
       if(cmd == "!define"){
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!define \37message\15");
+		 source.Reply("Syntax: \2!define \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!define"));
@@ -107,7 +107,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       }
       if(cmd == "!urban"){ 
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!urban \37message\15");
+		 source.Reply("Syntax: \2!urban \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!urban"));
@@ -115,7 +115,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       }
       if(cmd == "!movie"){ 
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!movie \37message\15");
+		 source.Reply("Syntax: \2!movie \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!movie"));
@@ -123,7 +123,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       }
       if(cmd == "!wiki"){ 
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!wiki \37message\15");
+		 source.Reply("Syntax: \2!wiki \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!wiki"));
@@ -131,7 +131,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       }
       if(cmd == "!music"){ 
 		if(params.size() < 2){
-		 Send->notice(unick, "Syntax: \2!music \37message\15");
+		 source.Reply("Syntax: \2!music \37message\15");
 		 return MOD_STOP;
 		}
 		Send->privmsg(chan, search(source.message, "!music"));

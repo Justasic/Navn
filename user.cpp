@@ -13,15 +13,19 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  printf("New user! %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
 }
 void User::Kick(const Flux::string &channel, const Flux::string &reason){
-  send_cmd("KICK %s %s :%s", this->nick.c_str(), channel.c_str(), reason.c_str());
+  Send->command->kick(channel, this->nick, reason);
+  //send_cmd("KICK %s %s :%s", this->nick.c_str(), channel.c_str(), reason.c_str());
 }
 void User::Kill(const Flux::string &reason){
+  //Send->command->Kill(this->nick, reason);
  send_cmd("KILL %s :%s", this->nick.c_str(), reason.c_str());
 }
 void User::SendMessage(const Flux::string &message){
-  send_cmd("NOTICE %s :%s\n", this->nick.c_str(), message.c_str());
+  Send->notice(this->nick, message);
+  //send_cmd("NOTICE %s :%s\n", this->nick.c_str(), message.c_str());
 }
 void User::Privmsg(const Flux::string &message){
+  Send->privmsg(this->nick, message);
   send_cmd("PRIVMSG %s :%s", this->nick.c_str(), message.c_str());
 }
 User::~User(){

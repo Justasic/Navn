@@ -111,7 +111,7 @@ public:
     Flux::string cmd = params.empty()?"":params[0];
     if(cmd == "!rdns"){
      if(params.size() < 2){
-       Send->notice(unick, "Syntax: \2!rdns \37ipaddress\15");
+       source.Reply("Syntax: \2!rdns \37ipaddress\15");
        return MOD_RUN;
      }
       Flux::string ip = params[params.size() -1];
@@ -119,7 +119,7 @@ public:
     }
     if(cmd == "!dns"){
      if(params.size() < 2){
-       Send->notice(unick, "Syntax: \2!dns \37hostname\15");
+       source.Reply("Syntax: \2!dns \37hostname\15");
        return MOD_RUN;
      }
       Flux::string host = params[params.size() -1];
@@ -127,7 +127,7 @@ public:
     }
     if(cmd == "!ardns"){
      if(params.size() < 2){
-       Send->notice(unick, "Syntax: \2!ardns \37hostname\15");
+       source.Reply("Syntax: \2!ardns \37hostname\15");
        return MOD_RUN;
      }
      Flux::string host = params[params.size() -1];

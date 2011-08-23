@@ -115,12 +115,12 @@ public:
       if(cmd == "topic"){
 		if(unick == owner_nick){
 			if(params.size() < 3){
-			  Send->notice(unick, "Syntax: \2TOPIC \37channel\37 \37topic\37");
+			  source.Reply("Syntax: \2TOPIC \37channel\37 \37topic\37");
 			  return MOD_STOP;
 			}
 			Flux::string tchan = params[1];
 			if(!IsValidChannel(tchan)){
-				Send->notice(unick, "\2%s\2 is not a valid channel.", tchan.c_str());
+				source.Reply("\2%s\2 is not a valid channel.", tchan.c_str());
 				return MOD_STOP;
 			}
 			msg = msg.erase(0,6);
@@ -130,7 +130,7 @@ public:
 			std::fstream topic;
 			topic.open("topic.tmp", std::fstream::in | std::fstream::out | std::fstream::app);
 			if(!topic.is_open()){
-				Send->notice(unick, "Unable to write topic temp file");
+				source.Reply("Unable to write topic temp file");
 				std::cout << "Unable to write topic temp file" << nl;
 				log("%s used /msg %s topic to change %s's topic to \"%s\" but could not write to topic temp file '%s'", 
 				    unick.c_str(), nick.c_str(), tchan.c_str(), msg.c_str(), "topic.tmp");
@@ -140,7 +140,7 @@ public:
 			}
 			log("%s used Da_Goats !topic command to change the topin in %s to \"%s\"",unick.c_str(), tchan.c_str(), strip(msg).c_str());
 		}else{ 
-			Send->notice(unick, access_denied); 
+			source.Reply(access_denied); 
 		}
 	}
       if(cmd == "stats"){
@@ -159,32 +159,32 @@ public:
 		hours = (sys_info.uptime / 3600) - (days * 24);
 		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
  
-		Send->notice(unick, "Uptime: %d days, %d hours, %d minutes, %ld seconds",
+		source.Reply("Uptime: %d days, %d hours, %d minutes, %ld seconds",
                       days, hours, mins, sys_info.uptime % 60);
  
 		// Load Averages for 1,5 and 15 minutes
-		Send->notice(unick, "Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
+		source.Reply("Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
 				sys_info.loads[0], sys_info.loads[1], sys_info.loads[2]);
  
 		// Total and free ram.
-		Send->notice(unick, "Total Ram: %ldk\tFree: %ldk", sys_info.totalram / 1024,
+		source.Reply("Total Ram: %ldk\tFree: %ldk", sys_info.totalram / 1024,
                                         sys_info.freeram / 1024);
  
 		// Shared and buffered ram.
-		Send->notice(unick, "Shared Ram: %ldk", sys_info.sharedram / 1024);
-		Send->notice(unick, "Buffered Ram: %ldk", sys_info.bufferram / 1024);
+		source.Reply("Shared Ram: %ldk", sys_info.sharedram / 1024);
+		source.Reply("Buffered Ram: %ldk", sys_info.bufferram / 1024);
  
 		// Swap space
-		Send->notice(unick, "Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
+		source.Reply("Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
                                            sys_info.freeswap / 1024);
  
 		// Number of processes currently running.
-		Send->notice(unick, "Number of processes: %d", sys_info.procs);
-		Send->notice(unick, "\003");
-		Send->notice(unick, "System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
-		Send->notice(unick, "System Version: %s", uts.version);
+		source.Reply("Number of processes: %d", sys_info.procs);
+		source.Reply("\003");
+		source.Reply("System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
+		source.Reply("System Version: %s", uts.version);
 
-		Send->notice(unick, strip(execute("grep 'model name' /proc/cpuinfo")));
+		source.Reply(strip(execute("grep 'model name' /proc/cpuinfo")));
 		log("%s used stats command in %s", unick.c_str(), chan.c_str());
       }
       if(cmd == "!uptime"){

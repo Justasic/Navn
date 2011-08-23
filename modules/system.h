@@ -51,10 +51,10 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 
   if (cmd == "pass"){
     if (source.u == owner_nick){
-      Send->notice(source.u, "The password is:\2 "+password);
+      source.Reply("The password is:\2 "+password);
       log("%s requested the navn quit password: %s", source.u.c_str(), password.c_str());
     }else{
-      Send->notice(source.u, access_denied);
+      source.Reply(access_denied);
       log("%s attempted to request the navn quit password.", source.u.c_str());
     }
   }
@@ -64,15 +64,15 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       Send->raw("QUIT :Restarting..\n");
       restart("Restarting..");
     }else{
-      Send->notice(source.u, access_denied);
+      source.Reply(access_denied);
     }
   }
   if(cmd == "pid"){
     if(source.u == owner_nick){
-      Send->notice(source.u, "My PID is: %i", getpid()); 
+      source.Reply("My PID is: %i", getpid()); 
       log("%s used pid function to get PID %i", source.u.c_str(), getpid());
     }else{
-      Send->notice(source.u, access_denied);
+      source.Reply(access_denied);
     }
   }
   if(source.command == "NICK"){
@@ -87,22 +87,22 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   if (cmd == "quit"){ //quits the bot.
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(pass == password || pass == usrpass){
-      Send->notice(source.u, "Quitting..");
+      source.Reply("Quitting..");
       log("%s quit the bot with password: \"%s\"", source.u.c_str(), password.c_str());
       shutdown("Requested From \2"+source.u+"\17. Pass: \00320"+password+"\017");
     }else{
-      Send->notice(source.u, access_denied);
+      source.Reply(access_denied);
       log("%s attempted to change ownership of the bot", source.u.c_str());
     }
   }
   if(cmd == "rehash"){
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(source.u == owner_nick || pass == password || pass == usrpass){
-      Send->notice(source.u, "Rehashing config file.");
+      source.Reply("Rehashing config file.");
       log("%s rehashed config file.", source.u.c_str());
       Rehash(false);
     }else{
-      Send->notice(source.u, access_denied);
+      source.Reply(access_denied);
       log("%s attempted a rehash.", source.u.c_str());
     }
   }
@@ -111,9 +111,9 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     if(pass == password || pass == usrpass){
       log("Changing ownership from %s to %s", owner_nick.c_str(), source.u.c_str());
       owner_nick = source.u; //FIXME: i am broken from the new API!
-      Send->notice(source.u, "New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
+      source.Reply("New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
     }else{
-      Send->notice(source.u, access_denied);
+      source.Reply(access_denied);
       log("%s attempted to change ownership of the bot", source.u.c_str());
     }
   }
@@ -142,7 +142,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     log("Successfully connected to the server \"%s:%s\" Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
   }
   if(cmd == "\001DCC"){
-    Send->notice(source.u, "I do not accept or support DCC connections.");
+    source.Reply("I do not accept or support DCC connections.");
   }
   if(source.command == "482"){
     cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
@@ -155,7 +155,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   }
   if (source.command == "JOIN"){ //welcomes everyone who joins the channel
     if(source.u == nick){return MOD_RUN;}else{
-      Send->notice(source.u, "Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", source.u.c_str(), strip(source.c).c_str(), nick.c_str());
+      source.Reply("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", source.u.c_str(), strip(source.c).c_str(), nick.c_str());
       log("%s joined %s", source.u.c_str(), strip(source.c).c_str());
     }
   }

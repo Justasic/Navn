@@ -258,6 +258,7 @@ void Oper::gline(Flux::string target, Flux::string time, Flux::string reason){
   this->raw("GLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
 /*******************************************************************************************/
+/* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
 Command::Command(module *owner, const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), mod(owner)
 {
 }

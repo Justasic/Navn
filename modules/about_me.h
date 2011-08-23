@@ -37,19 +37,19 @@ public:
   {
     Flux::string cmd = params.empty()?"":params[0];
   if(source.message == "about me"){
-	Send->notice(unick, "Raw: "+source.raw);
-	Send->notice(unick, "message: "+msg);
-	Send->notice(unick, "Nickname: "+unick);
-	Send->notice(unick, "Ident: "+ident);
-	Send->notice(unick, "Host: "+host);
-	Send->notice(unick, "Channel: "+chan);
-	Send->notice(unick, "Fullhost: "+source.u);
+	source.Reply("Raw: %s", source.raw.c_str());
+	source.Reply("message: %s", msg.c_str());
+	source.Reply("Nickname: %s", unick.c_str());
+	source.Reply("Ident: %s", ident.c_str());
+	source.Reply("Host: %s"+host);
+	source.Reply("Channel: "+chan);
+	source.Reply("Fullhost: "+source.u);
 	log("%s requested information about themself.", unick.c_str());
   }
   if(cmd == "!decodehost"){
     Flux::string cmd = params.size() == 2?params[0]:"";
     if(cmd.empty()){
-     Send->notice(unick, "Syntax: \2!decodehost \37nick!ident@host.name\15"); 
+     source.Reply("Syntax: \2!decodehost \37nick!ident@host.name\15"); 
      return MOD_STOP;
     }
 	Flux::string host = params[1];
