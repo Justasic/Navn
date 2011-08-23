@@ -848,14 +848,6 @@ void process(const Flux::string &buffer){
     return;
   ProcessModules(Source, params2);
 }
-void send_cmd(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  sock->send(buffer);
-  va_end(args);
-}
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const Flux::string &modname, const bool activated) \
         { \

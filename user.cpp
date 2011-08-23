@@ -19,7 +19,6 @@ void User::Kill(const Flux::string &reason){
  send_cmd("KILL %s :%s", this->nick.c_str(), reason.c_str());
 }
 void User::SendMessage(const Flux::string &message){
-  printf("Derp!\n");
   send_cmd("NOTICE %s :%s\n", this->nick.c_str(), message.c_str());
 }
 void User::Privmsg(const Flux::string &message){

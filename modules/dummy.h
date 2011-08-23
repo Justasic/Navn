@@ -34,8 +34,7 @@ public:
       return MOD_STOP;
     }
     if(source.message == "usertest"){
-     u->SendMessage("TEST!");
-     source.Reply("TEST! 2");
+     source.Reply("TEST!");
     }
     if (source.message == "testing testing"){
       //Send->privmsg(chan,"I hear you!\nYES I DO!");

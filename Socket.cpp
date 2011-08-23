@@ -156,3 +156,11 @@ const int SocketIO::send(const Flux::string buf) const{
  int i = write(sockn, buf.c_str(), buf.size());
  return i;
 }
+void send_cmd(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  sock->send(buffer);
+  va_end(args);
+}
