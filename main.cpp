@@ -125,6 +125,7 @@ int main (int argcx, char** argvx, char *envp[])
     }//while loop ends here
     delete Send;
     delete sock;
+    std::cout << "\033[22;37m" << nl;
   }//try ends here
   catch(CoreException& e){
     cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;

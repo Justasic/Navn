@@ -406,20 +406,6 @@ static void restart(Flux::string reason){
     exit(1);
   }
 }
-/** 
- * \fn static void shutdown(Socket &sock, Flux::string quitmsg)
- * \brief shutdown the bot process
- * \param quitmsg The reason for the shutdown.
- * \param sock The Socket class
- */
-static void shutdown(Flux::string quitmsg){
- if(quitmsg.empty())
-      quitmsg = "Quitting: No Reason";
-  cout << quitmsg << endl;
-  Send->command->quit(quitmsg);
-  log(quitmsg.c_str());
-  log("Logging ended.");
-}
 
 /** 
  * \fn static void Rehash(Socket &sock)
@@ -563,7 +549,7 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to fork");
 	else if (i != 0){
 		cout << "Navn IRC Bot v" << VERSION_SHORT << " Started." << nl;
-		cout << "Forking to background. PID: "<< i << nl;
+		cout << "Forking to background. PID: "<< i << "\033[22;37m" << nl;
 		exit(0);
 	}
 	if(Terminal){

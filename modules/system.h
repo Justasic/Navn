@@ -86,11 +86,16 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     delete Host;
   }
   if (cmd == "quit"){ //quits the bot.
-    Flux::string pass = params.size() > 0 ? params[0] : "";
+    Flux::string pass = params.size() == 2 ? params[1] : "";
+    if(pass.empty()){
+     source.Reply("Syntax: \2quit \37password\15");
+     return MOD_STOP;
+    }
     if(pass == password || pass == usrpass){
       source.Reply("Quitting..");
       log("%s quit the bot with password: \"%s\"", u->nick.c_str(), password.c_str());
-      shutdown("Requested From \2"+u->nick+"\17. Pass: \00320"+password+"\017");
+      Send->command->quit("Requested From \2%s\17. Pass: \00320%s\017", u->nick.c_str(), password.c_str());
+      quitting = true;
     }else{
       source.Reply(access_denied);
       log("%s attempted to change ownership of the bot", u->nick.c_str());
