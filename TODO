@@ -10,7 +10,6 @@ Navn 2.0.1
 [?] Fix --help message showing full execution directory
 [ ] Rewrite the config system (Burn INIreader with fire!)
 [x] timer function
-[ ] Case Insensitivity
 [$] Make module system load binary files (.so files)
 [+] Add some kind of command handler so it can list all loaded commands from all modules
 [+] Make default channel's in the config
@@ -31,6 +30,7 @@ Navn 2.0.2
 Future
 ------
 [ ] Add some sort of accounts system
+[ ] Case Insensitivity
 [ ] make a makefile compile script that is still as colorful as build.sh
 [x] Do away with the damn flux_net_irc namespace
 [ ] Add support for GETTEXT so it allows for the program to be translated

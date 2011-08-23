@@ -272,14 +272,14 @@ void Command::SetSyntax(const Flux::string &s){
 }
 void Command::SendSyntax(CommandSource &source){
  if(!this->syntax.empty()){
-  Send->notice(source.u, "Syntax: \2%s %s\2", source.command.c_str(), this->syntax[0].c_str());
+  source.Reply("Syntax: \2%s %s\2", source.command.c_str(), this->syntax[0].c_str());
   for(unsigned i=1, j = this->syntax.size(); i < j; ++i)
-    Send->notice(source.u, "        \002%s %s\002", source.command.c_str(), this->syntax[i].c_str());
+    source.Reply("        \002%s %s\002", source.command.c_str(), this->syntax[i].c_str());
  }
 }
 void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
   Send->notice(source.u, "Syntax: \2%s %s\2", source.command.c_str(), syn.c_str());
-  Send->notice(source.u, "\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
+  source.Reply("\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
 }
 const Flux::string &Command::GetDesc() const{
  return this->desc; 
@@ -288,5 +288,5 @@ bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand) { re
 void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
 {
  this->SendSyntax(source);
- Send->notice(source.u, "\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
+ source.Reply("\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
 }

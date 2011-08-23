@@ -12,7 +12,7 @@ public:
   void SendMessage(const Flux::string&);
   void Privmsg(const Flux::string&);
 };
-extern Flux::map<User *> UserList;
+extern Flux::map<User *> UserNickList;
 User *finduser(const Flux::string &nick);
 struct CommandSource
 {
