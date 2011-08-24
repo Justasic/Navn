@@ -329,7 +329,6 @@ Flux::string strip(const Flux::string &buf){
 	}
 	return newbuf;
 }
-
 /**
  *\fn  Flux::string os_time()
  *\brief Get the operating system's time
@@ -341,7 +340,6 @@ Flux::string os_time(){
   time(&rawtime);
   return ctime(&rawtime);
 }
-
 /**
  * \fn bool IsValadChannel(const Flux::string nerp)
  * This function returns if the channel is valid or not.
@@ -816,14 +814,14 @@ void process(const Flux::string &buffer){
      
   }
   /**************************************/
-  const Flux::string &reciever = params.size() > 0 ? params[0] : "";
+  const Flux::string &receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
   
   if(command == "PRIVMSG"){
     if(protocoldebug){
     }else
-      if(!reciever.empty() && !params[1].empty())
-       printf("<%s-%s> %s\n", irc_string::isolate(':','!',source).c_str(), reciever.c_str(), params[1].c_str());
+      if(!receiver.empty() && !params[1].empty())
+       printf("<%s-%s> %s\n", irc_string::isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
   }else
     if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
   /**************************************/
@@ -843,6 +841,13 @@ void process(const Flux::string &buffer){
      delete u;
    }
   }
+  if(!receiver.empty()){
+    if(IsValidChannel(receiver)){
+      Channel *c = findchannel(receiver);
+      if(!c)
+	c = new Channel(receiver);
+    }
+  }
   CommandSource Source;
   Source.u = u;
   Source.fullhost = source;
@@ -850,8 +855,8 @@ void process(const Flux::string &buffer){
   Source.message = message;
   Source.params = params;
   Source.raw = buffer;
-  if(!reciever.empty())
-    Source.c = IsValidChannel(reciever)?reciever:"";
+  if(!receiver.empty())
+    Source.c = IsValidChannel(receiver)?receiver:"";
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
     return;

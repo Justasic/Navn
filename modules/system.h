@@ -132,9 +132,17 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
     Send->notice(owner_nick, "The randomly generated password is: "+password);
   }
+  if(cmd == "whotest"){
+   Send->command->who(source.c);
+  }
+  if(source.command == "352"){
+    // some day this will have the channel for /who
+    
+  }
   if(source.command == "004"){
     Send->command->mode(nick, "+B");
     Send->command->join(channel);
+    Send->command->who(channel);
     Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
     if(ouser.empty() || opass.empty()){
     }else{

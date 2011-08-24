@@ -128,6 +128,14 @@ void Commands::part(Flux::string fchan){
   this->raw("PART %s\n", fchan.c_str()); 
 }
 /** 
+ * \fn void Commands::who(Flux::string chan)
+ * \brief Sends a /who to the channel
+ * \param chan A Flux::string with the channel you want to /who.
+ */
+void Commands::who(Flux::string chan){
+ this->raw("WHO %s\n", chan.c_str());
+}
+/** 
  * \fn void command::whois(Flux::string Nick)
  * \brief Sends a IRC Whois to Server.
  * \param Nick Nick to query

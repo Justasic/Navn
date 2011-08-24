@@ -42,7 +42,8 @@ Added AddCommand and DelCommand into module class
 Removed unick, chan, ident, host, msg, rply as they caused more issues than they solved
 Added channel class
 Added module->AddCommand(Command*) and module->DelCommand(Command*) to module class
-
+Removed shutdown as it was broken and didnt work right, also crashed the bot if used incorrectly for whatever reason
+Added Channel class, this allows for messages to be sent to the channel and channel management
 
 Navn 2.0.0
 ==========

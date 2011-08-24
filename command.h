@@ -24,6 +24,7 @@ public:
   void oper(Flux::string, Flux::string);
   void mode(Flux::string, Flux::string);
   void user(Flux::string, Flux::string);
+  void who(Flux::string);
   void quit(Flux::string);
   void nick(Flux::string);
   void part(Flux::string);

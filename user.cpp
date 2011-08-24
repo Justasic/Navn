@@ -19,11 +19,11 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
   printf("New maximum user count: %i\n", maxusercnt);
  }
 }
-void User::Kick(const Flux::string &channel, const Flux::string &reason){
+void User::kick(const Flux::string &channel, const Flux::string &reason){
   Send->command->kick(channel, this->nick, reason);
   //send_cmd("KICK %s %s :%s", this->nick.c_str(), channel.c_str(), reason.c_str());
 }
-void User::Kill(const Flux::string &reason){
+void User::kill(const Flux::string &reason){
   //Send->command->Kill(this->nick, reason);
  send_cmd("KILL %s :%s", this->nick.c_str(), reason.c_str());
 }
@@ -64,4 +64,101 @@ void CommandSource::Reply(const Flux::string &msg){
    this->u->SendMessage(tok);
    //Send->notice(this->u->nick, tok.c_str());
  }
+}
+/*******************************************************************/
+channel_map ChanMap;
+Channel::Channel(const Flux::string &nname, time_t ts){
+  if(nname.empty())
+    throw CoreException("Someone was an idiot and passed an empty channel name into the channel constructor >:d");
+  
+  this->name = nname;
+  ChanMap[this->name] = this;
+  this->creation_time = ts;
+  this->topic_time = 0;
+  printf("Created new channel: %s\n", this->name.c_str());
+  log("Created new channel: %s", this->name.c_str());
+}
+Channel::~Channel()
+{
+ printf("Deleted channel: %s\n", this->name.c_str());
+ log("Deleted channel: %s", this->name.c_str());
+ ChanMap.erase(this->name);
+}
+void Channel::join(){
+ Send->command->join(this->name);
+}
+void Channel::kick(User *u, const Flux::string &reason){
+ u->kick(this->name, reason); 
+}
+void Channel::SetMode(const Flux::string &mode){
+ if(mode[0] == '+'){
+   Send->command->mode(this->name, mode);
+ }else{
+   mode == '+' + mode;
+   Send->command->mode(this->name, mode);
+ }
+}
+void Channel::SetMode(User *u, const Flux::string &mode){
+ if(mode[0] == '+'){
+   Send->command->mode(this->name, mode, u->nick);
+ }else{
+   mode == '+' + mode;
+   Send->command->mode(this->name, mode, u->nick);
+ }
+}
+void Channel::RemoveMode(const Flux::string &mode){
+  if(mode[0] == '-'){
+    Send->command->mode(this->name, mode);
+  }else{
+    
+    mode == '-' + mode;
+    Send->command->mode(this->name, mode);
+  }
+}
+void Channel::RemoveMode(User *u, const Flux::string &mode){
+  if(mode[0] == '-'){
+    Send->command->mode(this->name, mode, u->nick);
+  }else{
+    mode == '-' + mode;
+    Send->command->mode(this->name, mode, u->nick);
+  }
+}
+void Channel::ChangeTopic(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->ChangeTopic(Flux::string(buffer));
+  va_end(args);
+}
+void Channel::ChangeTopic(const Flux::string &topic){
+ Send->command->topic(this->name, topic); 
+}
+void Channel::SendMessage(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->SendMessage(Flux::string(buffer));
+  va_end(args);
+}
+void Channel::SendMessage(const Flux::string &message){
+ Send->privmsg(this->name, message); 
+}
+void Channel::SendNotice(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->SendNotice(Flux::string(buffer));
+  va_end(args); 
+}
+void Channel::SendNotice(const Flux::string &message){
+ Send->notice(this->name, message); 
+}
+Channel *findchannel(const Flux::string &channel){
+  Flux::map<Channel *>::iterator it = ChanMap.find(channel);
+  if(it != ChanMap.end())
+    return it->second;
+  return NULL;
 }

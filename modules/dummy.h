@@ -51,6 +51,12 @@ public:
     if(source.message == "usertest"){
      source.Reply("TEST!");
     }
+    if(source.message == "chantest"){
+     Channel *c = findchannel(source.c);
+     if(!c)
+       return MOD_STOP;
+     c->SendMessage("TADA!");
+    }
     if (source.message == "testing testing"){
       //Send->privmsg(chan,"I hear you!\nYES I DO!");
       source.Reply("I hear you!\nYES I DO!");
