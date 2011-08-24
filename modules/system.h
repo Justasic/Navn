@@ -166,7 +166,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     log("Op is required in %s", c->name.c_str());  
   }
   if(cmd == "This nickname is registered and protected. If it is your"){
-    Send->privmsg(u->nick, "identify %s %s", nsacc.c_str(), nspass.c_str());
+    u->SendPrivmsg("identify %s %s", nsacc.c_str(), nspass.c_str());
     log("Identified to NickServ with account \"%s\"", nsacc.c_str());
   }
   if (source.command == "JOIN"){ //welcomes everyone who joins the channel

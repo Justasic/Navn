@@ -21,19 +21,32 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
 }
 void User::kick(const Flux::string &channel, const Flux::string &reason){
   Send->command->kick(channel, this->nick, reason);
-  //send_cmd("KICK %s %s :%s", this->nick.c_str(), channel.c_str(), reason.c_str());
 }
 void User::kill(const Flux::string &reason){
   //Send->command->Kill(this->nick, reason);
  send_cmd("KILL %s :%s", this->nick.c_str(), reason.c_str());
 }
+void User::SendMessage(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->SendMessage(Flux::string(buffer));
+  va_end(args);
+}
+void User::SendPrivmsg(const char *fmt, ...){
+ char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->SendPrivmsg(Flux::string(buffer));
+  va_end(args); 
+}
 void User::SendMessage(const Flux::string &message){
   Send->notice(this->nick, message);
-  //send_cmd("NOTICE %s :%s\n", this->nick.c_str(), message.c_str());
 }
-void User::Privmsg(const Flux::string &message){
+void User::SendPrivmsg(const Flux::string &message){
   Send->privmsg(this->nick, message);
-  send_cmd("PRIVMSG %s :%s", this->nick.c_str(), message.c_str());
 }
 User::~User(){
   printf("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());

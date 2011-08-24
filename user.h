@@ -10,7 +10,9 @@ public:
   void kick(const Flux::string&, const Flux::string&);
   void kill(const Flux::string&);
   void SendMessage(const Flux::string&);
-  void Privmsg(const Flux::string&);
+  void SendMessage(const char*, ...);
+  void SendPrivmsg(const Flux::string&);
+  void SendPrivmsg(const char*, ...);
 };
 extern Flux::map<User *> UserNickList; //this makes the variable global for later use..
 class Channel;
