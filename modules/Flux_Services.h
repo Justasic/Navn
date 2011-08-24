@@ -35,22 +35,28 @@ public:
 ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];
   User *u = source.u;
+  Channel *c = source.c;
 	if(cmd == "!part"){ 
 		if(u->nick == owner_nick){
 		  Flux::string pchannel = params.size() == 2?params[1]:"";
 		  if(pchannel.empty()){
-		   Send->privmsg(source.c, "im out niggaz!");
-		   Send->command->part(source.c, "I'm leaving this dump."); 
-		   log("%s used Flux_S3rvices part %s", u->nick.c_str(), source.c.c_str());
+		   c->SendMessage("im out niggaz!");
+		   c->SendPart("I'm leaving this dump."); 
+		   log("%s used Flux_S3rvices part %s", u->nick.c_str(), c->name.c_str());
 		   return MOD_STOP;
 		  }
 		  if(!IsValidChannel(pchannel)){
 		    source.Reply("Channel \2%s\2 is not a valid channel", pchannel.c_str());
 		    return MOD_STOP;
 		  }
-			Send->privmsg(pchannel, "im out niggaz!");
-			Send->command->part(pchannel, "I'm leaving this dump.");
-			log("%s used Flux_S3rvices part %s", u->nick.c_str(), pchannel.c_str());
+		  Channel *ch = findchannel(pchannel);
+		  if(!c){
+		    source.Reply("I am not in channel \2%s\2", pchannel.c_str());
+		    return MOD_STOP;
+		  }
+		  ch->SendMessage("im out niggaz!");
+		  ch->SendPart("I'm leaving this dump.");
+		  log("%s used Flux_S3rvices part %s", u->nick.c_str(), pchannel.c_str());
 		}else{
 			source.Reply(access_denied);
 		}
@@ -65,36 +71,36 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 			Flux::string bhost = params[3];
 			Flux::string breal = params[4];
 			Send->privmsg("BotServ", "bot add %s %s %s %s", bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str());
-			log("%s used Flux_S3rvices to make bot \"%s!%s@%s :%s\" %s", u->nick.c_str(), bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str(), source.c.c_str());
+			log("%s used Flux_S3rvices to make bot \"%s!%s@%s :%s\" %s", u->nick.c_str(), bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str(), c->name.c_str());
 		}else{
 		Send->notice(u->nick, access_denied);
 		}
 	}
 	if(irc_string::said(source.message, "slaps")){
-	 Send->privmsg(source.c, "\0036Oh \0034Hell \0039No...");
+	 c->SendMessage("\0036Oh \0034Hell \0039No...");
 	 int num = randint(1,6); //make a random number from 1 to 6 (increase 6 to how ever many switch statements below) so messages are random
 	 switch(num){
 	   case 1:
-	     Send->action(source.c, "\00313,1Dodges and \0037Pulls out a \0036Energy \0034Sword \0033and stabs\0032 %s \00312in the eye \0034.........what now \0039B1TCH?", u->nick.c_str());
+	     c->SendAction("\00313,1Dodges and \0037Pulls out a \0036Energy \0034Sword \0033and stabs\0032 %s \00312in the eye \0034.........what now \0039B1TCH?", u->nick.c_str());
 	     break; //break after each case so it doesnt keep trying to get the messages in the switch statement
 	   case 2:
-	     Send->action(source.c, "\00313,1Dodges and \0037Shoots\0032 %s \00312in the \0034A\0038$\0039S \0033with a \0039AK47 \0034.......what now \0039B1TCH?", u->nick.c_str());
+	     c->SendAction("\00313,1Dodges and \0037Shoots\0032 %s \00312in the \0034A\0038$\0039S \0033with a \0039AK47 \0034.......what now \0039B1TCH?", u->nick.c_str());
 	     break;
 	   case 3:
-	     Send->action(source.c, "\00313,1Dodges and \0037Pulls out a \0036Ballistic Knife \0033and shoots\0032 %s \00312in the \00313DICK/PUSSY \0034.........what now \0039B1TCH?", u->nick.c_str());
+	     c->SendAction("\00313,1Dodges and \0037Pulls out a \0036Ballistic Knife \0033and shoots\0032 %s \00312in the \00313DICK/PUSSY \0034.........what now \0039B1TCH?", u->nick.c_str());
 	     break;
 	   case 4:
-	     Send->action(source.c, "\00313,1Dodges and \0037Pulls out a \0036Ray \0038Gun \0033and blows\0032 %s's \00312legs off \0034..........what now \0039B1TCH?", u->nick.c_str());
+	     c->SendAction("\00313,1Dodges and \0037Pulls out a \0036Ray \0038Gun \0033and blows\0032 %s's \00312legs off \0034..........what now \0039B1TCH?", u->nick.c_str());
 	     break;
 	   case 5:
-	     Send->action(source.c, "\00313,1Dodges and \0037Pulls out his \0034D1CK \0033and slaps\0032 %s \00312in the \0039Face \0034.........what now \0039B1TCH?", u->nick.c_str());
+	     c->SendAction("\00313,1Dodges and \0037Pulls out his \0034D1CK \0033and slaps\0032 %s \00312in the \0039Face \0034.........what now \0039B1TCH?", u->nick.c_str());
 	     break;
 	   case 6:
-	     Send->action(source.c, "\0034,1bends dows and and \00312 grabs a M2W LAW and \0034 shoots back and \0038 SCORE it a win..................\0030 what now muthafucker!");
+	     c->SendAction("\0034,1bends dows and and \00312 grabs a M2W LAW and \0034 shoots back and \0038 SCORE it a win..................\0030 what now muthafucker!");
 	     break;
 	}
 	 idiots++; //add +1 to the already big number of idiots in the list
-	 Send->privmsg(source.c, "\2\0034,1Total \0039morons \0033slapped \0038back \00310: %i", idiots); //tell the channel how many idiots where slapped.
+	 c->SendMessage("\2\0034,1Total \0039morons \0033slapped \0038back \00310: %i", idiots); //tell the channel how many idiots where slapped.
 	}
 	if(cmd == "!magicbox"){
 	 int num = randint(1,20);
@@ -162,8 +168,8 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 	      break;	              
 	  }
 	  magiccount++;
-	  Send->action(source.c, "%s gives %s a %s", nick.c_str(), u->nick.c_str(), object.c_str());
-	  Send->privmsg(source.c, "MagicBox used %i times", magiccount);
+	  c->SendAction("%s gives %s a %s", nick.c_str(), u->nick.c_str(), object.c_str());
+	  c->SendMessage("MagicBox used %i times", magiccount);
 	}
 	/*
 	if(cmd == "!umode"){

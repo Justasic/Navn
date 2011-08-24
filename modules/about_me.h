@@ -37,13 +37,14 @@ public:
   {
     Flux::string cmd = params.empty()?"":params[0];
     User *u = source.u;
+    Channel *c = source.c;
   if(source.message == "about me"){
 	source.Reply("Raw: %s", source.raw.c_str());
 	source.Reply("message: %s", source.message.c_str());
 	source.Reply("Nickname: %s", u->nick.c_str());
 	source.Reply("Ident: %s", u->ident.c_str());
 	source.Reply("Host: %s", u->host.c_str());
-	source.Reply("Channel: "+source.c);
+	source.Reply("Channel: %s", c->name.c_str());
 	source.Reply("Fullhost: %s", u->fullhost.c_str());
 	log("%s requested information about themself.", u->nick.c_str());
   }
@@ -55,10 +56,10 @@ public:
     }
 	Flux::string host = params[1];
 	IsoHost* Host = new IsoHost(host);
-	Send->privmsg(source.c, "Nick: %s", Host->nick.c_str());
-	Send->privmsg(source.c, "User: %s", Host->user.c_str());
-	Send->privmsg(source.c, "Host: %s", Host->host.c_str());
-	Send->privmsg(source.c, "Raw: %s", Host->raw.c_str());
+	c->SendMessage("Nick: %s", Host->nick.c_str());
+	c->SendMessage("User: %s", Host->user.c_str());
+	c->SendMessage("Host: %s", Host->host.c_str());
+	c->SendMessage("Raw: %s", Host->raw.c_str());
 	delete Host;
   }
   return MOD_RUN;

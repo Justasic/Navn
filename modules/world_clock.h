@@ -36,6 +36,7 @@ public:
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];
   User *u = source.u;
+  Channel *c = source.c;
   if (cmd == "!time"){
     Flux::string location;
     if(params.size() > 2)
@@ -49,17 +50,17 @@ public:
       ptm = gmtime(&rawtime);
       int minutes = (ptm->tm_min);
       int seconds = (ptm->tm_sec);
-      Send->privmsg(source.c, "Current time around the World:");
-      Send->privmsg(source.c, "GMT == %2d:%02d:%02d", (ptm->tm_hour+UTC)%24, minutes, seconds);
-      Send->privmsg(source.c, "New York (USA) == %2d:%02d:%02d", (ptm->tm_hour+EST)%24, minutes, seconds);
-      Send->privmsg(source.c, "California (USA) == %2d:%02d:%02d", (ptm->tm_hour+PST)%24, minutes, seconds);
-      Send->privmsg(source.c, "Beijing (China) == %2d:%02d:%02d", (ptm->tm_hour+CCT)%24, minutes, seconds);
-      Send->privmsg(source.c, "Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);	
+      c->SendMessage("Current time around the World:");
+      c->SendMessage("GMT == %2d:%02d:%02d", (ptm->tm_hour+UTC)%24, minutes, seconds);
+      c->SendMessage("New York (USA) == %2d:%02d:%02d", (ptm->tm_hour+EST)%24, minutes, seconds);
+      c->SendMessage("California (USA) == %2d:%02d:%02d", (ptm->tm_hour+PST)%24, minutes, seconds);
+      c->SendMessage("Beijing (China) == %2d:%02d:%02d", (ptm->tm_hour+CCT)%24, minutes, seconds);
+      c->SendMessage("Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);	
       char buf[100];
       ptm = localtime(&rawtime);
       strftime(buf,100,"Navn's Time: %Z %c",ptm);
-      Send->privmsg(source.c, buf);
-      log("%s requested !time command in %s", u->nick.c_str(), source.c.c_str());
+      c->SendMessage(buf);
+      log("%s requested !time command in %s", u->nick.c_str(), c->name.c_str());
       return MOD_RUN;
     }else{
       Flux::string wget, filename;
@@ -73,13 +74,13 @@ public:
 	  Flux::string ff = xmlToString(filename);
 	  ff.trim();
 	  if(ff.empty()){
-	   Send->privmsg(source.c, "Could not download/read %s", filename.c_str());
+	   c->SendMessage("Could not download/read %s", filename.c_str());
 	   log("%s attempted to use !time but downloading/reading the file '%s' failed.", filename.c_str());
 	   return MOD_STOP;
 	  }
 	  Flux::string loc = findInXML("city","data",ff);
 	  Flux::string time = findInXML("current_date_time","data",ff);
-	  Send->privmsg(source.c, "The current time in %s is %s", loc.c_str(), time.c_str());
+	  c->SendMessage("The current time in %s is %s", loc.c_str(), time.c_str());
 	  remove(filename.c_str());
 	  log("%s used !time to get time for %s", u->nick.c_str(), location.c_str());
 	  }

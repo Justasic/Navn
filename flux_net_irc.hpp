@@ -346,7 +346,7 @@ Flux::string os_time(){
  * \param nerp Channel sring to be tested.
  * \return True if the Flux::string is a valid channel, false otherwise.
  */
-bool IsValidChannel(const Flux::string chan){
+bool IsValidChannel(const Flux::string &chan){
  if (chan[0] != '#')
     return false;
  return true;
@@ -841,22 +841,43 @@ void process(const Flux::string &buffer){
      delete u;
    }
   }
-  if(!receiver.empty()){
+  Channel *c;
+  /*if(!receiver.empty()){
     if(IsValidChannel(receiver)){
-      Channel *c = findchannel(receiver);
+      c = findchannel(receiver);
       if(!c)
 	c = new Channel(receiver);
     }
+  }*/
+  if(command == "PART"){
+    if(receiver.empty()){
+     printf("wtf?\n");
+     return;
+    }
+    if(IsValidChannel(receiver)){
+     c = findchannel(receiver);
+     if(c)
+       delete c;
+    }
+  }
+  if(command == "JOIN"){
+    if(receiver.empty()){
+     printf("wtf?\n");
+     return;
+    }
+    if(IsValidChannel(receiver)){
+     c = findchannel(receiver);
+     if(!c)
+       c = new Channel(receiver);
+    }
   }
   CommandSource Source;
-  Source.u = u;
-  Source.fullhost = source;
+  Source.u = u; //User class
+  Source.c = c; //Channel class
   Source.command = command;
   Source.message = message;
   Source.params = params;
   Source.raw = buffer;
-  if(!receiver.empty())
-    Source.c = IsValidChannel(receiver)?receiver:"";
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
     return;

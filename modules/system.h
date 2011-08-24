@@ -49,6 +49,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   /* use string to prevent segmentation faults */
   Flux::string cmd = params.empty()?"":params[0];
   User *u = source.u;
+  Channel *c = source.c;
   
   if (cmd == "pass"){
     if (u->nick == owner_nick){
@@ -77,7 +78,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     }
   }
   if(source.command == "NICK"){
-    IsoHost *Host = new IsoHost(source.fullhost);
+    IsoHost *Host = new IsoHost(u->fullhost);
     Flux::string newnick = Host->nick;
     if (newnick == nick)
       nick = newnick;
@@ -133,7 +134,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Send->notice(owner_nick, "The randomly generated password is: "+password);
   }
   if(cmd == "whotest"){
-   Send->command->who(source.c);
+   c->SendWho();
   }
   if(source.command == "352"){
     // some day this will have the channel for /who
@@ -141,9 +142,10 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   }
   if(source.command == "004"){
     Send->command->mode(nick, "+B");
-    Send->command->join(channel);
-    Send->command->who(channel);
-    Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
+    Channel *chan = new Channel(channel);
+    chan->SendJoin();
+    chan->SendWho();
+    chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
     if(ouser.empty() || opass.empty()){
     }else{
       Send->command->oper(ouser, opass);
@@ -161,7 +163,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   if(source.command == "482"){
     cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
     Send->notice(owner_nick, "I require op to run the last command!");
-    log("Op is required in %s", source.c.c_str());  
+    log("Op is required in %s", c->name.c_str());  
   }
   if(cmd == "This nickname is registered and protected. If it is your"){
     Send->privmsg(u->nick, "identify %s %s", nsacc.c_str(), nspass.c_str());
@@ -169,8 +171,8 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   }
   if (source.command == "JOIN"){ //welcomes everyone who joins the channel
     if(u->nick == nick){return MOD_RUN;}else{
-      source.Reply("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(), strip(source.c).c_str(), nick.c_str());
-      log("%s joined %s", u->nick.c_str(), strip(source.c).c_str());
+      source.Reply("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(), c->name.c_str(), nick.c_str());
+      log("%s joined %s", u->nick.c_str(), c->name.c_str());
     }
   }
   if(source.command == "KICK"){
@@ -178,8 +180,8 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     printf("%s kicked %s (%s)\n", u->nick.c_str(), cmd.c_str(), reason.c_str());
     if(source.params[1] == nick){
       Send->notice(owner_nick, "%s kicked me from %s! (%s)", u->nick.c_str(), params[0].c_str(), reason.c_str());
-      Send->command->join(source.c);
-      log("%s kicked bot out of channel %s (%s)", u->nick.c_str(), source.c.c_str(), reason.c_str());
+      c->SendJoin();
+      log("%s kicked bot out of channel %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
     }
   }
   return MOD_RUN;

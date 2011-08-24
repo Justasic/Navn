@@ -70,6 +70,8 @@ channel_map ChanMap;
 Channel::Channel(const Flux::string &nname, time_t ts){
   if(nname.empty())
     throw CoreException("Someone was an idiot and passed an empty channel name into the channel constructor >:d");
+  if(!IsValidChannel(nname))
+    throw CoreException("An Invalid channel was passed into the Channel constructor >:d");
   
   this->name = nname;
   ChanMap[this->name] = this;
@@ -84,11 +86,44 @@ Channel::~Channel()
  log("Deleted channel: %s", this->name.c_str());
  ChanMap.erase(this->name);
 }
-void Channel::join(){
+void Channel::SendJoin(){
  Send->command->join(this->name);
 }
+void Channel::SendPart(){
+ Send->command->part(this->name);
+}
+void Channel::SendPart(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->SendPart(Flux::string(buffer));
+  va_end(args);
+}
+void Channel::SendPart(const Flux::string &reason){
+  Send->command->part(this->name, reason);
+}
 void Channel::kick(User *u, const Flux::string &reason){
- u->kick(this->name, reason); 
+ u->kick(this->name, reason);
+}
+void Channel::kick(User *u, const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->kick(u, Flux::string(buffer));
+  va_end(args);
+}
+void Channel::kick(const Flux::string &u, const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->kick(u, Flux::string(buffer));
+  va_end(args);
+}
+void Channel::kick(const Flux::string &u, const Flux::string &reason){
+ Send->command->kick(this->name, u, reason);
 }
 void Channel::SetMode(const Flux::string &mode){
  if(mode[0] == '+'){
@@ -145,6 +180,17 @@ void Channel::SendMessage(const char *fmt, ...){
 void Channel::SendMessage(const Flux::string &message){
  Send->privmsg(this->name, message); 
 }
+void Channel::SendAction(const char *fmt, ...){
+  char buffer[4096] = "";
+  va_list args;
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  this->SendMessage(Flux::string(buffer));
+  va_end(args);
+}
+void Channel::SendAction(const Flux::string &message){
+ Send->privmsg(this->name, message); 
+}
 void Channel::SendNotice(const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
@@ -155,6 +201,9 @@ void Channel::SendNotice(const char *fmt, ...){
 }
 void Channel::SendNotice(const Flux::string &message){
  Send->notice(this->name, message); 
+}
+void Channel::SendWho(){
+ Send->command->who(this->name); 
 }
 Channel *findchannel(const Flux::string &channel){
   Flux::map<Channel *>::iterator it = ChanMap.find(channel);

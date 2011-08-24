@@ -38,8 +38,9 @@ class navn:public module{
 public:
   navn(bool a):module("Navn", a, PRIORITY_DONTCARE){ this->SetDesc("Where some of the navn specific functions are");}
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
-    Flux::string cmd = params.empty()?"":params[0], chan = source.c;
+    Flux::string cmd = params.empty()?"":params[0];
     User *u = source.u;
+    Channel *c = source.c;
     
     if (cmd == "part"){
       Flux::string blah = params.size() == 2 ? params[1] : "";
@@ -52,11 +53,11 @@ public:
         log("%s attempted to make bot part %s", u->nick.c_str(), blah.c_str());
       }else{
         log("%s made the bot part %s", u->nick.c_str(), blah.c_str());
-        Send->command->part(blah);
+        c->SendPart(blah);
       }
     }
   if(cmd == "!bugs"){
-    Send->privmsg(chan, "Report Bugs at: http://flux-net.net/bugs/");
+    c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
   }
   if(cmd == "!git"){
     source.Reply("Navn git: git://gitorious.org/navn/navn.git");
@@ -78,8 +79,11 @@ public:
 	source.Reply("Channel \2%s\2 is not a valad channel.", kickchan.c_str()); 
 	return MOD_STOP;
       }
-      
-      Send->command->kick(kickchan, kickee, "Kick from %s", u->nick.c_str());
+      Channel *c2 = findchannel(kickchan);
+      if(!c2){
+	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
+      }
+      c2->kick(kickee, "Kick from %s", u->nick.c_str());
     }else{
       source.Reply(access_denied);
     }
@@ -95,8 +99,12 @@ public:
       log("%s attempted to make bot join %s", u->nick.c_str(), blah.c_str());
     }else{
       log("%s made the bot join %s", u->nick.c_str(), blah.c_str());
-      Send->command->join(blah);
-      Send->privmsg(blah, welcome_msg, nick.c_str(), nick.c_str());
+      Channel *chan = findchannel(blah);
+      if(!chan){
+	chan = new Channel(blah);
+      }
+      chan->SendJoin();
+      chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
     }
   }
   if(cmd == "nick"){

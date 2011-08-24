@@ -16,6 +16,7 @@ extern Flux::map<User *> UserNickList; //this makes the variable global for late
 class Channel;
 typedef Flux::map<Channel*> channel_map;
 User *finduser(const Flux::string &nick);
+extern bool IsValidChannel(const Flux::string&);
 class Channel
 {
 public:
@@ -28,8 +29,15 @@ public:
   Flux::string topic_setter;
   time_t topic_time;
   time_t creation_time;
-  void join();
+  void SendJoin();
+  void SendPart();
+  void SendPart(const Flux::string&);
+  void SendPart(const char*, ...);
+  void SendWho();
   void kick(User*, const Flux::string&);
+  void kick(User*, const char*, ...);
+  void kick(const Flux::string&, const Flux::string&);
+  void kick(const Flux::string&, const char*, ...);
   void SetMode(const Flux::string&);
   void SetMode(User *u, const Flux::string &mode);
   void RemoveMode(const Flux::string&);
@@ -38,6 +46,8 @@ public:
   void ChangeTopic(const char *fmt, ...);
   void SendMessage(const Flux::string&);
   void SendMessage(const char*, ...);
+  void SendAction(const Flux::string&);
+  void SendAction(const char*, ...);
   void SendNotice(const Flux::string&);
   void SendNotice(const char*, ...);
 };
@@ -45,8 +55,7 @@ Channel *findchannel(const Flux::string&);
 struct CommandSource
 {
  User *u; /* User name, this will be replaced with above class*/
- Flux::string fullhost;
- Flux::string c; /* Channel name, this will be replaced with channel class */
+ Channel *c; /* Channel name, this will be replaced with channel class */
  Flux::string command;
  Flux::string message;
  Flux::string raw;

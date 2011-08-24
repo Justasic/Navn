@@ -45,6 +45,7 @@ public:
   
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     User *u = source.u;
+    Channel *c = source.c;
     if(!u){
       return MOD_STOP;
     }
@@ -52,9 +53,6 @@ public:
      source.Reply("TEST!");
     }
     if(source.message == "chantest"){
-     Channel *c = findchannel(source.c);
-     if(!c)
-       return MOD_STOP;
      c->SendMessage("TADA!");
     }
     if (source.message == "testing testing"){
