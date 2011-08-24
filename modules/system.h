@@ -179,7 +179,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Flux::string reason = source.params[2].empty()?"":source.params[2];
     printf("%s kicked %s (%s)\n", u->nick.c_str(), cmd.c_str(), reason.c_str());
     if(source.params[1] == nick){
-      Send->notice(owner_nick, "%s kicked me from %s! (%s)", u->nick.c_str(), params[0].c_str(), reason.c_str());
+      Send->notice(owner_nick, "%s kicked me from %s! (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
       c->SendJoin();
       log("%s kicked bot out of channel %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
     }
