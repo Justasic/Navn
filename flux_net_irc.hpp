@@ -842,13 +842,6 @@ void process(const Flux::string &buffer){
    }
   }
   Channel *c;
-  /*if(!receiver.empty()){
-    if(IsValidChannel(receiver)){
-      c = findchannel(receiver);
-      if(!c)
-	c = new Channel(receiver);
-    }
-  }*/
   if(command == "PART"){
     if(receiver.empty()){
      printf("wtf?\n");
