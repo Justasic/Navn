@@ -32,7 +32,7 @@ Flux::string Flux::Sanitize(const Flux::string &string){
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
-SocketIO::SocketIO(const Flux::string cserver, const Flux::string cport) : sockn(-1){
+SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1){
   this->server = cserver.tostd();
   this->port = cport.tostd();
   
@@ -151,7 +151,7 @@ bool SocketIO::GetBuffer(Flux::string &recv){
     recv_queue.pop();
     return true;
 }
-const int SocketIO::send(const Flux::string buf) const{
+const int SocketIO::send(const Flux::string &buf) const{
  printf("<-- %s\n", Flux::Sanitize(buf).c_str());
  int i = write(sockn, buf.c_str(), buf.size());
  return i;
