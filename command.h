@@ -14,23 +14,23 @@ public:
   Commands(SocketIO *sock);
   void raw(const char *fmt, ...);
   void quit(const char *fmt, ...);
-  void kick(Flux::string, Flux::string, const char *fmt, ...);
-  void topic(Flux::string, const char *fmt, ...);
-  void part(Flux::string, const char *fmt, ...);
-  void kick(Flux::string, Flux::string, Flux::string);
-  void mode(Flux::string, Flux::string, Flux::string);
-  void topic(Flux::string, Flux::string);
-  void part(Flux::string, Flux::string);
-  void oper(Flux::string, Flux::string);
-  void mode(Flux::string, Flux::string);
-  void user(Flux::string, Flux::string);
-  void who(Flux::string);
-  void quit(Flux::string);
-  void nick(Flux::string);
-  void part(Flux::string);
-  void join(Flux::string);
-  void whois(Flux::string);
-  
+  void kick(const Flux::string&, const Flux::string&, const char *fmt, ...);
+  void topic(const Flux::string&, const char *fmt, ...);
+  void part(const Flux::string&, const char *fmt, ...);
+  void kick(const Flux::string&, const Flux::string&, const Flux::string&);
+  void mode(const Flux::string&, const Flux::string&, const Flux::string&);
+  void topic(const Flux::string&, const Flux::string&);
+  void part(const Flux::string&, const Flux::string&);
+  void oper(const Flux::string&, const Flux::string&);
+  void mode(const Flux::string&, const Flux::string&);
+  void user(const Flux::string&, const Flux::string&);
+  void who(const Flux::string&);
+  void quit(const Flux::string&);
+  void nick(const Flux::string&);
+  void part(const Flux::string&);
+  void join(const Flux::string&);
+  void whois(const Flux::string&);
+  void names(const Flux::string&);
 };
 class Oper
 {

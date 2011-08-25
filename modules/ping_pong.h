@@ -61,7 +61,7 @@ public:
       Send->s->send("PASS "+strip(reply->params(16))+nl);
     }*/
     if(source.command == "ERROR"){
-      restart("Killed");
+      restart(source.raw);
     }
     return MOD_RUN;
   }

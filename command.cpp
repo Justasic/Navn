@@ -25,7 +25,7 @@ void Commands::raw(const char *fmt, ...){
  * \param user User to be kicked.
  * \param reason Reason for the kick.
  */
-void Commands::kick(Flux::string Channel, Flux::string User, const char *fmt, ...){
+void Commands::kick(const Flux::string &Channel, const Flux::string &User, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -37,7 +37,7 @@ void Commands::kick(Flux::string Channel, Flux::string User, const char *fmt, ..
  * \fn void command::topic(Flux::string channel, const char *fmt, ...)
  * \brief Sets channel topic.
  */
-void Commands::topic(Flux::string channel, const char *fmt, ...){
+void Commands::topic(const Flux::string &channel, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -64,7 +64,7 @@ void Commands::quit(const char *fmt, ...){
  * \param channel Channel to part from.
  * \param reason Reason for parting.
  */
-void Commands::part(Flux::string channel, const char *fmt, ...){
+void Commands::part(const Flux::string &channel, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -75,25 +75,25 @@ void Commands::part(Flux::string channel, const char *fmt, ...){
 /**
  * \overload void command::kick(Flux::string channel, Flux::string user, Flux::string reason)
  */
-void Commands::kick(Flux::string chan, Flux::string user, Flux::string msg){
+void Commands::kick(const Flux::string &chan, const Flux::string &user, const Flux::string &msg){
   this->raw("KICK %s %s :%s\n", chan.c_str(), user.c_str(), msg.c_str());
 }
 /**
  * \overload void Commands::quit(Flux::string message)
  */
-void Commands::quit(Flux::string message){
+void Commands::quit(const Flux::string &message){
  this->raw("QUIT :%s\n", message.c_str());
 }
 /**
  * \overload void Commands::part(Flux::string channel, Flux::string msg)
  */
-void Commands::part(Flux::string channel, Flux::string msg){
+void Commands::part(const Flux::string &channel, const Flux::string &msg){
   this->raw("PART %s :%s\n", channel.c_str(), msg.c_str());
 }
 /**
  * \overload void command::topic(Flux::string channel, Flux::string msg)
  */
-void Commands::topic(Flux::string chan, Flux::string msg){
+void Commands::topic(const Flux::string &chan, const Flux::string &msg){
   this->raw("TOPIC %s :%s\n", chan.c_str(), msg.c_str());
 }
 /** 
@@ -101,14 +101,14 @@ void Commands::topic(Flux::string chan, Flux::string msg){
  * \brief Sets the bots nickname in IRC.
  * \param nickname A Flux::string with the new nickname.
  */
-void Commands::nick(Flux::string bnick){
+void Commands::nick(const Flux::string &bnick){
   this->raw("NICK %s\n", bnick.c_str());
 }
 /**
  * \fn void command::oper(Flux::string oper, Flux::string password)
  * \brief Sends IRC command /oper
  */
-void Commands::oper(Flux::string oper, Flux::string password){
+void Commands::oper(const Flux::string &oper, const Flux::string &password){
   this->raw("OPER %s %s\n", oper.c_str(), password.c_str());
 }
 /** 
@@ -116,7 +116,7 @@ void Commands::oper(Flux::string oper, Flux::string password){
  * \brief Makes the bot join a channel
  * \param stringy_chan A Flux::string with the channel you want to join.
  */
-void Commands::join(Flux::string dchan){
+void Commands::join(const Flux::string &dchan){
   this->raw("JOIN %s\n", dchan.c_str());
 }
 /** 
@@ -124,7 +124,7 @@ void Commands::join(Flux::string dchan){
  * \brief Parts channel w/o reason.
  * \param channel Channel to part from.
  */
-void Commands::part(Flux::string fchan){
+void Commands::part(const Flux::string &fchan){
   this->raw("PART %s\n", fchan.c_str()); 
 }
 /** 
@@ -132,15 +132,23 @@ void Commands::part(Flux::string fchan){
  * \brief Sends a /who to the channel
  * \param chan A Flux::string with the channel you want to /who.
  */
-void Commands::who(Flux::string chan){
+void Commands::who(const Flux::string &chan){
  this->raw("WHO %s\n", chan.c_str());
+}
+/** 
+ * \fn void Commands::names(Flux::string &chan)
+ * \brief Sends /names to the channel
+ * \param chan A Flux::string with the channel you want to /names.
+ */
+void Commands::names(const Flux::string &chan){
+ this->raw("NAMES %s\n", chan.c_str());
 }
 /** 
  * \fn void command::whois(Flux::string Nick)
  * \brief Sends a IRC Whois to Server.
  * \param Nick Nick to query
  */
-void Commands::whois(Flux::string user){
+void Commands::whois(const Flux::string &user){
   this->raw("WHOIS %s\n", user.c_str());
 }
 /** 
@@ -149,7 +157,7 @@ void Commands::whois(Flux::string user){
  * \param nickname Nickname of who we are setting a more to.
  * \param mode The mode to set.
  */
-void Commands::mode(Flux::string chan, Flux::string mode, Flux::string user){
+void Commands::mode(const Flux::string &chan, const Flux::string &mode, const Flux::string &user){
   this->raw("MODE %s %s %s\n", chan.c_str(), mode.c_str(), user.c_str());
 }
 /** 
@@ -158,7 +166,7 @@ void Commands::mode(Flux::string chan, Flux::string mode, Flux::string user){
  * \param ident The ident at the beginning of the IRC host.
  * \param realname The real name gecos used in irc.
  */
-void Commands::user(Flux::string ident, Flux::string realname){
+void Commands::user(const Flux::string &ident, const Flux::string &realname){
  this->raw("USER %s * * :%s\n", ident.c_str(), realname.c_str());
 }
 /**
@@ -167,7 +175,7 @@ void Commands::user(Flux::string ident, Flux::string realname){
  * @param dest where to set the mode
  * @param mode mode to set
  */
-void Commands::mode(Flux::string dest, Flux::string mode){
+void Commands::mode(const Flux::string &dest, const Flux::string &mode){
   this->raw("MODE %s %s\n", dest.c_str(), mode.c_str()); 
 }
 /***************************************************************************************/
