@@ -190,28 +190,28 @@ void Oper::raw(const char *fmt, ...){
   this->s->send(buffer);
   va_end(args);
 }
-void Oper::samode(Flux::string target, Flux::string mode){
+void Oper::samode(const Flux::string &target, const Flux::string &mode){
   this->raw("SAMODE %s %s\n", target.c_str(), mode.c_str());
 }
-void Oper::samode(Flux::string target, Flux::string mode, Flux::string params){
+void Oper::samode(const Flux::string &target, const Flux::string &mode, const Flux::string &params){
   this->raw("SAMODE %s %s %s", target.c_str(), mode.c_str(), params.c_str());
 }
-void Oper::sajoin(Flux::string target, Flux::string channel){
+void Oper::sajoin(const Flux::string &target, const Flux::string &channel){
   this->raw("SAJOIN %s %s", target.c_str(), channel.c_str());
 }
-void Oper::sapart(Flux::string target, Flux::string channel){
+void Oper::sapart(const Flux::string &target, const Flux::string &channel){
   this->raw("SAPART %s %s", target.c_str(), channel.c_str());
 }
-void Oper::sanick(Flux::string target, Flux::string nickname){
+void Oper::sanick(const Flux::string &target, const Flux::string &nickname){
   this->raw("SANICK %s %s", target.c_str(), nickname.c_str());
 }
-void Oper::sakick(Flux::string channel, Flux::string target, Flux::string reason){
+void Oper::sakick(const Flux::string &channel, const Flux::string &target, const Flux::string &reason){
   this->raw("SAKICK %s %s %s", channel.c_str(), target.c_str(), reason.c_str());
 }
-void Oper::satopic(Flux::string target, Flux::string topic){
+void Oper::satopic(const Flux::string &target, const Flux::string &topic){
   this->raw("SATOPIC %s %s", target.c_str(), topic.c_str());
 }
-void Oper::satopic(Flux::string target, const char *fmt, ...){
+void Oper::satopic(const Flux::string &target, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -219,19 +219,19 @@ void Oper::satopic(Flux::string target, const char *fmt, ...){
   this->satopic(target, Flux::string(buffer));
   va_end(args); 
 }
-void Oper::sahost(Flux::string target, Flux::string host){
+void Oper::sahost(const Flux::string &target, const Flux::string &host){
   this->raw("CHGHOST %s %s", target.c_str(), host.c_str());
 }
-void Oper::saident(Flux::string target, Flux::string ident){
+void Oper::saident(const Flux::string &target, const Flux::string &ident){
   this->raw("CHGIDENT %s %s", target.c_str(), ident.c_str());
 }
-void Oper::kill(Flux::string target, Flux::string reason){
+void Oper::kill(const Flux::string &target, const Flux::string &reason){
   this->raw("KILL %s %s", target.c_str(), reason.c_str());
 }
-void Oper::saname(Flux::string target, Flux::string name){
+void Oper::saname(const Flux::string &target, const Flux::string &name){
   this->raw("CHGNAME %s %s", target.c_str(), name.c_str());
 }
-void Oper::saname(Flux::string target, const char *fmt, ...){
+void Oper::saname(const Flux::string &target, const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
@@ -239,7 +239,7 @@ void Oper::saname(Flux::string target, const char *fmt, ...){
   this->saname(target, Flux::string(buffer));
   va_end(args); 
 }
-void Oper::wallops(Flux::string message){
+void Oper::wallops(const Flux::string &message){
   this->raw("WALLOPS %s", message.c_str());
 }
 void Oper::wallops(const char *fmt, ...){
@@ -250,7 +250,7 @@ void Oper::wallops(const char *fmt, ...){
   this->wallops(Flux::string(buffer));
   va_end(args); 
 }
-void Oper::globops(Flux::string message){
+void Oper::globops(const Flux::string &message){
   this->raw("GLOBOPS %s", message.c_str());
 }
 void Oper::globops(const char *fmt, ...){
@@ -261,16 +261,16 @@ void Oper::globops(const char *fmt, ...){
   this->globops(Flux::string(buffer));
   va_end(args); 
 }
-void Oper::zline(Flux::string ipmask, Flux::string time, Flux::string reason){
+void Oper::zline(const Flux::string &ipmask, const Flux::string &time, const Flux::string &reason){
   this->raw("ZLINE %s %s %s", ipmask.c_str(), time.c_str(), reason.c_str());
 }
-void Oper::qline(Flux::string target, Flux::string time, Flux::string reason){
+void Oper::qline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
   this->raw("QLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
-void Oper::kline(Flux::string target, Flux::string time, Flux::string reason){
+void Oper::kline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
   this->raw("KLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
-void Oper::gline(Flux::string target, Flux::string time, Flux::string reason){
+void Oper::gline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
   this->raw("GLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
 /*******************************************************************************************/
