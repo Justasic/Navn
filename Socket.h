@@ -31,7 +31,7 @@ private:
   size_t recvlen;
   struct addrinfo hints, *servinfo;
 public:
-  SocketIO(const Flux::string server, const Flux::string port);
+  SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
   bool GetBuffer(Flux::string&);
   bool get_address();
