@@ -82,7 +82,7 @@ void Commands::kick(Flux::string chan, Flux::string user, Flux::string msg){
  * \overload void Commands::quit(Flux::string message)
  */
 void Commands::quit(Flux::string message){
- this->raw("QUIT :%s", message.c_str());
+ this->raw("QUIT :%s\n", message.c_str());
 }
 /**
  * \overload void Commands::part(Flux::string channel, Flux::string msg)

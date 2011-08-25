@@ -25,12 +25,17 @@
  * \brief Replies to IRC PING
  * Replies to the server's PING request to keep the bot connected
  */
+bool timeout = false;
 class PingTimer:public Timer
 {
 public:
   PingTimer():Timer(30, time(NULL), true) {}
   void Tick(time_t){
-    Send->raw("PING :%i\n", time(NULL)); 
+    Send->raw("PING :%i\n", time(NULL));
+    if(!timeout)
+      timeout = true;
+    else
+      restart("Ping-Timeout");
   }
 };
 class Ping_pong:public module{
@@ -44,6 +49,13 @@ public:
     if (source.command == "PING"){
       Send->raw("PONG :%i", time(NULL));
     } 
+    if(source.command == "PONG"){
+     Flux::string ts = params[0];
+     int timestamp = atoi(ts.c_str());
+     int lag = timestamp-time(NULL);
+     timeout = false;
+     printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
+    }
      /*for some Undernet connections */
     /*if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
       Send->s->send("PASS "+strip(reply->params(16))+nl);
