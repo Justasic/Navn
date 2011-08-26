@@ -83,7 +83,6 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
     Flux::string Nickname = params[5];
     Flux::string opstatus = params[6];
     Flux::string realname = params[7].erase(0,2);
-    printf("%s %s %s %s %s %s %s\n", channel.c_str(), Ident.c_str(), Host.c_str(), Server.c_str(), Nickname.c_str(), opstatus.c_str(), realname.c_str());
     /*******************************************************/
     User *u = finduser(Nickname);
     if(!u){

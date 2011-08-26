@@ -850,8 +850,10 @@ void process(const Flux::string &buffer){
     }
     if(IsValidChannel(receiver)){
      c = findchannel(receiver);
-     if(c)
+     if(c && u->nick == nick)
        delete c;
+    }else{
+     //delete u; 
     }
   }
   if(command == "JOIN"){
@@ -863,7 +865,7 @@ void process(const Flux::string &buffer){
      c = findchannel(receiver);
      if(!c)
        c = new Channel(receiver);
-     c->SendWho();
+     //c->SendWho();
     }
   }
   CommandSource Source;

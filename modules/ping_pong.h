@@ -54,7 +54,8 @@ public:
      int timestamp = atoi(ts.c_str());
      int lag = timestamp-time(NULL);
      timeout = false;
-     printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
+     if(protocoldebug)
+        printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
     }
      /*for some Undernet connections */
     /*if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){

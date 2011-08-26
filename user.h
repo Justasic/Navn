@@ -9,6 +9,7 @@ public:
   Flux::string nick, host, realname, ident, fullhost, server;
   void kick(const Flux::string&, const Flux::string&);
   void kill(const Flux::string&);
+  void SendWho();
   void SendMessage(const Flux::string&);
   void SendMessage(const char*, ...);
   void SendPrivmsg(const Flux::string&);

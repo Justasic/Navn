@@ -13,7 +13,8 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  this->server = sserver;
  this->fullhost = snick+"!"+sident+"@"+shost;
  UserNickList[snick] = this;
- printf("New user! %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+ if(protocoldebug)
+   printf("New user! %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
  ++usercnt;
  if(usercnt > maxusercnt){
   maxusercnt = usercnt;
@@ -22,6 +23,9 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
 }
 void User::kick(const Flux::string &channel, const Flux::string &reason){
   Send->command->kick(channel, this->nick, reason);
+}
+void User::SendWho(){
+ Send->command->who(this->nick); 
 }
 void User::kill(const Flux::string &reason){
   //Send->command->Kill(this->nick, reason);
