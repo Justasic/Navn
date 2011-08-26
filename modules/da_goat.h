@@ -154,13 +154,15 @@ public:
       if(cmd == "stats"){
 	  //Shows system stats in the channel.
 	
-		if(sysinfo(&sys_info) != 0)
-			//perror("sysinfo");
-			throw CoreException("sys_info Error");
+		if(sysinfo(&sys_info) != 0){//now here Justasic got pissed because c strings suck ass
+		  Flux::string fuckingshit = Flux::string("sys_info Error: ") + strerror(errno);
+		  throw CoreException(fuckingshit.c_str());
+		}
 		struct utsname uts;
-		if(uname(&uts) < 0)
-			//perror("uname() error");
-			throw CoreException("uname() Error");
+		if(uname(&uts) < 0){
+		  Flux::string fuckingshit = Flux::string("uname() Error: ") + strerror(errno);
+		  throw CoreException(fuckingshit.c_str());
+		}
  
 		// Uptime
 		days = sys_info.uptime / 86400;
@@ -188,7 +190,7 @@ public:
  
 		// Number of processes currently running.
 		source.Reply("Number of processes: %d", sys_info.procs);
-		source.Reply("\003");
+		source.Reply(" ");
 		source.Reply("System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
 		source.Reply("System Version: %s", uts.version);
 

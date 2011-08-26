@@ -107,7 +107,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     if(u->nick == owner_nick || pass == password || pass == usrpass){
       source.Reply("Rehashing config file.");
       log("%s rehashed config file.", u->nick.c_str());
-      Rehash(false);
+      Rehash();
     }else{
       source.Reply(access_denied);
       log("%s attempted a rehash.", u->nick.c_str());

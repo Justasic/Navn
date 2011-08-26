@@ -33,21 +33,7 @@ const Flux::string nl = "\n";
 Flux::string binary_path, bot_bin, binary_dir;
 Flux::string quitmsg;
 /******************Configuration variables***********************/
-Flux::string logfile;
-Flux::string nsacc;
-Flux::string nspass;
-Flux::string owner_nick;
-Flux::string realname;
-Flux::string usrname;
-Flux::string nick;
-Flux::string channel;
-Flux::string port;
-Flux::string server;
-Flux::string LogChannel;
-Flux::string pid_file;
-Flux::string usrpass;
-Flux::string ouser;
-Flux::string opass;
+Flux::string logfile, nsacc, nspass, owner_nick, realname, usrname, nick, channel, port, server, LogChannel, pid_file, usrpass, ouser, opass;
 /**Rehash void
  * This will re-read the config file values when told to do so
  * @param ReadConfig(INIReader &config)

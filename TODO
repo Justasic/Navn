@@ -24,12 +24,12 @@ Navn 2.0.1
 Navn 2.0.2
 ----------
 [ ] Multisocket the socket engine
-[ ] User Account system
 [ ] Add a flags system like channel/user modes
+[ ] Parse 005 Numeric for modes and server support stuff, take action on it
 
 Future
 ------
-[ ] Add some sort of accounts system
+[ ] User Account system
 [ ] Case Insensitivity
 [ ] make a makefile compile script that is still as colorful as build.sh
 [x] Do away with the damn flux_net_irc namespace

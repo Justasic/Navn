@@ -42,6 +42,7 @@ public:
 };
 /* just cuz i am hella lazy, i am defining them in the socket engine to make them global */
 struct CommandSource;
+extern Flux::string logfile;
 void send_cmd(const char *fmt, ...); /* we make this global beyond flux_net_irc.hpp so we can send almost anywhere in navn */
 extern SocketIO *sock;
 void log(const char *fmt, ...);

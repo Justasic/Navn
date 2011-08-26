@@ -4,9 +4,9 @@
 class User
 {
 public:
-  User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "");
+  User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "", const Flux::string &server ="");
   virtual ~User();
-  Flux::string nick, host, realname, ident, fullhost;
+  Flux::string nick, host, realname, ident, fullhost, server;
   void kick(const Flux::string&, const Flux::string&);
   void kill(const Flux::string&);
   void SendMessage(const Flux::string&);

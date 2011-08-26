@@ -264,22 +264,22 @@ Flux::string urlify(Flux::string raw_searchstring){
 /** 
  * \fn Flux::string execute(const char *cmd)
  * \brief Sends a command to the OS
- * \param *cmd A command
+ * \param cmd A command
  * \return A Flux::string containing the response from the OS.
  */
 Flux::string execute(const char *cmd) {
-  /* 
+/* 
  * Roses are red,
  * Violets are blue,
  * I read StackOverflow
  * And so do you!
-*/
+ */
     #ifdef _WIN32
     FILE* pipe = _popen
     #else
     FILE* pipe = popen(cmd, "r");
     #endif
-    if (!pipe) return "ERROR";
+    if (!pipe) return "";
     char buffer[128];
     Flux::string result = "";
     while(!feof(pipe)) {
@@ -559,6 +559,7 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
 }
+void ProcessJoin(CommandSource&, const Flux::string&);
 /**Random Number Generator
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(int x, int y)
@@ -862,6 +863,7 @@ void process(const Flux::string &buffer){
      c = findchannel(receiver);
      if(!c)
        c = new Channel(receiver);
+     c->SendWho();
     }
   }
   CommandSource Source;
@@ -871,6 +873,9 @@ void process(const Flux::string &buffer){
   Source.message = message;
   Source.params = params;
   Source.raw = buffer;
+  if(command == "352"){
+   ProcessJoin(Source, c->name); 
+  }
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
     return;

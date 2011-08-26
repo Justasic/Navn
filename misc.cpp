@@ -1,4 +1,7 @@
 #include "includes.h"
+#include "user.h"
+
+//General misc functions
 
 Flux::string strip2(const Flux::string &buf){
 	Flux::string newbuf = buf;
@@ -35,7 +38,7 @@ void log(const char *fmt, ...){
   std::fstream log;
   Flux::string logmsg;
   try{
-  log.open("navn.log", std::fstream::in | std::fstream::out | std::fstream::app);
+  log.open(logfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
   if(!log.is_open())
      logmsg = "Failed to open log file: "+stringify(strerror(errno));
      throw LogException(logmsg);
@@ -68,4 +71,28 @@ std::vector<Flux::string> StringVector(const Flux::string &src, char delim){
  while(tok.GetToken(token))
    ret.push_back(token);
  return ret;
+}
+void ProcessJoin(CommandSource &source, const Flux::string &chan){
+    std::vector<Flux::string> &params = source.params;
+    if(params.size() < 7)
+      return;
+    Flux::string channel = params[1];
+    Flux::string Ident = params[2];
+    Flux::string Host = params[3];
+    Flux::string Server = params[4];
+    Flux::string Nickname = params[5];
+    Flux::string opstatus = params[6];
+    Flux::string realname = params[7].erase(0,2);
+    printf("%s %s %s %s %s %s %s\n", channel.c_str(), Ident.c_str(), Host.c_str(), Server.c_str(), Nickname.c_str(), opstatus.c_str(), realname.c_str());
+    /*******************************************************/
+    User *u = finduser(Nickname);
+    if(!u){
+      if(!Host.empty() || !Nickname.empty() || !Ident.empty())
+	u = new User(Nickname, Ident, Host, realname, Server);
+    }
+    Channel *c = findchannel(channel);
+    if(!c){
+     if(!channel.empty())
+       c = new Channel(channel);
+    }
 }
