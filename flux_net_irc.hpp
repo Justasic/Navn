@@ -865,7 +865,7 @@ void process(const Flux::string &buffer){
      c = findchannel(receiver);
      if(!c)
        c = new Channel(receiver);
-     //c->SendWho();
+     c->SendWho();
     }
   }
   CommandSource Source;

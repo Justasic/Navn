@@ -144,7 +144,6 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Send->command->mode(nick, "+B");
     Channel *chan = new Channel(channel);
     chan->SendJoin();
-    chan->SendWho();
     chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
     if(ouser.empty() || opass.empty()){
     }else{
