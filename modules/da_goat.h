@@ -110,8 +110,7 @@ public:
 		log("%s used Da_Goats !help command in %s", u->nick.c_str(), c->name.c_str());
       }
       if(cmd == "!ts3"){
-		c->SendMessage("The Flux-Net TeamSpeak 3 server is: ");
-		c->SendMessage("Galaxy.Flux-Net.net:9987");
+		c->SendMessage("The Flux-Net TeamSpeak 3 server is:\n Galaxy.Flux-Net.net:9987");
 		log("%s used Da_Goats !ts3 command in %s", u->nick.c_str(), c->name.c_str());
 	}
       if(cmd == "topic"){

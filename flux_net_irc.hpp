@@ -764,11 +764,10 @@ if(true) \
 } \
 else \
       static_cast<void>(0)
-/**
- * \brief main processing loop
- * 
- * 
- * 
+/** 
+ * \fn void process(const Flux::string &buffer)
+ * \brief Main Processing function
+ * \param buffer The raw socket buffer
  */
 void process(const Flux::string &buffer){
   Flux::string buf = buffer;
@@ -832,41 +831,33 @@ void process(const Flux::string &buffer){
   uhost = irc_string::isolate('@',' ',source);
   
   User *u = finduser(nickname);
+  Channel *c;
   if(!u){
     if(nickname.empty() || uident.empty() || uhost.empty()){ }else
       u = new User(nickname, uident, uhost);
   }
   if(command == "QUIT"){
     User *u = finduser(nickname);
-   if(!u){}else{
+   if(u)
      delete u;
-   }
   }
-  Channel *c;
   if(command == "PART"){
-    if(receiver.empty()){
-     printf("wtf?\n");
-     return;
-    }
     if(IsValidChannel(receiver)){
      c = findchannel(receiver);
      if(c && u->nick == nick)
        delete c;
     }else{
-     //delete u; 
+     delete u; 
     }
   }
   if(command == "JOIN"){
-    if(receiver.empty()){
-     printf("wtf?\n");
-     return;
-    }
-    if(IsValidChannel(receiver)){
      c = findchannel(receiver);
-     if(!c)
-       c = new Channel(receiver);
-     c->SendWho();
-    }
+     if(!c){
+       if(IsValidChannel(receiver))
+         c = new Channel(receiver);
+     }
+     if(u->nick == nick)
+       c->SendWho();
   }
   CommandSource Source;
   Source.u = u; //User class
