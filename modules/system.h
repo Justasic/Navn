@@ -133,12 +133,8 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
     Send->notice(owner_nick, "The randomly generated password is: "+password);
   }
-  if(cmd == "whotest"){
-   c->SendWho();
-  }
-  if(source.command == "352"){
-    // some day this will have the channel for /who
-    
+  if(cmd == "!chanlist"){
+    ListChans(source);
   }
   if(source.command == "004"){
     Send->command->mode(nick, "+B");

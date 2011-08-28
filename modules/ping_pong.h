@@ -43,7 +43,8 @@ class Ping_pong:public module{
 public:
   Ping_pong(bool a):module("Ping", a, PRIORITY_FIRST){ 
     this->SetDesc("Handles ping pong events");
-    //Implementation i[] = { I_OnPrivmsg };
+    /*Implementation i[] = { I_OnPrivmsg };
+    ModuleHandler::Attach(i, this);*/
   }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     if (source.command == "PING"){

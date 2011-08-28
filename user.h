@@ -55,6 +55,7 @@ public:
   void SendNotice(const char*, ...);
 };
 Channel *findchannel(const Flux::string&);
+void ListChans(CommandSource &source);
 struct CommandSource
 {
  User *u; /* User name, this will be replaced with above class*/

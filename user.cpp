@@ -223,6 +223,13 @@ void Channel::SendNotice(const Flux::string &message){
 void Channel::SendWho(){
  Send->command->who(this->name); 
 }
+/****************************************************************/
+void ListChans(CommandSource &source){
+  for(channel_map::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it){
+   //source.Reply("Channel: %s", (*it)->name.c_str()); 
+  }
+  
+}
 Channel *findchannel(const Flux::string &channel){
   Flux::map<Channel *>::iterator it = ChanMap.find(channel);
   if(it != ChanMap.end())

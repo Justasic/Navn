@@ -97,7 +97,7 @@ class irc_string:Flux::string{
   */
 DEPRECATED(Flux::string params(unsigned i)){
   if (i >= toks.size()){
-    return " ";
+    return "";
   }else{return toks[i];}
 }
 /**
@@ -138,9 +138,10 @@ static Flux::string isolate(char begin, char end, Flux::string msg){
   size_t pos = msg.find(begin);
   pos += 1;
   for (unsigned i = pos; i < msg.length(); i++){
-    if (msg.at(i) == end){
+    if (msg[i] == end)
       break;
-    }else{to_find = to_find+msg.at(i);}
+    else
+      to_find = to_find+msg[i];
   }
   return to_find;
 }
@@ -726,7 +727,29 @@ int module::DelCommand(Command *c){
   c->mod = NULL;
   return 0;
 }
-std::vector<module *> EventHandlers[I_END];
+class ModuleHandler
+{
+public:
+  static std::vector<module *> EventHandlers[I_END];
+  
+  static bool Attach(Implementation i, module *mod);
+  static bool Detach(Implementation i, module *mod);
+};
+std::vector<module *> ModuleHandler::EventHandlers[I_END];
+bool ModuleHandler::Attach(Implementation i, module *mod){
+  if(std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod) != EventHandlers[i].end())
+    return false;
+  EventHandlers[i].push_back(mod);
+  return true;
+}
+bool ModuleHandler::Detach(Implementation i, module *mod){
+  std::vector<module*>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
+  
+  if(x == EventHandlers[i].end())
+    return false;
+  EventHandlers[i].erase(x);
+  return true;
+}
 void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
   for(unsigned i = 0; i < moduleList.size(); i++){
     if (moduleList[i]->activated == true){
@@ -747,7 +770,7 @@ Command *FindCommand(const Flux::string &name){
 if(true) \
 { \
     std::vector<module*>::iterator safei; \
-    for (std::vector<module*>::iterator _i = EventHandlers[y].begin(); _i != EventHandlers[y].end(); ) \
+    for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
     { \
        safei = _i; \
        ++safei; \
