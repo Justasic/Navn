@@ -8,6 +8,7 @@ class Channel;
 class User;
 class SocketIO;
 class Commands;
+class Command;
 class Oper;
 class module;
 struct CommandSource;

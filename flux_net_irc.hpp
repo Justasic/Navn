@@ -606,7 +606,7 @@ Flux::string siginit(int sigstring){
  * \param source The filename for conversion
  */
 
-Flux::string xmlToString(Flux::string fileName){
+Flux::string xmlToString(const Flux::string &fileName){
   std::string buf, line;
   std::ifstream in(fileName.c_str());
   while(std::getline(in,line)){
@@ -621,12 +621,12 @@ Flux::string xmlToString(Flux::string fileName){
  * \param info The info from that node
  * \param fileString Flux::string to parse
  */
-Flux::string findInXML(Flux::string node, Flux::string info, Flux::string fileString){
+Flux::string findInXML(const Flux::string &node, const Flux::string &info, const Flux::string &fileString){
  
   Flux::string findee = "<"+node;
   size_t p = fileString.find(findee);
   if(p > fileString.length()) /* Sanity check so we don't SIGABRT */
-    return "Error: length too large";
+    return "";
   bool foundInfo = false;
   int a = 0;
   while(!foundInfo){
@@ -854,7 +854,8 @@ void process(const Flux::string &buffer){
   uhost = irc_string::isolate('@',' ',source);
   
   User *u = finduser(nickname);
-  Channel *c;
+  Channel *c = findchannel(receiver);
+  
   if(!u){
     if(nickname.empty() || uident.empty() || uhost.empty()){ }else
       u = new User(nickname, uident, uhost);
