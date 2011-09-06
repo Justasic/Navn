@@ -39,6 +39,6 @@ public:
   const int recv() const;
   const int send(const Flux::string &buf) const;
   bool connect();
-  bool is_valid()  const { return sockn != -1; }
+  bool is_valid() const { return sockn != -1; }
 };
 #endif

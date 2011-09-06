@@ -8,6 +8,7 @@ public:
   virtual ~User();
   Flux::string nick, host, realname, ident, fullhost, server;
   void kick(const Flux::string&, const Flux::string&);
+  void kick(Channel*, const Flux::string&);
   void kill(const Flux::string&);
   void SendWho();
   void SendMessage(const Flux::string&);
@@ -15,7 +16,6 @@ public:
   void SendPrivmsg(const Flux::string&);
   void SendPrivmsg(const char*, ...);
 };
-extern Flux::map<User *> UserNickList; //this makes the variable global for later use..
 typedef Flux::map<Channel*> channel_map;
 class Channel
 {

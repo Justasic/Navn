@@ -24,12 +24,16 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
 void User::kick(const Flux::string &channel, const Flux::string &reason){
   Send->command->kick(channel, this->nick, reason);
 }
+void User::kick(Channel *ch, const Flux::string &reason){
+  Send->command->kick(ch->name, this->nick, reason);
+}
 void User::SendWho(){
  Send->command->who(this->nick); 
 }
 void User::kill(const Flux::string &reason){
-  //Send->command->Kill(this->nick, reason);
- send_cmd("KILL %s :%s", this->nick.c_str(), reason.c_str());
+  if(Send->o)
+   Send->o->kill(this->nick, reason);
+ //send_cmd("KILL %s :%s", this->nick.c_str(), reason.c_str());
 }
 void User::SendMessage(const char *fmt, ...){
   char buffer[4096] = "";
@@ -80,7 +84,6 @@ void CommandSource::Reply(const Flux::string &msg){
  while(sep.GetToken(tok))
  {
    this->u->SendMessage(tok);
-   //Send->notice(this->u->nick, tok.c_str());
  }
 }
 /*******************************************************************/

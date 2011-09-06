@@ -152,8 +152,7 @@ bool SocketIO::GetBuffer(Flux::string &recv){
     return true;
 }
 const int SocketIO::send(const Flux::string &buf) const{
- //buf.stripc();
- printf("\033[22;31m<-- %s\033[22;36m\n", Flux::Sanitize(buf).c_str() /*buf.c_str() */);
+ printf("<-- %s\n", Flux::Sanitize(buf).c_str());
  int i = write(sockn, buf.c_str(), buf.size());
  return i;
 }

@@ -16,7 +16,8 @@ struct CommandSource;
 /* * type definitions */
 Channel *findchannel(const Flux::string&);
 User *finduser(const Flux::string &nick);
-//Command *FindCommand(const Flux::string &name);
+module *FindModule(const Flux::string &name);
+Command *FindCommand(const Flux::string &name);
 
 /* extern's */
 extern SocketIO *sock;
@@ -26,11 +27,14 @@ extern bool IsValidChannel(const Flux::string&);
 extern Flux::string logfile;
 extern bool protocoldebug, IsOper;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
+extern std::vector<module*> moduleList;
+extern Flux::map<User *> UserNickList;
 
 /* void's */
 void ListChans(CommandSource &source);
 void send_cmd(const char *fmt, ...);
 void log(const char *fmt, ...);
+void process(const Flux::string&);
 void ProcessModules(CommandSource&, std::vector<Flux::string>&);
 
 #endif

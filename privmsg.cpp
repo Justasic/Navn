@@ -6,7 +6,8 @@
 SendMessage::SendMessage(SocketIO *sock){
   this->s = sock;
   this->command = new Commands(sock);
-  this->o = new Oper(sock);
+  if(IsOper)
+    this->o = new Oper(sock);
 }
 /**
  * \brief Sends a IRC private message to the user or channel

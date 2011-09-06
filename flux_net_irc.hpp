@@ -750,13 +750,6 @@ bool ModuleHandler::Detach(Implementation i, module *mod){
   EventHandlers[i].erase(x);
   return true;
 }
-void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
-  for(unsigned i = 0; i < moduleList.size(); i++){
-    if (moduleList[i]->activated == true){
-      moduleList[i]->run(source, params);
-    }
-  } 
-}
 Command *FindCommand(const Flux::string &name){
  if(name.empty())
    return NULL;
@@ -764,6 +757,13 @@ Command *FindCommand(const Flux::string &name){
  if(it != Commandsmap.end())
    return it->second;
  return NULL;
+}
+void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
+  for(unsigned i = 0; i < moduleList.size(); i++){
+    if (moduleList[i]->activated == true){
+      moduleList[i]->run(source, params);
+    }
+  } 
 }
 /***************************************************************************/
 #define FOREACH_MOD(y, x) \
@@ -787,117 +787,7 @@ if(true) \
 } \
 else \
       static_cast<void>(0)
-/** 
- * \fn void process(const Flux::string &buffer)
- * \brief Main Processing function
- * \param buffer The raw socket buffer
- */
-void process(const Flux::string &buffer){
-  Flux::string buf = buffer;
-  buf = buf.replace_all_cs("  ", " ");
-  if(buf.empty())
-    return;
-  Flux::string source;
-  if(buf[0] == ':'){
-   size_t space = buf.find_first_of(" ");
-   if(space == Flux::string::npos)
-     return;
-   source = buf.substr(1, space - 1);
-   buf = buf.substr(space + 1);
-   if(source.empty() || buf.empty())
-     return;
-  }
-  sepstream bufferseparator(buf, ' ');
-  Flux::string bufferseparator_token;
-  Flux::string command = buf;
-  if(bufferseparator.GetToken(bufferseparator_token))
-    command = bufferseparator_token;
-  std::vector<Flux::string> params;
-  
-  while(bufferseparator.GetToken(bufferseparator_token)){
-    if(bufferseparator_token[0] == ':'){
-      if(!bufferseparator.StreamEnd())
-	params.push_back(bufferseparator_token.substr(1)+" "+bufferseparator.GetRemaining());
-      else
-	params.push_back(bufferseparator_token.substr(1));
-      break;
-    }
-    else
-      params.push_back(bufferseparator_token);
-  }
-  if(protocoldebug){
-   printf("--> %s\n", Flux::Sanitize(buffer).c_str());
-   printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
-   printf("%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
-   if(params.empty())
-     printf("No Params\n");
-   else
-     for(unsigned i =0; i < params.size(); ++i)
-       printf("Params %i: %s\n", i, params[i].c_str());
-     
-  }
-  /**************************************/
-  const Flux::string &receiver = params.size() > 0 ? params[0] : "";
-  Flux::string message = params.size() > 1? params[1] : "";
-  
-  if(command == "PRIVMSG"){
-    if(protocoldebug){
-    }else
-      if(!receiver.empty() && !params[1].empty())
-       printf("<%s-%s> %s\n", irc_string::isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
-  }else
-    if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
-  /**************************************/
-  /* make local variables instead of global ones */
-  Flux::string nickname = irc_string::isolate(':','!',source),
-  uident = irc_string::isolate('!','@',source),
-  uhost = irc_string::isolate('@',' ',source);
-  
-  User *u = finduser(nickname);
-  Channel *c = findchannel(receiver);
-  
-  if(!u){
-    if(nickname.empty() || uident.empty() || uhost.empty()){ }else
-      u = new User(nickname, uident, uhost);
-  }
-  if(command == "QUIT"){
-    User *u = finduser(nickname);
-   if(u)
-     delete u;
-  }
-  if(command == "PART"){
-    if(IsValidChannel(receiver)){
-     c = findchannel(receiver);
-     if(c && u->nick == nick)
-       delete c;
-    }else{
-     delete u; 
-    }
-  }
-  if(command == "JOIN"){
-     c = findchannel(receiver);
-     if(!c){
-       if(IsValidChannel(receiver))
-         c = new Channel(receiver);
-     }
-     //if(u->nick == nick)
-       //c->SendWho();
-  }
-  CommandSource Source;
-  Source.u = u; //User class
-  Source.c = c; //Channel class
-  Source.command = command;
-  Source.message = message;
-  Source.params = params;
-  Source.raw = buffer;
-  if(command == "352"){
-   ProcessJoin(Source, c->name); 
-  }
-  std::vector<Flux::string> params2 = StringVector(message, ' ');
-  if(source.empty() || message.empty() || params2.empty())
-    return;
-  ProcessModules(Source, params2);
-}
+
 //const Flux::string &modname,
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const bool activated) \

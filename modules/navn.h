@@ -65,12 +65,12 @@ public:
   }
   if(cmd == "kick"){
     if(u->nick == owner_nick){
-      if(params.size() > 2 || params.empty() || params.size() < 2){
-	source.Reply("Syntax: \2kick channel \37nick\15"); 
+      if(params.size() > 3 || params.size() < 3){
+	source.Reply("Syntax: \2kick channel \37nick\15");
 	return MOD_STOP;
       }
-      Flux::string kickchan = params.size() == 2 ? params[1] : "";
-      Flux::string kickee = params.size() == 2 ? params[2] : "";
+      Flux::string kickchan = params.size() == 3 ?params[1]:"";
+      Flux::string kickee = params.size() == 3 ?params[2]:"";
       if(kickee.empty() || kickchan.empty()){
 	source.Reply("Syntax: \2kick channel \37nick\15");
 	return MOD_STOP;
@@ -82,6 +82,7 @@ public:
       Channel *c2 = findchannel(kickchan);
       if(!c2){
 	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
+	return MOD_STOP;
       }
       c2->kick(kickee, "Kick from %s", u->nick.c_str());
     }else{
