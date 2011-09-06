@@ -42,7 +42,15 @@ public:
     Flux::string confPass;
     if (cmd == "modflip")
     {
-      Flux::string mod = params.size() == 2 ? params[1]:"";
+      Flux::string mod;
+      for(unsigned i=0; params.size() > i; ++i){
+	if(i != 0){
+	  mod.AddSpace();
+	  mod.push_back(params[i]);
+	}
+      }
+      mod.trim();
+      printf("MODFLIP: %s\n", mod.c_str());
       if(mod.empty()){
 	source.Reply("Syntax: \2modflip \37module\15");
 	return MOD_STOP;
@@ -51,9 +59,12 @@ public:
       {
 	if (mod == moduleList[i]->name && moduleList[i]->priority != PRIORITY_FIRST)
 	{
-	  moduleList[i]->activated = !moduleList[i]->activated;
-	  source.Reply("%s is now %sactivated.", moduleList[i]->name.c_str(), moduleList[i]->activated ? "" : "de-");
-	  log("%s used \"flipmob\" to %sactivate module '%s'", u->nick.c_str(), moduleList[i]->activated ? "" : "de-", moduleList[i]->name.c_str());
+	    moduleList[i]->activated = !moduleList[i]->activated;
+	    source.Reply("%s is now %sactivated.", moduleList[i]->name.c_str(), moduleList[i]->activated ? "" : "de-");
+	    log("%s used \"flipmob\" to %sactivate module '%s'", u->nick.c_str(), moduleList[i]->activated ? "" : "de-", moduleList[i]->name.c_str());
+        }else if(mod == moduleList[i]->name && moduleList[i]->priority == PRIORITY_FIRST){
+	  source.Reply("You cannot unload a module of that priority.");
+	  return MOD_STOP;
 	}
       }
     }

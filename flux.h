@@ -90,6 +90,7 @@ namespace Flux{
     inline void push_back(char c) { return this->_string.push_back(c); }
     inline void push_back(string &_str) { if (this != &_str) this->_string += _str._string; }
     inline void resize(size_type n) { return this->_string.resize(n); }
+    inline void AddSpace() { return this->_string.push_back(' '); }
     
     inline string erase(size_t pos = 0, size_t n = std::string::npos) { return this->_string.erase(pos, n); }
     inline iterator erase(const iterator &i) { return this->_string.erase(i); }
