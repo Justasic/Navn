@@ -129,8 +129,8 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
    * a channel.
    */
   if(source.command == "376"){
-    cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-    cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
+    std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
+    std::cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
     Send->notice(owner_nick, "The randomly generated password is: "+password);
   }
   if(cmd == "!chanlist"){
@@ -155,7 +155,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     source.Reply("I do not accept or support DCC connections.");
   }
   if(source.command == "482"){
-    cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
+    std::cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
     Send->notice(owner_nick, "I require op to run the last command!");
     log("Op is required in %s", c->name.c_str());  
   }

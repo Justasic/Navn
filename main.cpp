@@ -57,7 +57,7 @@ int main (int argcx, char** argvx, char *envp[])
     startup(argcx, argvx);
     SocketStart:
     try{
-      cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
+      std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
       //Make the socket used to connect to the server
       sock = new SocketIO(server, port);
 	  //Incase there is no connection
@@ -67,7 +67,7 @@ int main (int argcx, char** argvx, char *envp[])
 	throw SocketException("Could not create a socket to connect to the IRC server");
       Send = new SendMessage(sock);
     }catch(SocketException &e){
-      cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
+      std::cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
       log("Socket Exception Caught: %s", e.description().c_str());
       goto SocketStart;
     }
@@ -128,7 +128,7 @@ int main (int argcx, char** argvx, char *envp[])
     std::cout << "\033[22;37m" << nl;
   }//try ends here
   catch(CoreException& e){
-    cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
+    std::cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log("Core Exception Caught: ", stringify(e.GetReason()).c_str());
     exit(1);
   }

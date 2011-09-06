@@ -2,7 +2,6 @@
 #define command_h
 #include "includes.h"
 #include "user.h"
-class module;
 /**
  *\file  command.h
  *\brief Contains the command class header.
@@ -60,7 +59,6 @@ public:
   void kline(const Flux::string&, const Flux::string&, const Flux::string&);
   void gline(const Flux::string&, const Flux::string&, const Flux::string&);
 };
-extern Flux::string nick;
 class Command;
 typedef std::map<Flux::string, Command *, std::less<Flux::string> > CommandMap;
 class Command

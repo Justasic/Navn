@@ -17,7 +17,6 @@ template<typename T> inline Flux::string stringify(const T &x){
 #define VERSION_EXTRA "-with-netflix-and-chicken"
 const Flux::string VERSION_SHORT = stringify(VERSION_MAJOR)+"."+stringify(VERSION_MINOR)+"."+stringify(VERSION_PATCH);
 const Flux::string VERSION = stringify(VERSION_MAJOR)+"."+stringify(VERSION_MINOR)+"."+stringify(VERSION_PATCH)+stringify(VERSION_EXTRA);
-using namespace std;
 
 /*List the constants used throughout the script.
 If you wanna edit the server, channel, nick, etc that the bot
@@ -26,9 +25,7 @@ connects to, do so here, NOT in the main code.
 char **my_av;
 char ** my_envp;
 int days, hours, mins;
-bool quitting = false;
-bool nofork, dev, protocoldebug = false;
-bool IsOper = false;
+bool nofork, dev, protocoldebug, IsOper, quitting = false;
 const Flux::string nl = "\n";
 Flux::string binary_path, bot_bin, binary_dir;
 Flux::string quitmsg;
@@ -54,7 +51,7 @@ usrpass = config.Get("Bot","Password","Navn");
 ouser = config.Get("Oper","Oper_Username","");
 opass = config.Get("Oper","Oper_Password","");
 LogChannel = config.Get("Modules", "LogChannel","");
-cout << "\033[22;31mReading Config File\033[22;30m...\033[22;36m" << endl;
+std::cout << "\033[22;31mReading Config File\033[22;30m...\033[22;36m" << std::endl;
 }
 /******************End Configuration variables********************/
 

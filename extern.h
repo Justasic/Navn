@@ -9,15 +9,18 @@ class User;
 class SocketIO;
 class Commands;
 class Oper;
+class module;
 struct CommandSource;
 
 /* * type definitions */
 Channel *findchannel(const Flux::string&);
 User *finduser(const Flux::string &nick);
+//Command *FindCommand(const Flux::string &name);
 
 /* extern's */
 extern SocketIO *sock;
 extern SendMessage *Send;
+extern Flux::string nick;
 extern bool IsValidChannel(const Flux::string&);
 extern Flux::string logfile;
 extern bool protocoldebug, IsOper;

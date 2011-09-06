@@ -304,12 +304,12 @@ Flux::string execute(const char *cmd) {
  */
 Flux::string make_two_digits(int x){
   if (x < 10){
-    stringstream dd_ss;
+    std::stringstream dd_ss;
     dd_ss << "0" << x;
     Flux::string dd_time = dd_ss.str();
     return dd_time;
   }else{
-    stringstream sd_ss;
+    std::stringstream sd_ss;
     sd_ss << x;
     Flux::string sd_time = sd_ss.str();
     return sd_time;
@@ -368,7 +368,7 @@ Flux::string make_pass(){
   p3 = rand()%10;
   p4 = rand()%10;
   p5 = rand()%10;
-  stringstream pass_ss;
+  std::stringstream pass_ss;
   pass_ss << p1 << p2 << p3 << p4 << p5;
   Flux::string pass_str = pass_ss.str();
   return pass_str;
@@ -413,7 +413,7 @@ static void restart(Flux::string reason){
  */
 static void Rehash(bool onstart = false){
   if(!onstart)
-    cout << "Rehashing config file." << nl;
+    std::cout << "Rehashing config file." << nl;
   try{
     binary_dir += "/bot.conf";
     INIReader config(binary_dir.c_str());
@@ -424,7 +424,7 @@ static void Rehash(bool onstart = false){
     }
     ReadConfig(config);
   }catch(ConfigException &ex){
-      cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
+      std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
       log("Config Exception Caught: %s", ex.GetReason());
       if(!onstart)
         Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
@@ -450,7 +450,7 @@ void sigact(int sig)
       sigstr = "Someone used Ctrl + C";
       quitmsg = "Recieved Signal: "+sigstr;
       Send->command->quit(quitmsg);
-      cout << "\r\n\033[0m";
+      std::cout << "\r\n\033[0m";
       quitting = true;
       break;
     default:
@@ -517,16 +517,16 @@ void startup(int argc, char** argv) {
 	  exit(0);
        }
        else if (arg == "--version" || arg == "-v"){
-         cout << "\033[22;37mNavn IRC C++ Bot Version " << VERSION << nl;
-         cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
-         cout << nl;
-         cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
-         cout << "WWW: http://www.Flux-Net.net" << nl;
-         cout << "Email: Staff@Flux-Net.net" << nl;
-         cout << "Git: git://gitorious.org:navn/navn.git" << nl;
-         cout << nl;
-         cout << "This bot does have Epic Powers." << nl;
-         cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+         std::cout << "\033[22;37mNavn IRC C++ Bot Version " << VERSION << nl;
+         std::cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
+         std::cout << nl;
+         std::cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
+         std::cout << "WWW: http://www.Flux-Net.net" << nl;
+         std::cout << "Email: Staff@Flux-Net.net" << nl;
+         std::cout << "Git: git://gitorious.org:navn/navn.git" << nl;
+         std::cout << nl;
+         std::cout << "This bot does have Epic Powers." << nl;
+         std::cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
          exit(0);
        }
        else if(arg == "--protocoldebug" || "-p"){
@@ -547,8 +547,8 @@ void startup(int argc, char** argv) {
 	if((i = fork()) < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		cout << "Navn IRC Bot v" << VERSION_SHORT << " Started." << nl;
-		cout << "Forking to background. PID: "<< i << "\033[22;37m" << nl;
+		std::cout << "Navn IRC Bot v" << VERSION_SHORT << " Started." << nl;
+		std::cout << "Forking to background. PID: "<< i << "\033[22;37m" << nl;
 		exit(0);
 	}
 	if(Terminal){
@@ -608,7 +608,7 @@ Flux::string siginit(int sigstring){
 
 Flux::string xmlToString(Flux::string fileName){
   std::string buf, line;
-  ifstream in(fileName.c_str());
+  std::ifstream in(fileName.c_str());
   while(std::getline(in,line)){
     buf += line;
   }
