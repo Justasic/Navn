@@ -138,9 +138,8 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   }
   if(source.command == "004"){
     Send->command->mode(nick, "+B");
-    Channel *chan = new Channel(channel);
-    chan->SendJoin();
-    chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
+    Send->command->join(channel);
+    Send->privmsg(channel, welcome_msg, nick.c_str(), nick.c_str());
     if(ouser.empty() || opass.empty()){
     }else{
       Send->command->oper(ouser, opass);

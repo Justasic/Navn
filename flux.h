@@ -77,6 +77,7 @@ namespace Flux{
     friend const string operator+(char chr, const string &str);
     friend const string operator+(const char *_str, const string &str);
     friend const string operator+(const std::string &_str, const string &str);
+    friend const string operator+(const string &str, const std::string &_str);
     
     inline bool operator<(const string &_str) const { return this->_string < _str._string; }
     
@@ -87,6 +88,7 @@ namespace Flux{
     inline size_type size() const { return this->_string.size(); }
     inline size_type capacity() const { return this->_string.capacity(); }
     inline void push_back(char c) { return this->_string.push_back(c); }
+    inline void push_back(string &_str) { if (this != &_str) this->_string += _str._string; }
     inline void resize(size_type n) { return this->_string.resize(n); }
     
     inline string erase(size_t pos = 0, size_t n = std::string::npos) { return this->_string.erase(pos, n); }

@@ -879,8 +879,8 @@ void process(const Flux::string &buffer){
        if(IsValidChannel(receiver))
          c = new Channel(receiver);
      }
-     if(u->nick == nick)
-       c->SendWho();
+     //if(u->nick == nick)
+       //c->SendWho();
   }
   CommandSource Source;
   Source.u = u; //User class

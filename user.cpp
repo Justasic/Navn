@@ -96,6 +96,7 @@ Channel::Channel(const Flux::string &nname, time_t ts){
   this->creation_time = ts;
   this->topic_time = 0;
   printf("Created new channel: %s\n", this->name.c_str());
+  this->SendWho();
   log("Created new channel: %s", this->name.c_str());
 }
 Channel::~Channel()
@@ -225,10 +226,14 @@ void Channel::SendWho(){
 }
 /****************************************************************/
 void ListChans(CommandSource &source){
+  Flux::string channels;
   for(channel_map::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it){
-   //source.Reply("Channel: %s", (*it)->name.c_str()); 
+    Channel *ch = it->second;
+    channels.push_back(ch->name);
+    channels.push_back(' ');
+   //source.Reply("Channel: %s", ch->name.c_str()); 
   }
-  
+  source.Reply("Channels: %s\n", channels.c_str());
 }
 Channel *findchannel(const Flux::string &channel){
   Flux::map<Channel *>::iterator it = ChanMap.find(channel);
