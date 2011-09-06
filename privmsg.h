@@ -2,8 +2,6 @@
 #define PRIVMSG_H
 #include "includes.h"
 #include "command.h"
-class Commands;
-class Oper;
 class SendMessage
 {
 public:
@@ -19,5 +17,4 @@ public:
   void action(Flux::string where, Flux::string msg);
   void raw(const char *fmt, ...);
 };
-extern SendMessage *Send;
 #endif

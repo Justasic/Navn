@@ -167,22 +167,41 @@ namespace Flux{
     
     inline string strip()
     { 
-	Flux::string &newbuf = *this;
-	char c = newbuf[newbuf.size() - 1];
+	char c = (*this)[(*this).size() - 1];
 	while (c == '\n' || c == '\r'){
-		newbuf.erase(newbuf.end() - 1);
-		c = newbuf[newbuf.size() - 1];
+		(*this).erase((*this).end() - 1);
+		c = (*this)[(*this).size() - 1];
 	}
-	return newbuf;
+	return (*this);
     }
-    inline string strip(const char _str){
-	Flux::string &newbuf = *this;
-	char c = newbuf[newbuf.size() - 1];
+    inline string strip(const char _str)
+    {
+	char c = (*this)[(*this).size() - 1];
 	while ((c = _str)){
+		(*this).erase((*this).end() - 1);
+		c = (*this)[(*this).size() - 1];
+	}
+	return (*this);
+    }
+    inline void stripc()
+    { 
+      Flux::string &newbuf = *this;
+      char c = newbuf[newbuf.size() - 1];
+      while (c == '\n' || c == '\r'){
+	      newbuf.erase(newbuf.end() - 1);
+	      c = newbuf[newbuf.size() - 1];
+      }
+      (*this) == newbuf;
+    }
+    inline void stripc(const char _chr)
+    {
+      Flux::string &newbuf = *this;
+     char c = newbuf[newbuf.size() - 1];
+	while ((c = _chr)){
 		newbuf.erase(newbuf.end() - 1);
 		c = newbuf[newbuf.size() - 1];
 	}
-	return newbuf;
+	(*this) == newbuf;
     }
     
     friend std::ostream &operator<<(std::ostream &os, const string &_str);

@@ -16,10 +16,7 @@ public:
   void SendPrivmsg(const char*, ...);
 };
 extern Flux::map<User *> UserNickList; //this makes the variable global for later use..
-class Channel;
 typedef Flux::map<Channel*> channel_map;
-User *finduser(const Flux::string &nick);
-extern bool IsValidChannel(const Flux::string&);
 class Channel
 {
 public:
@@ -54,8 +51,6 @@ public:
   void SendNotice(const Flux::string&);
   void SendNotice(const char*, ...);
 };
-Channel *findchannel(const Flux::string&);
-void ListChans(CommandSource &source);
 struct CommandSource
 {
  User *u; /* User name, this will be replaced with above class*/
