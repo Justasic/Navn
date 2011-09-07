@@ -33,7 +33,6 @@ public:
       source.Reply("There are 10 commands:");
       source.Reply("quit \t \t \tQuits the bot (password needed)");
       source.Reply("pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
-      source.Reply("rejoin\t \t Rejoins the bot to the channel.");
       source.Reply("chown \t \t Changes ownership over the bot (must be a bot admin)");
       source.Reply("join \t \t \tTells the bot to join the specified channel.");
       source.Reply("part \t \t \tParts the channel");

@@ -655,9 +655,11 @@ namespace ThreadHandler
     virtual void ToRun(){};
   };
   Thread * porker;
+  void *nullpointer;
   void *bnyeh(void*)
   {
     porker->ToRun();
+    return nullpointer;
   }
   
   void RunThread(Thread piggy)
