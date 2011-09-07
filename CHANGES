@@ -44,6 +44,8 @@ Added channel class
 Added module->AddCommand(Command*) and module->DelCommand(Command*) to module class
 Removed shutdown as it was broken and didnt work right, also crashed the bot if used incorrectly for whatever reason
 Added Channel class, this allows for messages to be sent to the channel and channel management
+Added AddSpace(), and push_back to Flux::String
+Added extern.h and moved many definitions to it
 
 Navn 2.0.0
 ==========

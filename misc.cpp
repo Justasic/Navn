@@ -35,11 +35,11 @@ Flux::string isolate(char begin, char end, Flux::string msg){
  * \param *fmt
  */
 void log(const char *fmt, ...){
-  std::fstream log;
   Flux::string logmsg;
+  FILE *log;
   try{
-  log.open(logfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-  if(!log.is_open())
+  log = fopen(logfile.c_str(), "a+");
+  if(log == NULL)
      logmsg = "Failed to open log file: "+stringify(strerror(errno));
      throw LogException(logmsg);
   }catch (LogException &e){
@@ -56,13 +56,17 @@ void log(const char *fmt, ...){
   struct tm *tm = localtime(&t);
   
   char buf[512];
+  logmsg.clear();
   strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
-  log << buf;
+   logmsg += Flux::string(buf);
   vsnprintf(buf, sizeof(buf), fmt, args);
-  log << strip2(buf) << "\n";
+  logmsg += Flux::string(buf);
+  fputs(strip2(logmsg).c_str(),log);
+  if(protocoldebug)
+   std::cout << Flux::Sanitize(logmsg) << "\n";
   va_end(args);
   va_end(args);
-  log.close();
+  fclose(log);
 }
 std::vector<Flux::string> StringVector(const Flux::string &src, char delim){
  sepstream tok(src, delim);
@@ -190,6 +194,8 @@ void process(const Flux::string &buffer){
        if(IsValidChannel(receiver))
          c = new Channel(receiver);
      }
+     if(u->nick == nick)
+       c->SendWho();
   }
   CommandSource Source;
   Source.u = u; //User class

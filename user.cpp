@@ -68,6 +68,15 @@ User *finduser(const Flux::string &nick){
     return it->second;
   return NULL;
 }
+void ListUsers(CommandSource &source){
+  Flux::string users;
+  for(Flux::map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end; ++it){
+    User *u2 = it->second;
+    users += u2->nick;
+    users.AddSpace();
+  }
+  source.Reply("Users: %s\n", users.c_str());
+}
 void CommandSource::Reply(const char *fmt, ...){
   va_list args;
   char buf[4096];
@@ -95,11 +104,10 @@ Channel::Channel(const Flux::string &nname, time_t ts){
     throw CoreException("An Invalid channel was passed into the Channel constructor >:d");
   
   this->name = nname;
-  ChanMap[this->name] = this;
   this->creation_time = ts;
   this->topic_time = 0;
+  ChanMap[this->name] = this;
   printf("Created new channel: %s\n", this->name.c_str());
-  this->SendWho();
   log("Created new channel: %s", this->name.c_str());
 }
 Channel::~Channel()
@@ -232,9 +240,8 @@ void ListChans(CommandSource &source){
   Flux::string channels;
   for(channel_map::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it){
     Channel *ch = it->second;
-    channels.push_back(ch->name);
-    channels.push_back(' ');
-   //source.Reply("Channel: %s", ch->name.c_str()); 
+    channels += ch->name;
+    channels.AddSpace();
   }
   source.Reply("Channels: %s\n", channels.c_str());
 }

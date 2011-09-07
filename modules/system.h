@@ -136,6 +136,9 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   if(cmd == "!chanlist"){
     ListChans(source);
   }
+  if(cmd == "!userlist"){
+    ListUsers(source);
+  }
   if(source.command == "004"){
     Send->command->mode(nick, "+B");
     Channel *chan = new Channel(channel);
