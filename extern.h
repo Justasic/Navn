@@ -34,7 +34,6 @@ extern Flux::map<User *> UserNickList;
 /* Typedef's */
 
 
-
 /* void's */
 void ListChans(CommandSource &source);
 void ListUsers(CommandSource &source);

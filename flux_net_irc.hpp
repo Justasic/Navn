@@ -646,6 +646,28 @@ Flux::string findInXML(const Flux::string &node, const Flux::string &info, const
   return output;
 }
 /*******************************************************************/
+namespace ThreadHandler
+{
+  
+  class Thread
+  {
+  public:
+    virtual void ToRun(){};
+  };
+  Thread * porker;
+  void *bnyeh(void*)
+  {
+    porker->ToRun();
+  }
+  
+  void RunThread(Thread piggy)
+  {    
+    porker = &piggy;
+    pthread_t t1;
+    pthread_create(&t1,NULL,&bnyeh,NULL);
+  }
+}
+/*******************************************************************/
 enum Implementation{
   I_BEGIN,
 	I_OnPrivmsg,

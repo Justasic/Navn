@@ -46,6 +46,7 @@ Removed shutdown as it was broken and didnt work right, also crashed the bot if 
 Added Channel class, this allows for messages to be sent to the channel and channel management
 Added AddSpace(), and push_back to Flux::String
 Added extern.h and moved many definitions to it
+Added Thread engine
 
 Navn 2.0.0
 ==========

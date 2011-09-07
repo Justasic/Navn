@@ -35,29 +35,55 @@ public:
    return;
   }
 };*/
-class dummy : public module{
+
+/*class Bacon:public Thread
+{
+public:
+   void ToRun()
+  {
+    int i = 0;
+    while(true)
+    {
+      i++;
+    }
+  }
+};*/
+
+class dummy : public module
+{
 //CommandDummy cmddummy;
 public:
-  dummy(bool a):module("Dummy", a, PRIORITY_LAST){ 
+  dummy(bool a):module("Dummy", a, PRIORITY_LAST)
+  { 
     this->SetDesc("Example Dummy module"); 
     //this->AddCommand(&cmddummy);
   }
   
-  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
+  {
     User *u = source.u;
     Channel *c = source.c;
-    if(!u){
+    if(!u)
+    {
       return MOD_STOP;
     }
-    if(source.message == "usertest"){
+    if(source.message == "usertest")
+    {
      source.Reply("TEST!");
     }
-    if(source.message == "chantest"){
+    if(source.message == "chantest")
+    {
      c->SendMessage("TADA!");
     }
-    if (source.message == "testing testing"){
+    if (source.message == "testing testing")
+    {
       //Send->privmsg(chan,"I hear you!\nYES I DO!");
       source.Reply("I hear you!\nYES I DO!");
+    }
+    if(source.message == "!startthread")
+    {
+      //Bacon strips;
+      //ThreadHandler::RunThread(strips);
     }
    return MOD_RUN; 
   }
