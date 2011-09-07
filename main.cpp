@@ -59,13 +59,13 @@ int main (int argcx, char** argvx, char *envp[])
     try{
       std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
       //Make the socket used to connect to the server
-      sock = new SocketIO(server, port);
+      SocketIO *sock = new SocketIO(server, port);
 	  //Incase there is no connection
       if(!sock->get_address())
 	throw SocketException("Could not resolve server");
       if(!sock->connect())
 	throw SocketException("Could not create a socket to connect to the IRC server");
-      Send = new SendMessage(sock);
+      SendMessage *Send = new SendMessage(sock);
     }catch(SocketException &e){
       std::cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
       log("Socket Exception Caught: %s", e.description().c_str());
