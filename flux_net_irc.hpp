@@ -430,6 +430,36 @@ static void Rehash(bool onstart = false){
         Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
   } 
 }
+/**Random Quit message selector
+ * This is where it will set the quit message if there was a terminal quit or signal interrupt (ctrl+c)
+ * @param siginit(integer)
+ */
+Flux::string siginit(int sigstring){
+  Flux::string message;
+  switch(sigstring){
+    case 1: message = "Read on an empty pipe (ENOTOBACCO)"; break;
+    case 2: message = "Invalid syntax (EBEFOREI)"; break;
+    case 3: message = "Core dumped (ECHERNOBYL)"; break;
+    case 4: message = "Program exited before being run (ECRAY)"; break;
+    case 5: message = "The daemon is dead (EDINGDONG)"; break;
+    case 6: message = "System needs tuning (EFLAT)"; break;
+    case 7: message = "Program written by inept Frat member (EGEEK)"; break;
+    case 8: message = "Here-a-bug, there-a-bug, .... (EIEIO)"; break;
+    case 9: message = "Missing period (EIUD)"; break;
+    case 10: message = "Your code could stand to be cleaned up (ELECTROLUX)"; break;
+    case 11: message = "Wrong fork (EMILYPOST)"; break;
+    case 12: message = "Silo overflow (END.ARMS.CONTROL)"; break;
+    case 13: message = "Mount failed (ENOHORSE)"; break;
+    case 14: message = "C program not derived from main(){printf(\"Hello, world\"); (ENONSEQUETOR)"; break;
+    case 15: message = "Extended tape gap (EWATERGATE)"; break;
+    case 16: message = "Aliens sighted (EWOK)"; break;
+    case 17: message = "Your code appears to have been stir-fried (EWOK)"; break;
+    case 18: message = "The feature you want has not been implemented yet (EWOULDBNICE)"; break;
+    case 19: message = "Nuclear event occurred (SIGNUKE)"; break;
+    case 20: message = "Someone pressed CTRL + C.."; break;
+  }
+  return message;
+}
 /** Terminal Signal Handler
  * Come here for weird signals
  * @param sigact(integer)
@@ -447,7 +477,7 @@ void sigact(int sig)
     case SIGTERM:
       signal(sig, SIG_IGN);
       signal(SIGHUP, SIG_IGN);
-      sigstr = "Someone used Ctrl + C";
+      sigstr = siginit(randint(1,20));
       quitmsg = "Recieved Signal: "+sigstr;
       Send->command->quit(quitmsg);
       std::cout << "\r\n\033[0m";
@@ -569,37 +599,6 @@ int randint(int x, int y){
   srand(time(NULL));
   return rand()%(y-x+1)+x;
 }
-/**Random Quit message selector
- * This is where it will set the quit message if there was a terminal quit or signal interrupt (ctrl+c)
- * @param siginit(integer)
- */
-Flux::string siginit(int sigstring){
-  Flux::string message;
-  switch(sigstring){
-    case 1: message = "Read on an empty pipe (ENOTOBACCO)"; break;
-    case 2: message = "Invalid syntax (EBEFOREI)"; break;
-    case 3: message = "Core dumped (ECHERNOBYL)"; break;
-    case 4: message = "Program exited before being run (ECRAY)"; break;
-    case 5: message = "The daemon is dead (EDINGDONG)"; break;
-    case 6: message = "System needs tuning (EFLAT)"; break;
-    case 7: message = "Program written by inept Frat member (EGEEK)"; break;
-    case 8: message = "Here-a-bug, there-a-bug, .... (EIEIO)"; break;
-    case 9: message = "Missing period (EIUD)"; break;
-    case 10: message = "Your code could stand to be cleaned up (ELECTROLUX)"; break;
-    case 11: message = "Wrong fork (EMILYPOST)"; break;
-    case 12: message = "Silo overflow (END.ARMS.CONTROL)"; break;
-    case 13: message = "Mount failed (ENOHORSE)"; break;
-    case 14: message = "C program not derived from main(){printf(\"Hello, world\"); (ENONSEQUETOR)"; break;
-    case 15: message = "Extended tape gap (EWATERGATE)"; break;
-    case 16: message = "Aliens sighted (EWOK)"; break;
-    case 17: message = "Your code appears to have been stir-fried (EWOK)"; break;
-    case 18: message = "The feature you want has not been implemented yet (EWOULDBNICE)"; break;
-    case 19: message = "Nuclear event occurred (SIGNUKE)"; break;
-    case 20: message = "Someone pressed CTRL + C.."; break;
-  }
-  return message;
-}
-
 /** 
  * \fn Flux::string xmlToString(Flux::string fileName)
  * \brief takes an xml file and converts it to a Flux::string
@@ -622,7 +621,6 @@ Flux::string xmlToString(const Flux::string &fileName){
  * \param fileString Flux::string to parse
  */
 Flux::string findInXML(const Flux::string &node, const Flux::string &info, const Flux::string &fileString){
- 
   Flux::string findee = "<"+node;
   size_t p = fileString.find(findee);
   if(p > fileString.length()) /* Sanity check so we don't SIGABRT */

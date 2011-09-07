@@ -24,6 +24,7 @@ extern SocketIO *sock;
 extern SendMessage *Send;
 extern Flux::string nick;
 extern bool IsValidChannel(const Flux::string&);
+extern int randint(int x, int y);
 extern Flux::string logfile;
 extern bool protocoldebug, IsOper;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);

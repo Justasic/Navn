@@ -35,19 +35,13 @@ Flux::string isolate(char begin, char end, Flux::string msg){
  * \param *fmt
  */
 void log(const char *fmt, ...){
-  Flux::string logmsg;
-  FILE *log;
+  std::fstream log;
   try{
-  log = fopen(logfile.c_str(), "a+");
-  if(log == NULL)
-     logmsg = "Failed to open log file: "+stringify(strerror(errno));
-     throw LogException(logmsg);
+  log.open(logfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+  if(!log.is_open())
+     throw LogException("Failed to open log file.");
   }catch (LogException &e){
-    Flux::string reason = e.GetReason();
-    reason.trim();
-    if(reason.empty())
-      return;
-   std::cout << "Log Exception Caught: " << e.GetReason() << "\n";
+   std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
   }
   va_list args;
   va_start(args, fmt);
@@ -56,17 +50,13 @@ void log(const char *fmt, ...){
   struct tm *tm = localtime(&t);
   
   char buf[512];
-  logmsg.clear();
   strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
-   logmsg += Flux::string(buf);
+  log << buf;
   vsnprintf(buf, sizeof(buf), fmt, args);
-  logmsg += Flux::string(buf);
-  fputs(strip2(logmsg).c_str(),log);
-  if(protocoldebug)
-   std::cout << Flux::Sanitize(logmsg) << "\n";
+  log << Flux::Sanitize(buf) << std::endl;
   va_end(args);
   va_end(args);
-  fclose(log);
+  log.close();
 }
 std::vector<Flux::string> StringVector(const Flux::string &src, char delim){
  sepstream tok(src, delim);
@@ -161,7 +151,6 @@ void process(const Flux::string &buffer){
        printf("<%s-%s> %s\n", isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
   }else
     if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
-  /**************************************/
   /* make local variables instead of global ones */
   Flux::string nickname = isolate(':','!',source),
   uident = isolate('!','@',source),
@@ -175,7 +164,7 @@ void process(const Flux::string &buffer){
       u = new User(nickname, uident, uhost);
   }
   if(command == "QUIT"){
-    User *u = finduser(nickname);
+    //User *u = finduser(nickname);
    if(u)
      delete u;
   }
@@ -197,6 +186,7 @@ void process(const Flux::string &buffer){
      if(u->nick == nick)
        c->SendWho();
   }
+  /**************************************/
   CommandSource Source;
   Source.u = u; //User class
   Source.c = c; //Channel class
