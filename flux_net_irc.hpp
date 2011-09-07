@@ -3,6 +3,8 @@
 #include "user.h"
 #include "defs.h"
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
+SendMessage *Send;
+SocketIO *sock;
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
