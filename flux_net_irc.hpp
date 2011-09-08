@@ -315,21 +315,6 @@ Flux::string make_two_digits(int x){
     return sd_time;
   }
 }
-/** \fn Flux::string strip(const Flux::string &buf)
- * \brief Strips \r and \n from a Flux::string
- * Takes out the '\r' and '\n' from a Flux::string. Mostly used in messing with irc replies.
- * \param &buf String to be stripped
- * \return \a &buf without the '\r' and '\n'.
- */
-Flux::string strip(const Flux::string &buf){
-	Flux::string newbuf = buf;
-	char c = newbuf[newbuf.size() - 1];
-	while (c == '\n' || c == '\r'){
-		newbuf.erase(newbuf.end() - 1);
-		c = newbuf[newbuf.size() - 1];
-	}
-	return newbuf;
-}
 /**
  *\fn  Flux::string os_time()
  *\brief Get the operating system's time
@@ -419,7 +404,7 @@ static void Rehash(bool onstart = false){
     INIReader config(binary_dir.c_str());
     if (config.ParseError() < 0) {
       Flux::string error = "Cannot load bot.conf: ";
-      error += stringify(config.ParseError());
+      error += Flux::stringify(config.ParseError());
 	throw ConfigException(error);
     }
     ReadConfig(config);

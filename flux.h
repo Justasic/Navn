@@ -5,6 +5,8 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <sstream>
+#include <cstdio>
 #ifdef __GNUC__
 #define DEPRECATED(func) func __attribute__ ((deprecated))
 #elif defined(_MSC_VER)
@@ -212,6 +214,12 @@ namespace Flux{
     inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
     inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
     inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
+    template<typename T> inline Flux::string stringify(const T &x){
+	std::ostringstream stream;
+	if(!(stream << x))
+		throw;
+	return stream.str();
+    }
     
 }//end of namespace
 class sepstream {

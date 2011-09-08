@@ -35,7 +35,6 @@ Made ConfigException return the error code
 Removed some junk from the socket engine
 Changed how navn recognizes joins so it does not announce in every channel it joins that it joined a new channel
 Removed in_channel boolean
-Updated all modules with new api
 Removed 'cum' reply
 Added Command class, renamed conflicting Command class to Commands
 Added AddCommand and DelCommand into module class
@@ -47,6 +46,9 @@ Added Channel class, this allows for messages to be sent to the channel and chan
 Added AddSpace(), and push_back to Flux::String
 Added extern.h and moved many definitions to it
 Added Thread engine
+Made oper class only be defined IF we are actually oper, if not then it will be NULL
+Moved stringify to Flux namespace, now its Flux::stringify
+strip() is now a global function
 
 Navn 2.0.0
 ==========

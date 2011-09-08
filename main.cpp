@@ -129,7 +129,7 @@ int main (int argcx, char** argvx, char *envp[])
   }//try ends here
   catch(CoreException& e){
     std::cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
-    log("Core Exception Caught: ", stringify(e.GetReason()).c_str());
+    log("Core Exception Caught: ", Flux::stringify(e.GetReason()).c_str());
     exit(1);
   }
   return EXIT_SUCCESS;

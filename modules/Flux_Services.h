@@ -107,64 +107,64 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 	 Flux::string object;
 	  switch(num){ //FIXME: This switch statement will become rather large.. perhapse rewriting it to read from a wordlist?
 	    case 1:
-	      object = "toothbrush (Object #"+stringify(num)+")";
+	      object = "toothbrush (Object #"+Flux::stringify(num)+")";
 	      break;
 	    case 2:
-	      object = "balloon (Object #"+stringify(num)+")";
+	      object = "balloon (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 3:
-	      object = "spacecraft (Object #"+stringify(num)+")";
+	      object = "spacecraft (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 4:
-	      object = "apple (Object #"+stringify(num)+")";
+	      object = "apple (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 5:
-	      object = "basketball (Object #"+stringify(num)+")";
+	      object = "basketball (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 6:
-	      object = "$10,000 check (Object #"+stringify(num)+")";
+	      object = "$10,000 check (Object #"+Flux::stringify(num)+")";
 	      break;
 	    case 7:
-	      object = "dinner table (Object #"+stringify(num)+")";
+	      object = "dinner table (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 8:
-	      object = "couch (Object #"+stringify(num)+")";
+	      object = "couch (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 9:
-	      object = "lawn chair (Object #"+stringify(num)+")";
+	      object = "lawn chair (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 10:
-	      object = "pink flamingo (Object #"+stringify(num)+")";
+	      object = "pink flamingo (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 11:
-	      object = "KFC bucket (Object #"+stringify(num)+")";
+	      object = "KFC bucket (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 12:
-	      object = "used condom (Object #"+stringify(num)+")";
+	      object = "used condom (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 13:
-	      object = "candy bar (Object #"+stringify(num)+")";
+	      object = "candy bar (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 14:
-	      object = "door knob (Object #"+stringify(num)+")";
+	      object = "door knob (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 15:
-	      object = "free bottle of vodka (Object #"+stringify(num)+")";
+	      object = "free bottle of vodka (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 16:
-	      object = "empty can (Object #"+stringify(num)+")";
+	      object = "empty can (Object #"+Flux::stringify(num)+")";
 	      break;
 	    case 17:
-	      object = "light bulb (Object #"+stringify(num)+")";
+	      object = "light bulb (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 18:
-	      object = "arm & hammer box (Object #"+stringify(num)+")";
+	      object = "arm & hammer box (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 19:
-	      object = "laundry detergent (Object #"+stringify(num)+")";
+	      object = "laundry detergent (Object #"+Flux::stringify(num)+")";
 	      break;	      
 	    case 20:
-	      object = "toilet paper roll (Object #"+stringify(num)+")";
+	      object = "toilet paper roll (Object #"+Flux::stringify(num)+")";
 	      break;	              
 	  }
 	  magiccount++;

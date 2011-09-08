@@ -2,8 +2,13 @@
 #include "user.h"
 
 //General misc functions
-
-Flux::string strip2(const Flux::string &buf){
+/** \fn Flux::string strip(const Flux::string &buf)
+ * \brief Strips \r and \n from a Flux::string
+ * Takes out the '\r' and '\n' from a Flux::string. Mostly used in messing with irc replies.
+ * \param &buf String to be stripped
+ * \return \a &buf without the '\r' and '\n'.
+ */
+Flux::string strip(const Flux::string &buf){
 	Flux::string newbuf = buf;
 	char c = newbuf[newbuf.size() - 1];
 	while (c == '\n' || c == '\r'){
@@ -11,12 +16,6 @@ Flux::string strip2(const Flux::string &buf){
 		c = newbuf[newbuf.size() - 1];
 	}
 	return newbuf;
-}
-template<typename T> inline Flux::string stringify(const T &x){
-	std::ostringstream stream;
-	if(!(stream << x))
-		throw;
-	return stream.str();
 }
 Flux::string isolate(char begin, char end, Flux::string msg){
   Flux::string to_find;

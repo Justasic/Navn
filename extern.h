@@ -10,6 +10,7 @@ class SocketIO;
 class Commands;
 class Command;
 class Oper;
+class Thread;
 class module;
 struct CommandSource;
 
@@ -23,6 +24,7 @@ Command *FindCommand(const Flux::string &name);
 extern SocketIO *sock;
 extern SendMessage *Send;
 extern Flux::string nick;
+extern Flux::string strip(const Flux::string &buf);
 extern bool IsValidChannel(const Flux::string&);
 extern int randint(int x, int y);
 extern Flux::string logfile;

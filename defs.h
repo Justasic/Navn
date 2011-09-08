@@ -1,22 +1,15 @@
 #ifndef defs_h
 #define defs_h
 #include "inireader/INIReader.h"
-#include <sstream>
-#include <cstdio>
 #include "flux.h"
 #define GetCurrentDir getcwd
-template<typename T> inline Flux::string stringify(const T &x){
-	std::ostringstream stream;
-	if(!(stream << x))
-		throw;
-	return stream.str();
-}
+
 #define VERSION_MAJOR "2"
 #define VERSION_MINOR "0"
 #define VERSION_PATCH "1"
 #define VERSION_EXTRA "-with-netflix-and-chicken"
-const Flux::string VERSION_SHORT = stringify(VERSION_MAJOR)+"."+stringify(VERSION_MINOR)+"."+stringify(VERSION_PATCH);
-const Flux::string VERSION = stringify(VERSION_MAJOR)+"."+stringify(VERSION_MINOR)+"."+stringify(VERSION_PATCH)+stringify(VERSION_EXTRA);
+const Flux::string VERSION_SHORT = Flux::stringify(VERSION_MAJOR)+"."+Flux::stringify(VERSION_MINOR)+"."+Flux::stringify(VERSION_PATCH);
+const Flux::string VERSION = Flux::stringify(VERSION_MAJOR)+"."+Flux::stringify(VERSION_MINOR)+"."+Flux::stringify(VERSION_PATCH)+Flux::stringify(VERSION_EXTRA);
 
 /*List the constants used throughout the script.
 If you wanna edit the server, channel, nick, etc that the bot
