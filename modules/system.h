@@ -56,7 +56,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       source.Reply("The password is:\2 %s", password.c_str());
       log("%s requested the navn quit password: %s", u->nick.c_str(), password.c_str());
     }else{
-      source.Reply(access_denied);
+      source.Reply(ACCESS_DENIED);
       log("%s attempted to request the navn quit password.", u->nick.c_str());
     }
   }
@@ -66,7 +66,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       Send->raw("QUIT :Restarting..\n");
       restart("Restarting..");
     }else{
-      source.Reply(access_denied);
+      source.Reply(ACCESS_DENIED);
     }
   }
   if(cmd == "pid"){
@@ -74,7 +74,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       source.Reply("My PID is: %i", getpid()); 
       log("%s used pid function to get PID %i", u->nick.c_str(), getpid());
     }else{
-      source.Reply(access_denied);
+      source.Reply(ACCESS_DENIED);
     }
   }
   if(source.command == "NICK"){
@@ -98,7 +98,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       Send->command->quit("Requested From \2%s\17. Pass: \00320%s\017", u->nick.c_str(), password.c_str());
       quitting = true;
     }else{
-      source.Reply(access_denied);
+      source.Reply(ACCESS_DENIED);
       log("%s attempted to change ownership of the bot", u->nick.c_str());
     }
   }
@@ -109,7 +109,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       log("%s rehashed config file.", u->nick.c_str());
       Rehash();
     }else{
-      source.Reply(access_denied);
+      source.Reply(ACCESS_DENIED);
       log("%s attempted a rehash.", u->nick.c_str());
     }
   }
@@ -120,7 +120,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       owner_nick = u->nick; //FIXME: i am broken from the new API!
       source.Reply("New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
     }else{
-      source.Reply(access_denied);
+      source.Reply(ACCESS_DENIED);
       log("%s attempted to change ownership of the bot", u->nick.c_str());
     }
   }
@@ -148,6 +148,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     }else{
       Send->command->oper(ouser, opass);
       IsOper = true;
+      Send->o = new Oper(sock);
     }if(nsacc.empty() || nspass.empty()){
       return MOD_RUN;
     }else{

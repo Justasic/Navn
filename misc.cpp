@@ -201,3 +201,5 @@ void process(const Flux::string &buffer){
     return;
   ProcessModules(Source, params2);
 }
+/* butt-plug?
+ * http://www.albinoblacksheep.com/flash/plugs */

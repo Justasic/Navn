@@ -36,7 +36,7 @@ void CLog(const char *fmt, ...){
   if(!log.is_open())
      throw LogException("Failed to open log file.");
   }catch (LogException &e){
-   std::cerr << "Log Exception Caught: " << e.GetReason() << endl;
+   std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
   }
   va_list args;
   va_start(args, fmt);
@@ -48,7 +48,7 @@ void CLog(const char *fmt, ...){
   strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
   log << buf;
   vsnprintf(buf, sizeof(buf), fmt, args);
-  log << buf << endl;
+  log << buf << std::endl;
   va_end(args);
   va_end(args);
   log.close();
@@ -69,8 +69,8 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Flux::string nolog = params.size() == 2?params[1]:"";
     if(nolog == "#nl"){return MOD_STOP;}else{
       if(nolog == "\001ACTION"){
-	msg = msg.erase(0,7);
-	msg.erase(msg.size()-1, 1);
+	msg = msg.erase(0,8);
+	msg = msg.erase(msg.size()-1, 1);
 	CLog("*** %s %s", u->nick.c_str(), Flux::Sanitize(msg).c_str());
       }else{
 	CLog("<%s> %s", u->nick.c_str(), msg.c_str());

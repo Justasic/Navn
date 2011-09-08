@@ -86,7 +86,7 @@ public:
       }
       c2->kick(kickee, "Kick from %s", u->nick.c_str());
     }else{
-      source.Reply(access_denied);
+      source.Reply(ACCESS_DENIED);
     }
   }
   if (cmd == "join"){
@@ -123,7 +123,7 @@ public:
     if(u->nick == owner_nick){
       Send->command->nick(newnick);
     }else{
-     Send->privmsg(u->nick, access_denied); 
+     Send->privmsg(u->nick, ACCESS_DENIED); 
     }
   }
   return MOD_RUN;

@@ -147,7 +147,7 @@ public:
 			}
 			log("%s used Da_Goats !topic command to change the topin in %s to \"%s\"",u->nick.c_str(), tchan.c_str(), strip(msg).c_str());
 		}else{ 
-			source.Reply(access_denied); 
+			source.Reply(ACCESS_DENIED); 
 		}
 	}
       if(cmd == "stats"){

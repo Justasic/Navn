@@ -12,6 +12,7 @@ class Command;
 class Oper;
 class Thread;
 class module;
+class SendMessage;
 struct CommandSource;
 
 /*  *pointer definitions */
@@ -42,6 +43,7 @@ void ListUsers(CommandSource &source);
 void send_cmd(const char *fmt, ...);
 void log(const char *fmt, ...);
 void process(const Flux::string&);
+void ProcessJoin(CommandSource&, const Flux::string&);
 void ProcessModules(CommandSource&, std::vector<Flux::string>&);
 
 #endif

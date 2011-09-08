@@ -15,18 +15,17 @@
 #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 #define DEPRECATED(func) func
 #endif
-class SendMessage;
 /**
  *\file flux.h Flux::string header file
  *\brief The Flux::string namespace ported from Anope::string
  *\author Justasic and Anope
  * This class has all the inline string functions we needed
  * to make the string class a little bit more functioning.
- * All function programming for the string class goes to The Anope development team
+ * most function programming for the string class goes to The Anope development team
  */
 namespace Flux{
   /* This class was ported from Anope IRC services to work with Navn
-   * All function programming credit goes to The Anope Team
+   * most function programming credit goes to The Anope Team
    * See http://tinyurl.com/6btqne4
    */
   class string

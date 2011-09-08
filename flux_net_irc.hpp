@@ -303,16 +303,13 @@ Flux::string execute(const char *cmd) {
  * \return A Flux::string containing integer as a double digit.
  */
 Flux::string make_two_digits(int x){
+  std::stringstream dd_ss;
   if (x < 10){
-    std::stringstream dd_ss;
     dd_ss << "0" << x;
-    Flux::string dd_time = dd_ss.str();
-    return dd_time;
+    return dd_ss.str();
   }else{
-    std::stringstream sd_ss;
-    sd_ss << x;
-    Flux::string sd_time = sd_ss.str();
-    return sd_time;
+    dd_ss << x;
+    return dd_ss.str();
   }
 }
 /**
@@ -355,8 +352,7 @@ Flux::string make_pass(){
   p5 = rand()%10;
   std::stringstream pass_ss;
   pass_ss << p1 << p2 << p3 << p4 << p5;
-  Flux::string pass_str = pass_ss.str();
-  return pass_str;
+  return pass_ss.str();
 }
 const Flux::string password = make_pass();
 
@@ -435,7 +431,7 @@ Flux::string siginit(int sigstring){
     case 11: message = "Wrong fork (EMILYPOST)"; break;
     case 12: message = "Silo overflow (END.ARMS.CONTROL)"; break;
     case 13: message = "Mount failed (ENOHORSE)"; break;
-    case 14: message = "C program not derived from main(){printf(\"Hello, world\"); (ENONSEQUETOR)"; break;
+    case 14: message = "C program not derived from main() { printf(\"Hello, world\"); } (ENONSEQUETOR)"; break;
     case 15: message = "Extended tape gap (EWATERGATE)"; break;
     case 16: message = "Aliens sighted (EWOK)"; break;
     case 17: message = "Your code appears to have been stir-fried (EWOK)"; break;
@@ -575,7 +571,6 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
 }
-void ProcessJoin(CommandSource&, const Flux::string&);
 /**Random Number Generator
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(int x, int y)

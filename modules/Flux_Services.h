@@ -58,12 +58,13 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		  ch->SendPart("I'm leaving this dump.");
 		  log("%s used Flux_S3rvices part %s", u->nick.c_str(), pchannel.c_str());
 		}else{
-			source.Reply(access_denied);
+			source.Reply(ACCESS_DENIED);
 		}
 	}
 	if(cmd == "!botadd"){
 		if(u->nick == owner_nick){
 		  if(params.size() < 5){
+		    source.Reply("Syntax: \2!botadd \37nick\37 \37user\37 \37host\37 \37real\37");
 		   return MOD_STOP; 
 		  }
 			Flux::string bnick = params[1];
@@ -73,7 +74,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 			Send->privmsg("BotServ", "bot add %s %s %s %s", bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str());
 			log("%s used Flux_S3rvices to make bot \"%s!%s@%s :%s\" %s", u->nick.c_str(), bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str(), c->name.c_str());
 		}else{
-		Send->notice(u->nick, access_denied);
+		source.Reply(ACCESS_DENIED);
 		}
 	}
 	if(irc_string::said(source.message, "slaps")){
