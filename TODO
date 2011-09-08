@@ -7,7 +7,7 @@ Legend:
 
 Navn 2.0.1
 ----------
-[?] Fix --help message showing full execution directory
+[x] Fix --help message showing full execution directory
 [ ] Rewrite the config system (Burn INIreader with fire!)
 [x] timer function
 [$] Make module system load binary files (.so files)
@@ -15,7 +15,7 @@ Navn 2.0.1
 [+] Make default channel's in the config
 [x] Make a server numeric catcher
 [x] Add timed pinging (should handle ping timeouts and connection issues)
-[+] Add better error handling instead of a throw or a error code in some places
+[?] Add better error handling instead of a throw or a error code in some places
 [?] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
 [x] Add some sort of buffer processor for the socket engine (make lines process correctly instead of printing the raw buffer)
 [x] Add Select() multiplexing to stop high cpu usage
