@@ -150,7 +150,6 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       IsOper = true;
       Send->o = new Oper(sock);
     }if(nsacc.empty() || nspass.empty()){
-      return MOD_RUN;
     }else{
       Send->privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
     }

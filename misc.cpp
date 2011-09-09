@@ -163,20 +163,34 @@ void process(const Flux::string &buffer){
       u = new User(nickname, uident, uhost);
   }
   if(command == "QUIT"){
-    //User *u = finduser(nickname);
    if(u)
      delete u;
   }
   if(command == "PART"){
     if(IsValidChannel(receiver)){
      c = findchannel(receiver);
-     if(c && u->nick == nick)
+     if(c && u && u->nick == nick)
        delete c;
     }else{
      delete u; 
     }
   }
+  if(command == "NICK"){
+   if(u){
+     if(u->nick == nick){
+       nick = params[0];
+       delete u; //we shouldnt be a user in the 1st place (:
+     }
+     else{
+       delete u; //we delete the user because the above if statement makes a new one for the nick change
+     }
+   }
+  }
   if(command == "JOIN"){
+    if(!u){
+      if(nickname.empty() || uident.empty() || uhost.empty()){ }else
+      u = new User(nickname, uident, uhost);
+    }
      c = findchannel(receiver);
      if(!c){
        if(IsValidChannel(receiver))
