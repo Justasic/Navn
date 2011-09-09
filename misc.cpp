@@ -180,6 +180,8 @@ void process(const Flux::string &buffer){
      if(u->nick == nick){
        nick = params[0];
        delete u; //we shouldnt be a user in the 1st place (:
+     }else if(u->nick == owner_nick){
+       owner_nick = params[0];
      }
      else{
        delete u; //we delete the user because the above if statement makes a new one for the nick change

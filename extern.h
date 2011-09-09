@@ -24,11 +24,10 @@ Command *FindCommand(const Flux::string &name);
 /* extern's */
 extern SocketIO *sock;
 extern SendMessage *Send;
-extern Flux::string nick;
+extern Flux::string nick, owner_nick, logfile;
 extern Flux::string strip(const Flux::string &buf);
 extern bool IsValidChannel(const Flux::string&);
 extern int randint(int x, int y);
-extern Flux::string logfile;
 extern bool protocoldebug, IsOper;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 extern std::vector<module*> moduleList;

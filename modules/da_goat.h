@@ -223,7 +223,7 @@ public:
       }
       if(cmd == "!version"){
         c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION_SHORT.c_str());
-        c->SendMessage("Navn (which includes Dah_Goat) is Full C++ code by lordofsraam\n and is further developed with Justasic");
+        c->SendMessage("Navn (which includes Dah_Goat) is Full C++ code by lordofsraam\nand is further developed with Justasic");
 	c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
 	c->SendMessage("Report all bugs at: \2http://flux-net.net/bugs/\2");
         c->SendMessage("Navn is managed by \2%s\2", owner_nick.c_str());
