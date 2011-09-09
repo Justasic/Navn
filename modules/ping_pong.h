@@ -25,6 +25,7 @@
  * \brief Replies to IRC PING
  * Replies to the server's PING request to keep the bot connected
  */
+int pings = 0;
 bool timeout = false;
 class PingTimer:public Timer
 {
@@ -34,7 +35,9 @@ public:
     Send->raw("PING :%i\n", time(NULL));
     if(!timeout)
       timeout = true;
-    else
+    else if(timeout)
+      ++pings;
+    else if(pings > 3 && timeout)
       restart("Ping-Timeout");
   }
 };
@@ -48,20 +51,18 @@ public:
   }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     if (source.command == "PING"){
-      Send->raw("PONG :%i", time(NULL));
+      Send->raw("PONG :%s", source.params[0].c_str());
     } 
     if(source.command == "PONG"){
      Flux::string ts = params[0];
      int timestamp = atoi(ts.c_str());
      int lag = timestamp-time(NULL);
      timeout = false;
+     pings = 0;
      if(protocoldebug)
         printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
     }
      /*for some Undernet connections */
-    /*if(reply->said("NOTICE AUTH :*** Ident broken or disabled, to continue to connect you must type")){
-      Send->s->send("PASS "+strip(reply->params(16))+nl);
-    }*/
     if(source.command == "ERROR"){
       restart(source.raw);
     }

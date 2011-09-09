@@ -188,6 +188,9 @@ void process(const Flux::string &buffer){
      }
    }
   }
+  if (command == "PING"){
+      Send->raw("PONG :%s", params[0].c_str());
+  }
   if(command == "JOIN"){
     if(!u){
       if(nickname.empty() || uident.empty() || uhost.empty()){ }else

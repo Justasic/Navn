@@ -117,6 +117,7 @@ int main (int argcx, char** argvx, char *envp[])
 	process(rply);
 	rply.clear();
       }
+      
       if(time(NULL) - last_check >= 3){
 	TimerManager::TickTimers(time(NULL));
 	last_check = time(NULL);

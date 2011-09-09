@@ -39,7 +39,6 @@ public:
     if(cmd == "\001VERSION\001"){ // for CTCP VERSION reply
       struct utsname uts;
       if(uname(&uts) < 0)
-	      //perror("uname() error");
 	      throw CoreException("uname() Error");
 
       source.Reply("\001VERSION Navn-%s %s %s\001",VERSION.c_str(), uts.sysname, uts.machine);
