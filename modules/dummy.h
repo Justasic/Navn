@@ -64,6 +64,7 @@ public:
   {
     User *u = source.u;
     Channel *c = source.c;
+    Flux::string cmd = params.size() == 1?params[0]:"";
     if(!u)
     {
       return MOD_STOP;

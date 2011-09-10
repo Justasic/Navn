@@ -626,6 +626,19 @@ Flux::string findInXML(const Flux::string &node, const Flux::string &info, const
   }
   return output;
 }
+Flux::string xmlparse(const Flux::string &node, const Flux::string &info, const Flux::string &FileString){
+  printf("xmlparse called\n");
+  size_t n1 = FileString.find('<');
+  size_t n2 = FileString.find('>');
+  
+  if(n1 > FileString.length() || n2 > FileString.length())
+    return "";
+  
+  Flux::string data;
+  data.assign(FileString,n1,n2);
+  printf("%s\n", data.c_str());
+  return data;
+}
 /*******************************************************************/
 namespace ThreadHandler
 {

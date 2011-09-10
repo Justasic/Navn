@@ -132,11 +132,17 @@ namespace Flux{
     inline string replace(iterator first, iterator last, const string &_str) { return string(this->_string.replace(first, last, _str._string)); }
     
     inline string append(const string &_str) { return this->_string.append(_str._string); }
-    //inline string append(const Flux::string &_str) { return this->_string.append(_str); }
     inline string append(const string &_str, size_t pos, size_t n) { return this->_string.append(_str._string, pos, n); }
     inline string append(const char* s, size_t n) { return this->_string.append(s, n); }
     inline string append(const char* s) { return this->_string.append(s); }
     inline string append(size_t n, char c) { return this->_string.append(n, c); }
+    
+    inline string assign(const string &str) { return this->_string.assign(str._string); }
+    inline string assign(const string &str, size_t pos, size_t n) { return this->_string.assign(str._string, pos, n); }
+    inline string assign(const char* s, size_t n) { return this->_string.assign(s, n); }
+    inline string assign(const char* s) { return this->_string.assign(s); }
+    inline string assign(size_t n, char c) { return this->_string.assign(n, c); }
+    template <class InputIterator> inline string assign(InputIterator first, InputIterator last) { return this->_string.assign(first, last); }
     
     inline string replace(iterator first, iterator last, size_type n, char chr) { return string(this->_string.replace(first, last, n, chr)); }
     template <class InputIterator> inline string replace(iterator first, iterator last, InputIterator f, InputIterator l) { return string(this->_string.replace(first, last, f, l)); }
