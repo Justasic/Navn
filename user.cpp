@@ -63,8 +63,8 @@ void User::SendMessage(const Flux::string &message){
 void User::SendPrivmsg(const Flux::string &message){
   Send->privmsg(this->nick, message);
 }
-User *finduser(const Flux::string &nick){
-  Flux::map<User *>::iterator it = UserNickList.find(nick);
+User *finduser(const Flux::string &fnick){
+  Flux::map<User *>::iterator it = UserNickList.find(fnick);
   if(it != UserNickList.end())
     return it->second;
   return NULL;

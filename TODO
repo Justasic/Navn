@@ -10,7 +10,7 @@ Navn 2.0.1
 [x] Fix --help message showing full execution directory
 [ ] Rewrite the config system (Burn INIreader with fire!)
 [x] timer function
-[$] Make module system load binary files (.so files)
+[+] Make module system load binary files (.so files)
 [?] Add some kind of command handler so it can list all loaded commands from all modules
 [+] Make default channel's in the config
 [x] Make a server numeric catcher
@@ -31,7 +31,7 @@ Future
 ------
 [ ] User Account system
 [x] Case Insensitivity
-[ ] make a makefile compile script that is still as colorful as build.sh
+[+] make a makefile compile script that is still as colorful as build.sh
 [x] Do away with the damn flux_net_irc namespace
 [ ] Add support for GETTEXT so it allows for the program to be translated
 [ ] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)

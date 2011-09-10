@@ -101,8 +101,8 @@ void Channel::ChangeTopic(const char *fmt, ...){
   this->ChangeTopic(Flux::string(buffer));
   va_end(args);
 }
-void Channel::ChangeTopic(const Flux::string &topic){
- Send->command->topic(this->name, topic); 
+void Channel::ChangeTopic(const Flux::string &topicstr){
+ Send->command->topic(this->name, topicstr); 
 }
 void Channel::SendMessage(const char *fmt, ...){
   char buffer[4096] = "";

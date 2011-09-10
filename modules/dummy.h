@@ -93,11 +93,11 @@ public:
        source.Reply("Syntax: \2!finduser \37user\15");
        return MOD_STOP;
      }
-     User *u = finduser(username);
-     if(!u)
+     User *u2 = finduser(username);
+     if(!u2)
        source.Reply("User \2%s\2 does not exist.", username.c_str());
      else
-       source.Reply("User: %s", u->nick.c_str());
+       source.Reply("User: %s", u2->nick.c_str());
       
     }
    return MOD_RUN; 

@@ -93,7 +93,7 @@ bool SocketIO::connect()
   for(p = servinfo; p != NULL; p = p->ai_next) {
     sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
     if (sockn < 0) continue;
-    int connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
+    connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
     if (connected == -1){
       close(sockn);
       printf("Connection failed.\n");
@@ -127,7 +127,7 @@ const int SocketIO::recv() const{
   }
   return i;
 }
-bool SocketIO::GetBuffer(Flux::string &recv){
+bool SocketIO::GetBuffer(Flux::string &recvstr){
   this->recv();
   timeval timeout;
   timeout.tv_sec = 0;
@@ -148,7 +148,7 @@ bool SocketIO::GetBuffer(Flux::string &recv){
     this->recv();
     if(recv_queue.empty())
       return false;
-    recv = recv_queue.front();
+    recvstr = recv_queue.front();
     recv_queue.pop();
     return true;
 }

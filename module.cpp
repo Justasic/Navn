@@ -20,8 +20,8 @@ module::module(Flux::string n, bool a, ModulePriority p){
  * \brief Sets the module description
  * \param desc The description for the module
  */
-void module::SetDesc(const Flux::string &desc){
-  this->desc = desc;
+void module::SetDesc(const Flux::string &description){
+  this->desc = description;
 }
 /** 
  * \fn const Flux::string module::GetDesc() const

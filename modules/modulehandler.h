@@ -218,12 +218,12 @@ public:
     }
     /***********************************************************************************************************/
     if(cmd == "modload"){
-      Flux::string priority = params.size() == 2 ? params[1]:"";
-      if(priority.empty()){
+      Flux::string gpriority = params.size() == 2 ? params[1]:"";
+      if(gpriority.empty()){
 	source.Reply("Syntax: \2modload \37priority");
 	return MOD_STOP;
       }
-      if(priority == "all"){
+      if(gpriority == "all"){
 	source.Reply("Loading all non-high priority modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)
@@ -233,7 +233,7 @@ public:
 	}
 	log("%s used \"modload all\" to load all modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      if(priority == '1' || priority == "low"){
+      if(gpriority == '1' || gpriority == "low"){
 	source.Reply("loading all low priority modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)
@@ -243,7 +243,7 @@ public:
 	}
 	log("%s used \"modload low\" to load all low priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      if(priority == '2' || priority == "normal"){
+      if(gpriority == '2' || gpriority == "normal"){
 	source.Reply("loading all priority 2 modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)

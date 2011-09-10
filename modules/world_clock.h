@@ -1,7 +1,7 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef WORLD_CLOCK_H
 #define WORLD_CLOCK_H
-#include "../includes.h"
+#include "includes.h"
 #include "../flux_net_irc.hpp"
 #define MST (-6)
 #define UTC (0)

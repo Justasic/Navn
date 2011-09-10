@@ -1,7 +1,7 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef NAVN_H
 #define NAVN_H
-#include "../includes.h"
+#include "includes.h"
 #include "../flux_net_irc.hpp"
 
 /**

@@ -4,8 +4,8 @@
  *\file  command.cpp 
  *\brief Contains the command class.
  */
-Commands::Commands(SocketIO *sock){
-  this->s = sock;
+Commands::Commands(SocketIO *tmpsock){
+  this->s = tmpsock;
 }
 /**
  * \fn void command::raw(const char *fmt, ...)
@@ -76,8 +76,8 @@ void Commands::part(const Flux::string &channel, const char *fmt, ...){
 /**
  * \overload void command::kick(Flux::string channel, Flux::string user, Flux::string reason)
  */
-void Commands::kick(const Flux::string &chan, const Flux::string &user, const Flux::string &msg){
-  this->raw("KICK %s %s :%s\n", chan.c_str(), user.c_str(), msg.c_str());
+void Commands::kick(const Flux::string &chan, const Flux::string &userstr, const Flux::string &msg){
+  this->raw("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), msg.c_str());
 }
 /**
  * \overload void Commands::quit(Flux::string message)
@@ -109,8 +109,8 @@ void Commands::nick(const Flux::string &bnick){
  * \fn void command::oper(Flux::string oper, Flux::string password)
  * \brief Sends IRC command /oper
  */
-void Commands::oper(const Flux::string &oper, const Flux::string &password){
-  this->raw("OPER %s %s\n", oper.c_str(), password.c_str());
+void Commands::oper(const Flux::string &username, const Flux::string &password){
+  this->raw("OPER %s %s\n", username.c_str(), password.c_str());
 }
 /** 
  * \fn void command::join(Flux::string chan)
@@ -149,8 +149,8 @@ void Commands::names(const Flux::string &chan){
  * \brief Sends a IRC Whois to Server.
  * \param Nick Nick to query
  */
-void Commands::whois(const Flux::string &user){
-  this->raw("WHOIS %s\n", user.c_str());
+void Commands::whois(const Flux::string &nickname){
+  this->raw("WHOIS %s\n", nickname.c_str());
 }
 /** 
  * \fn void command::mode(Flux::string nickname, Flux::string mode, Flux::string user)
@@ -158,8 +158,8 @@ void Commands::whois(const Flux::string &user){
  * \param nickname Nickname of who we are setting a more to.
  * \param mode The mode to set.
  */
-void Commands::mode(const Flux::string &chan, const Flux::string &mode, const Flux::string &user){
-  this->raw("MODE %s %s %s\n", chan.c_str(), mode.c_str(), user.c_str());
+void Commands::mode(const Flux::string &chan, const Flux::string &usermode, const Flux::string &usernick){
+  this->raw("MODE %s %s %s\n", chan.c_str(), usermode.c_str(), usernick.c_str());
 }
 /** 
  * \fn void Commands::user(Flux::string ident, Flux::string realname)
@@ -176,12 +176,12 @@ void Commands::user(const Flux::string &ident, const Flux::string &realname){
  * @param dest where to set the mode
  * @param mode mode to set
  */
-void Commands::mode(const Flux::string &dest, const Flux::string &mode){
-  this->raw("MODE %s %s\n", dest.c_str(), mode.c_str()); 
+void Commands::mode(const Flux::string &dest, const Flux::string &chanmode){
+  this->raw("MODE %s %s\n", dest.c_str(), chanmode.c_str()); 
 }
 /***************************************************************************************/
-Oper::Oper(SocketIO *sock){
-  this->s = sock;
+Oper::Oper(SocketIO *tmpsock){
+  this->s = tmpsock;
 }
 void Oper::raw(const char *fmt, ...){
   char buffer[4096] = "";

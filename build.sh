@@ -5,14 +5,14 @@ build_it ()
 {
   sbt=$(date +%S)
   echo -e "\033[01;31m"
-  g++ -Wall -ansi -pedantic -g -c *.cpp
+  c++ -Wall -ansi -pedantic -g -c -Wshadow -Iinclude/ *.cpp
   if [ "$?" != 0 ]; then
     echo -e "\033[0mThere where build errors. See above."
     echo -e "Exiting...\033[0m"
     exit 1
   fi
   echo -e "\033[0m\033[1;34mLinking Files...\033[01;31m"
-  g++ -Wall -ansi -pedantic -g -o navn *.o inireader/INIReader.cpp inireader/ini.c -lpthread
+  c++ -Wall -ansi -pedantic -g -Wshadow -o navn *.o inireader/INIReader.cpp inireader/ini.c -lpthread
   if [ "$?" != 0 ]; then
     rm -f *.o
     echo -e "\033[0mThere where linking errors. See above."

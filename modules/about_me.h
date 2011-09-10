@@ -1,7 +1,7 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef ABOUT_ME_H
 #define ABOUT_ME_H
-#include "../includes.h"
+#include "includes.h"
 #include "../flux_net_irc.hpp"
 
 /**
@@ -50,8 +50,7 @@ public:
 	log("%s requested information about themself.", u->nick.c_str());
   }
   if(cmd == "!decodehost"){
-    Flux::string cmd = params.size() == 2?params[0]:"";
-    if(cmd.empty()){
+    if(params.size() != 2){
      source.Reply("Syntax: \2!decodehost \37hostname\15"); 
      return MOD_STOP;
     }

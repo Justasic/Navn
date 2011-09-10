@@ -31,7 +31,7 @@ public:
   int DelCommand(Command *c);
   
   virtual ModuleReturn run(CommandSource&, std::vector<Flux::string>&) =0;
-  virtual void OnPrivmsg(const Flux::string &nick, const std::vector<Flux::string> &params) { }
+  virtual void OnPrivmsg(const Flux::string&, const std::vector<Flux::string>&) { }
   
 };
 
