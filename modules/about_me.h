@@ -1,8 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef ABOUT_ME_H
 #define ABOUT_ME_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
 
 /**
  * \file about_me.h Header file holding the \a about_me function.

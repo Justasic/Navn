@@ -1,7 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef DNS_H
 #define DNS_H
-#include "../flux_net_irc.hpp"
 #ifndef NI_MAXHOST
 #define NI_MAXHOST 1025
 #endif

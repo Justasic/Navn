@@ -1,8 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef SYSTEM_H
 #define SYSTEM_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
 
 /**
  * \file system.h Header file holding the \a core \a bot \a functions.

@@ -1,8 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef CTCP_H
 #define CTCP_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
 
 /**
  * \file ctcp.h Header file holding the \a ctcp functions.

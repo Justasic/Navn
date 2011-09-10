@@ -2,7 +2,7 @@
 #ifndef FS
 #define FS
 #include "includes.h"
-#include "../flux_net_irc.hpp"
+#include "flux_net_irc.hpp"
 
 /**
  * \file Flux_Services.h Header file holding the \a Flux_S3rvices functions.

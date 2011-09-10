@@ -1,9 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef SEARCHER_H
 #define SEARCHER_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
-
 
 /**
  * \file searcher.h Header file holding the \a searcher function.

@@ -1,8 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef HELP_H
 #define HELP_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
 
 /**
  * \file help.h Header file holding the \a help function.

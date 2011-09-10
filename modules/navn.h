@@ -2,7 +2,7 @@
 #ifndef NAVN_H
 #define NAVN_H
 #include "includes.h"
-#include "../flux_net_irc.hpp"
+#include "flux_net_irc.hpp"
 
 /**
  * \file navn.h Header file holding the \a Navn functions.

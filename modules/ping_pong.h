@@ -1,8 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef PING_PONG_H
 #define PING_PONG_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
 
 /**
  * \file ping_pong.h Header file holding the \a Ping-Pong function.

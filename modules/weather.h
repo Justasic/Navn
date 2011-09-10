@@ -1,8 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef WEATHER_H
 #define WEATHER_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
 
 /**
  * \file weather.h Header file holding the \a weather function.

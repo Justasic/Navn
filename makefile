@@ -1,7 +1,7 @@
 CC=g++
 IDIR=include/
 CFLAGS=-Wall -ansi -pedantic -g -o 
-LDFLAGS=-Wall -ansi -pedantic -g -c -I$(IDIR) -pipe -Wshadow
+LDFLAGS=-Wall -ansi -pipe -Wshadow -pedantic -g -c -I$(IDIR) -Iinireader/ -I.
 EXTRA=inireader/INIReader.cpp inireader/ini.c
 LIBS=-lpthread
 EXECUTABLE=navn

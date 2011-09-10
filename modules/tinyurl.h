@@ -1,8 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef TinyURL_H
 #define TinyURL_H
-#include "includes.h"
-#include "../flux_net_irc.hpp"
 
 /* This module was not yet finished, check Navn version 2.0.1 to see if it was completed or removed */
 class TinyURL:public module{

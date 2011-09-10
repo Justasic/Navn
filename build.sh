@@ -5,7 +5,7 @@ build_it ()
 {
   sbt=$(date +%S)
   echo -e "\033[01;31m"
-  c++ -Wall -ansi -pedantic -g -c -Wshadow -Iinclude/ *.cpp
+  c++ -Wall -ansi -pedantic -g -c -Wshadow -Iinclude/ -Iinireader/ -I. *.cpp
   if [ "$?" != 0 ]; then
     echo -e "\033[0mThere where build errors. See above."
     echo -e "Exiting...\033[0m"
