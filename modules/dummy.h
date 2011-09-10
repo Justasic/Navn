@@ -31,7 +31,7 @@ public:
    this->SetDesc("Test command for new command class");
    this->SetSyntax("\37test\37");
   }
-  void Execute(CommandSource &source, const std::vector<Flux::string> &params){
+  void run(CommandSource &source, const std::vector<Flux::string> &params){
    source.Reply("YAAY!");
    return;
   }

@@ -1,7 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef DERP_H
 #define DERP_H
-#include "user.h"
+//#include "user.h"
+#include "module.h"
 #include "defs.h"
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 SendMessage *Send;
@@ -324,38 +325,6 @@ Flux::string os_time(){
   time(&rawtime);
   return ctime(&rawtime);
 }
-/**
- * \fn bool IsValadChannel(const Flux::string nerp)
- * This function returns if the channel is valid or not.
- * \param nerp Channel sring to be tested.
- * \return True if the Flux::string is a valid channel, false otherwise.
- */
-bool IsValidChannel(const Flux::string &chan){
- if (chan[0] != '#')
-    return false;
- return true;
-}
-
-/** 
- * \fn Flux::string make_pass()
- * \brief Makes a random password
- * This generates a 5 number random password for the bots
- * quit and other password protected commands.
- * \return A Flux::string containing the 5 digit password.
- */
-Flux::string make_pass(){
-  int p1,p2,p3,p4,p5;
-  srand(time(NULL));
-  p1 = rand()%10; 
-  p2 = rand()%10;
-  p3 = rand()%10;
-  p4 = rand()%10;
-  p5 = rand()%10;
-  std::stringstream pass_ss;
-  pass_ss << p1 << p2 << p3 << p4 << p5;
-  return pass_ss.str();
-}
-const Flux::string password = make_pass();
 
 /** 
  * \fn static void remove_pidfile()
@@ -572,14 +541,6 @@ void startup(int argc, char** argv) {
 		throw CoreException("Unable to setpgid()");
   }
 }
-/**Random Number Generator
- * This will generate a random number x is start number, y is the stop number.
- * @param randint(int x, int y)
- */
-int randint(int x, int y){
-  srand(time(NULL));
-  return rand()%(y-x+1)+x;
-}
 /** 
  * \fn Flux::string xmlToString(Flux::string fileName)
  * \brief takes an xml file and converts it to a Flux::string
@@ -662,117 +623,7 @@ namespace ThreadHandler
     pthread_create(&t1,NULL,&bnyeh,NULL);
   }
 }
-/*******************************************************************/
-enum Implementation{
-  I_BEGIN,
-	I_OnPrivmsg,
-  I_END
-};
-enum ModuleReturn{
-  MOD_RUN,
-  MOD_STOP
-};
-enum ModulePriority{
-  PRIORITY_FIRST,
-  PRIORITY_DONTCARE,
-  PRIORITY_LAST
-};
-//This code sucks, you know it and I know it. 
-//Move on and call me an idiot later.
 
-class module{ 
-  Flux::string desc;
-protected:
-  void SetDesc(const Flux::string&);
-public:
-  Flux::string name;
-  const Flux::string GetDesc() const;
-  bool activated;
-  ModulePriority priority;
-  Flux::string author;
-  module (Flux::string , bool, ModulePriority);
-  int AddCommand(Command *c);
-  int DelCommand(Command *c);
-  
-  virtual ModuleReturn run(CommandSource&, std::vector<Flux::string>&) =0;
-  virtual void OnPrivmsg(const Flux::string &nick, const std::vector<Flux::string> &params) { }
-  
-};
-void module::SetDesc(const Flux::string &desc){
-  this->desc = desc;
-}
-const Flux::string module::GetDesc() const{
- return this->desc; 
-}
-std::vector<module*> moduleList;
-
-module::module(Flux::string n, bool a, ModulePriority p){
-  name = n;
-  activated = a;
-  priority = p;
-  moduleList.push_back(this);
-}
-module *FindModule(const Flux::string &name){
- for(std::vector<module*>::const_iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
-  module *m = *it;
-  if(m->name == name)
-    return m;
- }
- return NULL;
-}
-/***********************************************************************/
-/* commands stuff */
-CommandMap Commandsmap;
-int module::AddCommand(Command *c){
- if(!c)
-   return 1;
- std::pair<CommandMap::iterator, bool> it = Commandsmap.insert(std::make_pair(c->name, c));
- if(it.second != true){
-   log("Command %s already loaded!", c->name.c_str());
-   return 2;
- }
- c->mod = this;
- return 0;
-}
-int module::DelCommand(Command *c){
-  if(!c)
-    return 1;
-  if(!Commandsmap.erase(c->name))
-    return 2;
-  c->mod = NULL;
-  return 0;
-}
-class ModuleHandler
-{
-public:
-  static std::vector<module *> EventHandlers[I_END];
-  
-  static bool Attach(Implementation i, module *mod);
-  static bool Detach(Implementation i, module *mod);
-};
-std::vector<module *> ModuleHandler::EventHandlers[I_END];
-bool ModuleHandler::Attach(Implementation i, module *mod){
-  if(std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod) != EventHandlers[i].end())
-    return false;
-  EventHandlers[i].push_back(mod);
-  return true;
-}
-bool ModuleHandler::Detach(Implementation i, module *mod){
-  std::vector<module*>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
-  
-  if(x == EventHandlers[i].end())
-    return false;
-  EventHandlers[i].erase(x);
-  return true;
-}
-Command *FindCommand(const Flux::string &name){
- if(name.empty())
-   return NULL;
- CommandMap::iterator it = Commandsmap.find(name);
- if(it != Commandsmap.end())
-   return it->second;
- return NULL;
-}
 void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
   for(unsigned i = 0; i < moduleList.size(); i++){
     if (moduleList[i]->activated == true){

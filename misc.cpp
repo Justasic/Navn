@@ -18,6 +18,53 @@ Flux::string strip(const Flux::string &buf){
 	}
 	return newbuf;
 }
+/**Random Number Generator
+ * This will generate a random number x is start number, y is the stop number.
+ * @param randint(int x, int y)
+ */
+int randint(int x, int y){
+  srand(time(NULL));
+  return rand()%(y-x+1)+x;
+}
+/** 
+ * \fn Flux::string make_pass()
+ * \brief Makes a random password
+ * This generates a 5 number random password for the bots
+ * quit and other password protected commands.
+ * \return A Flux::string containing the 5 digit password.
+ */
+Flux::string make_pass(){
+  int p1,p2,p3,p4,p5;
+  srand(time(NULL));
+  p1 = rand()%10; 
+  p2 = rand()%10;
+  p3 = rand()%10;
+  p4 = rand()%10;
+  p5 = rand()%10;
+  std::stringstream pass_ss;
+  pass_ss << p1 << p2 << p3 << p4 << p5;
+  return pass_ss.str();
+}
+/**
+ * \fn bool IsValadChannel(const Flux::string nerp)
+ * This function returns if the channel is valid or not.
+ * \param nerp Channel sring to be tested.
+ * \return True if the Flux::string is a valid channel, false otherwise.
+ */
+bool IsValidChannel(const Flux::string &chan){
+ if (chan[0] != '#')
+    return false;
+ return true;
+}
+/**
+  * \fn Flux::string isolate(char begin, char end, Flux::string msg)
+  * \brief Isolates a Flux::string between two characters
+  * Finds the first character, then begins to add every consecutive character from there to a Flux::string
+  *  until it reaches the end character.
+  * \param begin The character saying where the cut should begin.
+  * \param end The character saying where the cut should end.
+  * \param msg The Flux::string you are wanting to isolate from.
+  */
 Flux::string isolate(char begin, char end, Flux::string msg){
   Flux::string to_find;
   size_t pos = msg.find(begin);
@@ -58,6 +105,12 @@ void log(const char *fmt, ...){
   va_end(args);
   log.close();
 }
+/** 
+ * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
+ * \brief creates a vector that breaks down a string word-by-word using the delim as the seperater
+ * \param src The source string for it to break down
+ * \param delim The char used to seperate the words in the source string
+ */
 std::vector<Flux::string> StringVector(const Flux::string &src, char delim){
  sepstream tok(src, delim);
  Flux::string token;
@@ -66,6 +119,12 @@ std::vector<Flux::string> StringVector(const Flux::string &src, char delim){
    ret.push_back(token);
  return ret;
 }
+/** 
+ * \fn void ProcessJoin(CommandSource &source, const Flux::string &chan)
+ * \brief Processes the /who numeric (352), this should only be used in Process() unless its for something special
+ * \param source CommandSource struct used to find all the information needed to make new users
+ * \param chan The channel we're processing
+ */
 void ProcessJoin(CommandSource &source, const Flux::string &chan){
     std::vector<Flux::string> &params = source.params;
     if(params.size() < 7)

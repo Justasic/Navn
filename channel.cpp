@@ -1,7 +1,7 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #include "channel.h"
 
-Flux::map<Channel*> ChanMap;
+Flux::insensitive_map<Channel*> ChanMap;
 Channel::Channel(const Flux::string &nname, time_t ts){
   if(nname.empty())
     throw CoreException("Someone was an idiot and passed an empty channel name into the channel constructor >:d");

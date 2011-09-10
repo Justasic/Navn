@@ -27,13 +27,14 @@ extern SocketIO *sock;
 extern SendMessage *Send;
 extern Flux::string nick, owner_nick, logfile;
 extern Flux::string strip(const Flux::string &buf);
+extern Flux::string make_pass();
 extern bool IsValidChannel(const Flux::string&);
 extern int randint(int x, int y);
 extern bool protocoldebug, IsOper;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 extern std::vector<module*> moduleList;
 extern Flux::insensitive_map<User *> UserNickList;
-extern Flux::map<Channel*> ChanMap;
+extern Flux::insensitive_map<Channel*> ChanMap;
 
 /* Typedef's */
 

@@ -14,6 +14,7 @@ int days, hours, mins;
 bool nofork, dev, protocoldebug, IsOper, quitting = false;
 const Flux::string nl = "\n";
 Flux::string binary_path, bot_bin, binary_dir, quitmsg;
+const Flux::string password = make_pass();
 /**********************Version Variables*************************/
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 #define ACCESS_DENIED "Access is Denied."
