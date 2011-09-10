@@ -1,3 +1,4 @@
+/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef defs_h
 #define defs_h
 #include "inireader/INIReader.h"

@@ -1,3 +1,4 @@
+/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef EXTERN_H
 #define EXTERN_H
 #include "flux.h"
@@ -32,6 +33,7 @@ extern bool protocoldebug, IsOper;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 extern std::vector<module*> moduleList;
 extern Flux::map<User *> UserNickList;
+extern Flux::map<Channel*> ChanMap;
 
 /* Typedef's */
 

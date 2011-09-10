@@ -1,4 +1,5 @@
 #include "flux.h"
+/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 /**
  *\file  Sepstream.cpp 
  *\brief Contains the Seperator Stream class.

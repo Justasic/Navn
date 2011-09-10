@@ -1,3 +1,4 @@
+/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #include "user.h"
 Flux::map<User *> UserNickList;
 size_t usercnt = 0, maxusercnt = 0;
@@ -20,6 +21,11 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
   maxusercnt = usercnt;
   printf("New maximum user count: %i\n", maxusercnt);
  }
+}
+User::~User(){
+  printf("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+  log("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+  UserNickList.erase(this->nick);
 }
 void User::kick(const Flux::string &channel, const Flux::string &reason){
   Send->command->kick(channel, this->nick, reason);
@@ -57,11 +63,6 @@ void User::SendMessage(const Flux::string &message){
 void User::SendPrivmsg(const Flux::string &message){
   Send->privmsg(this->nick, message);
 }
-User::~User(){
-  printf("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
-  log("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
-  UserNickList.erase(this->nick);
-}
 User *finduser(const Flux::string &nick){
   Flux::map<User *>::iterator it = UserNickList.find(nick);
   if(it != UserNickList.end())
@@ -77,6 +78,7 @@ void ListUsers(CommandSource &source){
   }
   source.Reply("Users: %s\n", users.c_str());
 }
+/*********************************************************************************/
 void CommandSource::Reply(const char *fmt, ...){
   va_list args;
   char buf[4096];
@@ -95,4 +97,3 @@ void CommandSource::Reply(const Flux::string &msg){
    this->u->SendMessage(tok);
  }
 }
-/*******************************************************************/

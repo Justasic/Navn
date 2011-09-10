@@ -1,3 +1,4 @@
+/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #include "includes.h"
 #include "user.h"
 
@@ -137,7 +138,6 @@ void process(const Flux::string &buffer){
    else
      for(unsigned i =0; i < params.size(); ++i)
        printf("Params %i: %s\n", i, Flux::Sanitize(params[i]).c_str());
-     
   }
   /**************************************/
   const Flux::string &receiver = params.size() > 0 ? params[0] : "";

@@ -1,3 +1,4 @@
+/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef DA_GOAT_H
 #define DA_GOAT_H
 #include "../includes.h"

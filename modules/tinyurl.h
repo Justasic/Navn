@@ -1,3 +1,4 @@
+/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef TinyURL_H
 #define TinyURL_H
 #include "../includes.h"
