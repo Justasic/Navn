@@ -70,6 +70,7 @@ bool SocketIO::get_address()
   if (rv != 0) {
     return false;
     fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+    log("getaddrinfo: %s", gai_strerror(rv));
   }
   return true;
   //freeaddrinfo(servinfo);
@@ -96,14 +97,15 @@ bool SocketIO::connect()
     connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
     if (connected == -1){
       close(sockn);
-      printf("Connection failed.\n");
+      printf("Connection failed: %s\n", strerror(errno));
+      log("Connection Failed: %s", strerror(errno));
       continue;
     }
     break;
   }
   
   if (connected == -1) return false;
-  freeaddrinfo(servinfo);
+  freeaddrinfo(servinfo); //Clear up used memory we dont need anymore
   
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   setNonblocking(sockn);
@@ -141,9 +143,9 @@ bool SocketIO::GetBuffer(Flux::string &recvstr){
   FD_SET(sockn, &except);
   int sres = select(1, &read, NULL, NULL, &timeout);
   if(sres == -1){
-    //some day there will be error logging here
     if(sres == EINTR){ }else
       printf("Select() error: %s\n", strerror(errno));
+      log("Select() error: %s", strerror(errno));
   }
     this->recv();
     if(recv_queue.empty())
