@@ -153,7 +153,7 @@ public:
 	}
       if(cmd == "stats"){
 	  //Shows system stats in the channel.
-	
+#ifndef _WIN32
 		if(sysinfo(&sys_info) != 0){//now here Justasic got pissed because c strings suck ass
 		  Flux::string fuckingshit = Flux::string("sys_info Error: ") + strerror(errno);
 		  throw CoreException(fuckingshit.c_str());
@@ -195,9 +195,13 @@ public:
 		source.Reply("System Version: %s", uts.version);
 
 		source.Reply(strip(execute("grep 'model name' /proc/cpuinfo")));
+#else
+		source.Reply("This is currently not avalable on windows syetems, sorry.");
+#endif
 		log("%s used stats command in %s", u->nick.c_str(), c->name.c_str());
       }
       if(cmd == "!uptime"){
+#ifndef _WIN32
 		if(sysinfo(&sys_info) != 0)
 			perror("sysinfo");
  
@@ -205,8 +209,10 @@ public:
 		days = sys_info.uptime / 86400;
 		hours = (sys_info.uptime / 3600) - (days * 24);
 		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
- 
 		c->SendMessage("Uptime: %d days, %d hours, %d minutes, %ld seconds",days, hours, mins, sys_info.uptime % 60);
+#else
+		source.Reply("This is currently not avalable on windows systems, sorry.");
+#endif
 		log("%s used !uptime command in %s", u->nick.c_str(), c->name.c_str());
 	  }
       if(cmd == "!rules"){

@@ -30,7 +30,7 @@ Navn 2.0.2
 Future
 ------
 [ ] User Account system
-[ ] Case Insensitivity
+[x] Case Insensitivity
 [ ] make a makefile compile script that is still as colorful as build.sh
 [x] Do away with the damn flux_net_irc namespace
 [ ] Add support for GETTEXT so it allows for the program to be translated

@@ -642,7 +642,6 @@ Flux::string xmlparse(const Flux::string &node, const Flux::string &info, const 
 /*******************************************************************/
 namespace ThreadHandler
 {
-  
   class Thread
   {
   public:

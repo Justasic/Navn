@@ -64,7 +64,7 @@ public:
   {
     User *u = source.u;
     Channel *c = source.c;
-    Flux::string cmd = params.size() == 1?params[0]:"";
+    Flux::string cmd = params.empty()?"":params[0];
     if(!u)
     {
       return MOD_STOP;
@@ -86,6 +86,19 @@ public:
     {
       //Bacon strips;
       //ThreadHandler::RunThread(strips);
+    }
+    if(cmd == "!finduser"){
+     Flux::string username = params.size() == 2?params[1]:"";
+     if(username.empty()){
+       source.Reply("Syntax: \2!finduser \37user\15");
+       return MOD_STOP;
+     }
+     User *u = finduser(username);
+     if(!u)
+       source.Reply("User \2%s\2 does not exist.", username.c_str());
+     else
+       source.Reply("User: %s", u->nick.c_str());
+      
     }
    return MOD_RUN; 
   }

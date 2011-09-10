@@ -49,6 +49,7 @@ Added Thread engine
 Made oper class only be defined IF we are actually oper, if not then it will be NULL
 Moved stringify to Flux namespace, now its Flux::stringify
 strip() is now a global function
+Added case insensitivity
 
 Navn 2.0.0
 ==========

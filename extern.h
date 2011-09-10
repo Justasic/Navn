@@ -32,7 +32,7 @@ extern int randint(int x, int y);
 extern bool protocoldebug, IsOper;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 extern std::vector<module*> moduleList;
-extern Flux::map<User *> UserNickList;
+extern Flux::insensitive_map<User *> UserNickList;
 extern Flux::map<Channel*> ChanMap;
 
 /* Typedef's */
