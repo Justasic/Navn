@@ -143,7 +143,7 @@ bool SocketIO::GetBuffer(Flux::string &recvstr){
   FD_SET(sockn, &except);
   int sres = select(1, &read, NULL, NULL, &timeout);
   if(sres == -1){
-    if(sres == EINTR){ }else{
+    if(errno != EINTR){
       printf("Select() error: %s\n", strerror(errno));
       log("Select() error: %s", strerror(errno));
     }
