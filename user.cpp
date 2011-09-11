@@ -19,7 +19,7 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  ++usercnt;
  if(usercnt > maxusercnt){
   maxusercnt = usercnt;
-  printf("New maximum user count: %i\n", maxusercnt);
+  printf("New maximum user count: %i\n", (int)maxusercnt);
  }
 }
 User::~User(){
