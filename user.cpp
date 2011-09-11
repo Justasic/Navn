@@ -1,5 +1,5 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#include "user.h"
+#include <user.h>
 Flux::insensitive_map<User *> UserNickList;
 size_t usercnt = 0, maxusercnt = 0;
 User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname, const Flux::string &sserver){

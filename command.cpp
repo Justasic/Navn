@@ -1,5 +1,5 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#include "command.h"
+#include <command.h>
 /**
  *\file  command.cpp 
  *\brief Contains the command class.

@@ -6,7 +6,7 @@
  */
 #ifndef SOCKET_EXCEPTION_H
 #define SOCKET_EXCEPTION_H
-#include "flux.h"
+#include <flux.h>
 /** SocketExceptions are to be thrown with anything Socket related
  * Throws Socket Exception
  * @param throw SocketException(message)

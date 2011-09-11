@@ -4,10 +4,11 @@
  *\file  Socket.cpp 
  *\brief Contains the Socket engine.
  */
-#include "Socket.h"
+#include <Socket.h>
 #include <fcntl.h>
 #include <iostream>
 #define NET_BUFSIZE 65535
+fd_set ReadFD, WriteFD, ExceptFD;
 Flux::string Flux::Sanitize(const Flux::string &string){
  static struct special_chars{
    Flux::string character;
@@ -61,6 +62,7 @@ int setNonblocking(int fd)
 SocketIO::~SocketIO(){
  if(is_valid()) 
    close(sockn);
+ FD_CLR(sockn, &ReadFD);
 }
 bool SocketIO::get_address()
 {
@@ -97,7 +99,7 @@ bool SocketIO::connect()
     connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
     if (connected == -1){
       close(sockn);
-      printf("Connection failed: %s\n", strerror(errno));
+      printf("Connection failed: %s | %i | %i\n", strerror(errno), connected, sockn);
       log("Connection Failed: %s", strerror(errno));
       continue;
     }
@@ -109,7 +111,8 @@ bool SocketIO::connect()
   
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   setNonblocking(sockn);
-  printf("Connected!\n");
+  //FD_SET(sockn, &ReadFD);
+  printf("Connected! %i\n", sockn);
   return true;
 }
 
@@ -130,30 +133,37 @@ const int SocketIO::recv() const{
   return i;
 }
 bool SocketIO::GetBuffer(Flux::string &recvstr){
-  this->recv();
+  //this->recv();
   timeval timeout;
   timeout.tv_sec = 0;
-  timeout.tv_usec = 500; //this timeout keeps the bot from being a CPU hog for no reason :)
-  fd_set read, write, except;
+  timeout.tv_usec = 0; //this timeout keeps the bot from being a CPU hog for no reason :)
+  fd_set read = ReadFD, write = WriteFD, except = ExceptFD;
   FD_ZERO(&read);
-  FD_ZERO(&write);
-  FD_ZERO(&except);
   FD_SET(sockn, &read);
-  FD_SET(sockn, &write);
-  FD_SET(sockn, &except);
-  int sres = select(1, &read, NULL, NULL, &timeout);
-  if(sres == -1){
-    if(errno != EINTR){
-      printf("Select() error: %s\n", strerror(errno));
-      log("Select() error: %s", strerror(errno));
-    }
+  int sres = select(sockn + 1, &read, NULL, NULL, &timeout);
+  if(sres == -1 && errno != EINTR){
+    printf("Select() error: %s\n", strerror(errno));
+    log("Select() error: %s", strerror(errno));
+    return false;
   }
-    this->recv();
-    if(recv_queue.empty())
-      return false;
-    recvstr = recv_queue.front();
-    recv_queue.pop();
-    return true;
+  else if(FD_ISSET(sockn, &read) && sres){
+    //printf("Sockn: %i\n", sockn);
+      if(this->recv() == -1){
+	//printf("Socket error: %s\n", strerror(errno));
+	//log("Socket error: %s", strerror(errno));
+	//return false;
+	return false;
+      }else{
+	this->recv();
+	if(recv_queue.empty()){
+	  return false;
+	}
+	recvstr = recv_queue.front();
+	recv_queue.pop();
+	return true;
+      }
+  }
+  return false;
 }
 const int SocketIO::send(const Flux::string &buf) const{
  printf("<-- %s\n", Flux::Sanitize(buf).c_str());

@@ -17,7 +17,7 @@
  * feature available, we have made it as easy as possible to make modules.
  * See the examples tab for an example module.
  */
-#include "flux_net_irc.hpp"
+#include <flux_net_irc.hpp>
 
 /**
  * \page tutmod Adding Your Module - Step 1: Including your module.

@@ -1,8 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef command_h
 #define command_h
-#include "includes.h"
-#include "user.h"
+#include <includes.h>
+#include <user.h>
 /**
  *\file  command.h
  *\brief Contains the command class header.

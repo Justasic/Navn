@@ -1,8 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef PRIVMSG_H
 #define PRIVMSG_H
-#include "includes.h"
-#include "command.h"
+#include <includes.h>
+#include <command.h>
 class SendMessage
 {
 public:

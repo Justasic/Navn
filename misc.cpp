@@ -1,6 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#include "includes.h"
-#include "user.h"
+#include <includes.h>
+#include <user.h>
 
 //General misc functions
 /** \fn Flux::string strip(const Flux::string &buf)
