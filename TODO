@@ -35,4 +35,4 @@ Future
 [x] Do away with the damn flux_net_irc namespace
 [ ] Add support for GETTEXT so it allows for the program to be translated
 [ ] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
-[ ] Add python support
+[?] Add python support

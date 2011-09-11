@@ -118,6 +118,7 @@ int main (int argcx, char** argvx, char *envp[])
       if(protocoldebug)
         printf("Top of main loop\n");
       
+      /* Process the buffer and modules */
       std::queue<Flux::string> queue = sock->GetBuffer();
       while(!queue.empty()){
 	if(queue.empty())
@@ -126,11 +127,7 @@ int main (int argcx, char** argvx, char *envp[])
 	queue.pop();
 	sock->popqueue();
       }
-      /* Process the buffer and modules */
-      /*if(!rply.empty())
-        process(rply);
-      rply.clear();*/
-      
+      /***********************************/
       if(time(NULL) - last_check >= 3){
 	TimerManager::TickTimers(time(NULL));
 	last_check = time(NULL);

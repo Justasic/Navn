@@ -57,6 +57,11 @@ void User::SendPrivmsg(const char *fmt, ...){
   this->SendPrivmsg(Flux::string(buffer));
   va_end(args); 
 }
+bool User::IsOwner(){
+ if(this->nick == owner_nick)
+   return true;
+ return false;
+}
 void User::SendMessage(const Flux::string &message){
   Send->notice(this->nick, message);
 }

@@ -50,6 +50,9 @@ Made oper class only be defined IF we are actually oper, if not then it will be 
 Moved stringify to Flux namespace, now its Flux::stringify
 strip() is now a global function
 Added case insensitivity
+Added encyclopedia.h witch adds the command !encyclopedia
+Fixed socket engine using select as a timer instead of a multiplexer
+Added User::IsOwner boolean
 
 Navn 2.0.0
 ==========
