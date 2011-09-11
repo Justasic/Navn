@@ -34,7 +34,8 @@ private:
 public:
   SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
-  bool GetBuffer(Flux::string&);
+  std::queue<Flux::string> GetBuffer();
+  void popqueue();
   bool get_address();
   const int recv() const;
   const int send(const Flux::string &buf) const;

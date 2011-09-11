@@ -115,11 +115,21 @@ int main (int argcx, char** argvx, char *envp[])
     /*! \endcode */ 
     Flux::string rply;
     while (!quitting){
-      if(sock->GetBuffer(rply)){
-	/* Process the buffer and modules */
-	process(rply);
-	rply.clear();
+      if(protocoldebug)
+        printf("Top of main loop\n");
+      
+      std::queue<Flux::string> queue = sock->GetBuffer();
+      while(!queue.empty()){
+	if(queue.empty())
+	 break;
+	process(queue.front());
+	queue.pop();
+	sock->popqueue();
       }
+      /* Process the buffer and modules */
+      /*if(!rply.empty())
+        process(rply);
+      rply.clear();*/
       
       if(time(NULL) - last_check >= 3){
 	TimerManager::TickTimers(time(NULL));

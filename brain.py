@@ -27,7 +27,7 @@ for i in range(1,len(sys.argv)):
   query += sys.argv[i]
 
 f = open('dump.txt', 'w')
-
+print brain(query)
 f.write(brain(query))
 
 f.close()

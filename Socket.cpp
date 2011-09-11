@@ -58,11 +58,11 @@ int setNonblocking(int fd)
     return ioctl(fd, FIOBIO, &flags);
 #endif
 }
-
 SocketIO::~SocketIO(){
  if(is_valid()) 
    close(sockn);
  FD_CLR(sockn, &ReadFD);
+ FD_CLR(sockn, &WriteFD);
 }
 bool SocketIO::get_address()
 {
@@ -111,13 +111,13 @@ bool SocketIO::connect()
   
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   setNonblocking(sockn);
-  //FD_SET(sockn, &ReadFD);
+  FD_SET(sockn, &ReadFD);
   printf("Connected! %i\n", sockn);
   return true;
 }
 
 std::queue<Flux::string> recv_queue;
-const int SocketIO::recv() const{
+int receive(int sockn){
   char tbuf[NET_BUFSIZE + 1] = "";
   memset(tbuf, 0, NET_BUFSIZE + 1);
   size_t i = read(sockn, tbuf, NET_BUFSIZE);
@@ -130,12 +130,11 @@ const int SocketIO::recv() const{
     recv_queue.push(buf);
     //printf("buf: --> %s\n", Flux::Sanitize(buf).c_str());
   }
-  return i;
+  return i; 
 }
-bool SocketIO::GetBuffer(Flux::string &recvstr){
-  //this->recv();
+const int SocketIO::recv() const{
   timeval timeout;
-  timeout.tv_sec = 0;
+  timeout.tv_sec = 5;
   timeout.tv_usec = 0; //this timeout keeps the bot from being a CPU hog for no reason :)
   fd_set read = ReadFD, write = WriteFD, except = ExceptFD;
   FD_ZERO(&read);
@@ -144,26 +143,24 @@ bool SocketIO::GetBuffer(Flux::string &recvstr){
   if(sres == -1 && errno != EINTR){
     printf("Select() error: %s\n", strerror(errno));
     log("Select() error: %s", strerror(errno));
-    return false;
+    return errno;
   }
-  else if(FD_ISSET(sockn, &read) && sres){
-    //printf("Sockn: %i\n", sockn);
-      if(this->recv() == -1){
-	//printf("Socket error: %s\n", strerror(errno));
-	//log("Socket error: %s", strerror(errno));
-	//return false;
-	return false;
+  if(FD_ISSET(sockn, &read) && sres){
+      if(receive(sockn) == -1){
+	printf("Socket error: %s\n", strerror(errno));
+	return errno;
       }else{
-	this->recv();
-	if(recv_queue.empty()){
-	  return false;
-	}
-	recvstr = recv_queue.front();
-	recv_queue.pop();
-	return true;
+	return receive(sockn);
       }
   }
-  return false;
+  return sres;
+}
+std::queue<Flux::string> SocketIO::GetBuffer(){
+  this->recv();
+  return recv_queue;
+}
+void SocketIO::popqueue(){
+ recv_queue.pop(); 
 }
 const int SocketIO::send(const Flux::string &buf) const{
  printf("<-- %s\n", Flux::Sanitize(buf).c_str());
