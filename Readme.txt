@@ -23,4 +23,9 @@ How to start in Protocol Debug mode
 1. Follow above instructions.
 2. Start the bot with ./navn -p
 
+Dependencies:
+  Encyclopedia module:
+    python-pip
+    [Then run "pip install requests"]
+
 All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html)
