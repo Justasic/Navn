@@ -132,7 +132,7 @@ void log(LogType type, const char *fmt, ...){
    printf("%s", ss.str().c_str());
    return;
   }
-  else if((type == LOG_RAWIO) && protocoldebug){
+  else if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug){
     printf("%s %s", timestamp.c_str(), ss.str().c_str());
     log << timestamp << " " << ss.str();
   }
@@ -140,8 +140,10 @@ void log(LogType type, const char *fmt, ...){
     if(nofork)
       printf("%s %s", timestamp.c_str(), ss.str().c_str());
     log << timestamp << " " << ss.str();
-  }else
+  }else if((type == LOG_NORMAL)){
+    printf("%s %s", timestamp.c_str(), ss.str().c_str());
     log << timestamp << " " << ss.str();
+  }
   va_end(args);
   va_end(args);
   log.close();
@@ -245,12 +247,12 @@ void process(const Flux::string &buffer){
   Flux::string message = params.size() > 1? params[1] : "";
   
   if(command == "PRIVMSG"){
-    if(!protocoldebug){
+   if(!protocoldebug){
       if(!receiver.empty() && !params[1].empty())
        log(LOG_TERMINAL, "<%s-%s> %s\n", isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
     }
   }else
-    if(!protocoldebug) log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
+    log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
   /* make local variables instead of global ones */
   Flux::string nickname = isolate(':','!',source),
   uident = isolate('!','@',source),

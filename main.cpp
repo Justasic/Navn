@@ -69,8 +69,9 @@ int main (int argcx, char** argvx, char *envp[])
 	throw SocketException("Could not create a socket to connect to the IRC server");
       Send = new SendMessage(sock);
     }catch(SocketException &e){
-      std::cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
+      //std::cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
       log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());
+      log(LOG_TERMINAL, "\033[22;37m");
       goto SocketStart;
     }
     if(!sock)
@@ -139,8 +140,9 @@ int main (int argcx, char** argvx, char *envp[])
     std::cout << "\033[22;37m" << nl;
   }//try ends here
   catch(CoreException& e){
-    std::cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
+    //std::cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log(LOG_NORMAL, "Core Exception Caught: ", Flux::stringify(e.GetReason()).c_str());
+    log(LOG_TERMINAL, "\033[22;37m");
     exit(1);
   }
   return EXIT_SUCCESS;

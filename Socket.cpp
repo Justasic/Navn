@@ -49,7 +49,7 @@ bool SocketIO::get_address()
   //fprintf(stderr, "getaddrinfo: %i\n", rv);
   if (rv != 0) {
     return false;
-    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+    //fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
     log(LOG_DEBUG, "getaddrinfo: %s", gai_strerror(rv));
   }
   return true;
@@ -69,7 +69,8 @@ bool SocketIO::connect()
   struct addrinfo *p;
   int connected = 0;
   char s[INET6_ADDRSTRLEN];
-  printf("Connecting..\n");
+  //printf("Connecting..\n");
+  log(LOG_RAWIO, "Connecting..");
   
   for(p = servinfo; p != NULL; p = p->ai_next) {
     sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
@@ -120,13 +121,14 @@ const int SocketIO::recv() const{
   FD_SET(sockn, &read);
   int sres = select(sockn + 1, &read, NULL, NULL, &timeout);
   if(sres == -1 && errno != EINTR){
-    printf("Select() error: %s\n", strerror(errno));
+    //printf("Select() error: %s\n", strerror(errno));
     log(LOG_DEBUG, "Select() error: %s", strerror(errno));
     return errno;
   }
   if(FD_ISSET(sockn, &read) && sres){
       if(receive(sockn) == -1){
-	printf("Socket error: %s\n", strerror(errno));
+	//printf("Socket error: %s\n", strerror(errno));
+	log(LOG_RAWIO, "Socket Error: %s", strerror(errno));
 	return errno;
       }else{
 	return receive(sockn);
