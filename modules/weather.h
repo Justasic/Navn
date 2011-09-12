@@ -52,7 +52,7 @@ public:
 	ff.trim();
 	if(ff.empty()){
 	  source.c->SendMessage("Could not download/read %s", filename.c_str());
-	  log("%s attempted to use !weather but downloading/reading the file '%s' failed.", filename.c_str());
+	  log(LOG_NORMAL, "%s attempted to use !weather but downloading/reading the file '%s' failed.", filename.c_str());
 	  return MOD_STOP;
 	}
 	Flux::string loc = findInXML("city","data",ff);
@@ -62,7 +62,7 @@ public:
 	remove(filename.c_str());
 	loc.trim();
 	source.c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
-	log("%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());
+	log(LOG_NORMAL, "%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());
       }
     }
     return MOD_RUN;

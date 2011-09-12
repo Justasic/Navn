@@ -59,7 +59,7 @@ public:
       ptm = localtime(&rawtime);
       strftime(buf,100,"Navn's Time: %Z %c",ptm);
       c->SendMessage(buf);
-      log("%s requested !time command in %s", u->nick.c_str(), c->name.c_str());
+      log(LOG_NORMAL, "%s requested !time command in %s", u->nick.c_str(), c->name.c_str());
       return MOD_RUN;
     }else{
       Flux::string wget, filename;
@@ -74,14 +74,14 @@ public:
 	  ff.trim();
 	  if(ff.empty()){
 	   c->SendMessage("Could not download/read %s", filename.c_str());
-	   log("%s attempted to use !time but downloading/reading the file '%s' failed.", filename.c_str());
+	   log(LOG_NORMAL, "%s attempted to use !time but downloading/reading the file '%s' failed.", filename.c_str());
 	   return MOD_STOP;
 	  }
 	  Flux::string loc = findInXML("city","data",ff);
 	  Flux::string time = findInXML("current_date_time","data",ff);
 	  c->SendMessage("The current time in %s is %s", loc.c_str(), time.c_str());
 	  remove(filename.c_str());
-	  log("%s used !time to get time for %s", u->nick.c_str(), location.c_str());
+	  log(LOG_NORMAL, "%s used !time to get time for %s", u->nick.c_str(), location.c_str());
 	  }
 	}
       }

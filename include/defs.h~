@@ -1,8 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef defs_h
 #define defs_h
-#include "INIReader.h"
-#include "flux.h"
+#include <INIReader.h>
+#include <flux.h>
 #define GetCurrentDir getcwd
 
 /*List the constants used throughout the script.

@@ -344,7 +344,7 @@ static void restart(Flux::string reason){
   if(reason.empty()){
     reason = "No Reason";
   }else{
-    log("Restarting: %s", reason.c_str());
+    log(LOG_NORMAL, "Restarting: %s", reason.c_str());
     Send->command->quit("Restarting: %s", reason.c_str());
     chdir(CurrentPath);
     int execvpret = execvp(my_av[0], my_av);
@@ -375,7 +375,7 @@ static void Rehash(bool onstart = false){
     ReadConfig(config);
   }catch(ConfigException &ex){
       std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
-      log("Config Exception Caught: %s", ex.GetReason());
+      log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
       if(!onstart)
         Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
   } 
@@ -478,11 +478,11 @@ void startup(int argc, char** argv) {
        {
          dev = true;
 	 nofork = true;
-	 log("Navn is started in Developer mode. (%s)", arg.c_str());
+	 log(LOG_DEBUG, "Navn is started in Developer mode. (%s)", arg.c_str());
        }
        else if (arg == "--nofork" || arg == "-f"){
          nofork = true;
-         log("Navn is started With No Forking enabled. (%s)", arg.c_str());
+         log(LOG_DEBUG, "Navn is started With No Forking enabled. (%s)", arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
 	  printf("\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION.c_str());
@@ -512,7 +512,7 @@ void startup(int argc, char** argv) {
        else if(arg == "--protocoldebug" || "-p"){
 	 protocoldebug = true;
 	 nofork = true;
-	 log("Navn is started in Protocol Debug mode. (%s)", arg.c_str());
+	 log(LOG_RAWIO, "Navn is started in Protocol Debug mode. (%s)", arg.c_str());
        }
        else{
 	printf("Unknown option %s", arg.c_str());
@@ -521,7 +521,7 @@ void startup(int argc, char** argv) {
   }
   }
    WritePID();
-   log("Navn Started. PID: %d", getpid());
+   log(LOG_NORMAL, "Navn Started. PID: %d", getpid());
    if (!nofork){
 	int i;
 	if((i = fork()) < 0)
@@ -645,7 +645,7 @@ if(true) \
        } \
        catch (const ModuleException &modexcept) \
        { \
-          log("Exception caught: %s", modexcept.GetReason()); \
+          log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
        } \
         _i = safei; \
     } \

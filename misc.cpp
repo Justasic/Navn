@@ -26,6 +26,31 @@ int randint(int x, int y){
   srand(time(NULL));
   return rand()%(y-x+1)+x;
 }
+
+Flux::string Flux::Sanitize(const Flux::string &string){
+ static struct special_chars{
+   Flux::string character;
+   Flux::string replace;
+   special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
+ }
+ special[] = {
+  special_chars("  ", " "),
+  special_chars("\n",""),
+  special_chars("\002",""),
+  special_chars("\003",""),
+  special_chars("\035",""),
+  special_chars("\037",""),
+  special_chars("\026",""),
+  special_chars("\001",""),
+  special_chars("","")
+ };
+  Flux::string ret = string.c_str();
+  for(int i = 0; special[i].character.empty() == false; ++i){
+    ret = ret.replace_all_cs(special[i].character, special[i].replace);
+  }
+  return ret.c_str(); 
+}
+
 /** 
  * \fn Flux::string make_pass()
  * \brief Makes a random password
@@ -77,12 +102,13 @@ Flux::string isolate(char begin, char end, Flux::string msg){
   return to_find;
 }
 /** 
- * \fn void log(const char *fmt, ...)
+ * \fn void log(LogType type = LOG_NORMAL, const char *fmt, ...)
  * This is what logs everything that goes on with the bot
  * \param *fmt
  */
-void log(const char *fmt, ...){
+void log(LogType type, const char *fmt, ...){
   std::fstream log;
+  Flux::string timestamp;
   try{
   log.open(logfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
   if(!log.is_open())
@@ -97,10 +123,25 @@ void log(const char *fmt, ...){
   struct tm *tm = localtime(&t);
   
   char buf[512];
-  strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
-  log << buf;
+  std::stringstream ss;
+  strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y]", tm);
+  timestamp = buf;
   vsnprintf(buf, sizeof(buf), fmt, args);
-  log << Flux::Sanitize(buf) << std::endl;
+  ss << Flux::Sanitize(buf) << std::endl;
+  if((type == LOG_TERMINAL)){
+   printf("%s", ss.str().c_str());
+   return;
+  }
+  else if((type == LOG_RAWIO) && protocoldebug){
+    printf("%s %s", timestamp.c_str(), ss.str().c_str());
+    log << timestamp << " " << ss.str();
+  }
+  else if((type == LOG_DEBUG) && dev){
+    if(nofork)
+      printf("%s %s", timestamp.c_str(), ss.str().c_str());
+    log << timestamp << " " << ss.str();
+  }else
+    log << timestamp << " " << ss.str();
   va_end(args);
   va_end(args);
   log.close();
@@ -188,8 +229,9 @@ void process(const Flux::string &buffer){
     else
       params.push_back(bufferseparator_token);
   }
+  log(LOG_RAWIO, "%s\n", Flux::Sanitize(buffer).c_str());
   if(protocoldebug){
-   printf("--> %s\n", Flux::Sanitize(buffer).c_str());
+   //printf("--> %s\n", Flux::Sanitize(buffer).c_str());
    printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
    printf("%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
    if(params.empty())
@@ -203,12 +245,12 @@ void process(const Flux::string &buffer){
   Flux::string message = params.size() > 1? params[1] : "";
   
   if(command == "PRIVMSG"){
-    if(protocoldebug){
-    }else
+    if(!protocoldebug){
       if(!receiver.empty() && !params[1].empty())
-       printf("<%s-%s> %s\n", isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
+       log(LOG_TERMINAL, "<%s-%s> %s\n", isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
+    }
   }else
-    if(!protocoldebug) printf("--> %s\n", Flux::Sanitize(buffer).c_str());
+    if(!protocoldebug) log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
   /* make local variables instead of global ones */
   Flux::string nickname = isolate(':','!',source),
   uident = isolate('!','@',source),

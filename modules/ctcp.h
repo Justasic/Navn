@@ -41,17 +41,17 @@ public:
 	      throw CoreException("uname() Error");
 
       source.Reply("\001VERSION Navn-%s %s %s\001",VERSION.c_str(), uts.sysname, uts.machine);
-      log("Recieved CTCP VERSION from %s", u->nick.c_str());
+      log(LOG_NORMAL, "Recieved CTCP VERSION from %s", u->nick.c_str());
     }
     if(cmd == "\001TIME\001"){ // for CTCP TIME reply
       source.Reply("\001TIME "+strip(os_time())+"\001");
-      log("Recieved CTCP TIME from %s", u->nick.c_str());
+      log(LOG_NORMAL, "Recieved CTCP TIME from %s", u->nick.c_str());
     }
     if(cmd == "\001SOURCE\001"){
       source.Reply("\001SOURCE https://gitorious.org/navn/navn\001");
       source.Reply("\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
       source.Reply("\1SOURCE git://gitorious.org/navn/navn.git\1");
-      log("Recieved CTCP SOURCE from %s", u->nick.c_str());
+      log(LOG_NORMAL, "Recieved CTCP SOURCE from %s", u->nick.c_str());
     }
     return MOD_RUN;
   }

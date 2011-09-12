@@ -9,28 +9,6 @@
 #include <iostream>
 #define NET_BUFSIZE 65535
 fd_set ReadFD, WriteFD, ExceptFD;
-Flux::string Flux::Sanitize(const Flux::string &string){
- static struct special_chars{
-   Flux::string character;
-   Flux::string replace;
-   special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
- }
- special[] = {
-  special_chars("\n",""),
-  special_chars("\002",""),
-  special_chars("\003",""),
-  special_chars("\035",""),
-  special_chars("\037",""),
-  special_chars("\026",""),
-  special_chars("\001",""),
-  special_chars("","")
- };
-  Flux::string ret = string.c_str();
-  for(int i = 0; special[i].character.empty() == false; ++i){
-    ret = ret.replace_all_cs(special[i].character, special[i].replace);
-  }
-  return ret.c_str(); 
-}
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
@@ -72,7 +50,7 @@ bool SocketIO::get_address()
   if (rv != 0) {
     return false;
     fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-    log("getaddrinfo: %s", gai_strerror(rv));
+    log(LOG_DEBUG, "getaddrinfo: %s", gai_strerror(rv));
   }
   return true;
   //freeaddrinfo(servinfo);
@@ -99,8 +77,8 @@ bool SocketIO::connect()
     connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
     if (connected == -1){
       close(sockn);
-      printf("Connection failed: %s | %i | %i\n", strerror(errno), connected, sockn);
-      log("Connection Failed: %s", strerror(errno));
+      //printf("Connection failed: %s | %i | %i\n", strerror(errno), connected, sockn);
+      log(LOG_DEBUG, "Connection Failed: %s", strerror(errno));
       continue;
     }
     break;
@@ -112,7 +90,8 @@ bool SocketIO::connect()
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   setNonblocking(sockn);
   FD_SET(sockn, &ReadFD);
-  printf("Connected! %i\n", sockn);
+  //printf("Connected! %i\n", sockn);
+  log(LOG_DEBUG, "Connected! %i", sockn);
   return true;
 }
 
@@ -142,7 +121,7 @@ const int SocketIO::recv() const{
   int sres = select(sockn + 1, &read, NULL, NULL, &timeout);
   if(sres == -1 && errno != EINTR){
     printf("Select() error: %s\n", strerror(errno));
-    log("Select() error: %s", strerror(errno));
+    log(LOG_DEBUG, "Select() error: %s", strerror(errno));
     return errno;
   }
   if(FD_ISSET(sockn, &read) && sres){
@@ -163,7 +142,8 @@ void SocketIO::popqueue(){
  recv_queue.pop(); 
 }
 const int SocketIO::send(const Flux::string &buf) const{
- printf("<-- %s\n", Flux::Sanitize(buf).c_str());
+ //printf("<-- %s\n", Flux::Sanitize(buf).c_str());
+ log(LOG_DEBUG, "%s\n", Flux::Sanitize(buf).c_str());
  int i = write(sockn, buf.c_str(), buf.size());
  return i;
 }

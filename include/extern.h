@@ -16,6 +16,15 @@ class module;
 class SendMessage;
 struct CommandSource;
 
+/* Enumorations */
+enum LogType
+{
+  LOG_DEBUG,
+  LOG_NORMAL,
+  LOG_RAWIO,
+  LOG_TERMINAL
+};
+
 /*  *pointer definitions */
 Channel *findchannel(const Flux::string&);
 User *finduser(const Flux::string &nick);
@@ -30,7 +39,7 @@ extern Flux::string strip(const Flux::string &buf);
 extern Flux::string make_pass();
 extern bool IsValidChannel(const Flux::string&);
 extern int randint(int x, int y);
-extern bool protocoldebug, IsOper;
+extern bool protocoldebug, IsOper, dev, nofork;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 extern std::vector<module*> moduleList;
 extern Flux::insensitive_map<User *> UserNickList;
@@ -43,7 +52,7 @@ extern Flux::insensitive_map<Channel*> ChanMap;
 void ListChans(CommandSource &source);
 void ListUsers(CommandSource &source);
 void send_cmd(const char *fmt, ...);
-void log(const char *fmt, ...);
+void log(LogType, const char *fmt, ...);
 void process(const Flux::string&);
 void ProcessJoin(CommandSource&, const Flux::string&);
 void ProcessModules(CommandSource&, std::vector<Flux::string>&);
