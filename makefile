@@ -9,7 +9,18 @@ EXECUTABLE=navn
 all:
 	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
 	@echo "This is probably the lamest make file i have ever seen -Justasic"
-	$(CC) $(LDFLAGS) *.cpp
+	$(CC) $(LDFLAGS) main.cpp
+	$(CC) $(LDFLAGS) misc.cpp
+	$(CC) $(LDFLAGS) module.cpp
+	$(CC) $(LDFLAGS) Socket.cpp
+	$(CC) $(LDFLAGS) Sepstream.cpp
+	$(CC) $(LDFLAGS) privmsg.cpp
+	$(CC) $(LDFLAGS) command.cpp
+	$(CC) $(LDFLAGS) channel.cpp
+	$(CC) $(LDFLAGS) thread.cpp
+	$(CC) $(LDFLAGS) timers.cpp
+	$(CC) $(LDFLAGS) user.cpp
+	@echo "Linking $(EXECUTABLE).."
 	$(CC) $(CFLAGS) $(EXECUTABLE) *.o $(EXTRA) $(LIBS)
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 
