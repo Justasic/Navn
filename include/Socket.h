@@ -20,7 +20,7 @@
 #include <ostream>
 #include <queue>
 #include <arpa/inet.h>
-#include "extern.h"
+#include <extern.h>
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 class SocketIO
@@ -34,7 +34,8 @@ private:
 public:
   SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
-  bool GetBuffer(Flux::string&);
+  std::queue<Flux::string> GetBuffer();
+  void popqueue();
   bool get_address();
   const int recv() const;
   const int send(const Flux::string &buf) const;

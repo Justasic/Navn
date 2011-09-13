@@ -1,5 +1,5 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#include "channel.h"
+#include <channel.h>
 
 Flux::insensitive_map<Channel*> ChanMap;
 Channel::Channel(const Flux::string &nname, time_t ts){

@@ -1,8 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef USER_H
 #define USER_H
-#include "privmsg.h"
-#include "channel.h"
+#include <privmsg.h>
+#include <channel.h>
 class User
 {
 public:
@@ -12,6 +12,7 @@ public:
   void kick(const Flux::string&, const Flux::string&);
   void kick(Channel*, const Flux::string&);
   void kill(const Flux::string&);
+  bool IsOwner();
   void SendWho();
   void SendMessage(const Flux::string&);
   void SendMessage(const char*, ...);

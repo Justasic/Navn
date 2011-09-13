@@ -17,7 +17,7 @@
  * feature available, we have made it as easy as possible to make modules.
  * See the examples tab for an example module.
  */
-#include "flux_net_irc.hpp"
+#include <flux_net_irc.hpp>
 
 /**
  * \page tutmod Adding Your Module - Step 1: Including your module.
@@ -115,12 +115,19 @@ int main (int argcx, char** argvx, char *envp[])
     /*! \endcode */ 
     Flux::string rply;
     while (!quitting){
-      if(sock->GetBuffer(rply)){
-	/* Process the buffer and modules */
-	process(rply);
-	rply.clear();
-      }
+      if(protocoldebug)
+        printf("Top of main loop\n");
       
+      /* Process the buffer and modules */
+      std::queue<Flux::string> queue = sock->GetBuffer();
+      while(!queue.empty()){
+	if(queue.empty())
+	 break;
+	process(queue.front());
+	queue.pop();
+	sock->popqueue();
+      }
+      /***********************************/
       if(time(NULL) - last_check >= 3){
 	TimerManager::TickTimers(time(NULL));
 	last_check = time(NULL);

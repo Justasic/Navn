@@ -1,8 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef DERP_H
 #define DERP_H
-#include "module.h"
-#include "defs.h"
+#include <module.h>
+#include <defs.h>
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 SendMessage *Send;
 SocketIO *sock;

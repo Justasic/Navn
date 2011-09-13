@@ -143,26 +143,24 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Channel *chan = new Channel(channel);
     chan->SendJoin();
     chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
-    if(ouser.empty() || opass.empty()){
-    }else{
+    if(!ouser.empty() || !opass.empty()){
       Send->command->oper(ouser, opass);
       IsOper = true;
       Send->o = new Oper(sock);
-    }if(nsacc.empty() || nspass.empty()){
-    }else{
+    }
+    if(!nsacc.empty() || !nspass.empty()){
       Send->privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
     }
     log("Successfully connected to the server \"%s:%s\" Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
   }
+  if(source.command == "433"){
+   nick.push_back('_');
+   Send->command->nick(nick);
+  }
   if(cmd == "\001DCC"){
     source.Reply("I do not accept or support DCC connections.");
   }
-  if(source.command == "482"){
-    std::cout << "\033[22;31mI require op to preform this function\033[22;36m" << nl;
-    Send->notice(owner_nick, "I require op to run the last command!");
-    log("Op is required in %s", c->name.c_str());  
-  }
-  if(cmd == "This nickname is registered and protected. If it is your"){
+  if(irc_string::said(source.message, "This nickname is registered and protected. If it is your")){
     u->SendPrivmsg("identify %s %s", nsacc.c_str(), nspass.c_str());
     log("Identified to NickServ with account \"%s\"", nsacc.c_str());
   }

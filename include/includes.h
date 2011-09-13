@@ -10,12 +10,12 @@
  * way then do so.
  */
 
-#include "Socket.h"
-#include "timers.h"
-#include "SocketException.h"
-#include "INIReader.h"
-#include "flux.h"
-#include "thread.h"
+#include <Socket.h>
+#include <timers.h>
+#include <SocketException.h>
+#include <INIReader.h>
+#include <flux.h>
+#include <thread.h>
 #include <utility>
 #include <stdint.h> 
 #include <list>

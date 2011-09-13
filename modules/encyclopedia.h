@@ -10,10 +10,9 @@ public:
     this->SetDesc("Encyclopedia module."); 
   }
   
-  std::string brain(std::string query)
+  /*Flux::string brain(const Flux::string &query)
   {
-    std::string result = "";
-    std::string to_search = "python brain.py "+query;
+    std::string result, to_search = "python brain.py "+query.tostd();
     system(to_search.c_str());
     std::string line;
     std::ifstream myfile("dump.txt");
@@ -29,17 +28,16 @@ public:
       return result;
     }
     return result;
-  }
+  }*/
   
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
   {
-    User *u = source.u;
-    Channel *c = source.c;
     Flux::string cmd = params.empty()?"":params[0];
     
     if((cmd == "!encyclopedia"))
     {
-     source.Reply(brain(params[1].tostd()));
+      Flux::string str = "python brain.py "+params[1], request = execute(str.c_str());
+     source.Reply(request);
     }
     
     return MOD_RUN; 

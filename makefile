@@ -11,7 +11,7 @@ all:
 	@echo "This is probably the lamest make file i have ever seen -Justasic"
 	$(CC) $(LDFLAGS) *.cpp
 	$(CC) $(CFLAGS) $(EXECUTABLE) *.o $(EXTRA) $(LIBS)
-	@echo "Build complete. Run './navn' to execute the binary."
+	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 
 .PHONY : clean
 clean:
