@@ -43,7 +43,7 @@ int module::AddCommand(Command *c){
    return 1;
  std::pair<CommandMap::iterator, bool> it = Commandsmap.insert(std::make_pair(c->name, c));
  if(it.second != true){
-   log("Command %s already loaded!", c->name.c_str());
+   log(LOG_NORMAL, "Command %s already loaded!", c->name.c_str());
    return 2;
  }
  c->mod = this;

@@ -53,6 +53,7 @@ Added case insensitivity
 Added encyclopedia.h witch adds the command !encyclopedia
 Fixed socket engine using select as a timer instead of a multiplexer
 Added User::IsOwner boolean
+Added new logging function
 
 Navn 2.0.0
 ==========

@@ -36,8 +36,9 @@ public:
     
     if((cmd == "!encyclopedia"))
     {
-      Flux::string str = "python brain.py "+params[1], request = execute(str.c_str());
+      Flux::string query = params.size() == 2?params[1]:"", str = "python brain.py "+query, request = execute(str.c_str());
      source.Reply(request);
+     log(LOG_NORMAL, "%s used !encyclopedia to lookup \"%s\"", source.u->nick.c_str(), query.c_str());
     }
     
     return MOD_RUN; 

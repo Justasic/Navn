@@ -344,7 +344,7 @@ static void restart(Flux::string reason){
   if(reason.empty()){
     reason = "No Reason";
   }else{
-    log("Restarting: %s", reason.c_str());
+    log(LOG_NORMAL, "Restarting: %s", reason.c_str());
     Send->command->quit("Restarting: %s", reason.c_str());
     chdir(CurrentPath);
     int execvpret = execvp(my_av[0], my_av);
@@ -375,7 +375,7 @@ static void Rehash(bool onstart = false){
     ReadConfig(config);
   }catch(ConfigException &ex){
       std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
-      log("Config Exception Caught: %s", ex.GetReason());
+      log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
       if(!onstart)
         Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
   } 
@@ -434,7 +434,7 @@ void sigact(int sig)
       quitting = true;
       break;
     default:
-      printf("Recieved weird signal from terminal. Sig Number: %i\n",sig);
+      log(LOG_NORMAL, "Recieved weird signal from terminal. Sig Number: %i\n",sig);
   }
 }
 /** 
@@ -478,57 +478,57 @@ void startup(int argc, char** argv) {
        {
          dev = true;
 	 nofork = true;
-	 log("Navn is started in Developer mode. (%s)", arg.c_str());
+	 log(LOG_DEBUG, "Navn is started in Developer mode. (%s)", arg.c_str());
        }
        else if (arg == "--nofork" || arg == "-f"){
          nofork = true;
-         log("Navn is started With No Forking enabled. (%s)", arg.c_str());
+         log(LOG_DEBUG, "Navn is started With No Forking enabled. (%s)", arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
-	  printf("\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION.c_str());
+	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION.c_str());
 	  Flux::string dir = argv[0];
 	  Flux::string::size_type n = dir.rfind('/');
 	  dir = "." + dir.substr(n);
-	  printf("Usage: %s [options]\n", dir.c_str());
-	  printf("-h, --help\n");
-	  printf("-d, --developer\n");
-	  printf("-f, --nofork\n");
-	  printf("This bot does have Epic Powers.\n");
+	  log(LOG_TERMINAL, "Usage: %s [options]\n", dir.c_str());
+	  log(LOG_TERMINAL, "-h, --help\n");
+	  log(LOG_TERMINAL, "-d, --developer\n");
+	  log(LOG_TERMINAL, "-f, --nofork\n");
+	  log(LOG_TERMINAL, "This bot does have Epic Powers.\n");
 	  exit(0);
        }
        else if (arg == "--version" || arg == "-v"){
-         std::cout << "\033[22;37mNavn IRC C++ Bot Version " << VERSION << nl;
-         std::cout << "This bot was programmed from scratch by Justasic and Lordofsraam." << nl;
-         std::cout << nl;
-         std::cout << "IRC: IRC.Flux-Net.net #Computers" << nl;
-         std::cout << "WWW: http://www.Flux-Net.net" << nl;
-         std::cout << "Email: Staff@Flux-Net.net" << nl;
-         std::cout << "Git: git://gitorious.org:navn/navn.git" << nl;
-         std::cout << nl;
-         std::cout << "This bot does have Epic Powers." << nl;
-         std::cout << "Type ./navn --help for help on how to use navn, or read the readme." << nl;
+         log(LOG_TERMINAL, "\033[22;37mNavn IRC C++ Bot Version %s",VERSION.c_str());
+         log(LOG_TERMINAL, "This bot was programmed from scratch by Justasic and Lordofsraam.");
+         log(LOG_TERMINAL, "\n");
+         log(LOG_TERMINAL, "IRC: IRC.Flux-Net.net #Computers");
+         log(LOG_TERMINAL, "WWW: http://www.Flux-Net.net");
+         log(LOG_TERMINAL, "Email: Staff@Flux-Net.net");
+         log(LOG_TERMINAL, "Git: git://gitorious.org:navn/navn.git");
+         log(LOG_TERMINAL, "\n");
+         log(LOG_TERMINAL, "This bot does have Epic Powers.");
+         log(LOG_TERMINAL, "Type ./navn --help for help on how to use navn, or read the readme.");
          exit(0);
        }
        else if(arg == "--protocoldebug" || "-p"){
 	 protocoldebug = true;
 	 nofork = true;
-	 log("Navn is started in Protocol Debug mode. (%s)", arg.c_str());
+	 log(LOG_RAWIO, "Navn is started in Protocol Debug mode. (%s)", arg.c_str());
        }
        else{
-	printf("Unknown option %s", arg.c_str());
+	log(LOG_TERMINAL, "Unknown option %s", arg.c_str());
 	exit(0);
        }
   }
   }
    WritePID();
-   log("Navn Started. PID: %d", getpid());
+   log(LOG_NORMAL, "Navn Started. PID: %d", getpid());
    if (!nofork){
 	int i;
 	if((i = fork()) < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		std::cout << "Navn IRC Bot v" << VERSION_SHORT << " Started." << nl;
-		std::cout << "Forking to background. PID: "<< i << "\033[22;37m" << nl;
+		log(LOG_TERMINAL, "Navn IRC Bot v%s Started.", VERSION_SHORT.c_str());
+		log(LOG_TERMINAL, "Forking to background. PID: %i\033[22;37m", i);
 		exit(0);
 	}
 	if(Terminal){
@@ -645,7 +645,7 @@ if(true) \
        } \
        catch (const ModuleException &modexcept) \
        { \
-          log("Exception caught: %s", modexcept.GetReason()); \
+          log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
        } \
         _i = safei; \
     } \

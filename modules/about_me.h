@@ -45,7 +45,7 @@ public:
 	source.Reply("Host: %s", u->host.c_str());
 	source.Reply("Channel: %s", c->name.c_str());
 	source.Reply("Fullhost: %s", u->fullhost.c_str());
-	log("%s requested information about themself.", u->nick.c_str());
+	log(LOG_NORMAL, "%s requested information about themself.", u->nick.c_str());
   }
   if(cmd == "!decodehost"){
     if(params.size() != 2){

@@ -12,13 +12,13 @@ Channel::Channel(const Flux::string &nname, time_t ts){
   this->creation_time = ts;
   this->topic_time = 0;
   ChanMap[this->name] = this;
-  printf("Created new channel: %s\n", this->name.c_str());
-  log("Created new channel: %s", this->name.c_str());
+  //printf("Created new channel: %s\n", this->name.c_str());
+  log(LOG_DEBUG, "Created new channel: %s", this->name.c_str());
 }
 Channel::~Channel()
 {
- printf("Deleted channel: %s\n", this->name.c_str());
- log("Deleted channel: %s", this->name.c_str());
+ //printf("Deleted channel: %s\n", this->name.c_str());
+ log(LOG_DEBUG, "Deleted channel: %s", this->name.c_str());
  ChanMap.erase(this->name);
 }
 void Channel::SendJoin(){

@@ -51,9 +51,9 @@ public:
       }
       if(!IsValidChannel(blah)){
         source.Reply("Channel %s is not a valad channel.", blah.c_str());
-        log("%s attempted to make bot part %s", u->nick.c_str(), blah.c_str());
+        log(LOG_NORMAL, "%s attempted to make bot part %s", u->nick.c_str(), blah.c_str());
       }else{
-        log("%s made the bot part %s", u->nick.c_str(), blah.c_str());
+        log(LOG_NORMAL, "%s made the bot part %s", u->nick.c_str(), blah.c_str());
         c->SendPart(blah);
       }
     }
@@ -62,7 +62,7 @@ public:
   }
   if(cmd == "!git"){
     source.Reply("Navn git: git://gitorious.org/navn/navn.git");
-    log("%s requested Git repository link.", u->nick.c_str());
+    log(LOG_NORMAL, "%s requested Git repository link.", u->nick.c_str());
   }
   if(cmd == "kick"){
     if(u->nick == owner_nick){
@@ -98,9 +98,9 @@ public:
     }
     if(!IsValidChannel(blah)){
       source.Reply("Channel \2%s\2 is not a valad channel.", blah.c_str());
-      log("%s attempted to make bot join %s", u->nick.c_str(), blah.c_str());
+      log(LOG_NORMAL, "%s attempted to make bot join %s", u->nick.c_str(), blah.c_str());
     }else{
-      log("%s made the bot join %s", u->nick.c_str(), blah.c_str());
+      log(LOG_NORMAL, "%s made the bot join %s", u->nick.c_str(), blah.c_str());
       Channel *chan = findchannel(blah);
       if(!chan){
 	chan = new Channel(blah);

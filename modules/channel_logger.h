@@ -29,13 +29,13 @@
 
 void CLog(const char *fmt, ...){
   const Flux::string chanlogfile = LogChannel+".log";
-  std::fstream log;
+  std::fstream clog;
   try{
-  log.open(chanlogfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-  if(!log.is_open())
+  clog.open(chanlogfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+  if(!clog.is_open())
      throw LogException("Failed to open log file.");
   }catch (LogException &e){
-   std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
+   log(LOG_NORMAL, "Log Exception Caught: %s", e.GetReason());
   }
   va_list args;
   va_start(args, fmt);
@@ -45,12 +45,12 @@ void CLog(const char *fmt, ...){
   
   char buf[512];
   strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y] ", tm);
-  log << buf;
+  clog << buf;
   vsnprintf(buf, sizeof(buf), fmt, args);
-  log << buf << std::endl;
+  clog << buf << std::endl;
   va_end(args);
   va_end(args);
-  log.close();
+  clog.close();
 }
 class Chanlog:public module{
 public:
@@ -59,10 +59,12 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0], msg = source.message;
   User *u = source.u;
   Channel *c = source.c;
-  if(!c || !source.c)
-   return MOD_STOP; 
-  else if(c->name != LogChannel)
-   return MOD_STOP; 
+  if(c || source.command == "PART"){
+    if(u->nick == nick)
+      return MOD_STOP;
+    if(c->name != LogChannel)
+      return MOD_STOP; 
+  }
   
   if(source.command == "PRIVMSG"){
     Flux::string nolog = params.size() == 2?params[1]:"";

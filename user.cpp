@@ -24,7 +24,7 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
 }
 User::~User(){
   printf("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
-  log("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+  log(LOG_NORMAL, "Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
   UserNickList.erase(this->nick);
 }
 void User::kick(const Flux::string &channel, const Flux::string &reason){

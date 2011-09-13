@@ -43,7 +43,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		  if(pchannel.empty()){
 		   c->SendMessage("im out niggaz!");
 		   c->SendPart("I'm leaving this dump."); 
-		   log("%s used Flux_S3rvices part %s", u->nick.c_str(), c->name.c_str());
+		   log(LOG_NORMAL, "%s used Flux_S3rvices part %s", u->nick.c_str(), c->name.c_str());
 		   return MOD_STOP;
 		  }
 		  if(!IsValidChannel(pchannel)){
@@ -57,7 +57,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		  }
 		  ch->SendMessage("im out niggaz!");
 		  ch->SendPart("I'm leaving this dump.");
-		  log("%s used Flux_S3rvices part %s", u->nick.c_str(), pchannel.c_str());
+		  log(LOG_NORMAL, "%s used Flux_S3rvices part %s", u->nick.c_str(), pchannel.c_str());
 		}else{
 			source.Reply(ACCESS_DENIED);
 		}
@@ -73,7 +73,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 			Flux::string bhost = params[3];
 			Flux::string breal = params[4];
 			Send->privmsg("BotServ", "bot add %s %s %s %s", bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str());
-			log("%s used Flux_S3rvices to make bot \"%s!%s@%s :%s\" %s", u->nick.c_str(), bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str(), c->name.c_str());
+			log(LOG_NORMAL, "%s used Flux_S3rvices to make bot \"%s!%s@%s :%s\" %s", u->nick.c_str(), bnick.c_str(), buser.c_str(), bhost.c_str(), breal.c_str(), c->name.c_str());
 		}else{
 		source.Reply(ACCESS_DENIED);
 		}
