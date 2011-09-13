@@ -55,7 +55,7 @@ public:
     if(source.command == "PONG"){
      Flux::string ts = params[0];
      int timestamp = atoi(ts.c_str());
-     int lag = timestamp-time(NULL);
+     int lag = time(NULL)-timestamp;
      timeout = false;
      pings = 0;
      if(protocoldebug)

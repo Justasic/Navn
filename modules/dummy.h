@@ -100,6 +100,9 @@ public:
        source.Reply("User: %s", u2->nick.c_str());
       
     }
+    if(irc_string::said(source.message, "enc test")){
+     source.Reply("test passed"); 
+    }
    return MOD_RUN; 
   }
 };

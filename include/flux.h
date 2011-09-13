@@ -435,7 +435,6 @@ namespace Flux{
 	}
 	(*this) == newbuf;
     }
-    
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     }; //end of string class
     template<typename T> class map : public std::map<string, T> { };
