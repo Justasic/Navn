@@ -30,16 +30,16 @@ public:
   //help replies
     if(cmd.equals_ci("help")){
       source.Reply("There are 10 commands:");
-      source.Reply("quit \t \t \tQuits the bot (password needed)");
-      source.Reply("pass\t \t \t Gets the quit password for the bot (must be a bot admin)");
-      source.Reply("chown \t \t Changes ownership over the bot (must be a bot admin)");
-      source.Reply("join \t \t \tTells the bot to join the specified channel.");
-      source.Reply("part \t \t \tParts the channel");
-      source.Reply("kick \t \t \tkicks a user from the channel (must be bot owner)");
-      source.Reply("restart \t Restarts the Bot (Password needed)");
-      source.Reply("rehash\t \t Rehashes the Bot (Password needed)");
-      source.Reply("stats \t \t Shows system statistics.");
-      source.Reply("nick \t \t \tSets the bots nickname");
+      source.Reply("QUIT \t \t \tQuits the bot (password needed)");
+      source.Reply("PASS\t \t \t Gets the quit password for the bot (must be a bot admin)");
+      source.Reply("CHOWN \t \t Changes ownership over the bot (must be a bot admin)");
+      source.Reply("JOIN \t \t \tTells the bot to join the specified channel.");
+      source.Reply("PART \t \t \tParts the channel");
+      source.Reply("KICK \t \t \tkicks a user from the channel (must be bot owner)");
+      source.Reply("RESTART \t Restarts the Bot (Password needed)");
+      source.Reply("REHASH\t \t Rehashes the Bot (Password needed)");
+      source.Reply("STATS \t \t Shows system statistics.");
+      source.Reply("NICK \t \t \tSets the bots nickname");
       
       log(LOG_NORMAL, "%s used help command", source.u->nick.c_str());
    }

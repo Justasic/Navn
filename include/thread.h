@@ -3,5 +3,15 @@
 #define THREAD_H
 #include <includes.h>
 
-/*hehehe*/
+class Thread
+{
+public:
+  Thread();
+  virtual ~Thread();
+  void Join();
+  /* Anope: "Exit the thread. Note that the thread still must be joined to free resources!" */
+  void Exit();
+  void Start();
+  virtual void ToRun() =0;
+};
 #endif
