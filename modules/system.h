@@ -161,7 +161,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     source.Reply("I do not accept or support DCC connections.");
   }
   if(irc_string::said(source.message, "This nickname is registered and protected. If it is your")){
-    if(!nsacc.empty() || !nspass.empty())
+    if(!nsacc.empty() || !nspass.empty() && u->nick == "NickServ")
       return MOD_STOP;
     u->SendPrivmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
     log(LOG_NORMAL, "Identified to NickServ with account \"%s\"", nsacc.c_str());

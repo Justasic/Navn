@@ -234,7 +234,6 @@ void process(const Flux::string &buffer){
   }
   log(LOG_RAWIO, "%s\n", Flux::Sanitize(buffer).c_str());
   if(protocoldebug){
-   //printf("--> %s\n", Flux::Sanitize(buffer).c_str());
    printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
    printf("%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
    if(params.empty())
