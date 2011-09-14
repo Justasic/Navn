@@ -252,8 +252,10 @@ void process(const Flux::string &buffer){
       if(!receiver.empty() && !params[1].empty())
        log(LOG_TERMINAL, "<%s-%s> %s\n", isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
     }
-  }else
-    log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
+  }else{
+    if(!protocoldebug)
+      log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
+  }
   /* make local variables instead of global ones */
   Flux::string nickname = isolate(':','!',source),
   uident = isolate('!','@',source),
