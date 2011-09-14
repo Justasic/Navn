@@ -28,7 +28,7 @@ public:
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Flux::string cmd = params.empty()?"":params[0];
   //help replies
-    if(cmd == "help"){
+    if(cmd.equals_ci("help")){
       source.Reply("There are 10 commands:");
       source.Reply("quit \t \t \tQuits the bot (password needed)");
       source.Reply("pass\t \t \t Gets the quit password for the bot (must be a bot admin)");

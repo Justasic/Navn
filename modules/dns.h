@@ -109,25 +109,25 @@ public:
   dns_m(bool a):module("DNS Resolver", a, PRIORITY_DONTCARE){ this->SetDesc("Reverse/forward resolve a DNS hostname"); }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Flux::string cmd = params.empty()?"":params[0];
-    if(cmd == "!rdns"){
+    if(cmd.equals_ci("!rnds")){
      if(params.size() < 2){
-       source.Reply("Syntax: \2!rdns \37ipaddress\15");
+       source.Reply("Syntax: \2!RDNS \37ipaddress\15");
        return MOD_RUN;
      }
       Flux::string ip = params[params.size() -1];
       rdns(source.c->name, ip);
     }
-    if(cmd == "!dns"){
+    if(cmd.equals_ci("!dns")){
      if(params.size() < 2){
-       source.Reply("Syntax: \2!dns \37hostname\15");
+       source.Reply("Syntax: \2!DNS \37hostname\15");
        return MOD_RUN;
      }
       Flux::string host = params[params.size() -1];
       dns(source.c->name, host);
     }
-    if(cmd == "!ardns"){
+    if(cmd.equals_ci("!ardns")){
      if(params.size() < 2){
-       source.Reply("Syntax: \2!ardns \37hostname\15");
+       source.Reply("Syntax: \2!ARDNS \37hostname\15");
        return MOD_RUN;
      }
      Flux::string host = params[params.size() -1];

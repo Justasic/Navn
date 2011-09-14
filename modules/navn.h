@@ -43,7 +43,7 @@ public:
     User *u = source.u;
     Channel *c = source.c;
     
-    if (cmd == "part"){
+    if (cmd.equals_ci("part")){
       Flux::string blah = params.size() == 2 ? params[1] : "";
       if(blah.empty()){
 	source.Reply("Syntax: \2part \37channel\15");
@@ -57,14 +57,14 @@ public:
         c->SendPart(blah);
       }
     }
-  if(cmd == "!bugs"){
+  if(cmd.equals_ci("!bugs")){
     c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
   }
-  if(cmd == "!git"){
+  if(cmd.equals_ci("!git")){
     source.Reply("Navn git: git://gitorious.org/navn/navn.git");
     log(LOG_NORMAL, "%s requested Git repository link.", u->nick.c_str());
   }
-  if(cmd == "kick"){
+  if(cmd.equals_ci("kick")){
     if(u->nick == owner_nick){
       if(params.size() > 3 || params.size() < 3){
 	source.Reply("Syntax: \2kick channel \37nick\15");
@@ -90,7 +90,7 @@ public:
       source.Reply(ACCESS_DENIED);
     }
   }
-  if (cmd == "join"){
+  if (cmd.equals_ci("join")){
     Flux::string blah = params.size() == 2 ? params[1] : "";
     if(blah.empty()){
       source.Reply("Syntax: \2Join \37channel\15"); 
@@ -109,7 +109,7 @@ public:
       chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
     }
   }
-  if(cmd == "nick"){
+  if(cmd.equals_ci("nick")){
     Flux::string newnick = params.size() == 2 ? params[1]:"";
     if(newnick.empty()){
       source.Reply("Syntax: \002nick \37newnickname\15"); 

@@ -104,7 +104,8 @@ Flux::string isolate(char begin, char end, Flux::string msg){
 /** 
  * \fn void log(LogType type = LOG_NORMAL, const char *fmt, ...)
  * This is what logs everything that goes on with the bot
- * \param *fmt
+ * \param LogType the kind of log you are making
+ * \param char* the format and the string for the log
  */
 void log(LogType type, const char *fmt, ...){
   std::fstream log;

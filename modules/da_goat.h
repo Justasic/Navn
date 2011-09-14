@@ -57,7 +57,7 @@ public:
       User *u = source.u;
       Channel *c = source.c;
 /***************************Da_Goat Functions*******************************/
-	if(cmd == "!poke"){ //Easter egg ;P
+	if(cmd.equals_ci("!poke")){ //Easter egg ;P
 		Flux::string person = params.size() == 2?params[1]:"";
 		person.trim();
 		if(person == owner_nick && u->nick != owner_nick){
@@ -74,18 +74,18 @@ public:
 		  log(LOG_NORMAL, "%s used Da_Goats !poke command in %s to poke %s", u->nick.c_str(), c->name.c_str(), person.c_str());
 		}
       }
-	if(cmd == "!info"){
+	if(cmd.equals_ci("!info")){
 		c->SendMessage("Our forum is at \037castawaycrew.hyperboards.com\017");
 		c->SendMessage("Our Website is \002Flux-Net.net\017");
 		c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
 		log(LOG_NORMAL, "%s used Da_Goats !info command in %s", u->nick.c_str(), c->name.c_str());
       }
-      if(cmd == "!rename"){
+      if(cmd.equals_ci("!rename")){
 		c->SendMessage("This channel is a Nickname only channel. This means that you MUST have your own Nickname! If you do not choose your own nick name you WILL be kicked.");
 		c->SendMessage("To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
 		log(LOG_NORMAL, "%s used Da_Goats !rename command in %s", u->nick.c_str(), c->name.c_str());
       }
-      if(cmd == "!register"){
+      if(cmd.equals_ci("!register")){
 		c->SendMessage("To Register your nickname type:");
 		c->SendMessage("\0034If this is the nick you want then skip step 1.\017");
 		c->SendMessage("\0034Do not include brackets when registering, this will cause errors\017");
@@ -98,21 +98,21 @@ public:
 		c->SendMessage("Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
 		log(LOG_NORMAL, "%s used Da_Goats !register command in %s", u->nick.c_str(), c->name.c_str());
       }
-      if(cmd == "!socialinfo"){
+      if(cmd.equals_ci("!socialinfo")){
 		c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.flux-net.net:6667");
 		log(LOG_NORMAL, "%s used Da_Goats !socialinfo command in %s", u->nick.c_str(), c->name.c_str());
       }
-      if(cmd == "!help"){
+      if(cmd.equals_ci("!help")){
 		c->SendMessage("Local %s commands are:", c->name.c_str());
 		c->SendMessage("!help !info !register !socialinfo !version !time\n!uptime !rules !spam !rename !bugs");
 		log(LOG_NORMAL, "%s used Da_Goats !help command in %s", u->nick.c_str(), c->name.c_str());
       }
-      if(cmd == "!ts3"){
+      if(cmd.equals_ci("!ts3")){
 		c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nGalaxy.Flux-Net.net:9987");
 		log(LOG_NORMAL, "%s used Da_Goats !ts3 command in %s", u->nick.c_str(), c->name.c_str());
 	}
-      if(cmd == "topic"){
-		if(u->nick == owner_nick){
+      if(cmd.equals_ci("topic")){
+		if(u->IsOwner()){
 			if(params.size() < 3){
 			  source.Reply("Syntax: \2TOPIC \37channel\37 \37topic\37");
 			  return MOD_STOP;
@@ -148,7 +148,7 @@ public:
 			source.Reply(ACCESS_DENIED); 
 		}
 	}
-      if(cmd == "stats"){
+      if(cmd.equals_ci("stats")){
 	  //Shows system stats in the channel.
 #ifndef _WIN32
 		if(sysinfo(&sys_info) != 0){//now here Justasic got pissed because c strings suck ass
@@ -197,7 +197,7 @@ public:
 #endif
 		log(LOG_NORMAL, "%s used stats command in %s", u->nick.c_str(), c->name.c_str());
       }
-      if(cmd == "!uptime"){
+      if(cmd.equals_ci("!uptime")){
 #ifndef _WIN32
 		if(sysinfo(&sys_info) != 0)
 			perror("sysinfo");
@@ -212,7 +212,7 @@ public:
 #endif
 		log(LOG_NORMAL, "%s used !uptime command in %s", u->nick.c_str(), c->name.c_str());
 	  }
-      if(cmd == "!rules"){
+      if(cmd.equals_ci("!rules")){
 	c->SendMessage("There are only a few simple rules for %s.", c->name.c_str());
         c->SendMessage("Do NOT hate on others in any way. Basically do not troll in any shape or form.");
         c->SendMessage("Do not ask for op status. you will be granted op status when the moderators feel you deserve op status.");
@@ -221,11 +221,11 @@ public:
 	c->SendMessage("If you violate any of these rules you will be kicked and possably banned from %s.", c->name.c_str());
 	log(LOG_NORMAL, "%s used Da_Goats !rules command in %s", u->nick.c_str(), c->name.c_str());
       }
-      if(cmd == "!spam"){
+      if(cmd.equals_ci("!spam")){
 	log(LOG_NORMAL, "%s used Da_Goats !spam command in %s", u->nick.c_str(), c->name.c_str());
         c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
       }
-      if(cmd == "!version"){
+      if(cmd.equals_ci("!version")){
         c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION_SHORT.c_str());
         c->SendMessage("Navn (which includes Dah_Goat) is Full C++ code by lordofsraam\nand is further developed with Justasic");
 	c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
@@ -234,7 +234,7 @@ public:
 	log(LOG_NORMAL, "%s used Da_Goats !version command in %s", u->nick.c_str(), c->name.c_str());
       }
       /*******************************Easter Eggs*********************************/
-      if(cmd == "!everything"){
+      if(cmd.equals_ci("!everything")){
 	c->SendMessage("Yes, there is a script for everything..\007");
       }
       /***********************End Da_Goat Functions*******************************/

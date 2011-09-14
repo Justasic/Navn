@@ -34,7 +34,7 @@ public:
   {
     Flux::string cmd = params.empty()?"":params[0];
     
-    if((cmd == "!encyclopedia"))
+    if(cmd.equals_ci("!encyclopedia"))
     {
       Flux::string query = params.size() == 2?params[1]:"", str = "python brain.py "+query, request = execute(str.c_str());
      source.Reply(request);

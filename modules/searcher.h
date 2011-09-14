@@ -72,7 +72,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   User *u = source.u;
   Channel *c = source.c;
 
-      if(cmd == "!google"){
+      if(cmd.equals_ci("!google")){
 		// if !google is said in the channel
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!google \37message\15");
@@ -81,7 +81,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		c->SendMessage(search(source.message, "!google"));
 		log(LOG_NORMAL, "Channel Google Search from %s \"%s\"", u->nick.c_str(), search(source.message, "!google").c_str());
       }
-      if(cmd == "!youtube"){ // if !youtube is said in the channel
+      if(cmd.equals_ci("!youtube")){ // if !youtube is said in the channel
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!youtube \37message\15");
 		 return MOD_STOP;
@@ -89,7 +89,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		c->SendMessage(search(source.message, "!youtube"));
 		log(LOG_NORMAL, "Channel youtube Search from %s \"%s\"", u->nick.c_str(), search(source.message, "!youtube").c_str());
       }
-      if(cmd == "!tpb"){ // if !tpb xor !thepiratebay is said in the channel
+      if(cmd.equals_ci("!tpb")){ // if !tpb xor !thepiratebay is said in the channel
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!tpb \37message\15");
 		 return MOD_STOP;
@@ -97,7 +97,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		c->SendMessage(search(source.message, "!tpb"));
 		log(LOG_NORMAL, "Channel tpb Search from %s \"%s\"", u->nick.c_str(), search(source.message, "!tpb").c_str());
       }
-      if(cmd == "!define"){
+      if(cmd.equals_ci("!define")){
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!define \37message\15");
 		 return MOD_STOP;
@@ -105,7 +105,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		c->SendMessage(search(source.message, "!define"));
 		log(LOG_NORMAL, "Channel define Search from %s \"%s\"", u->nick.c_str(), search(source.message, "!define").c_str());
       }
-      if(cmd == "!urban"){ 
+      if(cmd.equals_ci("!urban")){ 
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!urban \37message\15");
 		 return MOD_STOP;
@@ -113,7 +113,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		c->SendMessage(search(source.message, "!urban"));
 		log(LOG_NORMAL, "Channel urban Search from %s \"%s\"", u->nick.c_str(), search(source.message, "!urban").c_str());
       }
-      if(cmd == "!movie"){ 
+      if(cmd.equals_ci("!movie")){ 
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!movie \37message\15");
 		 return MOD_STOP;
@@ -121,7 +121,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		c->SendMessage(search(source.message, "!movie"));
 		log(LOG_NORMAL, "Channel movie Search from %s \"%s\"", u->nick.c_str(), search(source.message, "!movie").c_str());
       }
-      if(cmd == "!wiki"){ 
+      if(cmd.equals_ci("!wiki")){ 
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!wiki \37message\15");
 		 return MOD_STOP;
@@ -129,7 +129,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		c->SendMessage(search(source.message, "!wiki"));
 		log(LOG_NORMAL, "Channel wiki Search from %s \"%s\"", u->nick.c_str(), search(source.message, "!wiki").c_str());
       }
-      if(cmd == "!music"){ 
+      if(cmd.equals_ci("!music")){ 
 		if(params.size() < 2){
 		 source.Reply("Syntax: \2!music \37message\15");
 		 return MOD_STOP;

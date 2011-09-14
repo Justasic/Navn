@@ -50,7 +50,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   User *u = source.u;
   Channel *c = source.c;
   
-  if (cmd == "pass"){
+  if (cmd.equals_ci("pass")){
     if (u->IsOwner()){
       source.Reply("The password is:\2 %s", password.c_str());
       log(LOG_NORMAL, "%s requested the navn quit password: %s", u->nick.c_str(), password.c_str());
@@ -59,7 +59,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       log(LOG_NORMAL, "%s attempted to request the navn quit password.", u->nick.c_str());
     }
   }
-  if (cmd == "restart"){
+  if (cmd.equals_ci("restart")){
     if(u->IsOwner()){
       //Flux::string reason = "-no reason-";
       Send->raw("QUIT :Restarting..\n");
@@ -68,7 +68,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       source.Reply(ACCESS_DENIED);
     }
   }
-  if(cmd == "pid"){
+  if(cmd.equals_ci("pid")){
     if(u->IsOwner()){
       source.Reply("My PID is: %i", getpid()); 
       log(LOG_NORMAL, "%s used pid function to get PID %i", u->nick.c_str(), getpid());
@@ -85,7 +85,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       owner_nick = newnick;
     delete Host;
   }
-  if (cmd == "quit"){ //quits the bot.
+  if (cmd.equals_ci("quit")){ //quits the bot.
     Flux::string pass = params.size() == 2 ? params[1] : "";
     if(pass.empty()){
      source.Reply("Syntax: \2quit \37password\15");
@@ -101,7 +101,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       log(LOG_NORMAL, "%s attempted to change ownership of the bot", u->nick.c_str());
     }
   }
-  if(cmd == "rehash"){
+  if(cmd.equals_ci("rehash")){
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(u->nick == owner_nick || pass == password || pass == usrpass){
       source.Reply("Rehashing config file.");
@@ -112,7 +112,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       log(LOG_NORMAL, "%s attempted a rehash.", u->nick.c_str());
     }
   }
-  if(cmd == "chown"){
+  if(cmd.equals_ci("chown")){
     Flux::string pass = params.size() > 0 ? params[0] : "";
     if(pass == password || pass == usrpass){
       log(LOG_NORMAL, "Changing ownership from %s to %s", owner_nick.c_str(), u->nick.c_str());
@@ -132,10 +132,10 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     std::cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
     Send->notice(owner_nick, "The randomly generated password is: "+password);
   }
-  if(cmd == "!chanlist"){
+  if(cmd.equals_ci("!chanlist")){
     ListChans(source);
   }
-  if(cmd == "!userlist"){
+  if(cmd.equals_ci("!userlist")){
     ListUsers(source);
   }
   if(source.command == "004"){

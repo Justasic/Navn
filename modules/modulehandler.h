@@ -41,7 +41,7 @@ public:
 
     bool request = false;
     Flux::string confPass;
-    if (cmd == "modflip")
+    if (cmd.equals_ci("modflip"))
     {
       Flux::string mod;
       for(unsigned i=0; params.size() > i; ++i){
@@ -53,7 +53,7 @@ public:
       mod.trim();
       printf("MODFLIP: %s\n", mod.c_str());
       if(mod.empty()){
-	source.Reply("Syntax: \2modflip \37module\15");
+	source.Reply("Syntax: \2MODFLIP \37module\15");
 	return MOD_STOP;
       }
       for (int i = 0; i < (int)moduleList.size(); i++)
@@ -70,13 +70,13 @@ public:
       }
     }
     /**************************************************************************************************/
-    if(cmd == "modlist")
+    if(cmd.equals_ci("modlist"))
     {
       Flux::string lpriority = params.size() == 2 ? params[1]:"";
       if(lpriority.empty()){
 	goto listall;
       }
-      if(lpriority == "low" || lpriority == '1'){
+      if(lpriority.equals_ci("low") || lpriority == '1'){
 	source.Reply("Current Low Priority Module list:");
 	int count = 0;
 	for(int i = 0; i < (int)moduleList.size(); i++)
@@ -89,7 +89,7 @@ public:
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
 	log(LOG_NORMAL, "%s used \"modlist low\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      else if(lpriority == "deactivated"){
+      else if(lpriority.equals_ci("deactivated")){
       source.Reply("Current Deactivated Modules list:");
       int count = 0;
 	for(int i = 0; i < (int)moduleList.size(); i++)
@@ -102,7 +102,7 @@ public:
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
 	log(LOG_NORMAL, "%s used \"modlist low\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      else if(lpriority == "activated"){
+      else if(lpriority.equals_ci("activated")){
       source.Reply("Current Activated Modules list:");
       int count = 0;
 	for(int i = 0; i < (int)moduleList.size(); i++)
@@ -115,7 +115,7 @@ public:
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
 	log(LOG_NORMAL, "%s used \"modlist low\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      else if(lpriority == "normal" || lpriority == '2'){
+      else if(lpriority.equals_ci("normal") || lpriority == '2'){
 	source.Reply("Current Normal Priority Module list:");
 	int count = 0;
 	for(int i = 0; i < (int)moduleList.size(); i++)
@@ -128,7 +128,7 @@ public:
 	source.Reply("%i Module%s loaded.", count, count == 1 ? "" : "s");
 	log(LOG_NORMAL, "%s used \"modlist normal\" to show %i loaded module%.", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      else if(lpriority == "high" || lpriority == '3'){
+      else if(lpriority.equals_ci("high") || lpriority == '3'){
 	source.Reply("Current High Priority Module list:");
 	int count = 0;
 	for(int i = 0; i < (int)moduleList.size(); i++)
@@ -155,12 +155,12 @@ public:
       }
     }
     /***********************************************************************************************************/
-    if(cmd == "modunload"){
+    if(cmd.equals_ci("modunload")){
       Flux::string type = params.size() == 2 ? params[1]:"";
       if(type.empty()){
 	source.Reply("Syntax: \2modunload \37type\15");
       }
-      if(type == "all"){
+      if(type.equals_ci("all")){
 	source.Reply("Unloading all non-high priority modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)
@@ -170,7 +170,7 @@ public:
 	}
 	log(LOG_NORMAL, "%s used \"modunload all\" to unload all non-high priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      if(type == "low" || type == '1'){
+      if(type.equals_ci("low") || type == '1'){
 	source.Reply("Unloading all low priority modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)
@@ -180,7 +180,7 @@ public:
 	}
 	log(LOG_NORMAL, "%s used \"modunload low\" to unload all normal priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      if(type == "normal" || type == '2'){
+      if(type.equals_ci("normal") || type == '2'){
 	source.Reply("Unloading all normal priority modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)
@@ -190,7 +190,7 @@ public:
 	}
 	log(LOG_NORMAL, "%s used \"modunload normal\" to unload all normal priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      if((type == "high" || type == '3') && !request){
+      if((type.equals_ci("high") || type == '3') && !request){
 	request = true;
 	confPass = make_pass();
 	source.Reply("\0037WARNING\017: You are requesting an unload of all high priority modules. This cannot be reversed without a restart.");
@@ -198,7 +198,7 @@ public:
 	log(LOG_NORMAL, "%s requested that all high priority modules be unloaded.", u->nick.c_str());
       }
     }
-    if (cmd == "modconfirm")
+    if (cmd.equals_ci("modconfirm"))
     {
       Flux::string pass = params.size() == 2 ? params[1]:"";
       if(pass.empty() || !request){
@@ -217,13 +217,13 @@ public:
 	log(LOG_NORMAL, "Module's system frozen in current state until next restart, Module Handler disabled!");
     }
     /***********************************************************************************************************/
-    if(cmd == "modload"){
+    if(cmd.equals_ci("modload")){
       Flux::string gpriority = params.size() == 2 ? params[1]:"";
       if(gpriority.empty()){
 	source.Reply("Syntax: \2modload \37priority");
 	return MOD_STOP;
       }
-      if(gpriority == "all"){
+      if(gpriority.equals_ci("all")){
 	source.Reply("Loading all non-high priority modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)
@@ -233,7 +233,7 @@ public:
 	}
 	log(LOG_NORMAL, "%s used \"modload all\" to load all modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      if(gpriority == '1' || gpriority == "low"){
+      if(gpriority == '1' || gpriority.equals_ci("low")){
 	source.Reply("loading all low priority modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)
@@ -243,7 +243,7 @@ public:
 	}
 	log(LOG_NORMAL, "%s used \"modload low\" to load all low priority modules (%i Module%s)", u->nick.c_str(), count, count == 1 ? "" : "s");
       }
-      if(gpriority == '2' || gpriority == "normal"){
+      if(gpriority == '2' || gpriority.equals_ci("normal")){
 	source.Reply("loading all priority 2 modules.");
 	int count = 0;
 	for (int i = 0; i < (int)moduleList.size(); i++)

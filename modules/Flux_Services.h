@@ -37,7 +37,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];
   User *u = source.u;
   Channel *c = source.c;
-	if(cmd == "!part"){ 
+	if(cmd.equals_ci("!part")){ 
 		if(u->nick == owner_nick){
 		  Flux::string pchannel = params.size() == 2?params[1]:"";
 		  if(pchannel.empty()){
@@ -62,7 +62,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 			source.Reply(ACCESS_DENIED);
 		}
 	}
-	if(cmd == "!botadd"){
+	if(cmd.equals_ci("!botadd")){
 		if(u->nick == owner_nick){
 		  if(params.size() < 5){
 		    source.Reply("Syntax: \2!botadd \37nick\37 \37user\37 \37host\37 \37real\37");
@@ -78,7 +78,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		source.Reply(ACCESS_DENIED);
 		}
 	}
-	if(irc_string::said(source.message, "slaps")){
+	if(irc_string::said(source.message, ci::string("slaps"))){
 	 c->SendMessage("\0036Oh \0034Hell \0039No...");
 	 int num = randint(1,6); //make a random number from 1 to 6 (increase 6 to how ever many switch statements below) so messages are random
 	 switch(num){
@@ -104,7 +104,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 	 idiots++; //add +1 to the already big number of idiots in the list
 	 c->SendMessage("\2\0034,1Total \0039morons \0033slapped \0038back \00310: %i", idiots); //tell the channel how many idiots where slapped.
 	}
-	if(cmd == "!magicbox"){
+	if(cmd.equals_ci("!magicbox")){
 	 int num = randint(1,20);
 	 Flux::string object;
 	  switch(num){ //FIXME: This switch statement will become rather large.. perhapse rewriting it to read from a wordlist?

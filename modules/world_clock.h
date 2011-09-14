@@ -31,12 +31,14 @@
 
 class world_clock:public module{
 public:
-  world_clock(bool a):module("World Clock", a, PRIORITY_DONTCARE){ this->SetDesc("Shows time for your area or for the preset ones"); }
+  world_clock(bool a):module("World Clock", a, PRIORITY_DONTCARE){ 
+    this->SetDesc("Shows time for your area or for the preset ones"); 
+  }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];
   User *u = source.u;
   Channel *c = source.c;
-  if (cmd == "!time"){
+  if (cmd.equals_ci("!time")){
     Flux::string location;
     if(params.size() > 2)
       location = params[params.size() -1];

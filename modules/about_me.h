@@ -47,7 +47,7 @@ public:
 	source.Reply("Fullhost: %s", u->fullhost.c_str());
 	log(LOG_NORMAL, "%s requested information about themself.", u->nick.c_str());
   }
-  if(cmd == "!decodehost"){
+  if(cmd.equals_ci("!decodehost")){
     if(params.size() != 2){
      source.Reply("Syntax: \2!decodehost \37hostname\15"); 
      return MOD_STOP;
