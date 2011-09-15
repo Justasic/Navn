@@ -40,7 +40,7 @@ public:
       if(uname(&uts) < 0)
 	      throw CoreException("uname() Error");
 
-      source.Reply("\001VERSION Navn-%s %s %s\001",VERSION.c_str(), uts.sysname, uts.machine);
+      source.Reply("\001VERSION Navn-%s %s %s\001",VERSION, uts.sysname, uts.machine);
       //log(LOG_NORMAL, "Recieved CTCP VERSION from %s", u->nick.c_str());
     }
     if(cmd == "\001TIME\001"){ // for CTCP TIME reply

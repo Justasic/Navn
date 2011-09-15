@@ -1,0 +1,31 @@
+CC=c++
+PERL=./run-cc.pl
+IDIR=include/
+CFLAGS=-Wall -ansi -pipe -Wshadow -pedantic -g -I$(IDIR) -Iinireader/ -I.
+LIBS=-lpthread
+EXECUTABLE=navn
+
+all:
+	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
+	@echo "This is probably the lamest make file i have ever seen -Justasic"
+	@echo " "
+	@$(PERL) $(CC) $(CFLAGS) -c main.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c misc.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c module.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c Socket.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c Sepstream.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c privmsg.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c command.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c channel.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c thread.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c timers.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c user.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c inireader/INIReader.cpp
+	@$(PERL) $(CC) $(CFLAGS) -c inireader/ini.c
+	@$(PERL) $(CC) $(CFLAGS) -o $(EXECUTABLE) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o ini.o $(LIBS)
+	@echo " "
+	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
+
+.PHONY : clean
+clean:
+	rm -f *.o $(EXECUTABLE) config.h

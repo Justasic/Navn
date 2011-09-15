@@ -18,12 +18,8 @@ const Flux::string password = make_pass();
 /**********************Version Variables*************************/
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 #define ACCESS_DENIED "Access is Denied."
-#define VERSION_MAJOR "2"
-#define VERSION_MINOR "0"
-#define VERSION_PATCH "1"
 #define VERSION_EXTRA "-with-netflix-and-chicken"
-const Flux::string VERSION_SHORT = Flux::stringify(VERSION_MAJOR)+"."+Flux::stringify(VERSION_MINOR)+"."+Flux::stringify(VERSION_PATCH);
-const Flux::string VERSION = Flux::stringify(VERSION_MAJOR)+"."+Flux::stringify(VERSION_MINOR)+"."+Flux::stringify(VERSION_PATCH)+Flux::stringify(VERSION_EXTRA);
+const Flux::string VERSION_LONG = Flux::stringify(VERSION)+Flux::stringify(VERSION_EXTRA);
 /******************Configuration variables***********************/
 Flux::string logfile, nsacc, nspass, owner_nick, realname, usrname, nick, channel, port, server, LogChannel, pid_file, usrpass, ouser, opass;
 /**Rehash void
@@ -35,7 +31,7 @@ logfile = config.Get("Log","Log_File","navn.log");
 nsacc = config.Get("Bot","NickServ_Account","");
 nspass = config.Get("Bot","NickServ_Password","");
 owner_nick = config.Get("Bot","Owner","Derp");
-realname = config.Get("Connect","Realname","The Navn Bot "+VERSION_SHORT.tostd());
+realname = config.Get("Connect","Realname",Flux::string("The Navn Bot "+Flux::stringify(VERSION)).c_str());
 usrname = config.Get("Connect","Ident","Navn");
 nick = config.Get("Bot","Nick","Navn");
 channel = config.Get("Bot","Channel","#Test");

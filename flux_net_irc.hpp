@@ -485,7 +485,7 @@ void startup(int argc, char** argv) {
          log(LOG_DEBUG, "Navn is started With No Forking enabled. (%s)", arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
-	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION.c_str());
+	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION);
 	  Flux::string dir = argv[0];
 	  Flux::string::size_type n = dir.rfind('/');
 	  dir = "." + dir.substr(n);
@@ -497,7 +497,7 @@ void startup(int argc, char** argv) {
 	  exit(0);
        }
        else if (arg == "--version" || arg == "-v"){
-         log(LOG_TERMINAL, "\033[22;37mNavn IRC C++ Bot Version %s",VERSION.c_str());
+         log(LOG_TERMINAL, "\033[22;37mNavn IRC C++ Bot Version %s",VERSION_LONG.c_str());
          log(LOG_TERMINAL, "This bot was programmed from scratch by Justasic and Lordofsraam.");
          log(LOG_TERMINAL, "\n");
          log(LOG_TERMINAL, "IRC: IRC.Flux-Net.net #Computers");
@@ -527,7 +527,7 @@ void startup(int argc, char** argv) {
 	if((i = fork()) < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		log(LOG_TERMINAL, "Navn IRC Bot v%s Started.", VERSION_SHORT.c_str());
+		log(LOG_TERMINAL, "Navn IRC Bot v%s Started.", VERSION);
 		log(LOG_TERMINAL, "Forking to background. PID: %i\033[22;37m", i);
 		exit(0);
 	}

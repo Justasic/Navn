@@ -97,7 +97,8 @@ bool SocketIO::connect()
 }
 
 std::queue<Flux::string> recv_queue;
-int receive(int sockn){
+int receive(int sockn)
+{
   char tbuf[NET_BUFSIZE + 1] = "";
   memset(tbuf, 0, NET_BUFSIZE + 1);
   size_t i = read(sockn, tbuf, NET_BUFSIZE);
@@ -105,14 +106,16 @@ int receive(int sockn){
     return i;
   sepstream sep(tbuf, '\n');
   Flux::string buf;
-  while(sep.GetToken(buf)){
+  while(sep.GetToken(buf))
+  {
     buf.trim();
     recv_queue.push(buf);
     //printf("buf: --> %s\n", Flux::Sanitize(buf).c_str());
   }
   return i; 
 }
-const int SocketIO::recv() const{
+const int SocketIO::recv() const
+{
   timeval timeout;
   timeout.tv_sec = 5;
   timeout.tv_usec = 0; //this timeout keeps the bot from being a CPU hog for no reason :)
@@ -125,31 +128,39 @@ const int SocketIO::recv() const{
     log(LOG_DEBUG, "Select() error: %s", strerror(errno));
     return errno;
   }
-  if(FD_ISSET(sockn, &read) && sres){
-      if(receive(sockn) == -1){
+  if(FD_ISSET(sockn, &read) && sres)
+  {
+      if(receive(sockn) == -1)
+      {
 	//printf("Socket error: %s\n", strerror(errno));
 	log(LOG_RAWIO, "Socket Error: %s", strerror(errno));
 	return errno;
-      }else{
+      }else
+      {
 	return receive(sockn);
       }
   }
   return sres;
 }
-std::queue<Flux::string> SocketIO::GetBuffer(){
+std::queue<Flux::string> SocketIO::GetBuffer()
+{
   this->recv();
   return recv_queue;
 }
-void SocketIO::popqueue(){
+void SocketIO::popqueue()
+{
  recv_queue.pop(); 
 }
-const int SocketIO::send(const Flux::string &buf) const{
- //printf("<-- %s\n", Flux::Sanitize(buf).c_str());
- log(LOG_DEBUG, "%s\n", Flux::Sanitize(buf).c_str());
+const int SocketIO::send(const Flux::string &buf) const
+{
+ log(LOG_RAWIO, "Sent: %s\n", Flux::Sanitize(buf).c_str());
+ if(!protocoldebug)
+  log(LOG_DEBUG, "%s\n", Flux::Sanitize(buf).c_str());
  int i = write(sockn, buf.c_str(), buf.size());
  return i;
 }
-void send_cmd(const char *fmt, ...){
+void send_cmd(const char *fmt, ...)
+{
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);

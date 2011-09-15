@@ -115,7 +115,7 @@ int main (int argcx, char** argvx, char *envp[])
     /**       MODULES          */
     /*! \endcode */ 
     Flux::string rply;
-    while (!quitting){
+    while(!quitting){
       if(protocoldebug)
         log(LOG_RAWIO, "Top of main loop\n");
       
@@ -142,7 +142,7 @@ int main (int argcx, char** argvx, char *envp[])
   catch(CoreException& e){
     //std::cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log(LOG_NORMAL, "Core Exception Caught: ", Flux::stringify(e.GetReason()).c_str());
-    log(LOG_TERMINAL, "\033[22;37m");
+    log(LOG_TERMINAL, "\033[22;37m"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     exit(1);
   }
   return EXIT_SUCCESS;

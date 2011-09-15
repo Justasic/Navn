@@ -221,7 +221,8 @@ void process(const Flux::string &buffer){
     command = bufferseparator_token;
   std::vector<Flux::string> params;
   
-  while(bufferseparator.GetToken(bufferseparator_token)){
+  while(bufferseparator.GetToken(bufferseparator_token))
+  {
     if(bufferseparator_token[0] == ':'){
       if(!bufferseparator.StreamEnd())
 	params.push_back(bufferseparator_token.substr(1)+" "+bufferseparator.GetRemaining());
@@ -232,8 +233,9 @@ void process(const Flux::string &buffer){
     else
       params.push_back(bufferseparator_token);
   }
-  log(LOG_RAWIO, "%s\n", Flux::Sanitize(buffer).c_str());
-  if(protocoldebug){
+  log(LOG_RAWIO, "Received: %s\n", Flux::Sanitize(buffer).c_str());
+  if(protocoldebug)
+  {
    printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
    printf("%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
    if(params.empty())
@@ -246,7 +248,8 @@ void process(const Flux::string &buffer){
   const Flux::string &receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
   
-  if(command == "PRIVMSG"){
+  if(command == "PRIVMSG")
+  {
    if(!protocoldebug){
       if(!receiver.empty() && !params[1].empty())
        log(LOG_TERMINAL, "<%s-%s> %s\n", isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
@@ -292,9 +295,6 @@ void process(const Flux::string &buffer){
        delete u; //we delete the user because the above if statement makes a new one for the nick change
      }
    }
-  }
-  if (command == "PING"){
-      Send->raw("PONG :%s", params[0].c_str());
   }
   if(command == "JOIN"){
     if(!u){

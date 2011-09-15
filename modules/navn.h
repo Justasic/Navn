@@ -65,6 +65,18 @@ public:
     source.Reply("Navn git: git://gitorious.org/navn/navn.git");
     log(LOG_NORMAL, "%s requested Git repository link.", u->nick.c_str());
   }
+  if(cmd == "!finduser"){
+    Flux::string username = params.size() == 2?params[1]:"";
+    if(username.empty()){
+      source.Reply("Syntax: \2!finduser \37user\15");
+      return MOD_STOP;
+    }
+    User *u2 = finduser(username);
+    if(!u2)
+      source.Reply("User \2%s\2 does not exist.", username.c_str());
+    else
+      source.Reply("User: %s", u2->nick.c_str());
+  }
   if(cmd.equals_ci("kick")){
     if(u->nick == owner_nick){
       if(params.size() > 3 || params.size() < 3){
