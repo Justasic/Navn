@@ -8,6 +8,7 @@ EXECUTABLE=navn
 all:
 	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
 	@echo "This is probably the lamest make file i have ever seen -Justasic"
+	@echo " "
 	@$(PERL) $(CC) $(CFLAGS) -c main.cpp
 	@$(PERL) $(CC) $(CFLAGS) -c misc.cpp
 	@$(PERL) $(CC) $(CFLAGS) -c module.cpp
@@ -22,7 +23,7 @@ all:
 	@$(PERL) $(CC) $(CFLAGS) -c inireader/INIReader.cpp
 	@$(PERL) $(CC) $(CFLAGS) -c inireader/ini.c
 	@$(PERL) $(CC) $(CFLAGS) -o $(EXECUTABLE) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o ini.o $(LIBS)
-
+	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 
 .PHONY : clean
