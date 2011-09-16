@@ -9,39 +9,33 @@ public:
   { 
     this->SetDesc("Encyclopedia module."); 
   }
-  
-  /*Flux::string brain(const Flux::string &query)
-  {
-    std::string result, to_search = "python brain.py "+query.tostd();
-    system(to_search.c_str());
-    std::string line;
-    std::ifstream myfile("dump.txt");
-    if (myfile.is_open())
-    {
-      while(myfile.good())
-      {
-	std::getline(myfile,line);
-	result += line;
-      }
-      myfile.close();
-      system("rm dump.txt");
-      return result;
-    }
-    return result;
-  }*/
-  
-  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
-  {
-    Flux::string cmd = params.empty()?"":params[0];
     
-    if(cmd.equals_ci("!encyclopedia"))
-    {
-      Flux::string query = params.size() == 2?params[1]:"", str = "python brain.py "+query, request = execute(str.c_str());
-     source.Reply(request);
-     log(LOG_NORMAL, "%s used !encyclopedia to lookup \"%s\"", source.u->nick.c_str(), query.c_str());
-    }
-    
-    return MOD_RUN; 
-  }
+  
+	ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
+	{
+
+		Flux::string sn = "SEND_NOTHING";
+
+		Flux::string cmd = params.empty()?"":params[0];
+
+		if (source.c)
+		{
+			Flux::string str = "python brain.py "+source.message;
+			std::cout << "STR: " << str << std::endl;
+			Flux::string information = execute(str.c_str());
+			information.trim();
+			if (information != sn)
+			{
+				source.Reply(information);
+			}
+			else
+			{
+				std::cout << "Info: " << information << std::endl;
+				source.Reply("Sorry, %s, but I couldnt find anything.", source.u->nick.c_str());
+			}
+		}
+
+		return MOD_RUN; 
+	}
 };
 #endif
