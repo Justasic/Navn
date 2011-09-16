@@ -54,6 +54,7 @@ Added encyclopedia.h witch adds the command !encyclopedia
 Fixed socket engine using select as a timer instead of a multiplexer
 Added User::IsOwner boolean
 Added new logging function
+Added a new compile system (GNU make) so navn can compile files correctly
 
 Navn 2.0.0
 ==========
