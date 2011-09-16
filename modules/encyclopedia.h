@@ -21,7 +21,8 @@ public:
 		if (source.c)
 		{
 			Flux::string str = "python brain.py "+source.message;
-			std::cout << "STR: " << str << std::endl;
+			str = str.replace_all_cs("&","");
+			str = str.replace_all_cs("|","");
 			Flux::string information = execute(str.c_str());
 			information.trim();
 			if (information != sn)
@@ -30,8 +31,6 @@ public:
 			}
 			else
 			{
-				std::cout << "Info: " << information << std::endl;
-				source.Reply("Sorry, %s, but I couldnt find anything.", source.u->nick.c_str());
 			}
 		}
 
