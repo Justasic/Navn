@@ -21,6 +21,8 @@
 #include <list>
 #include <arpa/nameser.h>
 #include <resolv.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #include <pthread.h>
 #include <sstream>
 #include <csignal>

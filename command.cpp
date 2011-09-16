@@ -4,8 +4,7 @@
  *\file  command.cpp 
  *\brief Contains the command class.
  */
-Commands::Commands(SocketIO *tmpsock){
-  this->s = tmpsock;
+Commands::Commands(){
 }
 /**
  * \fn void command::raw(const char *fmt, ...)
@@ -16,7 +15,7 @@ void Commands::raw(const char *fmt, ...){
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->s->send(buffer);
+  send_cmd(buffer);
   va_end(args);
 }
 /**
@@ -180,15 +179,14 @@ void Commands::mode(const Flux::string &dest, const Flux::string &chanmode){
   this->raw("MODE %s %s\n", dest.c_str(), chanmode.c_str()); 
 }
 /***************************************************************************************/
-Oper::Oper(SocketIO *tmpsock){
-  this->s = tmpsock;
+Oper::Oper(){
 }
 void Oper::raw(const char *fmt, ...){
   char buffer[4096] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->s->send(buffer);
+  send_cmd(buffer);
   va_end(args);
 }
 void Oper::samode(const Flux::string &target, const Flux::string &mode){

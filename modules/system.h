@@ -146,7 +146,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     if(!ouser.empty() || !opass.empty()){
       Send->command->oper(ouser, opass);
       IsOper = true;
-      Send->o = new Oper(sock);
+      Send->o = new Oper();
     }
     if(!nsacc.empty() || !nspass.empty()){
       Send->privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());

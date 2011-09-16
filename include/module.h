@@ -16,7 +16,6 @@ enum ModulePriority{
   PRIORITY_DONTCARE,
   PRIORITY_LAST
 };
-
 class module{ 
   Flux::string desc;
 protected:
@@ -40,6 +39,7 @@ class ModuleHandler
 {
 public:
   static std::vector<module *> EventHandlers[I_END];
+  bool LoadModule(const Flux::string&);
   
   static bool Attach(Implementation i, module *mod);
   static bool Detach(Implementation i, module *mod);

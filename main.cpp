@@ -67,7 +67,7 @@ int main (int argcx, char** argvx, char *envp[])
 	throw SocketException("Could not resolve server");
       if(!sock->connect())
 	throw SocketException("Could not create a socket to connect to the IRC server");
-      Send = new SendMessage(sock);
+      Send = new SendMessage();
     }catch(SocketException &e){
       //std::cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
       log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());

@@ -10,8 +10,7 @@
 class Commands
 {
 public:
-  SocketIO *s;
-  Commands(SocketIO *sock);
+  Commands();
   void raw(const char *fmt, ...);
   void quit(const char *fmt, ...);
   void kick(const Flux::string&, const Flux::string&, const char *fmt, ...);
@@ -35,8 +34,7 @@ public:
 class Oper
 {
 public:
-  SocketIO *s;
-  Oper(SocketIO *sock);
+  Oper();
   void raw(const char *fmt, ...);
   void samode(const Flux::string&, const Flux::string&);
   void samode(const Flux::string&, const Flux::string&, const Flux::string&);

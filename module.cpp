@@ -78,7 +78,7 @@ Command *FindCommand(const Flux::string &name){
 }
 /** 
  * \fn module *FindModule(const Flux::string &name)
- * \brief Find a module in the module vector
+ * \brief Find a module in the module list
  * \param name A string containing the module name you're looking for
  */
 module *FindModule(const Flux::string &name){
@@ -104,6 +104,59 @@ bool ModuleHandler::Attach(Implementation i, module *mod){
   EventHandlers[i].push_back(mod);
   return true;
 }
+
+static bool moduleCopyFile(const Flux::string &name, Flux::string &output)
+{
+	Flux::string input = binary_dir + "/modules/" + name + ".so";
+	
+	struct stat s;
+	if (stat(input.c_str(), &s) == -1)
+		return false;
+	else if (!S_ISREG(s.st_mode))
+		return false;
+	
+	std::ifstream source(input.c_str(), std::ios_base::in | std::ios_base::binary);
+	if (!source.is_open())
+		return false;
+	
+	char *tmp_output = strdup(output.c_str());
+	int target_fd = mkstemp(tmp_output);
+	if (target_fd == -1 || close(target_fd) == -1)
+	{
+		free(tmp_output);
+		source.close();
+		return false;
+	}
+	output = tmp_output;
+	free(tmp_output);
+
+	log(LOG_DEBUG, "Runtime module location: %s", output.c_str());
+	
+	std::ofstream target(output.c_str(), std::ios_base::in | std::ios_base::binary);
+	if (!target.is_open())
+	{
+		source.close();
+		return false;
+	}
+
+	int want = s.st_size;
+	char *buffer = new char[s.st_size];
+	while (want > 0 && !source.fail() && !target.fail())
+	{
+		source.read(buffer, want);
+		int read_len = source.gcount();
+
+		target.write(buffer, read_len);
+		want -= read_len;
+	}
+	delete [] buffer;
+	
+	source.close();
+	target.close();
+
+	return !source.fail() && !target.fail() ? true : false;
+}
+
 /** 
  * \fn bool ModuleHandler::Detach(Implementation i, module *mod)
  * \brief Unhook for the module hook ModuleHandler::Attach()
@@ -117,4 +170,11 @@ bool ModuleHandler::Detach(Implementation i, module *mod){
     return false;
   EventHandlers[i].erase(x);
   return true;
+}
+bool ModuleHandler::LoadModule(const Flux::string &modname)
+{
+  if(modname.empty())
+    return true; /*this is a null function to make the compiler be quiet */
+    return false;
+
 }
