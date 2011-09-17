@@ -139,7 +139,7 @@ int main (int argcx, char** argvx, char *envp[])
     delete sock;
     std::cout << "\033[22;37m" << nl;
   }//try ends here
-  catch(CoreException& e){
+  catch(const CoreException& e){
     //std::cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log(LOG_NORMAL, "Core Exception Caught: ", Flux::stringify(e.GetReason()).c_str());
     log(LOG_TERMINAL, "\033[22;37m"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */

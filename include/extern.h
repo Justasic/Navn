@@ -15,6 +15,7 @@ class Thread;
 class module;
 class SendMessage;
 class ModuleHandler;
+class INIReader;
 struct CommandSource;
 
 /* Enumorations */
@@ -35,6 +36,7 @@ Command *FindCommand(const Flux::string &name);
 /* extern's */
 extern SocketIO *sock;
 extern SendMessage *Send;
+extern INIReader *config;
 extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);

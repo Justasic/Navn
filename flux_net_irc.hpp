@@ -6,6 +6,7 @@
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 SendMessage *Send;
 SocketIO *sock;
+INIReader *config;
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
@@ -366,14 +367,18 @@ static void Rehash(bool onstart = false){
     std::cout << "Rehashing config file." << nl;
   try{
     Flux::string conffile = binary_dir + "/bot.conf";
-    INIReader config(conffile.c_str());
-    if (config.ParseError() < 0) {
+    if(config){
+      INIReader *configtmp = config;
+      config = new INIReader(conffile.c_str());
+      delete configtmp;
+    }
+    config = new INIReader(conffile.c_str());
+    if (config->ParseError() < 0) {
       Flux::string error = "Cannot load bot.conf: ";
-      error += Flux::stringify(config.ParseError());
-      ReadConfig(config);
+      error += Flux::stringify(config->ParseError());
 	throw ConfigException(error);
     }
-    ReadConfig(config);
+    ReadConfig();
   }catch(ConfigException &ex){
       std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
       log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());

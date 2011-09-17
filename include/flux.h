@@ -407,7 +407,7 @@ namespace Flux{
 	}
 	return (*this);
     }
-    inline string strip(const char _str)
+    inline string strip(const char &_str)
     {
 	char c = (*this)[(*this).size() - 1];
 	while ((c = _str)){
@@ -426,7 +426,7 @@ namespace Flux{
       }
       (*this) == newbuf;
     }
-    inline void stripc(const char _chr)
+    inline void stripc(const char &_chr)
     {
       Flux::string &newbuf = *this;
      char c = newbuf[newbuf.size() - 1];
