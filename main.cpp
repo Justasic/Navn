@@ -116,7 +116,7 @@ int main (int argcx, char** argvx, char *envp[])
     Flux::string rply;
     while(!quitting){
       if(protocoldebug)
-        log(LOG_RAWIO, "Top of main loop\n");
+        log(LOG_RAWIO, "Top of main loop");
       
       /* Process the buffer and modules */
       std::queue<Flux::string> queue = sock->GetBuffer();

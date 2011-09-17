@@ -149,6 +149,12 @@ void log(LogType type, const char *fmt, ...){
   va_end(args);
   log.close();
 }
+/** 
+ * \fn Flux::string TempFile(const Flux::string &file)
+ * \brief Creates a temporary file name for use in navn, can be quite useful.
+ * \param Flux::string The Flux::string of the file location/name
+ * NOTE: THIS _MUST_ HAVE 6 X's (XXXXXX) to work properly.
+ */
 Flux::string TempFile(const Flux::string &file){
 char *tmp_output = strdup(file.c_str());
 int target_fd = mkstemp(tmp_output);

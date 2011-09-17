@@ -1,8 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef DERP_H
 #define DERP_H
-#include <module.h>
-#include <defs.h>
+#include "module.h"
+#include "defs.h"
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 SendMessage *Send;
 SocketIO *sock;
@@ -369,10 +369,10 @@ static void Rehash(bool onstart = false){
     Flux::string conffile = binary_dir + "/bot.conf";
     if(config){
       INIReader *configtmp = config;
-      config = new INIReader(conffile.c_str());
+      config = new INIReader(conffile);
       delete configtmp;
     }
-    config = new INIReader(conffile.c_str());
+    config = new INIReader(conffile);
     if (config->ParseError() < 0) {
       Flux::string error = "Cannot load bot.conf: ";
       error += Flux::stringify(config->ParseError());
