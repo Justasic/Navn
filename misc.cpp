@@ -149,6 +149,18 @@ void log(LogType type, const char *fmt, ...){
   va_end(args);
   log.close();
 }
+Flux::string TempFile(const Flux::string &file){
+char *tmp_output = strdup(file.c_str());
+int target_fd = mkstemp(tmp_output);
+if (target_fd == -1 || close(target_fd) == -1)
+{
+	free(tmp_output);
+	return "";
+}
+Flux::string filestring = tmp_output;
+free(tmp_output);
+return filestring;
+}
 /** 
  * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
  * \brief creates a vector that breaks down a string word-by-word using the delim as the seperater

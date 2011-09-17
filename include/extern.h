@@ -40,6 +40,7 @@ extern INIReader *config;
 extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);
+extern Flux::string TempFile(const Flux::string&);
 extern Flux::string make_pass();
 extern int randint(int x, int y);
 extern bool IsValidChannel(const Flux::string&);

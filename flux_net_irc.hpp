@@ -364,7 +364,7 @@ void restart(Flux::string reason){
  */
 static void Rehash(bool onstart = false){
   if(!onstart)
-    std::cout << "Rehashing config file." << nl;
+    log(LOG_NORMAL, "Rehashing Config File: bot.conf");
   try{
     Flux::string conffile = binary_dir + "/bot.conf";
     if(config){
@@ -379,7 +379,7 @@ static void Rehash(bool onstart = false){
 	throw ConfigException(error);
     }
     ReadConfig();
-  }catch(ConfigException &ex){
+  }catch(const ConfigException &ex){
       std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
       log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
       if(!onstart)
@@ -436,7 +436,6 @@ void sigact(int sig)
       sigstr = siginit(randint(1,20));
       quitmsg = "Recieved Signal: "+sigstr;
       Send->command->quit(quitmsg);
-      std::cout << "\r\n\033[0m";
       quitting = true;
       break;
     default:

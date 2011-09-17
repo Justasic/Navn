@@ -42,7 +42,7 @@ usrpass = config->Get("Bot","Password","Navn");
 ouser = config->Get("Oper","Oper_Username","");
 opass = config->Get("Oper","Oper_Password","");
 LogChannel = config->Get("Modules", "LogChannel","");
-std::cout << "\033[22;31mReading Config File\033[22;30m...\033[22;36m" << std::endl;
+log(LOG_TERMINAL, "\033[22;31mReading Config File\033[22;30m...\033[22;36m");
 }
 /******************End Configuration variables********************/
 #endif

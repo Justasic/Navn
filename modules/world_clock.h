@@ -64,25 +64,24 @@ public:
       log(LOG_NORMAL, "%s requested !time command in %s", u->nick.c_str(), c->name.c_str());
       return MOD_RUN;
     }else{
-      Flux::string wget, filename;
-      filename = "temp.xml";
+      Flux::string wget, tmpfile = TempFile("/tmp/navn_xml.tmp.XXXXXX");
       	if(location.is_number_only())
-	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+location;
+	  wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+location;
 	else
-	  wget = "wget -q -O "+filename+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!time", source.raw));
+	  wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!time", source.raw));
 	system(wget.c_str());
-	if(!irc_string::said(xmlToString(filename),"problem_cause")){
-	  Flux::string ff = xmlToString(filename);
+	if(!irc_string::said(xmlToString(tmpfile),"problem_cause")){
+	  Flux::string ff = xmlToString(tmpfile);
 	  ff.trim();
 	  if(ff.empty()){
-	   c->SendMessage("Could not download/read %s", filename.c_str());
-	   log(LOG_NORMAL, "%s attempted to use !time but downloading/reading the file '%s' failed.", filename.c_str());
+	   c->SendMessage("Could not download/read %s", tmpfile.c_str());
+	   log(LOG_NORMAL, "%s attempted to use !time but downloading/reading the file '%s' failed.", tmpfile.c_str());
 	   return MOD_STOP;
 	  }
 	  Flux::string loc = findInXML("city","data",ff);
 	  Flux::string time = findInXML("current_date_time","data",ff);
 	  c->SendMessage("The current time in %s is %s", loc.c_str(), time.c_str());
-	  remove(filename.c_str());
+	  remove(tmpfile.c_str());
 	  log(LOG_NORMAL, "%s used !time to get time for %s", u->nick.c_str(), location.c_str());
 	  }
 	}

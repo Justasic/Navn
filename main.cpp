@@ -59,7 +59,7 @@ int main (int argcx, char** argvx, char *envp[])
     startup(argcx, argvx);
     SocketStart:
     try{
-      std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;37m" << nl;
+      log(LOG_NORMAL, "Started with PID %i", getpid());
       //Make the socket used to connect to the server
       sock = new SocketIO(server, port);
 	  //Incase there is no connection
@@ -69,7 +69,6 @@ int main (int argcx, char** argvx, char *envp[])
 	throw SocketException("Could not create a socket to connect to the IRC server");
       Send = new SendMessage();
     }catch(SocketException &e){
-      //std::cout << "\r\nSocket Exception was caught: \033[22;31m" << e.description() << "\033[22;37m" << nl;
       log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());
       log(LOG_TERMINAL, "\033[22;37m");
       goto SocketStart;
@@ -137,10 +136,9 @@ int main (int argcx, char** argvx, char *envp[])
     }//while loop ends here
     delete Send;
     delete sock;
-    std::cout << "\033[22;37m" << nl;
+    log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){
-    //std::cout << "\r\nCore Exception was caught: \033[22;31m" << e.GetReason() << "\033[22;37m" << nl;
     log(LOG_NORMAL, "Core Exception Caught: ", Flux::stringify(e.GetReason()).c_str());
     log(LOG_TERMINAL, "\033[22;37m"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     exit(1);
