@@ -186,7 +186,7 @@ void Oper::raw(const char *fmt, ...){
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
-  send_cmd(buffer);
+  send_cmd(buffer+'\n');
   va_end(args);
 }
 void Oper::samode(const Flux::string &target, const Flux::string &mode){

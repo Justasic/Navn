@@ -28,9 +28,9 @@
  *\code
  */
 #include "modules/ping_pong.h"
+#include "modules/modulehandler.h"
 #include "modules/system.h"
 #include "modules/navn.h"
-#include "modules/modulehandler.h"
 #include "modules/weather.h"
 #include "modules/world_clock.h"
 #include "modules/searcher.h"
@@ -43,7 +43,7 @@
 #include "modules/da_goat.h"
 #include "modules/Flux_Services.h"
 #include "modules/encyclopedia.h"
-/*
+/*====
 #include "modules/tinyurl.h"
 
 */
@@ -93,9 +93,9 @@ int main (int argcx, char** argvx, char *envp[])
       * \code 
       */
     Ping_pong _Ping(true);
+    modulehandler _modulehandler(true);
     system_m _system_m(true);
     navn _navn(true);
-    modulehandler _modulehandler(true);
     weather _weather(true);
     world_clock _world_clock(true);
     searcher _searcher(true);

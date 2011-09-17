@@ -10,7 +10,7 @@ std::vector<module*> moduleList;
  * \param activated Wether the module is activated or not
  * \param priority The module priority
  */
-module::module(Flux::string n, bool a, ModulePriority p){
+module::module(const Flux::string &n, bool a, ModulePriority p){
   name = n;
   activated = a;
   priority = p;
@@ -104,20 +104,53 @@ bool ModuleHandler::Attach(Implementation i, module *mod){
   EventHandlers[i].push_back(mod);
   return true;
 }
-
-static bool moduleCopyFile(const Flux::string &name, Flux::string &output)
+enum ModErr{
+MOD_ERR_OK,
+MOD_ERR_MEMORY,
+MOD_ERR_PARAMS,
+MOD_ERR_EXISTS,
+MOD_ERR_NOEXIST,
+MOD_ERR_NOLOAD,
+MOD_ERR_UNKNOWN,
+MOD_ERR_FILE_IO,
+MOD_ERR_EXCEPTION
+};
+Flux::string DecodeModErr(ModErr err){
+ switch(err){
+   case MOD_ERR_OK:
+     return "No error (MOD_ERR_OK)";
+   case MOD_ERR_MEMORY:
+     return "Out of memory (MOD_ERR_MEMORY)";
+   case MOD_ERR_PARAMS:
+     return "Insufficient parameters (MOD_ERR_PARAMS)";
+   case MOD_ERR_EXISTS:
+     return "Module Exists (MOD_ERR_EXISTS)";
+   case MOD_ERR_NOEXIST:
+     return "Module does not exist (MOD_ERR_NOEXIST)";
+   case MOD_ERR_NOLOAD:
+     return "Module cannot be loaded (MOD_ERR_NOLOAD)";
+   case MOD_ERR_UNKNOWN:
+     return "Unknown error (MOD_ERR_UNKNOWN)";
+   case MOD_ERR_FILE_IO:
+     return "File I/O Error (MOD_ERR_FILE_IO)";
+   case MOD_ERR_EXCEPTION:
+     return "Module Exception caught (MOD_ERR_EXCEPTION)";
+   default:
+     return "Unknown error code";
+ }
+}
+static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 {
-	Flux::string input = binary_dir + "/modules/" + name + ".so";
+	Flux::string input = binary_dir + "/" + name + ".so";
 	
 	struct stat s;
 	if (stat(input.c_str(), &s) == -1)
-		return false;
+		return MOD_ERR_NOEXIST;
 	else if (!S_ISREG(s.st_mode))
-		return false;
-	
+		return MOD_ERR_NOEXIST;
 	std::ifstream source(input.c_str(), std::ios_base::in | std::ios_base::binary);
 	if (!source.is_open())
-		return false;
+		return MOD_ERR_NOEXIST;
 	
 	char *tmp_output = strdup(output.c_str());
 	int target_fd = mkstemp(tmp_output);
@@ -125,18 +158,18 @@ static bool moduleCopyFile(const Flux::string &name, Flux::string &output)
 	{
 		free(tmp_output);
 		source.close();
-		return false;
+		return MOD_ERR_FILE_IO;
 	}
 	output = tmp_output;
 	free(tmp_output);
 
-	log(LOG_DEBUG, "Runtime module location: %s", output.c_str());
+	log(LOG_RAWIO, "Runtime module location: %s", output.c_str());
 	
 	std::ofstream target(output.c_str(), std::ios_base::in | std::ios_base::binary);
 	if (!target.is_open())
 	{
 		source.close();
-		return false;
+		return MOD_ERR_FILE_IO;
 	}
 
 	int want = s.st_size;
@@ -154,9 +187,19 @@ static bool moduleCopyFile(const Flux::string &name, Flux::string &output)
 	source.close();
 	target.close();
 
-	return !source.fail() && !target.fail() ? true : false;
+	return !source.fail() && !target.fail() ? MOD_ERR_OK : MOD_ERR_FILE_IO;
 }
 
+template<class TYPE> TYPE function_cast(void *symbol)
+{
+    union
+    {
+        void *symbol;
+        TYPE function;
+    } cast;
+    cast.symbol = symbol;
+    return cast.function;
+}
 /** 
  * \fn bool ModuleHandler::Detach(Implementation i, module *mod)
  * \brief Unhook for the module hook ModuleHandler::Attach()
@@ -171,10 +214,54 @@ bool ModuleHandler::Detach(Implementation i, module *mod){
   EventHandlers[i].erase(x);
   return true;
 }
+
 bool ModuleHandler::LoadModule(const Flux::string &modname)
 {
   if(modname.empty())
-    return true; /*this is a null function to make the compiler be quiet */
     return false;
-
+  if(FindModule(modname))
+    return false;
+  log(LOG_NORMAL,"Attempting to load module [%s.so]", modname.c_str());
+  
+  Flux::string mdir = binary_dir + "/runtime/"+modname+".so.XXXXXX";
+  ModErr er = ModuleCopy(modname, mdir);
+  if(er != MOD_ERR_OK){
+    log(LOG_TERMINAL, "ModuleCopy() error: %s", DecodeModErr(er).c_str());
+    return false;
+  }
+  dlerror();
+  
+  void *handle = dlopen(mdir.c_str(), RTLD_LAZY);
+  const char *err = dlerror();
+  if(!handle && err && *err){
+   log(LOG_NORMAL, "[%s.so] %s", modname.c_str(), err);
+   remove(modname.c_str());
+   return false;
+  }
+  dlerror();
+  
+  module *(*func)(bool a) = function_cast<module *(*)(bool a)>(dlsym(handle, "ModInit"));
+  err = dlerror();
+  if(!func && err && *err){
+   log(LOG_NORMAL, "No module init function, moving on.");
+   dlclose(handle);
+   remove(modname.c_str());
+   return false;
+  }
+  if(!func)
+    throw CoreException("Can't find module constructor, yet no moderr?");
+  
+  module *m;
+  try
+  {
+    m = func(true); 
+  }
+  catch (const ModuleException &e)
+  {
+   log(LOG_NORMAL,"Error while loading %s: %s", modname.c_str(), e.GetReason());
+   return false;
+  }
+  m->filename = mdir;
+  m->handle = handle;
+  return true;
 }

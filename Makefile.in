@@ -35,9 +35,10 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	TODO install-sh missing
+	TODO depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -71,7 +72,7 @@ CCDEPMODE = @CCDEPMODE@
 CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -I$(srcdir)/include -I$(srcdir)/inireader/ -I$(srcdir)
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
+CXX = c++
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
@@ -91,7 +92,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
-LIBS = -lpthread
+LIBS = -lpthread -ldl
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -153,6 +154,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXECUTABLE = @PACKAGE@
 PERL = $(srcdir)/run-cc.pl
+MODFLAGS = -fPIC -g -ldl -lnsl -pthread -shared
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -473,7 +475,6 @@ uninstall-am:
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
 	pdf-am ps ps-am uninstall uninstall-am
 
-
 all: 
 	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
 	@echo "Navn Version @VERSION@-with-netflix-and-chicken"
@@ -492,6 +493,8 @@ all:
 	@$(PERL) $(CXX) $(CFLAGS) -c inireader/INIReader.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c inireader/ini.c
 	@$(PERL) $(CXX) $(CFLAGS) -o $(EXECUTABLE) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o ini.o $(LIBS)
+	@$(PERL) $(CXX) $(CFLAGS) -c testmod.cpp
+	@$(PERL) $(CXX) $(MODFLAGS) -o testmod.so testmod.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 

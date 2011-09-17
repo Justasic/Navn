@@ -2,6 +2,7 @@
 #ifndef MODULE_H
 #define MODULE_H
 #include <user.h>
+#include <includes.h>
 enum Implementation{
   I_BEGIN,
 	I_OnPrivmsg,
@@ -21,12 +22,13 @@ class module{
 protected:
   void SetDesc(const Flux::string&);
 public:
-  Flux::string name;
+  void *handle;
+  Flux::string name, filename;
   const Flux::string GetDesc() const;
   bool activated;
   ModulePriority priority;
   Flux::string author;
-  module (Flux::string , bool, ModulePriority);
+  module (const Flux::string&, bool, ModulePriority);
   int AddCommand(Command *c);
   int DelCommand(Command *c);
   
@@ -39,7 +41,7 @@ class ModuleHandler
 {
 public:
   static std::vector<module *> EventHandlers[I_END];
-  bool LoadModule(const Flux::string&);
+  static bool LoadModule(const Flux::string&);
   
   static bool Attach(Implementation i, module *mod);
   static bool Detach(Implementation i, module *mod);

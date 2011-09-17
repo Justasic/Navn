@@ -49,6 +49,16 @@ public:
     ModuleHandler::Attach(i, this);*/
   }
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+    Flux::string cmd = params.empty()?"":params[0];
+    
+    if(cmd.equals_ci("!loadmod")){
+      Flux::string cmds = params.size() == 2?params[1]:"";
+      if(cmds.empty())
+	return MOD_STOP;
+      if(!ModuleHandler::LoadModule(cmds))
+	source.Reply("Unable to load module \2%s\2\r", cmds.c_str());
+    }
+    
     if (source.command == "PING"){
       Send->raw("PONG :%s", source.params[0].c_str());
     } 

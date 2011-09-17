@@ -10,7 +10,7 @@ SocketIO *sock;
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
  */
-Flux::string getprogdir(const Flux::string dir){
+Flux::string getprogdir(const Flux::string &dir){
   char buffer[FILENAME_MAX];
   if (GetCurrentDir(buffer, sizeof(buffer))) {
     Flux::string remainder = dir;
@@ -338,7 +338,7 @@ static void remove_pidfile()
  * \brief Restart the bot process
  * \param reason The reason for the restart
  */
-static void restart(Flux::string reason){
+void restart(Flux::string reason){
   char CurrentPath[FILENAME_MAX];
   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
   if(reason.empty()){
@@ -359,17 +359,18 @@ static void restart(Flux::string reason){
 /** 
  * \fn static void Rehash(Socket &sock)
  * \brief Reload the bot config file
- * \param sock The Socket class
+ * \param boolean this boolean tells rehash if we are starting from start or not
  */
 static void Rehash(bool onstart = false){
   if(!onstart)
     std::cout << "Rehashing config file." << nl;
   try{
-    binary_dir += "/bot.conf";
-    INIReader config(binary_dir.c_str());
+    Flux::string conffile = binary_dir + "/bot.conf";
+    INIReader config(conffile.c_str());
     if (config.ParseError() < 0) {
       Flux::string error = "Cannot load bot.conf: ";
       error += Flux::stringify(config.ParseError());
+      ReadConfig(config);
 	throw ConfigException(error);
     }
     ReadConfig(config);
@@ -664,7 +665,7 @@ else \
 
 //const Flux::string &modname,
 #define MODULE_HOOK(x) \
-extern "C" module *ModInit(const bool activated) \
+extern "C" module *ModInit(bool activated) \
         { \
                 return new x(activated); \
         } \

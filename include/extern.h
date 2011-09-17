@@ -14,6 +14,7 @@ class Oper;
 class Thread;
 class module;
 class SendMessage;
+class ModuleHandler;
 struct CommandSource;
 
 /* Enumorations */
@@ -36,6 +37,7 @@ extern SocketIO *sock;
 extern SendMessage *Send;
 extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir;
 extern Flux::string strip(const Flux::string &buf);
+extern Flux::string getprogdir(const Flux::string&);
 extern Flux::string make_pass();
 extern int randint(int x, int y);
 extern bool IsValidChannel(const Flux::string&);
@@ -57,4 +59,6 @@ void process(const Flux::string&);
 void ProcessJoin(CommandSource&, const Flux::string&);
 void ProcessModules(CommandSource&, std::vector<Flux::string>&);
 
+/* char*'s */
+extern char **my_av, **my_envp;
 #endif
