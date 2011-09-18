@@ -30,14 +30,14 @@ void ReadConfig(){
 logfile = config->Get("Log","Log_File","navn.log");
 nsacc = config->Get("Bot","NickServ_Account","");
 nspass = config->Get("Bot","NickServ_Password","");
-owner_nick = config->Get("Bot","Owner","Derp");
+owner_nick = config->Get("Bot","Owner","");
 realname = config->Get("Connect","Realname",Flux::string("The Navn Bot "+Flux::stringify(VERSION)));
 usrname = config->Get("Connect","Ident","Navn");
 nick = config->Get("Bot","Nick","Navn");
+pid_file = config->Get("Bot","PID File","navn.pid");
 channel = config->Get("Bot","Channel","#Test");
 port = config->Get("Connect","Port","6667");
-server = config->Get("Connect", "Server", "irc.flux-net.net");
-pid_file = config->Get("Log","PID_File","navn.pid");
+server = config->Get("Connect", "Server", "");
 usrpass = config->Get("Bot","Password","Navn");
 ouser = config->Get("Oper","Oper_Username","");
 opass = config->Get("Oper","Oper_Password","");

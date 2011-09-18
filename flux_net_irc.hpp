@@ -373,17 +373,24 @@ static void Rehash(bool onstart = false){
       delete configtmp;
     }
     config = new INIReader(conffile);
-    if (config->ParseError() < 0) {
-      Flux::string error = "Cannot load bot.conf: ";
+    if(config->ParseError() == -1)
+      throw ConfigException("Cannot open file bot.conf");
+    if (config->ParseError() != 0) {
+      Flux::string error = "Error on line ";
       error += Flux::stringify(config->ParseError());
 	throw ConfigException(error);
     }
     ReadConfig();
   }catch(const ConfigException &ex){
-      std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
-      log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
-      if(!onstart)
-        Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
+    if(onstart){
+      Flux::string cfgerr = "Config: ";
+      cfgerr += ex.GetReason();
+      throw CoreException(cfgerr.c_str());
+    }
+    std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
+    log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
+    if(!onstart)
+      Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
   } 
 }
 /**Random Quit message selector

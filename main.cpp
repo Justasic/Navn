@@ -61,6 +61,8 @@ int main (int argcx, char** argvx, char *envp[])
     try{
       log(LOG_NORMAL, "Started with PID %i", getpid());
       //Make the socket used to connect to the server
+      if(server.empty())
+	throw CoreException("No Server Specified.");
       sock = new SocketIO(server, port);
 	  //Incase there is no connection
       if(!sock->get_address())
@@ -139,8 +141,12 @@ int main (int argcx, char** argvx, char *envp[])
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){
-    log(LOG_NORMAL, "Core Exception Caught: ", Flux::stringify(e.GetReason()).c_str());
-    log(LOG_TERMINAL, "\033[22;37m"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
+    if(config){
+      log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
+    }
+    else
+      printf("Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
+    printf("\033[22;37m\n"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     exit(1);
   }
   return EXIT_SUCCESS;

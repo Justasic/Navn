@@ -17,8 +17,9 @@ int INIReader::Parse(const Flux::string &filename)
    { 
     std::getline(file, line.tostd());
     linenum++;
+    line.trim();
     
-    if(line[0] == ';' || line[0] == '#'){}
+    if(line[0] == ';' || line[0] == '#' || line.empty()){}
     
     else if(line[0] == '[' && line[line.size() -1] == ']')
     {
