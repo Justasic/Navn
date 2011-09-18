@@ -18,6 +18,7 @@ public:
     // about the parsing.
     INIReader(const Flux::string&);
     
+    // Parse the INI file
     int Parse(const Flux::string &filename);
 
     // Return the result of ini_parse(), i.e., 0 on success, line number of

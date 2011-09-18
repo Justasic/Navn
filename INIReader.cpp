@@ -7,10 +7,8 @@
 #include "INIReader.h"
 int INIReader::Parse(const Flux::string &filename)
 {
-  
  std::ifstream file(filename.c_str());
   int linenum, error =0;
-  //std::string l;
   Flux::string line, section, value, name;
   
   if(file.is_open())
