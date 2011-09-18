@@ -444,6 +444,7 @@ void sigact(int sig)
       quitmsg = "Recieved Signal: "+sigstr;
       if(Send)
         Send->command->quit(quitmsg);
+      ModuleHandler::SanitizeRuntime();
       quitting = true;
       break;
     default:
@@ -534,6 +535,7 @@ void startup(int argc, char** argv) {
   }
   }
    WritePID();
+   ModuleHandler::SanitizeRuntime();
    log(LOG_NORMAL, "Navn Started. PID: %d", getpid());
    if (!nofork){
 	int i;
@@ -681,7 +683,7 @@ extern "C" module *ModInit(bool activated) \
         { \
                 return new x(activated); \
         } \
-        extern "C" void Modunini(x *m) \
+        extern "C" void Moduninit(x *m) \
         { \
                 delete m; \
         }

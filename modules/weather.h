@@ -38,7 +38,7 @@ public:
 	source.Reply("Syntax: \2!weather \037area\037\2");
 	return MOD_STOP;
       }
-      Flux::string area = params[params.size() - 1], tmpfile = TempFile("/tmp/navn_xml.tmp.XXXXXX"), wget;
+      Flux::string area = params[params.size() - 1], tmpfile = TempFile(binary_dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
       if(tmpfile.empty()){
 	log(LOG_NORMAL, "Failed to get a temp file.");
 	return MOD_STOP;
@@ -61,7 +61,7 @@ public:
 	Flux::string cond = findInXML("condition","data",ff);
 	Flux::string tempf = findInXML("temp_f","data",ff);
 	Flux::string tempc = findInXML("temp_c","data",ff);
-	remove(tmpfile.c_str());
+	Delete(tmpfile.c_str());
 	loc.trim();
 	source.c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
 	log(LOG_NORMAL, "%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());

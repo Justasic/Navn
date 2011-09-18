@@ -152,16 +152,7 @@ static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 	if (!source.is_open())
 		return MOD_ERR_NOEXIST;
 	
-	char *tmp_output = strdup(output.c_str());
-	int target_fd = mkstemp(tmp_output);
-	if (target_fd == -1 || close(target_fd) == -1)
-	{
-		free(tmp_output);
-		source.close();
-		return MOD_ERR_FILE_IO;
-	}
-	output = tmp_output;
-	free(tmp_output);
+	output = TempFile(output);
 
 	log(LOG_RAWIO, "Runtime module location: %s", output.c_str());
 	
@@ -264,4 +255,55 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   m->filename = mdir;
   m->handle = handle;
   return true;
+}
+bool ModuleHandler::DeleteModule(module *m)
+{
+	if (!m || !m->handle)
+		return false;
+
+	void *handle = m->handle;
+	Flux::string filename = m->filename;
+
+	log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
+
+	dlerror();
+	void (*destroy_func)(module *m) = function_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
+	const char *err = dlerror();
+	if (!destroy_func || err)
+	{
+		log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", m->name.c_str());
+		delete m; /* we just have to chance they haven't overwrote the delete operator then... */
+	}
+	else
+		destroy_func(m); /* Let the module delete it self, just in case */
+
+	if (dlclose(handle))
+		log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
+
+	if (!filename.empty())
+		Delete(filename.c_str());
+	
+	return true;
+}
+void ModuleHandler::SanitizeRuntime()
+{
+  log(LOG_DEBUG, "Cleaning up runtime directory.");
+  Flux::string dirbuf = binary_dir + "/runtime";
+  DIR *dirp = opendir(dirbuf.c_str());
+	if (!dirp)
+	{
+		log(LOG_DEBUG, "Cannot open directory (%s)", dirbuf.c_str());
+		return;
+	}
+	struct dirent *dp;
+	while ((dp = readdir(dirp)))
+	{
+		if (!dp->d_ino)
+			continue;
+		if (Flux::string(dp->d_name).equals_cs(".") || Flux::string(dp->d_name).equals_cs(".."))
+			continue;
+		Flux::string filebuf = dirbuf + "/" + dp->d_name;
+		Delete(filebuf.c_str());
+	}
+	closedir(dirp);
 }

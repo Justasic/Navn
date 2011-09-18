@@ -18,10 +18,8 @@ int INIReader::Parse(const Flux::string &filename)
     std::getline(file, line.tostd());
     linenum++;
     line.trim();
-    if(error != 0)
-      break;
     
-    else if(line[0] == ';' || line[0] == '#' || line.empty()){} // Do nothing if any of this is true
+    if(line[0] == ';' || line[0] == '#' || line.empty()){ continue; } // Do nothing if any of this is true
     else if(line[0] == '[' && line[line.size() -1] == ']')
     {
       line = line.erase(0,1);
@@ -54,6 +52,9 @@ int INIReader::Parse(const Flux::string &filename)
       if(line.empty())
 	error = linenum;
       /************************************/
+      if(error != 0)
+	break;
+      else
       _values[this->MakeKey(section, name)] = line;
     }else
       error = linenum;

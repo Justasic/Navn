@@ -4,6 +4,9 @@
 #include "flux.h"
 /* This file is NOT for functions, it is for defining stuff like classes */
 
+/* #define's */
+#define Delete unlink
+
 /* Classes */
 class Channel;
 class User;
