@@ -8,7 +8,7 @@
 #include <map>
 #include <sstream>
 #include <cstdio>
-#include <config.h> /* we include the config header from ./configure */
+#include "config.h" /* we include the config header from ./configure */
 #ifdef __GNUC__
 #define DEPRECATED(func) func __attribute__ ((deprecated))
 #elif defined(_MSC_VER)

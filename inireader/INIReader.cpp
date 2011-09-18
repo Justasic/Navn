@@ -2,14 +2,63 @@
 
 #include <cctype>
 #include <cstdlib>
-#include "ini.h"
+#include <iostream>
+#include <fstream>
 #include "INIReader.h"
-
+int INIReader::Parse(const Flux::string &filename)
+{
+  
+ std::ifstream file(filename.c_str());
+  int linenum, error =0;
+  //std::string l;
+  Flux::string line, section, value, name;
+  
+  if(file.is_open())
+  {
+   while(file.good())
+   { 
+    std::getline(file, line.tostd());
+    linenum++;
+    
+    if(line[0] == ';' || line[0] == '#'){}
+    
+    else if(line[0] == '[' && line[line.size() -1] == ']')
+    {
+      line = line.erase(0,1);
+      section = line.erase(line.size()-1,line.size());
+    }
+    else if(!line.empty() && line.find('=')){
+      name = line;
+      int d = line.find_first_of('=');
+      if(d > 0){
+	name = name.erase(d, name.size()-d);
+	name.trim();
+      }
+      /************************************/
+      line = line.erase(0,line.find('=')+1);
+      line.trim();
+      if(line.find_first_of(';')){ //We only erase ';' (semi-colons) if we find them, we cannot erase # signs for
+	int i = line.find_first_of(';'); // channels would look like comments.. maybe we can fix this one day..
+	if(i > 0){
+	  line = line.erase(i, line.size()-i);
+	}
+      }
+      line.trim();
+      value = line;
+      /************************************/
+      _values[this->MakeKey(section, name)] = value;
+    }else
+      error = linenum;
+   }
+   file.close();
+  }
+  return error;
+}
 INIReader::INIReader(const Flux::string &filename)
 {
-    _error = ini_parse(filename.c_str(), ValueHandler, this);
+  _error = this->Parse(filename);
 }
-
+INIReader::~INIReader(){ }
 int INIReader::ParseError()
 {
     return _error;
@@ -38,12 +87,4 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
     for (unsigned i = 0; i < key.length(); i++)
         key[i] = tolower(key[i]);
     return key;
-}
-INIReader::~INIReader(){ }
-int INIReader::ValueHandler(void* user, const char* section, const char* name,
-                            const char* value)
-{
-    INIReader* reader = (INIReader*)user;
-    reader->_values[MakeKey(section, name)] = value;
-    return 1;
 }

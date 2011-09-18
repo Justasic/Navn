@@ -435,7 +435,8 @@ void sigact(int sig)
       signal(SIGHUP, SIG_IGN);
       sigstr = siginit(randint(1,20));
       quitmsg = "Recieved Signal: "+sigstr;
-      Send->command->quit(quitmsg);
+      if(Send)
+        Send->command->quit(quitmsg);
       quitting = true;
       break;
     default:

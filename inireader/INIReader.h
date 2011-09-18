@@ -7,8 +7,6 @@
 
 #ifndef __INIREADER_H__
 #define __INIREADER_H__
-
-#include <map>
 #include "flux.h"
 
 // Read an INI file into easy-to-access name/value pairs. (Note that I've gone
@@ -19,6 +17,8 @@ public:
     // Construct INIReader and parse given filename. See ini.h for more info
     // about the parsing.
     INIReader(const Flux::string&);
+    
+    int Parse(const Flux::string &filename);
 
     // Return the result of ini_parse(), i.e., 0 on success, line number of
     // first error on parse error, or -1 on file open error.
@@ -35,9 +35,8 @@ public:
 
 private:
     int _error;
-    std::map<Flux::string, Flux::string> _values;
+    Flux::map<Flux::string> _values;
     static Flux::string MakeKey(const Flux::string&, const Flux::string&);
-    static int ValueHandler(void*, const char*, const char*, const char*);
 };
 
 #endif  // __INIREADER_H__
