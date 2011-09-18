@@ -135,7 +135,7 @@ DEPRECATED(Flux::string params(unsigned b, unsigned e)){
   * \param end The character saying where the cut should end.
   * \param msg The Flux::string you are wanting to isolate from.
   */
-static Flux::string isolate(char begin, char end, Flux::string msg){
+DEPRECATED(static Flux::string cisolate(char begin, char end, Flux::string msg)){
   Flux::string to_find;
   size_t pos = msg.find(begin);
   pos += 1;
@@ -193,11 +193,11 @@ public:
      * \fn IsoHost(Flux::string fullhost)
      * \param fullhost A Flux::string containing the full host of an irc message
      */
-    IsoHost(Flux::string fullhost){
-    nick = irc_string::isolate(':','!',fullhost);
+    IsoHost(const Flux::string &fullhost){
+    nick = isolate(':','!',fullhost);
     raw = fullhost;
-    host = irc_string::isolate('@',' ',fullhost);
-    user = irc_string::isolate('!','@',fullhost);
+    host = isolate('@',' ',fullhost);
+    user = isolate('!','@',fullhost);
     }
 
 };
@@ -295,24 +295,6 @@ Flux::string execute(const char *cmd) {
     pclose(pipe);
     #endif
     return result;
-}
-
-/** 
- * \fn Flux::string make_two_digits(int x)
- * \brief Makes single digit int into a double digit Flux::string.
- * This was really just for the \a world_clock module but it's handy to have around.
- * \param x A single digit integer.
- * \return A Flux::string containing integer as a double digit.
- */
-Flux::string make_two_digits(int x){
-  std::stringstream dd_ss;
-  if (x < 10){
-    dd_ss << "0" << x;
-    return dd_ss.str();
-  }else{
-    dd_ss << x;
-    return dd_ss.str();
-  }
 }
 /**
  *\fn  Flux::string os_time()
@@ -600,19 +582,6 @@ Flux::string findInXML(const Flux::string &node, const Flux::string &info, const
     i++;
   }
   return output;
-}
-Flux::string xmlparse(const Flux::string &node, const Flux::string &info, const Flux::string &FileString){
-  printf("xmlparse called\n");
-  size_t n1 = FileString.find('<');
-  size_t n2 = FileString.find('>');
-  
-  if(n1 > FileString.length() || n2 > FileString.length())
-    return "";
-  
-  Flux::string data;
-  data.assign(FileString,n1,n2);
-  printf("%s\n", data.c_str());
-  return data;
 }
 /*******************************************************************/
 namespace ThreadHandler

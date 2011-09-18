@@ -44,6 +44,7 @@ extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);
 extern Flux::string TempFile(const Flux::string&);
+extern Flux::string isolate(char begin, char end, const Flux::string &msg);
 extern Flux::string make_pass();
 extern int randint(int x, int y);
 extern bool IsValidChannel(const Flux::string&);
@@ -52,6 +53,7 @@ extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 extern std::vector<module*> moduleList;
 extern Flux::insensitive_map<User *> UserNickList;
 extern Flux::insensitive_map<Channel*> ChanMap;
+extern char **my_av, **my_envp;
 
 /* Typedef's */
 
@@ -65,6 +67,4 @@ void process(const Flux::string&);
 void ProcessJoin(CommandSource&, const Flux::string&);
 void ProcessModules(CommandSource&, std::vector<Flux::string>&);
 
-/* char*'s */
-extern char **my_av, **my_envp;
 #endif

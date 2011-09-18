@@ -107,7 +107,7 @@ public:
       source.Reply(ACCESS_DENIED);
     }
   }
-  if (cmd.equals_ci("join")){
+  if(cmd.equals_ci("join")){
     Flux::string blah = params.size() == 2 ? params[1] : "";
     if(blah.empty()){
       source.Reply("Syntax: \2Join \37channel\15"); 

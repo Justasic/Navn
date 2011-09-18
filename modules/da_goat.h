@@ -75,7 +75,7 @@ public:
 		}
       }
 	if(cmd.equals_ci("!info")){
-		c->SendMessage("Our forum is at \037castawaycrew.hyperboards.com\017");
+		c->SendMessage("Our forum is at \037http://flux-net.net/forum2/\017");
 		c->SendMessage("Our Website is \002Flux-Net.net\017");
 		c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
 		log(LOG_NORMAL, "%s used Da_Goats !info command in %s", u->nick.c_str(), c->name.c_str());

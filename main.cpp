@@ -107,7 +107,7 @@ int main (int argcx, char** argvx, char *envp[])
     about_me _about_me(true);
     Da_Goat _Da_Goat(true);
     Flux_Services _Flux_Services(false);
-    encyclopedia _encyclopedia(true);
+    encyclopedia _encyclopedia(false);
     /*
     TinyURL _TinyURL(false);
     */
@@ -122,7 +122,8 @@ int main (int argcx, char** argvx, char *envp[])
       
       /* Process the buffer and modules */
       std::queue<Flux::string> queue = sock->GetBuffer();
-      while(!queue.empty()){
+      while(!queue.empty())
+      {
 	if(queue.empty())
 	 break;
 	process(queue.front());
@@ -131,7 +132,8 @@ int main (int argcx, char** argvx, char *envp[])
       }
       /* Process Timers */
       /***********************************/
-      if(time(NULL) - last_check >= 3){
+      if(time(NULL) - last_check >= 3)
+      {
 	TimerManager::TickTimers(time(NULL));
 	last_check = time(NULL);
       }
