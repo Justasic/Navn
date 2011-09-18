@@ -25,13 +25,20 @@ int INIReader::Parse(const Flux::string &filename)
     {
       line = line.erase(0,1);
       section = line.erase(line.size()-1,line.size());
+      section.trim();
+      if(section.empty())
+	return linenum;
     }
+    else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']'))
+      return linenum;
     else if(!line.empty() && line.find('=')){
       name = line;
       int d = line.find_first_of('=');
       if(d > 0){
 	name = name.erase(d, name.size()-d);
 	name.trim();
+	if(name.empty())
+	  return linenum;
       }
       /************************************/
       line = line.erase(0,line.find('=')+1);

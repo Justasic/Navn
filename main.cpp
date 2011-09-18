@@ -141,11 +141,10 @@ int main (int argcx, char** argvx, char *envp[])
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){
-    if(config){
-      log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
-    }
+    if(!config)
+        printf("Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
     else
-      printf("Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
+      log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
     printf("\033[22;37m\n"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     exit(1);
   }
