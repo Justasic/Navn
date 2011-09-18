@@ -54,6 +54,10 @@ public:
         log(LOG_NORMAL, "%s attempted to make bot part %s", u->nick.c_str(), blah.c_str());
       }else{
 	Channel *ch = findchannel(blah);
+	if(!ch){
+	 source.Reply("I am not in channel \2%s\2", blah.c_str()); 
+	 return MOD_STOP;
+	}
         log(LOG_NORMAL, "%s made the bot part %s", u->nick.c_str(), blah.c_str());
         ch->SendPart(blah);
       }
