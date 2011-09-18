@@ -119,11 +119,14 @@ public:
     }else{
       log(LOG_NORMAL, "%s made the bot join %s", u->nick.c_str(), blah.c_str());
       Channel *chan = findchannel(blah);
-      if(!chan){
-	chan = new Channel(blah);
+      if(chan){
+	chan->SendJoin();
+	chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
+      }else{
+	Send->command->join(blah);
+	Send->privmsg(blah, welcome_msg, nick.c_str(), nick.c_str());
       }
-      chan->SendJoin();
-      chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
+      
     }
   }
   if(cmd.equals_ci("nick")){
