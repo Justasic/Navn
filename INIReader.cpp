@@ -18,19 +18,20 @@ int INIReader::Parse(const Flux::string &filename)
     std::getline(file, line.tostd());
     linenum++;
     line.trim();
+    if(error != 0)
+      break;
     
-    if(line[0] == ';' || line[0] == '#' || line.empty()){}
-    
+    else if(line[0] == ';' || line[0] == '#' || line.empty()){} // Do nothing if any of this is true
     else if(line[0] == '[' && line[line.size() -1] == ']')
     {
       line = line.erase(0,1);
       section = line.erase(line.size()-1,line.size());
       section.trim();
       if(section.empty())
-	return linenum;
+	error = linenum; 
     }
     else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']'))
-      return linenum;
+      error = linenum; 
     else if(!line.empty() && line.find('=')){
       name = line;
       int d = line.find_first_of('=');
@@ -38,7 +39,7 @@ int INIReader::Parse(const Flux::string &filename)
 	name = name.erase(d, name.size()-d);
 	name.trim();
 	if(name.empty())
-	  return linenum;
+	  error = linenum;
       }
       /************************************/
       line = line.erase(0,line.find('=')+1);
@@ -50,6 +51,8 @@ int INIReader::Parse(const Flux::string &filename)
 	}
       }
       line.trim();
+      if(line.empty())
+	error = linenum;
       /************************************/
       _values[this->MakeKey(section, name)] = line;
     }else
