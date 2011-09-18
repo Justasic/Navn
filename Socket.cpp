@@ -130,7 +130,7 @@ const int SocketIO::recv() const
   }
   if(FD_ISSET(sockn, &read) && sres)
   {
-      if(receive(sockn) == -1)
+      if(receive(sockn) == -1 && !quitting)
       {
 	//printf("Socket error: %s\n", strerror(errno));
 	log(LOG_RAWIO, "Socket Error: %s", strerror(errno));

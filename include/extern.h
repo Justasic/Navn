@@ -47,7 +47,7 @@ extern Flux::string TempFile(const Flux::string&);
 extern Flux::string make_pass();
 extern int randint(int x, int y);
 extern bool IsValidChannel(const Flux::string&);
-extern bool protocoldebug, IsOper, dev, nofork;
+extern bool protocoldebug, IsOper, dev, nofork, quitting;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
 extern std::vector<module*> moduleList;
 extern Flux::insensitive_map<User *> UserNickList;
