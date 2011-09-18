@@ -59,7 +59,6 @@ int main (int argcx, char** argvx, char *envp[])
     startup(argcx, argvx);
     SocketStart:
     try{
-      log(LOG_NORMAL, "Started with PID %i", getpid());
       //Make the socket used to connect to the server
       if(server.empty())
 	throw CoreException("No Server Specified.");
@@ -117,8 +116,9 @@ int main (int argcx, char** argvx, char *envp[])
     /*! \endcode */ 
     Flux::string rply;
     while(!quitting){
-      if(protocoldebug)
-        log(LOG_RAWIO, "Top of main loop");
+      log(LOG_RAWIO, "Top of main loop");
+      if(quitting)
+	break;
       
       /* Process the buffer and modules */
       std::queue<Flux::string> queue = sock->GetBuffer();
@@ -129,6 +129,7 @@ int main (int argcx, char** argvx, char *envp[])
 	queue.pop();
 	sock->popqueue();
       }
+      /* Process Timers */
       /***********************************/
       if(time(NULL) - last_check >= 3){
 	TimerManager::TickTimers(time(NULL));

@@ -482,6 +482,9 @@ void startup(int argc, char** argv) {
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
+  Flux::string dir = argv[0];
+  Flux::string::size_type n = dir.rfind('/');
+  dir = "." + dir.substr(n);
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
   if (argc < 1 || argv[1] == NULL){
@@ -490,19 +493,15 @@ void startup(int argc, char** argv) {
     for(int Arg=0; Arg < argc; ++Arg){
        if(arg == "--developer" || arg == "--dev" || arg == "-d")
        {
-         dev = true;
-	 nofork = true;
-	 log(LOG_DEBUG, "Navn is started in Developer mode. (%s)", arg.c_str());
+         dev = nofork = true;
+	 log(LOG_DEBUG, "%s is started in Developer mode. (%s)", nick.c_str(), arg.c_str());
        }
        else if (arg == "--nofork" || arg == "-f"){
          nofork = true;
-         log(LOG_DEBUG, "Navn is started With No Forking enabled. (%s)", arg.c_str());
+         log(LOG_DEBUG, "%s is started With No Forking enabled. (%s)", nick.c_str(), arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
 	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION);
-	  Flux::string dir = argv[0];
-	  Flux::string::size_type n = dir.rfind('/');
-	  dir = "." + dir.substr(n);
 	  log(LOG_TERMINAL, "Usage: %s [options]\n", dir.c_str());
 	  log(LOG_TERMINAL, "-h, --help\n");
 	  log(LOG_TERMINAL, "-d, --developer\n");
@@ -520,15 +519,16 @@ void startup(int argc, char** argv) {
          log(LOG_TERMINAL, "Git: git://gitorious.org:navn/navn.git");
          log(LOG_TERMINAL, "\n");
          log(LOG_TERMINAL, "This bot does have Epic Powers.");
-         log(LOG_TERMINAL, "Type ./navn --help for help on how to use navn, or read the readme.");
+         log(LOG_TERMINAL, "Type %s --help for help on how to use navn, or read the readme.", dir.c_str());
          exit(0);
        }
        else if(arg == "--protocoldebug" || "-p"){
 	 protocoldebug = true;
 	 nofork = true;
-	 log(LOG_RAWIO, "Navn is started in Protocol Debug mode. (%s)", arg.c_str());
+	 log(LOG_RAWIO, "%s is started in Protocol Debug mode. (%s)", nick.c_str(), arg.c_str());
        }
-       else{
+       else
+       {
 	log(LOG_TERMINAL, "Unknown option %s", arg.c_str());
 	exit(0);
        }
@@ -536,7 +536,7 @@ void startup(int argc, char** argv) {
   }
    WritePID();
    ModuleHandler::SanitizeRuntime();
-   log(LOG_NORMAL, "Navn Started. PID: %d", getpid());
+   log(LOG_NORMAL, "%s Started. PID: %d", nick.c_str(), getpid());
    if (!nofork){
 	int i;
 	if((i = fork()) < 0)

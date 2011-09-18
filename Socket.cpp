@@ -53,7 +53,6 @@ bool SocketIO::get_address()
     log(LOG_DEBUG, "getaddrinfo: %s", gai_strerror(rv));
   }
   return true;
-  //freeaddrinfo(servinfo);
 }
 
 void *get_in_addr(struct sockaddr *sa)
@@ -69,7 +68,6 @@ bool SocketIO::connect()
   struct addrinfo *p;
   int connected = 0;
   char s[INET6_ADDRSTRLEN];
-  //printf("Connecting..\n");
   log(LOG_RAWIO, "Connecting..");
   
   for(p = servinfo; p != NULL; p = p->ai_next) {
@@ -78,7 +76,6 @@ bool SocketIO::connect()
     connected = ::connect(sockn, p->ai_addr, p->ai_addrlen);
     if (connected == -1){
       close(sockn);
-      //printf("Connection failed: %s | %i | %i\n", strerror(errno), connected, sockn);
       log(LOG_DEBUG, "Connection Failed: %s", strerror(errno));
       continue;
     }
@@ -91,7 +88,6 @@ bool SocketIO::connect()
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   setNonblocking(sockn);
   FD_SET(sockn, &ReadFD);
-  //printf("Connected! %i\n", sockn);
   log(LOG_DEBUG, "Connected! %i", sockn);
   return true;
 }
@@ -124,7 +120,6 @@ const int SocketIO::recv() const
   FD_SET(sockn, &read);
   int sres = select(sockn + 1, &read, NULL, NULL, &timeout);
   if(sres == -1 && errno != EINTR){
-    //printf("Select() error: %s\n", strerror(errno));
     log(LOG_DEBUG, "Select() error: %s", strerror(errno));
     return errno;
   }
@@ -132,7 +127,6 @@ const int SocketIO::recv() const
   {
       if(receive(sockn) == -1 && !quitting)
       {
-	//printf("Socket error: %s\n", strerror(errno));
 	log(LOG_RAWIO, "Socket Error: %s", strerror(errno));
 	return errno;
       }else
