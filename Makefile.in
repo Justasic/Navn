@@ -69,7 +69,7 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -I$(srcdir)/include -I$(srcdir)/inireader/ -I$(srcdir)
+CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -I$(srcdir)/include -I$(srcdir)
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = c++
@@ -490,7 +490,7 @@ all:
 	@$(PERL) $(CXX) $(CFLAGS) -c thread.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c timers.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c user.cpp
-	@$(PERL) $(CXX) $(CFLAGS) -c inireader/INIReader.cpp
+	@$(PERL) $(CXX) $(CFLAGS) -c INIReader.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -o $(EXECUTABLE) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o $(LIBS)
 	@$(PERL) $(CXX) $(CFLAGS) -c testmod.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)testmod.so -o testmod.so testmod.o

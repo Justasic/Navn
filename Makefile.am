@@ -1,7 +1,7 @@
 CXX = c++
 EXECUTABLE = @PACKAGE@
 PERL = $(srcdir)/run-cc.pl
-CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -I$(srcdir)/include -I$(srcdir)/inireader/ -I$(srcdir)
+CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -I$(srcdir)/include -I$(srcdir)
 LIBS = -lpthread -ldl
 MODFLAGS = -fPIC -g -rdynamic -lnsl $(LIBS) -shared -Wl,-soname,
 all: 
@@ -19,7 +19,7 @@ all:
 	@$(PERL) $(CXX) $(CFLAGS) -c thread.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c timers.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c user.cpp
-	@$(PERL) $(CXX) $(CFLAGS) -c inireader/INIReader.cpp
+	@$(PERL) $(CXX) $(CFLAGS) -c INIReader.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -o $(EXECUTABLE) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o $(LIBS)
 	@$(PERL) $(CXX) $(CFLAGS) -c testmod.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)testmod.so -o testmod.so testmod.o

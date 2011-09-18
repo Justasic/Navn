@@ -9,7 +9,7 @@ int INIReader::Parse(const Flux::string &filename)
 {
  std::ifstream file(filename.c_str());
   int linenum, error =0;
-  Flux::string line, section, value, name;
+  Flux::string line, section, name;
   
   if(file.is_open())
   {
@@ -42,14 +42,14 @@ int INIReader::Parse(const Flux::string &filename)
 	}
       }
       line.trim();
-      value = line;
       /************************************/
-      _values[this->MakeKey(section, name)] = value;
+      _values[this->MakeKey(section, name)] = line;
     }else
       error = linenum;
    }
    file.close();
-  }
+  }else
+    return -1;
   return error;
 }
 INIReader::INIReader(const Flux::string &filename)
