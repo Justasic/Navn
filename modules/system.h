@@ -103,7 +103,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   }
   if(cmd.equals_ci("rehash")){
     Flux::string pass = params.size() > 0 ? params[0] : "";
-    if(u->nick == owner_nick || pass == password || pass == usrpass){
+    if(u->IsOwner() || pass == password || pass == usrpass){
       source.Reply("Rehashing config file.");
       log(LOG_NORMAL, "%s rehashed config file.", u->nick.c_str());
       Rehash();

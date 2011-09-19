@@ -38,7 +38,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   User *u = source.u;
   Channel *c = source.c;
 	if(cmd.equals_ci("!part")){ 
-		if(u->nick == owner_nick){
+		if(u->IsOwner()){
 		  Flux::string pchannel = params.size() == 2?params[1]:"";
 		  if(pchannel.empty()){
 		   c->SendMessage("im out niggaz!");
@@ -63,7 +63,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 		}
 	}
 	if(cmd.equals_ci("!botadd")){
-		if(u->nick == owner_nick){
+		if(u->IsOwner()){
 		  if(params.size() < 5){
 		    source.Reply("Syntax: \2!botadd \37nick\37 \37user\37 \37host\37 \37real\37");
 		   return MOD_STOP; 
@@ -175,7 +175,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 	}
 	/*
 	if(cmd == "!umode"){
-		if(u->nick == owner_nick){
+		if(u->IsOwner()){
 			Flux::string dest = reply->params(1);
 			cout << "final: "<<msg << endl;
 			Send->raw(samode(dest, "%s", msg.c_str()).c_str());

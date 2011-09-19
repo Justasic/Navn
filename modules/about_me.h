@@ -37,7 +37,7 @@ public:
     Flux::string cmd = params.empty()?"":params[0];
     User *u = source.u;
     Channel *c = source.c;
-  if(source.message == "about me"){
+  if(source.message.equals_ci("about me")){
 	source.Reply("Raw: %s", source.raw.c_str());
 	source.Reply("message: %s", source.message.c_str());
 	source.Reply("Nickname: %s", u->nick.c_str());

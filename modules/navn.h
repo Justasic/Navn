@@ -141,7 +141,7 @@ public:
 	nick = newnick;
       }
     }
-    if(u->nick == owner_nick){
+    if(u->IsOwner()){
       Send->command->nick(newnick);
     }else{
      Send->privmsg(u->nick, ACCESS_DENIED); 

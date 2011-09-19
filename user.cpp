@@ -58,7 +58,7 @@ void User::SendPrivmsg(const char *fmt, ...){
   va_end(args); 
 }
 bool User::IsOwner(){
- if(this->nick == owner_nick)
+ if(this->nick.equals_ci(owner_nick))
    return true;
  return false;
 }
