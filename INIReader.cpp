@@ -9,7 +9,7 @@ int INIReader::Parse(const Flux::string &filename)
 {
  std::ifstream file(filename.c_str());
   int linenum, error =0;
-  Flux::string line, section, name;
+  Flux::string line, section, name, value;
   
   if(file.is_open())
   {
@@ -40,22 +40,23 @@ int INIReader::Parse(const Flux::string &filename)
 	  error = linenum;
       }
       /************************************/
-      line = line.erase(0,line.find('=')+1);
-      line.trim();
-      if(line.find_first_of(';')){ //We only erase ';' (semi-colons) if we find them, we cannot erase # signs for
-	int i = line.find_first_of(';'); // channels would look like comments.. maybe we can fix this one day..
+      value = line;
+      value = value.erase(0,value.find('=')+1);
+      value.trim();
+      if(value.find_first_of(';')){ //We only erase ';' (semi-colons) if we find them, we cannot erase # signs for
+	int i = value.find_first_of(';'); // channels would look like comments.. maybe we can fix this one day..
 	if(i > 0){
-	  line = line.erase(i, line.size()-i);
+	  value = value.erase(i, value.size()-i);
 	}
       }
-      line.trim();
-      if(line.empty())
+      value.trim();
+      if(value.empty() || value.find(';') != (unsigned)-1)
 	error = linenum;
       /************************************/
       if(error != 0)
 	break;
       else
-      _values[this->MakeKey(section, name)] = line;
+      _values[this->MakeKey(section, name)] = value;
     }else
       error = linenum;
    }
