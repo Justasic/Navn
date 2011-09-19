@@ -139,6 +139,13 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   if(cmd.equals_ci("!userlist")){
     ListUsers(source);
   }
+  if(cmd.equals_ci("!loadmod")){
+    Flux::string cmds = params.size() == 2?params[1]:"";
+    if(cmds.empty())
+      return MOD_STOP;
+    if(!ModuleHandler::LoadModule(cmds))
+      source.Reply("Unable to load module \2%s\2\r", cmds.c_str());
+  }
   if(source.command == "004"){
     Send->command->mode(nick, "+B");
     Channel *chan = new Channel(channel);

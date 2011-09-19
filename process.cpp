@@ -149,6 +149,11 @@ void process(const Flux::string &buffer){
   }
   if(command == "004" && source.find('.'))
     server_name = source;
+  
+  if(command == "PING") //this is here and not in ping_pong.h because some servers require it before connections
+      send_cmd("PONG :%s\n", params[0].c_str());
+  if(command.equals_ci("ERROR"))
+    throw CoreException(buffer.c_str());
   /**************************************/
   CommandSource Source;
   Source.u = u; //User class

@@ -34,10 +34,11 @@ public:
     Send->raw("PING :%i\n", time(NULL));
     if(!timeout)
       timeout = true;
-    else if(timeout)
+    if(timeout){
       ++pings;
-    else if(pings > 3 && timeout)
-      restart("Ping-Timeout");
+      if(pings >= 3)
+	restart("Ping-Timeout: 121 seconds");
+    } 
   }
 };
 class Ping_pong:public module{
@@ -51,17 +52,6 @@ public:
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     Flux::string cmd = params.empty()?"":params[0];
     
-    if(cmd.equals_ci("!loadmod")){
-      Flux::string cmds = params.size() == 2?params[1]:"";
-      if(cmds.empty())
-	return MOD_STOP;
-      if(!ModuleHandler::LoadModule(cmds))
-	source.Reply("Unable to load module \2%s\2\r", cmds.c_str());
-    }
-    
-    if (source.command == "PING"){
-      Send->raw("PONG :%s", source.params[0].c_str());
-    } 
     if(source.command == "PONG"){
      Flux::string ts = params[0];
      int timestamp = atoi(ts.c_str());
@@ -71,9 +61,9 @@ public:
      if(protocoldebug)
         printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
     }
-     /*for some Undernet connections */
-    if(source.command == "ERROR"){
-      restart(source.raw);
+    if(source.command == "451"){
+     Send->command->user(usrname, realname);
+     Send->command->nick(nick); 
     }
     return MOD_RUN;
   }
