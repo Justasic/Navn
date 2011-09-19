@@ -73,28 +73,18 @@ void process(const Flux::string &buffer){
   log(LOG_RAWIO, "Received: %s\n", Flux::Sanitize(buffer).c_str());
   if(protocoldebug)
   {
-   printf("Source: %s\n", source.empty() ? "No Source" : source.c_str());
-   printf("%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
+   log(LOG_TERMINAL, "Source: %s\n", source.empty() ? "No Source" : source.c_str());
+   log(LOG_TERMINAL, "%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
    if(params.empty())
-     printf("No Params\n");
+     log(LOG_TERMINAL, "No Params\n");
    else
      for(unsigned i =0; i < params.size(); ++i)
-       printf("Params %i: %s\n", i, Flux::Sanitize(params[i]).c_str());
+       log(LOG_TERMINAL, "Params %i: %s\n", i, Flux::Sanitize(params[i]).c_str());
   }
   /**************************************/
   const Flux::string &receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
   
-  if(command == "PRIVMSG")
-  {
-   if(!protocoldebug){
-      if(!receiver.empty() && !params[1].empty())
-       log(LOG_TERMINAL, "<%s-%s> %s\n", isolate(':','!',source).c_str(), receiver.c_str(), params[1].c_str());
-    }
-  }else{
-    if(!protocoldebug)
-      log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
-  }
   /* make local variables instead of global ones */
   Flux::string nickname = isolate(':','!',source),
   uident = isolate('!','@',source),
@@ -103,53 +93,43 @@ void process(const Flux::string &buffer){
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
   
-  if(!u){
-    if(!nickname.empty() || !uident.empty() || !uhost.empty()){
-      if(!nickname.find_first_of('.'))
-      u = new User(nickname, uident, uhost);
-    }
+  if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
+    u = new User(nickname, uident, uhost);
+  if(command == "PRIVMSG")
+  {
+    if(!protocoldebug && !receiver.empty() && u && !params[1].empty())
+      log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), params[1].c_str());
+  }else{
+    if(!protocoldebug)
+      log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
   }
-  if(command == "QUIT" && u){
+  if(command == "QUIT" && u)
+    delete u;
+  if(command == "PART"){
+    if(IsValidChannel(receiver) && c && u && u->nick == nick)
+     delete c;
+    else
      delete u;
   }
-  if(command == "PART"){
-    if(IsValidChannel(receiver)){
-     c = findchannel(receiver);
-     if(c && u && u->nick == nick)
-       delete c;
-    }else{
-     delete u; 
-    }
-  }
   if(command == "NICK"){
-   if(u){
-     if(u->nick == nick){
+   if(u && u->nick == nick){
        nick = params[0];
        delete u; //we shouldnt be a user in the 1st place (:
-     }else if(u->nick == owner_nick){
+     }else if(u->IsOwner())
        owner_nick = params[0];
-     }
-     else{
+     else
        delete u; //we delete the user because the above if statement makes a new one for the nick change
-     }
    }
-  }
   if(command == "JOIN"){
-    if(!u){
-      if(nickname.empty() || uident.empty() || uhost.empty()){ }else
+    if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
       u = new User(nickname, uident, uhost);
-    }
-     c = findchannel(receiver);
-     if(!c){
-       if(IsValidChannel(receiver))
-         c = new Channel(receiver);
-     }
-     if(u->nick == nick)
-       c->SendWho();
+    if(!c && IsValidChannel(receiver))
+      c = new Channel(receiver);
+    if(u->nick == nick)
+      c->SendWho();
   }
   if(command == "004" && source.find('.'))
     server_name = source;
-  
   if(command == "PING") //this is here and not in ping_pong.h because some servers require it before connections
       send_cmd("PONG :%s\n", params[0].c_str());
   if(command.equals_ci("ERROR"))

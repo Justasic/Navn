@@ -15,7 +15,7 @@ int INIReader::Parse(const Flux::string &filename)
   {
    while(file.good())
    { 
-    std::getline(file, line.tostd());
+    std::getline(file, line.std_str());
     linenum++;
     line.trim();
     

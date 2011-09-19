@@ -143,7 +143,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
 	      break;	      
 	    case 12:
 	      object = "used condom (Object #"+Flux::stringify(num)+")";
-	      break;	      
+	      break;
 	    case 13:
 	      object = "candy bar (Object #"+Flux::stringify(num)+")";
 	      break;	      
