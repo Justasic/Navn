@@ -222,7 +222,7 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   }
   dlerror();
   
-  void *handle = dlopen(mdir.c_str(), RTLD_LAZY);
+  void *handle = dlopen(mdir.c_str(), RTLD_NOW|RTLD_LOCAL);
   const char *err = dlerror();
   if(!handle && err && *err){
    log(LOG_NORMAL, "[%s.so] %s", modname.c_str(), err);

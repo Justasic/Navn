@@ -131,6 +131,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
     std::cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
     Send->notice(owner_nick, "The randomly generated password is: "+password);
+    started = true;
   }
   if(cmd.equals_ci("!chanlist")){
     ListChans(source);

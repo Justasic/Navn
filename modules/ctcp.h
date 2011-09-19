@@ -31,19 +31,19 @@ public:
   ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
   {
     Flux::string cmd = params.empty()?"":params[0], message = source.message;
-    User *u = source.u;
     if(message[0] == '\1' && message[message.length() -1] == '\1'){
-      log(LOG_NORMAL, "\033[22;31mRecieved CTCP %s from %s\033[22;36m", Flux::Sanitize(cmd).c_str(), u->nick.c_str()); 
+      log(LOG_NORMAL, "\033[22;31mRecieved CTCP %s from %s\033[22;36m", Flux::Sanitize(cmd).c_str(), source.raw_source.c_str()); 
     }
-    if(cmd == "\001VERSION\001"){ // for CTCP VERSION reply
+    if(cmd == "\001VERSION\001" && source.u){ // for CTCP VERSION reply
       struct utsname uts;
       if(uname(&uts) < 0)
 	      throw CoreException("uname() Error");
-
-      source.Reply("\001VERSION Navn-%s %s %s\001",VERSION, uts.sysname, uts.machine);
+      if(source.u)
+	source.Reply("\001VERSION Navn-%s %s %s\001",VERSION_LONG.c_str(), uts.sysname, uts.machine);
     }
     if(cmd == "\001TIME\001"){ // for CTCP TIME reply
-      source.Reply("\001TIME %s\001", os_time().c_str());
+      if(source.u)
+	source.Reply("\001TIME %s\001", strip(os_time()).c_str());
     }
     if(cmd == "\001SOURCE\001"){
       source.Reply("\001SOURCE https://gitorious.org/navn/navn\001");

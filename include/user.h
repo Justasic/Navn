@@ -27,6 +27,7 @@ struct CommandSource
  Flux::string command;
  Flux::string message;
  Flux::string raw;
+ Flux::string raw_source;
  std::vector<Flux::string> params;
  
  void Reply(const char *fmt, ...);

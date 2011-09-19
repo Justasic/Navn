@@ -59,7 +59,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0], msg = source.message;
   User *u = source.u;
   Channel *c = source.c;
-  if(c || source.command == "PART"){
+  if(c && u && source.command == "PART"){
     if(u->nick == nick)
       return MOD_STOP;
     if(c->name != LogChannel)
@@ -68,7 +68,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   
   if(source.command == "PRIVMSG"){
     Flux::string nolog = params.size() == 2?params[1]:"";
-    if(nolog == "#nl"){return MOD_STOP;}else{
+    if(nolog != "#nl" && u){
       if(nolog == "\001ACTION"){
 	msg = msg.erase(0,8);
 	msg = msg.erase(msg.size()-1, 1);
@@ -80,7 +80,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
   }
   if(source.command == "NOTICE"){
     Flux::string nolog = params.size() == 2?params[1]:"";
-    if(nolog =="#nl"){ return MOD_STOP; }else{
+    if(nolog != "#nl" && u){
       CLog("-Notice- %s: %s", u->nick.c_str(), Flux::Sanitize(source.message).c_str());
     }
   }

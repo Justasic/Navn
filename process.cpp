@@ -104,11 +104,12 @@ void process(const Flux::string &buffer){
   Channel *c = findchannel(receiver);
   
   if(!u){
-    if(nickname.empty() || uident.empty() || uhost.empty()){ }else
+    if(!nickname.empty() || !uident.empty() || !uhost.empty()){
+      if(!nickname.find_first_of('.'))
       u = new User(nickname, uident, uhost);
+    }
   }
-  if(command == "QUIT"){
-   if(u)
+  if(command == "QUIT" && u){
      delete u;
   }
   if(command == "PART"){
@@ -156,6 +157,7 @@ void process(const Flux::string &buffer){
   Source.message = message;
   Source.params = params;
   Source.raw = buffer;
+  Source.raw_source = nickname;
   if(command == "352"){
    ProcessJoin(Source, c->name); 
   }
