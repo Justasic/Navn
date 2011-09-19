@@ -34,16 +34,15 @@ public:
     if(message[0] == '\1' && message[message.length() -1] == '\1'){
       log(LOG_NORMAL, "\033[22;31mRecieved CTCP %s from %s\033[22;36m", Flux::Sanitize(cmd).c_str(), source.raw_source.c_str()); 
     }
-    if(cmd == "\001VERSION\001" && source.u){ // for CTCP VERSION reply
+    if(cmd == "\001VERSION\001"){ // for CTCP VERSION reply
       struct utsname uts;
       if(uname(&uts) < 0)
 	      throw CoreException("uname() Error");
-      if(source.u)
-	source.Reply("\001VERSION Navn-%s %s %s\001",VERSION_LONG.c_str(), uts.sysname, uts.machine);
+
+	Send->notice(source.raw_source, "\001VERSION Navn-%s %s %s\001",VERSION_LONG.c_str(), uts.sysname, uts.machine);
     }
     if(cmd == "\001TIME\001"){ // for CTCP TIME reply
-      if(source.u)
-	source.Reply("\001TIME %s\001", strip(os_time()).c_str());
+	Send->notice(source.raw_source,"\001TIME %s\001", strip(os_time()).c_str());
     }
     if(cmd == "\001SOURCE\001"){
       source.Reply("\001SOURCE https://gitorious.org/navn/navn\001");
