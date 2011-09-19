@@ -40,7 +40,7 @@ Command *FindCommand(const Flux::string &name);
 extern SocketIO *sock;
 extern SendMessage *Send;
 extern INIReader *config;
-extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir;
+extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir, server_name;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);
 extern Flux::string TempFile(const Flux::string&);

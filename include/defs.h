@@ -21,7 +21,8 @@ const Flux::string password = make_pass();
 #define VERSION_EXTRA "-with-netflix-and-chicken"
 const Flux::string VERSION_LONG = Flux::stringify(VERSION)+Flux::stringify(VERSION_EXTRA);
 /******************Configuration variables***********************/
-Flux::string logfile, nsacc, nspass, owner_nick, realname, usrname, nick, channel, port, server, LogChannel, pid_file, usrpass, ouser, opass;
+Flux::string logfile, nsacc, nspass, owner_nick, realname, usrname, nick, channel, port, server, LogChannel,
+pid_file, usrpass, ouser, opass, server_name;
 /**Rehash void
  * This will re-read the config file values when told to do so
  * @param ReadConfig(INIReader &config)

@@ -146,6 +146,8 @@ void process(const Flux::string &buffer){
      if(u->nick == nick)
        c->SendWho();
   }
+  if(command == "004" && source.find('.'))
+    server_name = source;
   /**************************************/
   CommandSource Source;
   Source.u = u; //User class

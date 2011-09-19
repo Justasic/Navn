@@ -223,47 +223,41 @@ Flux::string removeCommand(Flux::string command, Flux::string s){
  * it replaces it with what would be in a url for that character.
  * \return A Flux::string without any special characters other than %
  */
-Flux::string urlify(Flux::string raw_searchstring){
-  Flux::string searchstring;
-  for (unsigned i=0; i < raw_searchstring.length(); i++){
-     switch(raw_searchstring.at(i)){
-      case ' ': searchstring += "%20"; break;
-      case '+': searchstring += "%2B"; break;
-      case '$': searchstring += "%24"; break;
-      case '&': searchstring += "%26"; break;
-      case ',': searchstring += "%2C"; break;
-      case '/': searchstring += "%2F"; break;
-      case ':': searchstring += "%3A"; break;
-      case ';': searchstring += "%3B"; break;
-      case '=': searchstring += "%3D"; break;
-      case '?': searchstring += "%3F"; break;
-      case '@': searchstring += "%40"; break;
-      case '#': searchstring += "%23"; break;
-      case '>': searchstring += "%3E"; break;
-      case '<': searchstring += "%3C"; break;
-      case '%': searchstring += "%25"; break;
-      case '{': searchstring += "%7B"; break;
-      case '}': searchstring += "%7D"; break;
-      case '|': searchstring += "%7C"; break;
-      case '\\':searchstring += "%5C"; break;
-      case '^': searchstring += "%5E"; break;
-      case '~': searchstring += "%7E"; break;
-      case '[': searchstring += "%5B"; break;
-      case ']': searchstring += "%5D"; break;
-      case '`': searchstring += "%60"; break;
-      case '*': searchstring += "%2A"; break;
-      case '(': searchstring += "%28"; break;
-      case ')': searchstring += "%29"; break;
-      case '"': searchstring += "%22"; break;
-      case '\'': searchstring += "%27"; break;
-      case '.': searchstring += "%2E"; break;
-      default:
-	searchstring = searchstring+raw_searchstring.at(i);
-    }
-  }
-  return searchstring;
+Flux::string urlify(const Flux::string &received){
+  Flux::string string = received;
+  string = string.replace_all_cs(" ","%20");
+  string = string.replace_all_cs("+","%2B");
+  string = string.replace_all_cs("$","%24");
+  string = string.replace_all_cs("&","%26");
+  string = string.replace_all_cs(",","%2C");
+  string = string.replace_all_cs("/","%2F");
+  string = string.replace_all_cs(":","%3A");
+  string = string.replace_all_cs(";","%3B");
+  string = string.replace_all_cs("=","%3D");
+  string = string.replace_all_cs("?","%3F");
+  string = string.replace_all_cs("@","%40");
+  string = string.replace_all_cs("#","%23");
+  string = string.replace_all_cs(">","%3E");
+  string = string.replace_all_cs("<","%3C");
+  string = string.replace_all_cs("%","%25");
+  string = string.replace_all_cs("{","%7B");
+  string = string.replace_all_cs("}","%7D");
+  string = string.replace_all_cs("|","%7C");
+  string = string.replace_all_cs("\\","%5C");
+  string = string.replace_all_cs("^","%5E");
+  string = string.replace_all_cs("~","%7E");
+  string = string.replace_all_cs("[","%5B");
+  string = string.replace_all_cs("]","%5D");
+  string = string.replace_all_cs("`","%60");
+  string = string.replace_all_cs("*","%2A");
+  string = string.replace_all_cs("(","%28");
+  string = string.replace_all_cs(")","%29");
+  string = string.replace_all_cs("'","%27");
+  string = string.replace_all_cs("\"","%22");
+  string = string.replace_all_cs(".","%2E");
+  string = string.replace_all_cs("-","%2D");
+  return string;
 }
-
 /** 
  * \fn Flux::string execute(const char *cmd)
  * \brief Sends a command to the OS
@@ -369,7 +363,6 @@ static void Rehash(bool onstart = false){
       cfgerr += ex.GetReason();
       throw CoreException(cfgerr.c_str());
     }
-    std::cout << "\r\nConfig Exception was caught: \033[22;31m" << ex.GetReason() << "\033[22;36m" << nl;
     log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
     if(!onstart)
       Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
