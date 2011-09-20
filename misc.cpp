@@ -109,13 +109,6 @@ Flux::string isolate(char begin, char end, const Flux::string &msg){
 void log(LogType type, const char *fmt, ...){
   std::fstream log;
   Flux::string timestamp;
-  try{
-  log.open(logfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-  if(!log.is_open())
-     throw LogException("Failed to open log file.");
-  }catch (LogException &e){
-   std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
-  }
   va_list args;
   va_start(args, fmt);
   
@@ -132,7 +125,14 @@ void log(LogType type, const char *fmt, ...){
    printf("%s", ss.str().c_str());
    return;
   }
-  else if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug){
+  try{
+  log.open(logfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+  if(!log.is_open())
+     throw LogException("Failed to open log file.");
+  }catch (LogException &e){
+   std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
+  }
+  if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug){
     printf("%s %s", timestamp.c_str(), ss.str().c_str());
     log << timestamp << " " << ss.str();
   }

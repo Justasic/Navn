@@ -236,7 +236,7 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   void *handle = dlopen(mdir.c_str(), RTLD_NOW|RTLD_LOCAL);
   const char *err = dlerror();
   if(!handle && err && *err){
-   log(LOG_NORMAL, "[%s.so] %s", modname.c_str(), err);
+   log(LOG_NORMAL, "[%s] %s", modname.c_str(), err);
    remove(modname.c_str());
    return false;
   }

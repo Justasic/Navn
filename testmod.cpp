@@ -25,6 +25,12 @@ public:
   { 
     this->SetDesc("Example Dummy module, in binary form");
     this->AddCommand(&cmddmy);
+    
+    ModuleHandler::Attach(I_OnReload, this);
+  }
+  void OnReload(bool)
+  {
+   printf("RELOAD! YAAY!\n"); 
   }
   //ModuleReturn run(CommandSource &source, const std::vector<Flux::string> &params) { return MOD_RUN; }
 };
