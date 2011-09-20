@@ -273,6 +273,25 @@ void Oper::gline(const Flux::string &target, const Flux::string &time, const Flu
   this->raw("GLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
 /*******************************************************************************************/
+void CommandSource::Reply(const char *fmt, ...){
+  va_list args;
+  char buf[4096];
+  if(fmt){
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    this->Reply(Flux::string(buf));
+    va_end(args);
+  }
+}
+void CommandSource::Reply(const Flux::string &msg){
+ sepstream sep(msg, '\n');
+ Flux::string tok;
+ while(sep.GetToken(tok))
+ {
+   this->u->SendMessage(tok);
+ }
+}
+/*******************************************************************************************/
 /* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
 Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
 {

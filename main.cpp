@@ -139,8 +139,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       /***********************************/
     }//while loop ends here
-    delete Send;
-    delete sock;
+    ModuleHandler::UnloadAll();
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){

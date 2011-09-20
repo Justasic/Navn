@@ -44,6 +44,7 @@ public:
   static bool LoadModule(const Flux::string&);
   static bool DeleteModule(module*);
   static void SanitizeRuntime();
+  static void UnloadAll();
   
   static bool Attach(Implementation i, module *mod);
   static bool Detach(Implementation i, module *mod);

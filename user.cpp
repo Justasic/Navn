@@ -83,22 +83,3 @@ void ListUsers(CommandSource &source){
   }
   source.Reply("Users: %s\n", users.c_str());
 }
-/*********************************************************************************/
-void CommandSource::Reply(const char *fmt, ...){
-  va_list args;
-  char buf[4096];
-  if(fmt){
-    va_start(args, fmt);
-    vsnprintf(buf, sizeof(buf), fmt, args);
-    this->Reply(Flux::string(buf));
-    va_end(args);
-  }
-}
-void CommandSource::Reply(const Flux::string &msg){
- sepstream sep(msg, '\n');
- Flux::string tok;
- while(sep.GetToken(tok))
- {
-   this->u->SendMessage(tok);
- }
-}

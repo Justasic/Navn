@@ -19,6 +19,7 @@ public:
     if(!u){
       return MOD_STOP;
     }
+    printf("YAAY!\n");
     if(source.message == "moduletest"){
      source.Reply("TEST!");
      printf("YAAY!\n");

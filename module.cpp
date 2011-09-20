@@ -285,6 +285,10 @@ bool ModuleHandler::DeleteModule(module *m)
 	
 	return true;
 }
+void ModuleHandler::UnloadAll(){
+ for(std::vector<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it)
+   DeleteModule(*it);
+}
 void ModuleHandler::SanitizeRuntime()
 {
   log(LOG_DEBUG, "Cleaning up runtime directory.");
