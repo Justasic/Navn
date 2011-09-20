@@ -2,6 +2,7 @@
 #ifndef EXTERN_H
 #define EXTERN_H
 #include "flux.h"
+#include <list> //for std::list
 /* Prototypes and external variable declarations only */
 
 /* #define's */
@@ -50,7 +51,7 @@ extern int randint(int x, int y);
 extern bool IsValidChannel(const Flux::string&);
 extern bool protocoldebug, IsOper, dev, nofork, quitting, started;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
-extern std::vector<module*> moduleList;
+extern std::list<module*> moduleList;
 extern Flux::insensitive_map<User *> UserNickList;
 extern Flux::insensitive_map<Channel*> ChanMap;
 extern char **my_av, **my_envp;
@@ -66,5 +67,29 @@ void log(LogType, const char *fmt, ...);
 void process(const Flux::string&);
 void ProcessJoin(CommandSource&, const Flux::string&);
 void ProcessModules(CommandSource&, std::vector<Flux::string>&);
+
+/************************************************************/
+/* 	This is the only #define allowed in this file	    */
+#define FOREACH_MOD(y, x) \
+if(true) \
+{ \
+    std::vector<module*>::iterator safei; \
+    for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+    { \
+       safei = _i; \
+       ++safei; \
+       try \
+       { \
+          (*_i)->x ; \
+       } \
+       catch (const ModuleException &modexcept) \
+       { \
+          log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
+       } \
+        _i = safei; \
+    } \
+} \
+else \
+      static_cast<void>(0)
 
 #endif

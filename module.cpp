@@ -1,8 +1,8 @@
-#include <module.h>
+#include "module.h"
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 //This code sucks, you know it and I know it. 
 //Move on and call me an idiot later.
-std::vector<module*> moduleList;
+std::list<module*> moduleList;
 /** 
  * \fn module::module(Flux::string n, bool a, ModulePriority p)
  * \brief Module Constructor
@@ -10,11 +10,17 @@ std::vector<module*> moduleList;
  * \param activated Wether the module is activated or not
  * \param priority The module priority
  */
-module::module(const Flux::string &n, bool a, ModulePriority p){
-  name = n;
+module::module(const Flux::string &n, bool a, ModulePriority p):name(n){
   activated = a;
   priority = p;
+  if(FindModule(this->name))
+    throw ModuleException("Module already exists!");
   moduleList.push_back(this);
+}
+module::~module(){
+  std::list<module*>::iterator it = std::find(moduleList.begin(), moduleList.end(), this);
+  if(it != moduleList.end())
+    moduleList.erase(it);
 }
 /** 
  * \fn void module::SetDesc(const Flux::string &desc)
@@ -82,7 +88,7 @@ Command *FindCommand(const Flux::string &name){
  * \param name A string containing the module name you're looking for
  */
 module *FindModule(const Flux::string &name){
- for(std::vector<module*>::const_iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
+ for(std::list<module*>::const_iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
   module *m = *it;
   if(m->name == name)
     return m;
@@ -254,6 +260,7 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   }
   m->filename = mdir;
   m->handle = handle;
+  FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
   return true;
 }
 bool ModuleHandler::DeleteModule(module *m)
@@ -286,7 +293,7 @@ bool ModuleHandler::DeleteModule(module *m)
 	return true;
 }
 void ModuleHandler::UnloadAll(){
- for(std::vector<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it)
+ for(std::list<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it)
    DeleteModule(*it);
 }
 void ModuleHandler::SanitizeRuntime()

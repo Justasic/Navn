@@ -27,7 +27,7 @@
  * Example:
  *\code
  */
-#include "modules/ping_pong.h"
+/*#include "modules/ping_pong.h"
 #include "modules/modulehandler.h"
 #include "modules/system.h"
 #include "modules/navn.h"
@@ -42,7 +42,7 @@
 #include "modules/about_me.h"
 #include "modules/da_goat.h"
 #include "modules/Flux_Services.h"
-#include "modules/encyclopedia.h"
+#include "modules/encyclopedia.h"*/
 /*====
 #include "modules/tinyurl.h"
 
@@ -92,7 +92,7 @@ int main (int argcx, char** argvx, char *envp[])
       * Example:
       * \code 
       */
-    Ping_pong _Ping(true);
+    /*Ping_pong _Ping(true);
     modulehandler _modulehandler(true);
     system_m _system_m(true);
     navn _navn(true);
@@ -107,7 +107,7 @@ int main (int argcx, char** argvx, char *envp[])
     about_me _about_me(true);
     Da_Goat _Da_Goat(true);
     Flux_Services _Flux_Services(false);
-    encyclopedia _encyclopedia(false);
+    encyclopedia _encyclopedia(false); */
     /*
     TinyURL _TinyURL(false);
     */

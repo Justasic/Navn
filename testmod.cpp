@@ -26,7 +26,7 @@ public:
     this->SetDesc("Example Dummy module, in binary form");
     this->AddCommand(&cmddmy);
   }
-  ModuleReturn run(CommandSource &source, const std::vector<Flux::string> &params) { return MOD_RUN; }
+  //ModuleReturn run(CommandSource &source, const std::vector<Flux::string> &params) { return MOD_RUN; }
 };
 
 MODULE_HOOK(dummy)

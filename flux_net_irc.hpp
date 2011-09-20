@@ -321,6 +321,7 @@ void restart(Flux::string reason){
   if(reason.empty()){
     reason = "No Reason";
   }else{
+    FOREACH_MOD(I_OnRestart, OnRestart(reason));
     log(LOG_NORMAL, "Restarting: %s", reason.c_str());
     Send->command->quit("Restarting: %s", reason.c_str());
     chdir(CurrentPath);
@@ -346,9 +347,11 @@ static void Rehash(bool onstart = false){
     if(config){
       INIReader *configtmp = config;
       config = new INIReader(conffile);
+      FOREACH_MOD(I_OnReload, OnReload(onstart));
       delete configtmp;
     }
     config = new INIReader(conffile);
+    FOREACH_MOD(I_OnReload, OnReload(onstart));
     if(config->ParseError() == -1)
       throw ConfigException("Cannot open file bot.conf");
     if (config->ParseError() != 0) {
@@ -610,34 +613,13 @@ namespace ThreadHandler
 }
 
 void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
-  for(unsigned i = 0; i < moduleList.size(); i++){
-    if (moduleList[i]->activated == true){
-      moduleList[i]->run(source, params);
+  /*for(std::list<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
+    if ((*it)->activated == true){
+      (*it)->run(source, params);
     }
-  } 
+  }*/
 }
 /***************************************************************************/
-#define FOREACH_MOD(y, x) \
-if(true) \
-{ \
-    std::vector<module*>::iterator safei; \
-    for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
-    { \
-       safei = _i; \
-       ++safei; \
-       try \
-       { \
-          (*_i)->x ; \
-       } \
-       catch (const ModuleException &modexcept) \
-       { \
-          log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
-       } \
-        _i = safei; \
-    } \
-} \
-else \
-      static_cast<void>(0)
 
 //const Flux::string &modname,
 #define MODULE_HOOK(x) \
