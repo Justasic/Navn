@@ -115,7 +115,6 @@ int main (int argcx, char** argvx, char *envp[])
     
     /**       MODULES          */
     /*! \endcode */ 
-    Flux::string rply;
     while(!quitting){
       log(LOG_RAWIO, "Top of main loop");
       if(quitting)
@@ -144,7 +143,7 @@ int main (int argcx, char** argvx, char *envp[])
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){
-    if(!config)
+    if(!config) //This is so we dont throw logging exceptions..
         printf("Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
     else
       log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
