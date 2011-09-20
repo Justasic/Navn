@@ -320,6 +320,8 @@ const Flux::string &Command::GetDesc() const{
  return this->desc; 
 }
 bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand) { return false; }
+void Command::OnList(User *u) { }
+void Command::Run(CommandSource&, const std::vector<Flux::string>&) { }
 void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
 {
  this->SendSyntax(source);

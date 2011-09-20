@@ -2,7 +2,7 @@
 #ifndef EXTERN_H
 #define EXTERN_H
 #include "flux.h"
-/* This file is NOT for declarations, it is for prototypes only! */
+/* Prototypes and external variable declarations only */
 
 /* #define's */
 #define Delete unlink

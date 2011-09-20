@@ -3,29 +3,30 @@
 /*This module setup needs serious work!
  * Justasic will work on it but its going to be hard with los's module class.
  */
-
+class commanddummy : public Command
+{
+public:
+  commanddummy() : Command("ModuleTest", 1, 1)
+  {
+   this->SetDesc("Test for the modules");
+   this->SetSyntax("\2ModuleTest\2");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    source.Reply("YAY!");
+  }
+  
+};
 class dummy : public module
 {
+  commanddummy cmddmy;
 public:
   dummy(bool a):module("Dummy_bin", a, PRIORITY_LAST)
   { 
-    this->SetDesc("Example Dummy module, in binary form"); 
+    this->SetDesc("Example Dummy module, in binary form");
+    this->AddCommand(&cmddmy);
   }
-  
-  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
-  {
-    User *u = source.u;
-    Flux::string cmd = params.empty()?"":params[0];
-    if(!u){
-      return MOD_STOP;
-    }
-    printf("YAAY!\n");
-    if(source.message == "moduletest"){
-     source.Reply("TEST!");
-     printf("YAAY!\n");
-    }
-   return MOD_RUN; 
-  }
+  ModuleReturn run(CommandSource &source, const std::vector<Flux::string> &params) { return MOD_RUN; }
 };
 
 MODULE_HOOK(dummy)

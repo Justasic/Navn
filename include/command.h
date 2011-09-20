@@ -77,8 +77,9 @@ protected:
   void SendSyntax(CommandSource&, const Flux::string&);
 public:
   const Flux::string &GetDesc() const;
-  virtual void run(CommandSource&, const std::vector<Flux::string> &params)=0;
+  virtual void Run(CommandSource&, const std::vector<Flux::string> &params);
   virtual bool OnHelp(CommandSource&, const Flux::string&);
+  virtual void OnList(User *u);
   virtual void OnSyntaxError(CommandSource&, const Flux::string&);
 };
 Command *FindCommand(const Flux::string &name);
