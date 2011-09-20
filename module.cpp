@@ -218,12 +218,17 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
     return false;
   if(FindModule(modname))
     return false;
-  log(LOG_NORMAL,"Attempting to load module [%s.so]", modname.c_str());
+  log(LOG_NORMAL,"Attempting to load module [%s]", modname.c_str());
   
-  Flux::string mdir = binary_dir + "/runtime/"+modname+".so.XXXXXX";
+  Flux::string mdir = binary_dir + "/runtime/"+modname;
+  if(modname.find(".so"))
+    mdir += ".XXXXXX";
+  else
+    mdir += ".so.XXXXXX";
+  
   ModErr er = ModuleCopy(modname, mdir);
   if(er != MOD_ERR_OK){
-    log(LOG_TERMINAL, "ModuleCopy() error: %s", DecodeModErr(er).c_str());
+    log(LOG_TERMINAL, "Runtime copy error: %s", DecodeModErr(er).c_str());
     return false;
   }
   dlerror();
@@ -237,21 +242,21 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   }
   dlerror();
   
-  module *(*func)(bool a) = class_cast<module *(*)(bool a)>(dlsym(handle, "ModInit"));
+  module *(*f)(bool a) = class_cast<module *(*)(bool a)>(dlsym(handle, "ModInit"));
   err = dlerror();
-  if(!func && err && *err){
+  if(!f && err && *err){
    log(LOG_NORMAL, "No module init function, moving on.");
    dlclose(handle);
    remove(modname.c_str());
    return false;
   }
-  if(!func)
+  if(!f)
     throw CoreException("Can't find module constructor, yet no moderr?");
   
   module *m;
   try
   {
-    m = func(true); 
+    m = f(true); 
   }
   catch (const ModuleException &e)
   {
@@ -274,15 +279,15 @@ bool ModuleHandler::DeleteModule(module *m)
 	log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
 
 	dlerror();
-	void (*destroy_func)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
+	void (*df)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
 	const char *err = dlerror();
-	if (!destroy_func || err)
+	if (!df || err)
 	{
 		log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", m->name.c_str());
 		delete m; /* we just have to chance they haven't overwrote the delete operator then... */
 	}
 	else
-		destroy_func(m); /* Let the module delete it self, just in case */
+		df(m); /* Let the module delete it self, just in case */
 
 	if (dlclose(handle))
 		log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
