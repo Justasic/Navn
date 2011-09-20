@@ -24,20 +24,19 @@ int INIReader::Parse(const Flux::string &filename)
     {
       line = line.erase(0,1);
       section = line.erase(line.size()-1,line.size());
-      section.trim();
-      if(section.empty())
-	error = linenum; 
+      section.trim(); 
     }
     else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']'))
       error = linenum; 
-    else if(!line.empty() && line.find('=')){
+    else if(!line.empty() && line.find_first_of('=')){
       name = line;
       int d = line.find_first_of('=');
-      if(d > 0){
+      if(line.find_first_of(';') < (unsigned)d){
+	error = linenum;
+      }
+      else if(d > 0){
 	name = name.erase(d, name.size()-d);
 	name.trim();
-	if(name.empty())
-	  error = linenum;
       }
       /************************************/
       value = line;
@@ -50,11 +49,12 @@ int INIReader::Parse(const Flux::string &filename)
 	}
       }
       value.trim();
-      if(value.empty() || value.find(';') != (unsigned)-1)
-	error = linenum;
       /************************************/
+      
       if(error != 0)
 	break;
+      else if(value.empty() || section.empty() || name.empty() || value.find(';') != (unsigned)-1)
+	error = linenum;
       else
       _values[this->MakeKey(section, name)] = value;
     }else
