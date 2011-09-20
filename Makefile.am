@@ -1,9 +1,9 @@
 CXX = c++
 EXECUTABLE = @PACKAGE@
 PERL = $(srcdir)/run-cc.pl
-CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -I$(srcdir)/include -I$(srcdir)
+CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -Wl,--export-dynamic -ldl -lnsl -I$(srcdir)/include -I$(srcdir)
 LIBS = -lpthread -ldl
-MODFLAGS = -fPIC -g -rdynamic -lnsl $(LIBS) -shared -Wl,-soname,
+MODFLAGS = -fPIC -g -ldl -lnsl $(LIBS) -shared -Wl,-soname,
 all: 
 	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
 	@echo "Navn Version @VERSION@-with-netflix-and-chicken"
@@ -21,7 +21,7 @@ all:
 	@$(PERL) $(CXX) $(CFLAGS) -c timers.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c user.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c INIReader.cpp
-	@$(PERL) $(CXX) $(CFLAGS) -o $(EXECUTABLE) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o $(LIBS)
+	@$(PERL) $(CXX) $(CFLAGS) $(LIBS) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(EXECUTABLE) -rdynamic
 	@$(PERL) $(CXX) $(CFLAGS) -c testmod.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)testmod.so -o testmod.so testmod.o
 	@echo " "

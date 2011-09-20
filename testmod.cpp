@@ -19,8 +19,9 @@ public:
     if(!u){
       return MOD_STOP;
     }
-    if(source.message == "usertest"){
+    if(source.message == "moduletest"){
      source.Reply("TEST!");
+     printf("YAAY!\n");
     }
    return MOD_RUN; 
   }
