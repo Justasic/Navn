@@ -308,7 +308,7 @@ Flux::string os_time(){
  */
 static void remove_pidfile()
 {
- remove(pid_file.c_str());
+ Delete(pid_file.c_str());
 }
 /** 
  * \fn static void restart(Flux::string reason)

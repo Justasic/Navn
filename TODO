@@ -11,7 +11,7 @@ Navn 2.0.1
 [x] Rewrite the config system (Burn INIreader with fire!)
 [x] timer function
 [+] Make module system load binary files (.so files)
-[?] Add some kind of command handler so it can list all loaded commands from all modules
+[+] Add some kind of command handler so it can list all loaded commands from all modules
 [+] Make default channel's in the config
 [x] Make a server numeric catcher
 [x] Add timed pinging (should handle ping timeouts and connection issues)

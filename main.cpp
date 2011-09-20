@@ -62,13 +62,13 @@ int main (int argcx, char** argvx, char *envp[])
       //Make the socket used to connect to the server
       if(server.empty())
 	throw CoreException("No Server Specified.");
+      log(LOG_NORMAL, "Connecting to server '%s:%s'", server.c_str(), port.c_str());
       sock = new SocketIO(server, port);
 	  //Incase there is no connection
       if(!sock->get_address())
 	throw SocketException("Could not resolve server");
       if(!sock->connect())
 	throw SocketException("Could not create a socket to connect to the IRC server");
-      Send = new SendMessage();
     }catch(SocketException &e){
       log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());
       log(LOG_TERMINAL, "\033[22;37m");
@@ -76,6 +76,7 @@ int main (int argcx, char** argvx, char *envp[])
     }
     if(!sock)
       goto SocketStart;
+    Send = new SendMessage();
     time_t last_check = time(NULL);
     
     //Set the username and nick

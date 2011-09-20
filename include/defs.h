@@ -43,7 +43,7 @@ usrpass = config->Get("Bot","Password","Navn");
 ouser = config->Get("Oper","Oper_Username","");
 opass = config->Get("Oper","Oper_Password","");
 LogChannel = config->Get("Modules", "LogChannel","");
-testmod = config->Get("Modules", "testmod", "testmod");
+testmod = config->Get("Modules", "testmod", "");
 if(!testmod.empty() && ModuleHandler::LoadModule(testmod))
   log(LOG_NORMAL, "Loaded module %s", testmod.c_str());
 log(LOG_TERMINAL, "\033[22;31mReading Config File\033[22;30m...\033[22;36m");

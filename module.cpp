@@ -187,7 +187,7 @@ static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 	return !source.fail() && !target.fail() ? MOD_ERR_OK : MOD_ERR_FILE_IO;
 }
 
-template<class TYPE> TYPE function_cast(void *symbol)
+template<class TYPE> TYPE class_cast(void *symbol)
 {
     union
     {
@@ -237,7 +237,7 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   }
   dlerror();
   
-  module *(*func)(bool a) = function_cast<module *(*)(bool a)>(dlsym(handle, "ModInit"));
+  module *(*func)(bool a) = class_cast<module *(*)(bool a)>(dlsym(handle, "ModInit"));
   err = dlerror();
   if(!func && err && *err){
    log(LOG_NORMAL, "No module init function, moving on.");
@@ -274,7 +274,7 @@ bool ModuleHandler::DeleteModule(module *m)
 	log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
 
 	dlerror();
-	void (*destroy_func)(module *m) = function_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
+	void (*destroy_func)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
 	const char *err = dlerror();
 	if (!destroy_func || err)
 	{
