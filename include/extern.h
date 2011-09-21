@@ -30,6 +30,17 @@ enum LogType
   LOG_RAWIO,
   LOG_TERMINAL
 };
+enum ModErr{
+MOD_ERR_OK,
+MOD_ERR_MEMORY,
+MOD_ERR_PARAMS,
+MOD_ERR_EXISTS,
+MOD_ERR_NOEXIST,
+MOD_ERR_NOLOAD,
+MOD_ERR_UNKNOWN,
+MOD_ERR_FILE_IO,
+MOD_ERR_EXCEPTION
+};
 
 /*  *pointer definitions */
 Channel *findchannel(const Flux::string&);
@@ -45,6 +56,7 @@ extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir,
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);
 extern Flux::string TempFile(const Flux::string&);
+extern Flux::string DecodeModErr(ModErr err);
 extern Flux::string isolate(char begin, char end, const Flux::string &msg);
 extern Flux::string make_pass();
 extern int randint(int x, int y);

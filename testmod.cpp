@@ -32,7 +32,6 @@ public:
   {
    printf("RELOAD! YAAY!\n"); 
   }
-  //ModuleReturn run(CommandSource &source, const std::vector<Flux::string> &params) { return MOD_RUN; }
 };
 
 MODULE_HOOK(dummy)

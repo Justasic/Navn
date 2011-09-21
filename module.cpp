@@ -110,17 +110,6 @@ bool ModuleHandler::Attach(Implementation i, module *mod){
   EventHandlers[i].push_back(mod);
   return true;
 }
-enum ModErr{
-MOD_ERR_OK,
-MOD_ERR_MEMORY,
-MOD_ERR_PARAMS,
-MOD_ERR_EXISTS,
-MOD_ERR_NOEXIST,
-MOD_ERR_NOLOAD,
-MOD_ERR_UNKNOWN,
-MOD_ERR_FILE_IO,
-MOD_ERR_EXCEPTION
-};
 Flux::string DecodeModErr(ModErr err){
  switch(err){
    case MOD_ERR_OK:
@@ -212,12 +201,12 @@ bool ModuleHandler::Detach(Implementation i, module *mod){
   return true;
 }
 
-bool ModuleHandler::LoadModule(const Flux::string &modname)
+ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
   if(modname.empty())
-    return false;
+    return MOD_ERR_PARAMS;
   if(FindModule(modname))
-    return false;
+    return MOD_ERR_EXISTS;
   log(LOG_NORMAL,"Attempting to load module [%s]", modname.c_str());
   
   Flux::string mdir = binary_dir + "/runtime/"+modname;
@@ -229,7 +218,7 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   ModErr er = ModuleCopy(modname, mdir);
   if(er != MOD_ERR_OK){
     log(LOG_TERMINAL, "Runtime copy error: %s", DecodeModErr(er).c_str());
-    return false;
+    return er;
   }
   dlerror();
   
@@ -238,7 +227,7 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   if(!handle && err && *err){
    log(LOG_NORMAL, "[%s] %s", modname.c_str(), err);
    remove(modname.c_str());
-   return false;
+   return MOD_ERR_NOLOAD;
   }
   dlerror();
   
@@ -248,7 +237,7 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
    log(LOG_NORMAL, "No module init function, moving on.");
    dlclose(handle);
    remove(modname.c_str());
-   return false;
+   return MOD_ERR_NOLOAD;
   }
   if(!f)
     throw CoreException("Can't find module constructor, yet no moderr?");
@@ -261,12 +250,12 @@ bool ModuleHandler::LoadModule(const Flux::string &modname)
   catch (const ModuleException &e)
   {
    log(LOG_NORMAL,"Error while loading %s: %s", modname.c_str(), e.GetReason());
-   return false;
+   return MOD_ERR_EXCEPTION;
   }
   m->filename = mdir;
   m->handle = handle;
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
-  return true;
+  return MOD_ERR_OK;
 }
 bool ModuleHandler::DeleteModule(module *m)
 {
@@ -297,9 +286,16 @@ bool ModuleHandler::DeleteModule(module *m)
 	
 	return true;
 }
+bool ModuleHandler::Unload(module *m){
+  if(!m)
+    return false;
+  FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
+  DeleteModule(m);
+  return true;
+}
 void ModuleHandler::UnloadAll(){
  for(std::list<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it)
-   DeleteModule(*it);
+   Unload(*it);
 }
 void ModuleHandler::SanitizeRuntime()
 {

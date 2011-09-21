@@ -44,8 +44,12 @@ ouser = config->Get("Oper","Oper_Username","");
 opass = config->Get("Oper","Oper_Password","");
 LogChannel = config->Get("Modules", "LogChannel","");
 testmod = config->Get("Modules", "testmod", "");
-if(!testmod.empty() && ModuleHandler::LoadModule(testmod))
+if(!testmod.empty()){
+  ModErr e = ModuleHandler::LoadModule(testmod);
+  if(e != MOD_ERR_OK)
+    log(LOG_NORMAL, "Module Load Error: %s", DecodeModErr(e).c_str());
   log(LOG_NORMAL, "Loaded module %s", testmod.c_str());
+}
 log(LOG_TERMINAL, "\033[22;31mReading Config File\033[22;30m...\033[22;36m");
 }
 /******************End Configuration variables********************/
