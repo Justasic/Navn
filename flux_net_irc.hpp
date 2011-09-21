@@ -612,13 +612,6 @@ namespace ThreadHandler
   }
 }
 
-void ProcessModules(CommandSource &source, std::vector<Flux::string> &params){
-  /*for(std::list<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
-    if ((*it)->activated == true){
-      (*it)->run(source, params);
-    }
-  }*/
-}
 /***************************************************************************/
 
 //const Flux::string &modname,

@@ -32,6 +32,7 @@ public:
   {
    printf("RELOAD! YAAY!\n"); 
   }
+  
 };
 
 MODULE_HOOK(dummy)

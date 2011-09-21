@@ -117,15 +117,11 @@ int main (int argcx, char** argvx, char *envp[])
     /*! \endcode */ 
     while(!quitting){
       log(LOG_RAWIO, "Top of main loop");
-      if(quitting)
-	break;
       
       /* Process the buffer and modules */
       std::queue<Flux::string> queue = sock->GetBuffer();
       while(!queue.empty())
       {
-	if(queue.empty())
-	 break;
 	process(queue.front());
 	queue.pop();
 	sock->popqueue();
@@ -139,6 +135,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       /***********************************/
     }//while loop ends here
+    FOREACH_MOD(I_OnShutdown, OnShutdown());
     ModuleHandler::UnloadAll();
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here

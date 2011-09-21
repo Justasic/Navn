@@ -50,12 +50,13 @@ class ModuleHandler
 public:
   static std::vector<module *> EventHandlers[I_END];
   static ModErr LoadModule(const Flux::string&);
-  static bool DeleteModule(module*);
   static void SanitizeRuntime();
   static void UnloadAll();
   static bool Unload(module*);
   
   static bool Attach(Implementation i, module *mod);
   static bool Detach(Implementation i, module *mod);
+private:
+  static bool DeleteModule(module*);
 };
 #endif

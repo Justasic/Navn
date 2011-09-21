@@ -78,7 +78,7 @@ void send_cmd(const char *fmt, ...);
 void log(LogType, const char *fmt, ...);
 void process(const Flux::string&);
 void ProcessJoin(CommandSource&, const Flux::string&);
-void ProcessModules(CommandSource&, std::vector<Flux::string>&);
+void ProcessCommands(CommandSource&, std::vector<Flux::string>&);
 
 /************************************************************/
 /* 	This is the only #define allowed in this file	    */

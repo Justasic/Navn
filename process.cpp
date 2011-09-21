@@ -88,7 +88,7 @@ void process(const Flux::string &buffer){
   /* make local variables instead of global ones */
   Flux::string nickname = isolate(':','!',source),
   uident = isolate('!','@',source),
-  uhost = isolate('@',' ',source);
+  uhost = isolate('@',' ',source), cmd;
   
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
@@ -115,10 +115,10 @@ void process(const Flux::string &buffer){
    if(u && u->nick == nick){
        nick = params[0];
        delete u; //we shouldnt be a user in the 1st place (:
-     }else if(u->IsOwner())
-       owner_nick = params[0];
-     else
-       delete u; //we delete the user because the above if statement makes a new one for the nick change
+  }else if(u->IsOwner())
+    owner_nick = params[0];
+  else
+    delete u; //we delete the user because the above if statement makes a new one for the nick change
    }
   if(command == "JOIN"){
     if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
@@ -149,5 +149,11 @@ void process(const Flux::string &buffer){
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
     return;
-  ProcessModules(Source, params2);
+  if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
+    Source.Reply("Unknown command \2%s\2", params2[0].c_str());
+  else{
+    Command *com = FindCommand(params2[0]);
+    if(com)
+      com->Run(Source, params2);
+  }
 }

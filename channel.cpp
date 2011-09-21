@@ -6,18 +6,16 @@ Channel::Channel(const Flux::string &nname, time_t ts){
   if(nname.empty())
     throw CoreException("Someone was an idiot and passed an empty channel name into the channel constructor >:d");
   if(!IsValidChannel(nname))
-    throw CoreException("An Invalid channel was passed into the Channel constructor >:d");
+    throw CoreException("An Invalid channel was passed into the Channel constructor :<");
   
   this->name = nname;
   this->creation_time = ts;
   this->topic_time = 0;
   ChanMap[this->name] = this;
-  //printf("Created new channel: %s\n", this->name.c_str());
   log(LOG_DEBUG, "Created new channel: %s", this->name.c_str());
 }
 Channel::~Channel()
 {
- //printf("Deleted channel: %s\n", this->name.c_str());
  log(LOG_DEBUG, "Deleted channel: %s", this->name.c_str());
  ChanMap.erase(this->name);
 }

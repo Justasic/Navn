@@ -136,46 +136,46 @@ Flux::string DecodeModErr(ModErr err){
 }
 static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 {
-	Flux::string input = binary_dir + "/" + name + ".so";
-	
-	struct stat s;
-	if (stat(input.c_str(), &s) == -1)
-		return MOD_ERR_NOEXIST;
-	else if (!S_ISREG(s.st_mode))
-		return MOD_ERR_NOEXIST;
-	std::ifstream source(input.c_str(), std::ios_base::in | std::ios_base::binary);
-	if (!source.is_open())
-		return MOD_ERR_NOEXIST;
-	
-	output = TempFile(output);
+  Flux::string input = binary_dir + "/" + name + ".so";
+  
+  struct stat s;
+  if (stat(input.c_str(), &s) == -1)
+	  return MOD_ERR_NOEXIST;
+  else if (!S_ISREG(s.st_mode))
+	  return MOD_ERR_NOEXIST;
+  std::ifstream source(input.c_str(), std::ios_base::in | std::ios_base::binary);
+  if (!source.is_open())
+	  return MOD_ERR_NOEXIST;
+  
+  output = TempFile(output);
 
-	log(LOG_RAWIO, "Runtime module location: %s", output.c_str());
-	
-	std::ofstream target(output.c_str(), std::ios_base::in | std::ios_base::binary);
-	if (!target.is_open())
-	{
-		source.close();
-		return MOD_ERR_FILE_IO;
-	}
+  log(LOG_RAWIO, "Runtime module location: %s", output.c_str());
+  
+  std::ofstream target(output.c_str(), std::ios_base::in | std::ios_base::binary);
+  if (!target.is_open())
+  {
+	  source.close();
+	  return MOD_ERR_FILE_IO;
+  }
 
-	int want = s.st_size;
-	char *buffer = new char[s.st_size];
-	while (want > 0 && !source.fail() && !target.fail())
-	{
-		source.read(buffer, want);
-		int read_len = source.gcount();
+  int want = s.st_size;
+  char *buffer = new char[s.st_size];
+  while (want > 0 && !source.fail() && !target.fail())
+  {
+	  source.read(buffer, want);
+	  int read_len = source.gcount();
 
-		target.write(buffer, read_len);
-		want -= read_len;
-	}
-	delete [] buffer;
-	
-	source.close();
-	target.close();
+	  target.write(buffer, read_len);
+	  want -= read_len;
+  }
+  delete [] buffer;
+  
+  source.close();
+  target.close();
 
-	return !source.fail() && !target.fail() ? MOD_ERR_OK : MOD_ERR_FILE_IO;
+  return !source.fail() && !target.fail() ? MOD_ERR_OK : MOD_ERR_FILE_IO;
 }
-
+/*  This code was found online at http://www.linuxjournal.com/article/3687#comment-26593 */
 template<class TYPE> TYPE class_cast(void *symbol)
 {
     union
@@ -259,32 +259,32 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 }
 bool ModuleHandler::DeleteModule(module *m)
 {
-	if (!m || !m->handle)
-		return false;
+  if (!m || !m->handle)
+	  return false;
 
-	void *handle = m->handle;
-	Flux::string filename = m->filename;
+  void *handle = m->handle;
+  Flux::string filename = m->filename;
 
-	log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
+  log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
 
-	dlerror();
-	void (*df)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
-	const char *err = dlerror();
-	if (!df || err)
-	{
-		log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", m->name.c_str());
-		delete m; /* we just have to chance they haven't overwrote the delete operator then... */
-	}
-	else
-		df(m); /* Let the module delete it self, just in case */
+  dlerror();
+  void (*df)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
+  const char *err = dlerror();
+  if (!df || err)
+  {
+	  log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", m->name.c_str());
+	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
+  }
+  else
+	  df(m); /* Let the module delete it self, just in case */
 
-	if (dlclose(handle))
-		log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
+  if (dlclose(handle))
+	  log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
 
-	if (!filename.empty())
-		Delete(filename.c_str());
-	
-	return true;
+  if (!filename.empty())
+	  Delete(filename.c_str());
+  
+  return true;
 }
 bool ModuleHandler::Unload(module *m){
   if(!m)
