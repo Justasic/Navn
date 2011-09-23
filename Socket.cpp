@@ -92,28 +92,7 @@ bool SocketIO::Connect()
   log(LOG_DEBUG, "Connected to %s:%s", this->server.c_str(), this->port.c_str());
   return true;
 }
-bool SocketIO::Read()
-{
- return true; 
-}
-std::queue<Flux::string> recv_queue;
-int receive(int SocketFD)
-{
-  char tbuf[NET_BUFSIZE + 1] = "";
-  memset(tbuf, 0, NET_BUFSIZE + 1);
-  size_t i = read(SocketFD, tbuf, NET_BUFSIZE);
-  if(i <= 0)
-    return i;
-  sepstream sep(tbuf, '\n');
-  Flux::string buf;
-  while(sep.GetToken(buf))
-  {
-    buf.trim();
-    recv_queue.push(buf);
-  }
-  return i; 
-}
-const int SocketIO::recv() const
+int SocketIO::Process()
 {
   timeval timeout;
   timeout.tv_sec = 5;
@@ -128,25 +107,32 @@ const int SocketIO::recv() const
   }
   if(FD_ISSET(this->GetFD(), &read) && sres)
   {
-      if(receive(this->GetFD()) == -1 && !quitting)
+  if(this->recv() == -1 && !quitting)
       {
 	log(LOG_RAWIO, "Socket Error: %s", strerror(errno));
 	return errno;
       }else
       {
-	return receive(this->GetFD());
+	return this->recv();
       }
   }
   return sres;
 }
-std::queue<Flux::string> SocketIO::GetBuffer()
+const int SocketIO::recv() const
 {
-  this->recv();
-  return recv_queue;
-}
-void SocketIO::popqueue()
-{
- recv_queue.pop(); 
+  char tbuf[NET_BUFSIZE + 1] = "";
+  memset(tbuf, 0, NET_BUFSIZE + 1);
+  size_t i = read(this->GetFD(), tbuf, NET_BUFSIZE);
+  if(i <= 0)
+    return i;
+  sepstream sep(tbuf, '\n');
+  Flux::string buf;
+  while(sep.GetToken(buf))
+  {
+    buf.trim();
+    this->Read(buf);
+  }
+  return 0;
 }
 const int SocketIO::send(const Flux::string &buf) const
 {

@@ -50,6 +50,13 @@
 /**
  *\endcode 
  */
+
+bool SocketIO::Read(const Flux::string &buf) const
+{
+  process(buf); /* Process the buffer for navn */
+  return true;
+}
+
 int main (int argcx, char** argvx, char *envp[])
 {
   my_av = argvx;
@@ -119,13 +126,7 @@ int main (int argcx, char** argvx, char *envp[])
       log(LOG_RAWIO, "Top of main loop");
       
       /* Process the buffer and modules */
-      std::queue<Flux::string> queue = sock->GetBuffer();
-      while(!queue.empty())
-      {
-	process(queue.front());
-	queue.pop();
-	sock->popqueue();
-      }
+      sock->Process();
       /* Process Timers */
       /***********************************/
       if(time(NULL) - last_check >= 3)

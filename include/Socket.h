@@ -34,8 +34,6 @@ private:
 public:
   SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
-  std::queue<Flux::string> GetBuffer();
-  void popqueue();
   bool get_address();
   int GetFD() const;
   bool SetNonBlocking();
@@ -43,7 +41,8 @@ public:
   const int recv() const;
   const int send(const Flux::string &buf) const;
   bool Connect();
-  bool is_valid() const { return sockn != -1; }
-  virtual bool Read();
+  bool is_valid() const { return this->GetFD() != -1; }
+  int Process();
+  bool Read(const Flux::string&) const;
 };
 #endif
