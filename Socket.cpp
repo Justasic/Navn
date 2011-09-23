@@ -66,9 +66,8 @@ bool SocketIO::Connect()
   struct addrinfo *p;
   int connected = 0;
   char s[INET6_ADDRSTRLEN];
-  log(LOG_RAWIO, "Connecting..");
   
-  this->get_address();
+  this->get_address(); // catch any resolution issues before we even attempt to connect..
   
   for(p = servinfo; p != NULL; p = p->ai_next)
   {

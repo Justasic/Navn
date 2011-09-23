@@ -19,14 +19,6 @@
  */
 #include <flux_net_irc.hpp>
 
-/**
- * \page tutmod Adding Your Module - Step 1: Including your module.
- * \section tut1 Step 1: Including your module.
- * \subsection tut1a Include your module in main.cpp
- * Include your module in main.cpp using the #inlclude keyword
- * Example:
- *\code
- */
 /*#include "modules/ping_pong.h"
 #include "modules/modulehandler.h"
 #include "modules/system.h"
@@ -47,9 +39,6 @@
 #include "modules/tinyurl.h"
 
 */
-/**
- *\endcode 
- */
 
 bool SocketIO::Read(const Flux::string &buf) const
 {
@@ -77,6 +66,8 @@ int main (int argcx, char** argvx, char *envp[])
     }catch(SocketException &e){
       if(startcount >= 3)
 	throw CoreException(e.description().c_str());
+      if(sock)
+	delete sock;
       log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());
       goto SocketStart;
     }
@@ -89,16 +80,6 @@ int main (int argcx, char** argvx, char *envp[])
     Send->command->user(usrname, realname);
     Send->command->nick(nick);
 
-    /**
-      * \page tutmod2 Adding Your Module - Step 2: Running your module.
-      * \section tut2 Step 2: Running your module.
-      * \subsection tut2a Run your main module function in main.cpp
-      * Run the main function of your module in main.cpp, inside the while loop. To be able
-      * to send things out of the socket, and read things from the socket, your module's
-      *  main function should accept \a sock and either \a irc_string reply or the raw string \a rply.
-      * Example:
-      * \code 
-      */
     /*Ping_pong _Ping(true);
     modulehandler _modulehandler(true);
     system_m _system_m(true);
@@ -119,8 +100,6 @@ int main (int argcx, char** argvx, char *envp[])
     TinyURL _TinyURL(false);
     */
     
-    /**       MODULES          */
-    /*! \endcode */ 
     while(!quitting){
       log(LOG_RAWIO, "Top of main loop");
       
@@ -141,10 +120,10 @@ int main (int argcx, char** argvx, char *envp[])
   }//try ends here
   catch(const CoreException& e){
     if(!config) //This is so we dont throw logging exceptions..
-        printf("Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
+        log(LOG_TERMINAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
     else
       log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
-    printf("\033[22;37m\n"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
+    log(LOG_TERMINAL, "\033[22;37m\n"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     exit(1);
   }
   return EXIT_SUCCESS;
