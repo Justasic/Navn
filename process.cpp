@@ -150,7 +150,12 @@ void process(const Flux::string &buffer){
   if(source.empty() || message.empty() || params2.empty())
     return;
   if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
-    Source.Reply("Unknown command \2%s\2", params2[0].c_str());
+  {
+    if(!IsValidChannel(receiver))
+      Source.Reply("Unknown command \2%s\2", params2[0].c_str());
+    else
+      static_cast<void>(0); //This will one day be a actual function for channel only messages..
+  }
   else{
     Command *com = FindCommand(params2[0]);
     if(com)
