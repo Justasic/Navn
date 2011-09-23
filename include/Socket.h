@@ -44,5 +44,6 @@ public:
   const int send(const Flux::string &buf) const;
   bool Connect();
   bool is_valid() const { return sockn != -1; }
+  virtual bool Read();
 };
 #endif

@@ -47,7 +47,7 @@ bool SocketIO::get_address()
   rv = getaddrinfo(this->server.c_str(), this->port.c_str(), &hints, &servinfo);
   if (rv != 0) {
     return false;
-    log(LOG_DEBUG, "getaddrinfo: %s", gai_strerror(rv));
+    log(LOG_RAWIO, "getaddrinfo: %s", gai_strerror(rv));
   }
   return true;
 }
@@ -89,10 +89,13 @@ bool SocketIO::Connect()
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   this->SetNonBlocking();
   FD_SET(this->GetFD(), &ReadFD);
-  log(LOG_DEBUG, "Connected! FD: %i", this->GetFD());
+  log(LOG_DEBUG, "Connected to %s:%s", this->server.c_str(), this->port.c_str());
   return true;
 }
-
+bool SocketIO::Read()
+{
+ return true; 
+}
 std::queue<Flux::string> recv_queue;
 int receive(int SocketFD)
 {
