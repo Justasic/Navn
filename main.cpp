@@ -64,21 +64,20 @@ int main (int argcx, char** argvx, char *envp[])
   try
   {
     startup(argcx, argvx);
+    int startcount = 0;
     SocketStart:
+    ++startcount;
     try{
       //Make the socket used to connect to the server
       if(server.empty())
 	throw CoreException("No Server Specified.");
       log(LOG_NORMAL, "Connecting to server '%s:%s'", server.c_str(), port.c_str());
       sock = new SocketIO(server, port);
-	  //Incase there is no connection
-      if(!sock->get_address())
-	throw SocketException("Could not resolve server");
-      if(!sock->Connect())
-	throw SocketException("Could not create a socket to connect to the IRC server");
+      sock->Connect();
     }catch(SocketException &e){
+      if(startcount >= 3)
+	throw CoreException(e.description().c_str());
       log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());
-      log(LOG_TERMINAL, "\033[22;37m");
       goto SocketStart;
     }
     if(!sock)

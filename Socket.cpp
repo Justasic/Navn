@@ -4,7 +4,8 @@
  *\file  Socket.cpp 
  *\brief Contains the Socket engine.
  */
-#include <Socket.h>
+#include "SocketException.h"
+#include "Socket.h"
 #include <fcntl.h>
 #include <iostream>
 #define NET_BUFSIZE 65535
@@ -41,15 +42,15 @@ SocketIO::~SocketIO(){
  FD_CLR(this->GetFD(), &ReadFD);
  FD_CLR(this->GetFD(), &WriteFD);
 }
-bool SocketIO::get_address()
+void SocketIO::get_address()
 {
   int rv = 1;
   rv = getaddrinfo(this->server.c_str(), this->port.c_str(), &hints, &servinfo);
-  if (rv != 0) {
-    return false;
-    log(LOG_RAWIO, "getaddrinfo: %s", gai_strerror(rv));
+  if (rv != 0)
+  {
+    Flux::string info = "Could not resolve server: "+this->server+":"+this->port+" "+gai_strerror(rv);
+    throw SocketException(info.c_str());
   }
-  return true;
 }
 
 void *get_in_addr(struct sockaddr *sa)
@@ -67,6 +68,8 @@ bool SocketIO::Connect()
   char s[INET6_ADDRSTRLEN];
   log(LOG_RAWIO, "Connecting..");
   
+  this->get_address();
+  
   for(p = servinfo; p != NULL; p = p->ai_next)
   {
     sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
@@ -83,7 +86,10 @@ bool SocketIO::Connect()
   }
   
   if (connected == -1)
+  {
+    throw SocketException("Connection Failed.");
     return false;
+  }
   freeaddrinfo(servinfo); //Clear up used memory we dont need anymore
   
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);

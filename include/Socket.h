@@ -26,15 +26,14 @@ const int MAXCONNECTIONS = 5;
 class SocketIO
 {
 private:
-  std::string server;
-  std::string port;
+  std::string server, port;
   int sockn;
   size_t recvlen;
   struct addrinfo hints, *servinfo;
 public:
   SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
-  bool get_address();
+  void get_address();
   int GetFD() const;
   bool SetNonBlocking();
   bool SetBlocking();
