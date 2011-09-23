@@ -38,8 +38,8 @@ bool SocketIO::SetBlocking()
 SocketIO::~SocketIO(){
  if(is_valid()) 
    close(sockn);
- FD_CLR(sockn, &ReadFD);
- FD_CLR(sockn, &WriteFD);
+ FD_CLR(this->GetFD(), &ReadFD);
+ FD_CLR(this->GetFD(), &WriteFD);
 }
 bool SocketIO::get_address()
 {
@@ -70,9 +70,9 @@ bool SocketIO::Connect()
   for(p = servinfo; p != NULL; p = p->ai_next)
   {
     sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-    if (sockn < 0) 
+    if (this->GetFD() < 0) 
       continue;
-    connected = connect(sockn, p->ai_addr, p->ai_addrlen);
+    connected = connect(this->GetFD(), p->ai_addr, p->ai_addrlen);
     if (connected == -1)
     {
       close(sockn);
@@ -82,7 +82,8 @@ bool SocketIO::Connect()
     break;
   }
   
-  if (connected == -1) return false;
+  if (connected == -1)
+    return false;
   freeaddrinfo(servinfo); //Clear up used memory we dont need anymore
   
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
