@@ -144,7 +144,7 @@ void process(const Flux::string &buffer){
   Source.raw = buffer;
   Source.raw_source = nickname;
   if(command == "352"){
-   ProcessJoin(Source, c->name); 
+   ProcessJoin(Source, c->name);
   }
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   if(source.empty() || message.empty() || params2.empty())
@@ -158,7 +158,9 @@ void process(const Flux::string &buffer){
   }
   else{
     Command *com = FindCommand(params2[0]);
-    if(com)
+    if(com && !IsValidChannel(receiver))
       com->Run(Source, params2);
+    else
+      static_cast<void>(0);
   }
 }

@@ -67,7 +67,7 @@ int main (int argcx, char** argvx, char *envp[])
 	  //Incase there is no connection
       if(!sock->get_address())
 	throw SocketException("Could not resolve server");
-      if(!sock->connect())
+      if(!sock->Connect())
 	throw SocketException("Could not create a socket to connect to the IRC server");
     }catch(SocketException &e){
       log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());

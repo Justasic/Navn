@@ -287,8 +287,8 @@ namespace Flux{
     
     inline const char *c_str() const { return this->_string.c_str(); }
     inline ci::string ci_str() const { return ci::string(this->_string.c_str()); }
+    inline const std::string &std_str() const { return this->_string; }
     inline std::string &std_str() { return this->_string; }
-    inline const std::string &tostd() const { return this->_string; }
     
     inline bool empty() const { return this->_string.empty(); }
     inline size_type length() const { return this->_string.length(); }

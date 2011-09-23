@@ -37,9 +37,12 @@ public:
   std::queue<Flux::string> GetBuffer();
   void popqueue();
   bool get_address();
+  int GetFD() const;
+  bool SetNonBlocking();
+  bool SetBlocking();
   const int recv() const;
   const int send(const Flux::string &buf) const;
-  bool connect();
+  bool Connect();
   bool is_valid() const { return sockn != -1; }
 };
 #endif

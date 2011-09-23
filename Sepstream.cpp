@@ -59,7 +59,7 @@ bool sepstream::StreamEnd()
 /* VS 2008 specific function */
 bool Flux::hash::operator()(const Flux::string &s1, const Flux::string &s2) const
 {
-	return s1.tostd().compare(s2.tostd()) < 0;
+	return s1.std_str().compare(s2.std_str()) < 0;
 }
 
 /** Hash an Flux::string for unordered_map
