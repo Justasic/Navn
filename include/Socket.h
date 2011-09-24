@@ -20,7 +20,7 @@
 #include <ostream>
 #include <queue>
 #include <arpa/inet.h>
-#include <extern.h>
+#include "extern.h"
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 class SocketIO

@@ -314,7 +314,7 @@ void Command::SendSyntax(CommandSource &source){
 }
 void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
   source.Reply("Syntax: \2%s %s\2", source.command.c_str(), syn.c_str());
-  source.Reply("\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
+  source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
 }
 const Flux::string &Command::GetDesc() const{
  return this->desc; 
@@ -325,5 +325,5 @@ void Command::Run(CommandSource&, const std::vector<Flux::string>&) { }
 void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
 {
  this->SendSyntax(source);
- source.Reply("\002/msg %s HELP %s\002 for more information.", nick.c_str(), source.command.c_str());
+ source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
 }

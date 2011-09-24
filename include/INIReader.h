@@ -4,10 +4,12 @@
 // Go to the project home page for more info:
 //
 // http://code.google.com/p/inih/
+// This INIReader has been modified by Justasic, it is NOT the one on google code!
 
 #ifndef __INIREADER_H__
 #define __INIREADER_H__
 #include "flux.h"
+#include "extern.h"
 
 // Read an INI file into easy-to-access name/value pairs. (Note that I've gone
 // for simplicity here rather than speed, but it should be pretty decent.)
@@ -27,7 +29,7 @@ public:
 
     // Get an integer (long) value from INI file, returning default_value if
     // not found.
-    long GetInteger(const Flux::string&, const Flux::string&, long default_value);
+    long GetInteger(const Flux::string&, const Flux::string&, long);
     
     ~INIReader();
 
@@ -38,6 +40,31 @@ private:
     
     // Parse the INI file
     int Parse(const Flux::string &filename);
+};
+class BotConfig
+{
+public:
+  BotConfig();
+  virtual ~BotConfig();
+  INIReader *Parser;
+  Flux::string LogFile;
+  Flux::string ServicesAccount;
+  Flux::string ServicesPass;
+  Flux::string Owner;
+  Flux::string Realname;
+  Flux::string Ident;
+  Flux::string BotNick;
+  Flux::string Channel;
+  Flux::string Port;
+  Flux::string Server;
+  Flux::string LogChannel;
+  Flux::string PidFile;
+  Flux::string UserPass;
+  Flux::string OperatorAccount;
+  Flux::string OperatorPass;
+  Flux::string testmod;
+private:
+  void Read();
 };
 
 #endif  // __INIREADER_H__

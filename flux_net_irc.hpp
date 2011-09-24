@@ -6,7 +6,7 @@
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 SendMessage *Send;
 SocketIO *sock;
-INIReader *config;
+BotConfig *Config;
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
@@ -308,7 +308,7 @@ Flux::string os_time(){
  */
 static void remove_pidfile()
 {
- Delete(pid_file.c_str());
+ Delete(Config->PidFile.c_str());
 }
 /** 
  * \fn static void restart(Flux::string reason)
@@ -343,22 +343,17 @@ static void Rehash(bool onstart = false){
   if(!onstart)
     log(LOG_NORMAL, "Rehashing Config File: bot.conf");
   try{
-    Flux::string conffile = binary_dir + "/bot.conf";
-    if(config){
-      INIReader *configtmp = config;
-      config = new INIReader(conffile);
-      FOREACH_MOD(I_OnReload, OnReload(onstart));
+      BotConfig *configtmp = Config;
+      Config = new BotConfig();
       delete configtmp;
-    }
-    config = new INIReader(conffile);
-    FOREACH_MOD(I_OnReload, OnReload(onstart));
-    if(config->ParseError() == -1)
+    if(Config->Parser->ParseError() == -1)
       throw ConfigException("Cannot open file bot.conf");
-    if (config->ParseError() != 0) {
+    if (Config->Parser->ParseError() != 0) {
       Flux::string error = "Error on line ";
-      error += Flux::stringify(config->ParseError());
+      error += Flux::stringify(Config->Parser->ParseError());
 	throw ConfigException(error);
     }
+    FOREACH_MOD(I_OnReload, OnReload(onstart));
     ReadConfig();
   }catch(const ConfigException &ex){
     if(onstart){
@@ -368,7 +363,7 @@ static void Rehash(bool onstart = false){
     }
     log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
     if(!onstart)
-      Send->notice(owner_nick, "Config Exception Caught: %s", ex.GetReason());
+      Send->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
   } 
 }
 /**Random Quit message selector
@@ -435,8 +430,10 @@ void sigact(int sig)
  */
 static void WritePID(){
   //logging to a text file and making the PID file.
+  if(Config->PidFile.empty())
+    throw CoreException("Cannot write PID file, no PID file specified.");
   FILE *pidfile;
-  pidfile = fopen(pid_file.c_str(), "w");
+  pidfile = fopen(Config->PidFile.c_str(), "w");
   if(pidfile){
 #ifdef _WIN32
     fprintf(pidfile, "%d\n", static_cast<int>(GetCurrentProcessId()));
@@ -447,7 +444,7 @@ static void WritePID(){
     atexit(remove_pidfile);
   }
   else
-    throw CoreException("Can not write to PID file "+pid_file);
+    throw CoreException("Can not write to PID file "+Config->PidFile);
 }
 /**This is the startup sequence that starts at the top to the try loop
  * @param startup(int, char)
@@ -456,7 +453,14 @@ void startup(int argc, char** argv) {
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
-  Rehash(true);
+  Config = new BotConfig();
+  if(Config->Parser->ParseError() == -1)
+      throw CoreException("Cannot open file bot.conf");
+    if (Config->Parser->ParseError() != 0) {
+      Flux::string error = "Error on line ";
+      error += Flux::stringify(Config->Parser->ParseError());
+	throw CoreException(error);
+    }
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
@@ -472,11 +476,11 @@ void startup(int argc, char** argv) {
        if(arg == "--developer" || arg == "--dev" || arg == "-d")
        {
          dev = nofork = true;
-	 log(LOG_DEBUG, "%s is started in Developer mode. (%s)", nick.c_str(), arg.c_str());
+	 log(LOG_DEBUG, "%s is started in Developer mode. (%s)", Config->BotNick.c_str(), arg.c_str());
        }
        else if (arg == "--nofork" || arg == "-f"){
          nofork = true;
-         log(LOG_DEBUG, "%s is started With No Forking enabled. (%s)", nick.c_str(), arg.c_str());
+         log(LOG_DEBUG, "%s is started With No Forking enabled. (%s)", Config->BotNick.c_str(), arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
 	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION);
@@ -503,7 +507,7 @@ void startup(int argc, char** argv) {
        else if(arg == "--protocoldebug" || "-p"){
 	 protocoldebug = true;
 	 nofork = true;
-	 log(LOG_RAWIO, "%s is started in Protocol Debug mode. (%s)", nick.c_str(), arg.c_str());
+	 log(LOG_RAWIO, "%s is started in Protocol Debug mode. (%s)", Config->BotNick.c_str(), arg.c_str());
        }
        else
        {
@@ -514,7 +518,7 @@ void startup(int argc, char** argv) {
   }
    WritePID();
    ModuleHandler::SanitizeRuntime();
-   log(LOG_NORMAL, "%s Started. PID: %d", nick.c_str(), getpid());
+   log(LOG_NORMAL, "%s Started. PID: %d", Config->BotNick.c_str(), getpid());
    if (!nofork){
 	int i;
 	if((i = fork()) < 0)

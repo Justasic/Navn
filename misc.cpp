@@ -1,5 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #include "user.h"
+#include "INIReader.h"
 
 //General misc functions
 /** \fn Flux::string strip(const Flux::string &buf)
@@ -49,7 +50,6 @@ Flux::string Flux::Sanitize(const Flux::string &string){
   }
   return ret.c_str(); 
 }
-
 /** 
  * \fn Flux::string make_pass()
  * \brief Makes a random password
@@ -126,9 +126,15 @@ void log(LogType type, const char *fmt, ...){
    return;
   }
   try{
-  log.open(logfile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-  if(!log.is_open())
-     throw LogException("Failed to open log file.");
+  log.open(Config->LogFile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+  if(!log.is_open()){
+    std::stringstream lerr;
+    if(!Config->LogFile.empty())
+      lerr << "Failed to open log file "<< Config->LogFile <<": " << strerror(errno);
+    else
+      lerr << "Cannot find logfile.";
+     throw LogException(lerr.str().c_str());
+  }
   }catch (LogException &e){
    std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
   }

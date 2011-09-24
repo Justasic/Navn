@@ -58,10 +58,10 @@ int main (int argcx, char** argvx, char *envp[])
     ++startcount;
     try{
       //Make the socket used to connect to the server
-      if(server.empty())
+      if(Config->Server.empty())
 	throw CoreException("No Server Specified.");
-      log(LOG_NORMAL, "Connecting to server '%s:%s'", server.c_str(), port.c_str());
-      sock = new SocketIO(server, port);
+      log(LOG_NORMAL, "Connecting to server '%s:%s'", Config->Server.c_str(), Config->Port.c_str());
+      sock = new SocketIO(Config->Server, Config->Port);
       sock->Connect();
     }catch(SocketException &e){
       if(startcount >= 3)
@@ -77,8 +77,8 @@ int main (int argcx, char** argvx, char *envp[])
     time_t last_check = time(NULL);
     
     //Set the username and nick
-    Send->command->user(usrname, realname);
-    Send->command->nick(nick);
+    Send->command->user(Config->Ident, Config->Realname);
+    Send->command->nick(Config->BotNick);
 
     /*Ping_pong _Ping(true);
     modulehandler _modulehandler(true);
@@ -103,7 +103,7 @@ int main (int argcx, char** argvx, char *envp[])
     while(!quitting){
       log(LOG_RAWIO, "Top of main loop");
       
-      /* Process the buffer and modules */
+      /* Process the socket engine */
       sock->Process();
       /* Process Timers */
       /***********************************/
@@ -119,7 +119,7 @@ int main (int argcx, char** argvx, char *envp[])
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){
-    if(!config) //This is so we dont throw logging exceptions..
+    if(!Config) //This is so we dont throw logging exceptions..
         log(LOG_TERMINAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
     else
       log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());

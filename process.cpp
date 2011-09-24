@@ -106,26 +106,26 @@ void process(const Flux::string &buffer){
   if(command == "QUIT" && u)
     delete u;
   if(command == "PART"){
-    if(IsValidChannel(receiver) && c && u && u->nick == nick)
+    if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
     else
      delete u;
   }
-  if(command == "NICK"){
-   if(u && u->nick == nick){
+  /*if(command == "NICK"){
+   if(u && u->nick == Config->BotNick){
        nick = params[0];
        delete u; //we shouldnt be a user in the 1st place (:
   }else if(u->IsOwner())
     owner_nick = params[0];
   else
     delete u; //we delete the user because the above if statement makes a new one for the nick change
-   }
+   }*/
   if(command == "JOIN"){
     if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
       u = new User(nickname, uident, uhost);
     if(!c && IsValidChannel(receiver))
       c = new Channel(receiver);
-    if(u->nick == nick)
+    if(u->nick == Config->BotNick)
       c->SendWho();
   }
   if(command == "004" && source.find('.'))

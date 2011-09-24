@@ -7,10 +7,11 @@
 #include "INIReader.h"
 int INIReader::Parse(const Flux::string &filename)
 {
+  printf("ENTERED PARSE\n");
  std::ifstream file(filename.c_str());
   int linenum, error =0;
   Flux::string line, section, name, value;
-  
+  printf("Using File %s\n", filename.c_str());
   if(file.is_open())
   {
    while(file.good())
@@ -67,6 +68,7 @@ int INIReader::Parse(const Flux::string &filename)
 }
 INIReader::INIReader(const Flux::string &filename)
 {
+  printf("Entered INIREADER\n");
   _error = this->Parse(filename);
 }
 INIReader::~INIReader(){ }
@@ -99,3 +101,37 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
         key[i] = tolower(key[i]);
     return key;
 }
+/**************************************************************************************/
+BotConfig::BotConfig()
+{
+ Flux::string conffile = binary_dir + "/bot.conf";
+ this->Parser = new INIReader(conffile);
+ printf("CONF: %s\n", conffile.c_str());
+ this->Read();
+}
+BotConfig::~BotConfig() { if(Parser) delete Parser; }
+void BotConfig::Read(){
+  printf("CONF: Started Reading\n");
+  int i = 0;
+  printf("CONF: [%i] Reading\n", i);
+  this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
+  printf("CONF: [%i] Reading\n", (++i));
+  this->ServicesAccount = this->Parser->Get("Bot","NickServ_Account","");
+  printf("CONF: [%i] Reading\n", (++i));
+  this->ServicesPass = this->Parser->Get("Bot","NickServ_Password","");
+  this->Owner = this->Parser->Get("Bot","Owner","");
+  this->Realname = this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+Flux::stringify(VERSION)));
+  this->Ident = this->Parser->Get("Connect","Ident","Navn");
+  this->BotNick = this->Parser->Get("Bot","Nick","Navn");
+  this->Channel = this->Parser->Get("Bot","Channel","#Test");
+  this->Port = this->Parser->Get("Connect","Port","6667");
+  this->Server = this->Parser->Get("Connect", "Server", "");
+  this->LogChannel = this->Parser->Get("Modules", "LogChannel","");
+  this->PidFile = this->Parser->Get("Bot","PID File","navn.pid");
+  this->UserPass = this->Parser->Get("Bot","Password","Navn");
+  this->OperatorAccount = this->Parser->Get("Oper","Oper_Username","");
+  this->OperatorPass = this->Parser->Get("Oper","Oper_Password","");
+  this->testmod = Parser->Get("Modules", "testmod", "");
+  printf("CONF: Finished Reading\n");
+}
+

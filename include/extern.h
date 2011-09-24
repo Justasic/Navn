@@ -20,6 +20,7 @@ class module;
 class SendMessage;
 class ModuleHandler;
 class INIReader;
+class BotConfig;
 struct CommandSource;
 
 /* Enumorations */
@@ -42,7 +43,7 @@ MOD_ERR_FILE_IO,
 MOD_ERR_EXCEPTION
 };
 
-/*  *pointer definitions */
+/*  Class pointer finder definitions */
 Channel *findchannel(const Flux::string&);
 User *finduser(const Flux::string &nick);
 module *FindModule(const Flux::string &name);
@@ -51,8 +52,8 @@ Command *FindCommand(const Flux::string &name);
 /* extern's */
 extern SocketIO *sock;
 extern SendMessage *Send;
-extern INIReader *config;
-extern Flux::string nick, owner_nick, logfile, binary_path, bot_bin, binary_dir, server_name;
+extern BotConfig *Config;
+extern Flux::string binary_path, bot_bin, binary_dir, server_name;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);
 extern Flux::string TempFile(const Flux::string&);
@@ -79,6 +80,7 @@ void log(LogType, const char *fmt, ...);
 void process(const Flux::string&);
 void ProcessJoin(CommandSource&, const Flux::string&);
 void ProcessCommands(CommandSource&, std::vector<Flux::string>&);
+void ReadConfig();
 
 /************************************************************/
 /* 	This is the only #define allowed in this file	    */
