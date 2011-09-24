@@ -7,11 +7,9 @@
 #include "INIReader.h"
 int INIReader::Parse(const Flux::string &filename)
 {
-  printf("ENTERED PARSE\n");
  std::ifstream file(filename.c_str());
   int linenum, error =0;
   Flux::string line, section, name, value;
-  printf("Using File %s\n", filename.c_str());
   if(file.is_open())
   {
    while(file.good())
@@ -68,7 +66,6 @@ int INIReader::Parse(const Flux::string &filename)
 }
 INIReader::INIReader(const Flux::string &filename)
 {
-  printf("Entered INIREADER\n");
   _error = this->Parse(filename);
 }
 INIReader::~INIReader(){ }
@@ -106,18 +103,13 @@ BotConfig::BotConfig()
 {
  Flux::string conffile = binary_dir + "/bot.conf";
  this->Parser = new INIReader(conffile);
- printf("CONF: %s\n", conffile.c_str());
+ this->Binary_Dir = binary_dir;
  this->Read();
 }
 BotConfig::~BotConfig() { if(Parser) delete Parser; }
 void BotConfig::Read(){
-  printf("CONF: Started Reading\n");
-  int i = 0;
-  printf("CONF: [%i] Reading\n", i);
   this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
-  printf("CONF: [%i] Reading\n", (++i));
   this->ServicesAccount = this->Parser->Get("Bot","NickServ_Account","");
-  printf("CONF: [%i] Reading\n", (++i));
   this->ServicesPass = this->Parser->Get("Bot","NickServ_Password","");
   this->Owner = this->Parser->Get("Bot","Owner","");
   this->Realname = this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+Flux::stringify(VERSION)));
@@ -132,6 +124,8 @@ void BotConfig::Read(){
   this->OperatorAccount = this->Parser->Get("Oper","Oper_Username","");
   this->OperatorPass = this->Parser->Get("Oper","Oper_Password","");
   this->testmod = Parser->Get("Modules", "testmod", "");
-  printf("CONF: Finished Reading\n");
+  this->PingModule = Parser->Get("Modules", "Ping Module", "");
+  this->JoinModule = Parser->Get("Modules", "Join Module", "");
+  log(LOG_TERMINAL, "\033[22;31mReading Config File\033[22;30m...\033[22;36m");
 }
 

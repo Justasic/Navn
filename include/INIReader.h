@@ -48,6 +48,9 @@ public:
   virtual ~BotConfig();
   INIReader *Parser;
   Flux::string LogFile;
+  Flux::string Binary_Dir;
+  Flux::string JoinModule;
+  Flux::string PingModule;
   Flux::string ServicesAccount;
   Flux::string ServicesPass;
   Flux::string Owner;

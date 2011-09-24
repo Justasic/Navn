@@ -209,7 +209,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     return MOD_ERR_EXISTS;
   log(LOG_NORMAL,"Attempting to load module [%s]", modname.c_str());
   
-  Flux::string mdir = binary_dir + "/runtime/"+modname;
+  Flux::string mdir = Config->Binary_Dir + "/runtime/"+modname;
   if(modname.find(".so"))
     mdir += ".XXXXXX";
   else
@@ -294,13 +294,15 @@ bool ModuleHandler::Unload(module *m){
   return true;
 }
 void ModuleHandler::UnloadAll(){
- for(std::list<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it)
-   Unload(*it);
+ for(std::list<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
+   if(it != it_end)
+     Unload(*it);
+ }
 }
 void ModuleHandler::SanitizeRuntime()
 {
   log(LOG_DEBUG, "Cleaning up runtime directory.");
-  Flux::string dirbuf = binary_dir + "/runtime";
+  Flux::string dirbuf = Config->Binary_Dir + "/runtime";
   DIR *dirp = opendir(dirbuf.c_str());
 	if (!dirp)
 	{
@@ -332,6 +334,10 @@ void ReadConfig(){
       log(LOG_NORMAL, "Module Load Error: %s", DecodeModErr(e).c_str());
     log(LOG_NORMAL, "Loaded module %s", testmod.c_str());
   }
-log(LOG_TERMINAL, "\033[22;31mReading Config File\033[22;30m...\033[22;36m");
+  if(ModuleHandler::LoadModule(Config->PingModule) != MOD_ERR_OK)
+    log(LOG_NORMAL, "ERROR loading module %s", Config->PingModule.c_str());
+  
+  if(ModuleHandler::LoadModule(Config->JoinModule) != MOD_ERR_OK)
+    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
 }
 /******************End Configuration variables********************/

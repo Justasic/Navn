@@ -58,6 +58,7 @@ Added a new compile system (GNU make) so navn can compile files correctly
 Rewrote the INIReader into C++ so now it is more effecent at its job
 Removed Make_two_digits as i (justasic) have no clue what it does and its not used anywhere
 Deprecated irc_string::isolate() as its been replaced by the global function isolate() which does the same thing
+Added Shared Object (.so) Modules
 
 Navn 2.0.0
 ==========

@@ -24,6 +24,10 @@ all:
 	@$(PERL) $(CXX) $(CFLAGS) $(LIBS) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(EXECUTABLE) -rdynamic
 	@$(PERL) $(CXX) $(CFLAGS) -c testmod.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)testmod.so -o testmod.so testmod.o
+	@$(PERL) $(CXX) $(CFLAGS) -c ping_pong.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)ping_pong.so -o ping_pong.so ping_pong.o
+	@$(PERL) $(CXX) $(CFLAGS) -c join.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)join.so -o join.so join.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 

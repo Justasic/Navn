@@ -456,11 +456,13 @@ void startup(int argc, char** argv) {
   Config = new BotConfig();
   if(Config->Parser->ParseError() == -1)
       throw CoreException("Cannot open file bot.conf");
-    if (Config->Parser->ParseError() != 0) {
-      Flux::string error = "Error on line ";
-      error += Flux::stringify(Config->Parser->ParseError());
-	throw CoreException(error);
-    }
+  if (Config->Parser->ParseError() != 0) {
+    Flux::string error = "Error on line ";
+    error += Flux::stringify(Config->Parser->ParseError());
+      throw CoreException(error);
+  }
+  ModuleHandler::SanitizeRuntime();
+  ReadConfig();
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
@@ -517,7 +519,6 @@ void startup(int argc, char** argv) {
   }
   }
    WritePID();
-   ModuleHandler::SanitizeRuntime();
    log(LOG_NORMAL, "%s Started. PID: %d", Config->BotNick.c_str(), getpid());
    if (!nofork){
 	int i;

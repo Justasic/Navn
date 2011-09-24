@@ -1,4 +1,5 @@
 #include "user.h"
+#include "module.h"
 
 /** 
  * \fn void ProcessJoin(CommandSource &source, const Flux::string &chan)
@@ -147,6 +148,7 @@ void process(const Flux::string &buffer){
    ProcessJoin(Source, c->name);
   }
   std::vector<Flux::string> params2 = StringVector(message, ' ');
+  FOREACH_MOD(I_OnCommand, OnCommand(Source, params2));
   if(source.empty() || message.empty() || params2.empty())
     return;
   if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
