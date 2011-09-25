@@ -49,6 +49,7 @@ class ModuleHandler
 public:
   static std::vector<module *> EventHandlers[I_END];
   static ModErr LoadModule(const Flux::string&);
+  static Flux::string DecodePriority(ModulePriority);
   static void SanitizeRuntime();
   static void UnloadAll();
   static bool Unload(module*);

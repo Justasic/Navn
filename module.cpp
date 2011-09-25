@@ -287,6 +287,21 @@ void ModuleHandler::UnloadAll(){
   for(Flux::map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
     Unload(it->second);
 }
+Flux::string ModuleHandler::DecodePriority(ModulePriority p)
+{
+ switch(p)
+ { 
+   case PRIORITY_FIRST:
+     return "FIRST";
+   case PRIORITY_DONTCARE:
+     return "DON'T CARE";
+   case PRIORITY_LAST:
+     return "LAST";
+   default:
+     return "";
+ }
+ return "";
+}
 void ModuleHandler::SanitizeRuntime()
 {
   log(LOG_DEBUG, "Cleaning up runtime directory.");
@@ -328,6 +343,9 @@ void ReadConfig(){
     log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
   
   if(ModuleHandler::LoadModule(Config->HelpModule) != MOD_ERR_OK)
+    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
+  
+  if(ModuleHandler::LoadModule(Config->modhandler) != MOD_ERR_OK)
     log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
 }
 /******************End Configuration variables********************/
