@@ -35,6 +35,7 @@ public:
   virtual ~module();
   
   virtual void OnPrivmsg(const Flux::string&, const std::vector<Flux::string>&) {}
+  virtual void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string>&) {}
   virtual void OnModuleLoad(module*) {}
   virtual void OnModuleUnload(module*){}
   virtual void OnRestart(const Flux::string&) {}

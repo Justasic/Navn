@@ -340,25 +340,14 @@ void ModuleHandler::SanitizeRuntime()
  * This will re-read the config file values when told to do so
  */
 void ReadConfig(){
-  Flux::string testmod = Config->testmod;
-  if(!testmod.empty()){
-    ModErr e = ModuleHandler::LoadModule(testmod);
+  sepstream sep(Config->Modules, ',');
+  Flux::string tok;
+  while(sep.GetToken(tok))
+  {
+    tok.trim();
+    ModErr e = ModuleHandler::LoadModule(tok);
     if(e != MOD_ERR_OK)
-      log(LOG_NORMAL, "ERROR loading module %s: %s", testmod.c_str(), DecodeModErr(e).c_str());
+      log(LOG_NORMAL, "ERROR loading module %s: %s", tok.c_str(), DecodeModErr(e).c_str());
   }
-  if(ModuleHandler::LoadModule(Config->PingModule) != MOD_ERR_OK)
-    log(LOG_NORMAL, "ERROR loading module %s", Config->PingModule.c_str());
-  
-  if(ModuleHandler::LoadModule(Config->JoinModule) != MOD_ERR_OK)
-    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
-  
-  if(ModuleHandler::LoadModule(Config->HelpModule) != MOD_ERR_OK)
-    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
-  
-  if(ModuleHandler::LoadModule(Config->modhandler) != MOD_ERR_OK)
-    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
-  
-  if(ModuleHandler::LoadModule(Config->SystemMod) != MOD_ERR_OK)
-    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
 }
 /******************End Configuration variables********************/

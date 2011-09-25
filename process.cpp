@@ -160,14 +160,14 @@ void process(const Flux::string &buffer){
     if(!IsValidChannel(receiver))
       Source.Reply("Unknown command \2%s\2", params2[0].c_str());
     else
-      static_cast<void>(0); //This will one day be a actual function for channel only messages..
+      FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
   }
   else{
     Command *com = FindCommand(params2[0]);
     if(com && !IsValidChannel(receiver))
       com->Run(Source, params2);
     else
-      static_cast<void>(0);
+      static_cast<void>(0); //This receives ALL server commands sent to the bot..
   }
   command.clear();
 }

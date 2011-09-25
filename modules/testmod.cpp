@@ -25,12 +25,21 @@ public:
   { 
     this->AddCommand(&cmddmy);
     this->SetAuthor("Justasic");
-    
-    ModuleHandler::Attach(I_OnReload, this);
+    Implementation i[] = { I_OnReload, I_OnPrivmsg };
+    ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
   }
   void OnReload(bool)
   {
    printf("RELOAD! YAAY!\n"); 
+  }
+  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+  {
+    Flux::string msg;
+    for(unsigned i=0; i < params.size(); ++i){
+      msg += params[i];
+      msg.AddSpace();
+    }
+   printf("Channel message: %s\n", msg.c_str()); 
   }
   
 };

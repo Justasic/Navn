@@ -49,8 +49,6 @@ public:
   INIReader *Parser;
   Flux::string LogFile;
   Flux::string Binary_Dir;
-  Flux::string JoinModule;
-  Flux::string PingModule;
   Flux::string ServicesAccount;
   Flux::string ServicesPass;
   Flux::string Owner;
@@ -66,10 +64,7 @@ public:
   Flux::string OperatorAccount;
   Flux::string OperatorPass;
   Flux::string ModuleDir;
-  Flux::string HelpModule;
-  Flux::string modhandler;
-  Flux::string SystemMod;
-  Flux::string testmod;
+  Flux::string Modules;
 private:
   void Read();
 };

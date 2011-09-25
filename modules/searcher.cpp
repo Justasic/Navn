@@ -68,7 +68,7 @@ class searcher:public module
 public:
   searcher():module("Searcher Handler", PRIORITY_DONTCARE){
     ModuleHandler::Attach(I_OnPrivmsg, this);
-    this->SetAuthor("Justasic");
+    this->SetAuthor("Lordofsraam");
   }
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];

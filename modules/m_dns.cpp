@@ -1,9 +1,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#ifndef DNS_H
-#define DNS_H
 #ifndef NI_MAXHOST
 #define NI_MAXHOST 1025
 #endif
+#include "flux_net_irc.hpp"
 
 /**
  * \file dns.h Header file holding the \a DNS functions.
@@ -106,38 +105,41 @@ void alldns(Flux::string host, Flux::string dest){
 class dns_m:public module
 {
 public:
-  dns_m(bool a):module("DNS Resolver", a, PRIORITY_DONTCARE){ this->SetDesc("Reverse/forward resolve a DNS hostname"); }
-  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+  dns_m():module("DNS Resolver", PRIORITY_DONTCARE){ 
+    this->SetAuthor("Justasic");
+    ModuleHandler::Attach(I_OnPrivmsg, this);
+  }
+  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
     Flux::string cmd = params.empty()?"":params[0];
-    if(cmd.equals_ci("!rnds")){
+    
+    if(cmd.equals_ci("!rdns")){
      if(params.size() < 2){
-       source.Reply("Syntax: \2!RDNS \37ipaddress\15");
-       return MOD_RUN;
+       u->SendMessage("Syntax: \2!RDNS \37ipaddress\15");
+       return;
      }
       Flux::string ip = params[params.size() -1];
-      rdns(source.c->name, ip);
+      rdns(c->name, ip);
     }
     if(cmd.equals_ci("!dns")){
      if(params.size() < 2){
-       source.Reply("Syntax: \2!DNS \37hostname\15");
-       return MOD_RUN;
+       u->SendMessage("Syntax: \2!DNS \37hostname\15");
+       return;
      }
       Flux::string host = params[params.size() -1];
-      dns(source.c->name, host);
+      dns(c->name, host);
     }
     if(cmd.equals_ci("!ardns")){
      if(params.size() < 2){
-       source.Reply("Syntax: \2!ARDNS \37hostname\15");
-       return MOD_RUN;
+       u->SendMessage("Syntax: \2!ARDNS \37hostname\15");
+       return;
      }
      Flux::string host = params[params.size() -1];
-     alldns(host, source.c->name);
+     alldns(host, c->name);
       
     }
-    return MOD_RUN;
   }
 };
 /**
  * @}
  */
-#endif
+MODULE_HOOK(dns_m)

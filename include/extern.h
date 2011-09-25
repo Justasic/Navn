@@ -106,7 +106,6 @@ if(true) \
           log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
        } \
         _i = safei; \
-        printf("FOREACH_MOD call: %i\n", static_cast<int>(y)); \
     } \
 } \
 else \
