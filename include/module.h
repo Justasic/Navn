@@ -8,7 +8,7 @@ enum Implementation{
 	I_OnPrivmsg, I_OnModuleLoad, I_OnModuleUnload,
 	I_OnRestart, I_OnShutdown, I_OnReload, I_OnCommand,
 	I_OnStart, I_OnNumeric, I_OnPreConnect, I_OnPostConnect,
-	I_OnCTCP,
+	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick,
   I_END
 };
 enum ModuleReturn{
@@ -42,6 +42,9 @@ public:
   virtual void OnModuleUnload(module*){}
   virtual void OnRestart(const Flux::string&) {}
   virtual void OnShutdown() {}
+  virtual void OnQuit(User *u, const Flux::string&) {}
+  virtual void OnJoin(User *u, Channel *c) {}
+  virtual void OnKick(User *u, Channel *c, const Flux::string&) {}
   virtual void OnNumeric(int) {}
   virtual void OnReload(bool) {}
   virtual void OnCommand(const Flux::string&, const std::vector<Flux::string>&) {}

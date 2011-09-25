@@ -85,12 +85,6 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     u->SendPrivmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
     log(LOG_NORMAL, "Identified to NickServ with account \"%s\"", nsacc.c_str());
   }
-  if (source.command == "JOIN"){ //welcomes everyone who joins the channel
-    if(!(u->nick == nick)){
-      source.Reply("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(), c->name.c_str(), nick.c_str());
-      log(LOG_NORMAL, "%s joined %s", u->nick.c_str(), c->name.c_str());
-    }
-  }
   if(source.command == "KICK"){
     Flux::string reason = source.params[2].empty()?"":source.params[2];
     printf("%s kicked %s (%s)\n", u->nick.c_str(), cmd.c_str(), reason.c_str());

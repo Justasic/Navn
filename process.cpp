@@ -113,14 +113,17 @@ void process(const Flux::string &buffer){
     if(!protocoldebug)
       log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
   }
-  if(command == "QUIT" && u)
+  if(command == "QUIT" && u){
+    FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     delete u;
+  }
   if(command == "PART"){
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
     else
      delete u;
   }
+  if(command == "KICK"){ FOREACH_MOD(I_OnKick, OnKick(finduser(params[1]), findchannel(params[0]), params[2])); }
   /*if(command == "NICK"){
    if(u && u->nick == Config->BotNick){
        nick = params[0];
@@ -133,10 +136,13 @@ void process(const Flux::string &buffer){
   if(command == "JOIN"){
     if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
       u = new User(nickname, uident, uhost);
-    if(!c && IsValidChannel(receiver))
+    else if(!c && IsValidChannel(receiver))
       c = new Channel(receiver);
-    if(u->nick == Config->BotNick)
+    else if(u->nick == Config->BotNick)
       c->SendWho();
+    else if(u->nick != Config->BotNick){
+      FOREACH_MOD(I_OnJoin, OnJoin(u, c));
+    }
   }
   if(command == "004" && source.find('.'))
     server_name = source;

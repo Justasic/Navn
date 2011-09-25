@@ -130,7 +130,8 @@ public:
     this->AddCommand(&cmdchown);
     this->AddCommand(&cmdquit);
     this->AddCommand(&cmdrestart);
-    ModuleHandler::Attach(I_OnNumeric, this);
+    Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick };
+    ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");
   }
   void OnNumeric(int i)
@@ -161,6 +162,20 @@ public:
       Send->notice(Config->Owner, "The randomly generated password is: "+password);
       started = true; 
     }
+  }
+  void OnJoin(User *u, Channel *c)
+  {
+    u->SendMessage("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(),
+		   c->name.c_str(), Config->BotNick.c_str());
+    log(LOG_NORMAL, "%s joined %s", u->nick.c_str(), c->name.c_str());
+  }
+  void OnKick(User *u, Channel *c, const Flux::string &reason)
+  {
+     if(u->nick == Config->BotNick)
+     {
+       log(LOG_NORMAL, "%s kicked me from %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
+      c->SendJoin(); 
+     }
   }
 };
 
