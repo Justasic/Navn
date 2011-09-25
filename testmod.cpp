@@ -21,9 +21,8 @@ class dummy : public module
 {
   commanddummy cmddmy;
 public:
-  dummy(bool a):module("Dummy_bin", a, PRIORITY_LAST)
+  dummy():module("Dummy_bin", PRIORITY_LAST)
   { 
-    this->SetDesc("Example Dummy module, in binary form");
     this->AddCommand(&cmddmy);
     
     ModuleHandler::Attach(I_OnReload, this);

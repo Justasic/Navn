@@ -2,7 +2,7 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 //This code sucks, you know it and I know it. 
 //Move on and call me an idiot later.
-std::list<module*> moduleList;
+Flux::map<module*> Modules; 
 /** 
  * \fn module::module(Flux::string n, bool a, ModulePriority p)
  * \brief Module Constructor
@@ -10,32 +10,14 @@ std::list<module*> moduleList;
  * \param activated Wether the module is activated or not
  * \param priority The module priority
  */
-module::module(const Flux::string &n, bool a, ModulePriority p):name(n){
-  activated = a;
+module::module(const Flux::string &n, ModulePriority p):name(n){
   priority = p;
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
-  moduleList.push_back(this);
+  Modules[this->name] = this;
 }
 module::~module(){
-  std::list<module*>::iterator it = std::find(moduleList.begin(), moduleList.end(), this);
-  if(it != moduleList.end())
-    moduleList.erase(it);
-}
-/** 
- * \fn void module::SetDesc(const Flux::string &desc)
- * \brief Sets the module description
- * \param desc The description for the module
- */
-void module::SetDesc(const Flux::string &description){
-  this->desc = description;
-}
-/** 
- * \fn const Flux::string module::GetDesc() const
- * \brief Get the modules description
- */
-const Flux::string module::GetDesc() const{
- return this->desc; 
+    Modules.erase(this->name);
 }
 /* commands stuff */
 CommandMap Commandsmap;
@@ -88,11 +70,9 @@ Command *FindCommand(const Flux::string &name){
  * \param name A string containing the module name you're looking for
  */
 module *FindModule(const Flux::string &name){
- for(std::list<module*>::const_iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
-  module *m = *it;
-  if(m->name == name)
-    return m;
- }
+  Flux::map<module*>::iterator it = Modules.find(name);
+  if(it != Modules.end())
+    return it->second;
  return NULL;
 }
 /*******************************************************************/
@@ -136,7 +116,7 @@ Flux::string DecodeModErr(ModErr err){
 }
 static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 {
-  Flux::string input = binary_dir + "/" + name + ".so";
+  Flux::string input = Config->Binary_Dir + "/" + name + ".so";
   
   struct stat s;
   if (stat(input.c_str(), &s) == -1)
@@ -224,14 +204,15 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   
   void *handle = dlopen(mdir.c_str(), RTLD_LAZY);
   const char *err = dlerror();
-  if(!handle && err && *err){
+  if(!handle && err && *err)
+  {
    log(LOG_NORMAL, "[%s] %s", modname.c_str(), err);
    remove(modname.c_str());
    return MOD_ERR_NOLOAD;
   }
   dlerror();
   
-  module *(*f)(bool a) = class_cast<module *(*)(bool a)>(dlsym(handle, "ModInit"));
+  module *(*f)() = class_cast<module *(*)()>(dlsym(handle, "ModInit"));
   err = dlerror();
   if(!f && err && *err){
    log(LOG_NORMAL, "No module init function, moving on.");
@@ -245,7 +226,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   module *m;
   try
   {
-    m = f(true); 
+    m = f(); 
   }
   catch (const ModuleException &e)
   {
@@ -294,10 +275,8 @@ bool ModuleHandler::Unload(module *m){
   return true;
 }
 void ModuleHandler::UnloadAll(){
- for(std::list<module*>::iterator it = moduleList.begin(), it_end = moduleList.end(); it != it_end; ++it){
-   if(it != it_end)
-     Unload(*it);
- }
+  for(Flux::map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
+    Unload(it->second);
 }
 void ModuleHandler::SanitizeRuntime()
 {

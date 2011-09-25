@@ -116,6 +116,7 @@ int main (int argcx, char** argvx, char *envp[])
     }//while loop ends here
     FOREACH_MOD(I_OnShutdown, OnShutdown());
     ModuleHandler::UnloadAll();
+    ModuleHandler::SanitizeRuntime();
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){
@@ -126,6 +127,7 @@ int main (int argcx, char** argvx, char *envp[])
     log(LOG_TERMINAL, "\033[22;37m\n"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     exit(1);
   }
+  printf("Exiting\n");
   return EXIT_SUCCESS;
 }
 

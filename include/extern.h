@@ -64,7 +64,7 @@ extern int randint(int x, int y);
 extern bool IsValidChannel(const Flux::string&);
 extern bool protocoldebug, IsOper, dev, nofork, quitting, started;
 extern std::vector<Flux::string> StringVector(const Flux::string&, char);
-extern std::list<module*> moduleList;
+extern Flux::map<module*> Modules;
 extern Flux::insensitive_map<User *> UserNickList;
 extern Flux::insensitive_map<Channel*> ChanMap;
 extern char **my_av, **my_envp;

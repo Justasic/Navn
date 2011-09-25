@@ -417,7 +417,6 @@ void sigact(int sig)
       quitmsg = "Recieved Signal: "+sigstr;
       if(Send)
         Send->command->quit(quitmsg);
-      ModuleHandler::SanitizeRuntime();
       quitting = true;
       break;
     default:
@@ -621,9 +620,9 @@ namespace ThreadHandler
 
 //const Flux::string &modname,
 #define MODULE_HOOK(x) \
-extern "C" module *ModInit(bool activated) \
+extern "C" module *ModInit() \
         { \
-                return new x(activated); \
+                return new x(); \
         } \
         extern "C" void Moduninit(x *m) \
         { \

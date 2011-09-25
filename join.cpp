@@ -16,19 +16,23 @@ public:
     if(params.size() != 2)
       return;
     User *u = source.u;
-    Flux::string chann = params.size() == 2 ? params[1] : "";
-    if(!IsValidChannel(chann)){
-      source.Reply("Channel \2%s\2 is not a valad channel.", chann.c_str());
-      log(LOG_NORMAL, "%s attempted to make bot join %s", u->nick.c_str(), chann.c_str());
+    Flux::string chan = params.size() == 2 ? params[1] : "";
+    if(!u->IsOwner()){
+      source.Reply(ACCESS_DENIED);
+      return;
+    }
+    if(!IsValidChannel(chan)){
+      source.Reply("Channel \2%s\2 is not a valad channel.", chan.c_str());
+      log(LOG_NORMAL, "%s attempted to make bot join %s", u->nick.c_str(), chan.c_str());
     }else{
-      log(LOG_NORMAL, "%s made the bot join %s", u->nick.c_str(), chann.c_str());
-      Channel *chan = findchannel(chann);
-      if(chan){
-	chan->SendJoin();
-	chan->SendMessage(welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
+      log(LOG_NORMAL, "%s made the bot join %s", u->nick.c_str(), chan.c_str());
+      Channel *c = findchannel(chan);
+      if(c){
+	c->SendJoin();
+	c->SendMessage(welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
       }else{
-	Send->command->join(chann);
-	Send->privmsg(chann, welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
+	Send->command->join(chan);
+	Send->privmsg(chan, welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
       }
       
     }
@@ -39,9 +43,8 @@ class Join : public module
 {
   CommandJoin cmdjoin;
 public:
-  Join(bool a):module("JOIN", a, PRIORITY_DONTCARE)
+  Join():module("JOIN", PRIORITY_DONTCARE)
   { 
-    this->SetDesc("By Justasic");
     this->AddCommand(&cmdjoin);
   }
 };
