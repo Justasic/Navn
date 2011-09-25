@@ -14,12 +14,16 @@ module::module(const Flux::string &n, ModulePriority p):name(n){
   priority = p;
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
+  
   Modules[this->name] = this;
+  
   log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
 }
 module::~module(){
     Modules.erase(this->name);
 }
+void module::SetAuthor(const Flux::string &person) { this->author = person; }
+Flux::string module::GetAuthor() { return this->author; }
 /* commands stuff */
 CommandMap Commandsmap;
 /** 
@@ -122,8 +126,6 @@ static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
     input = Config->Binary_Dir + "/" + name + ".so";
   else
     input = Config->Binary_Dir + "/" + Config->ModuleDir + "/" + name + ".so";
-  
-  printf("%s\n", input.c_str());
   
   struct stat s;
   if (stat(input.c_str(), &s) == -1)
@@ -242,7 +244,6 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   }
   m->filename = mdir;
   m->handle = handle;
-  std::cout << "MODP: " << m << std::endl;
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
   return MOD_ERR_OK;
 }
@@ -253,8 +254,6 @@ bool ModuleHandler::DeleteModule(module *m)
 
   void *handle = m->handle;
   Flux::string filename = m->filename;
-  
-  std::cout << "MODDP: " << m << std::endl;
   
   log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
 
