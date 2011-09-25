@@ -78,7 +78,6 @@ bool SocketIO::Connect()
     if (connected == -1)
     {
       close(sockn);
-      log(LOG_DEBUG, "Connection Failed: %s", strerror(errno));
       continue;
     }
     break;

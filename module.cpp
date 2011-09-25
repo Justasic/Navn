@@ -15,6 +15,7 @@ module::module(const Flux::string &n, ModulePriority p):name(n){
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
   Modules[this->name] = this;
+  log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
 }
 module::~module(){
     Modules.erase(this->name);
@@ -310,8 +311,7 @@ void ReadConfig(){
   if(!testmod.empty()){
     ModErr e = ModuleHandler::LoadModule(testmod);
     if(e != MOD_ERR_OK)
-      log(LOG_NORMAL, "Module Load Error: %s", DecodeModErr(e).c_str());
-    log(LOG_NORMAL, "Loaded module %s", testmod.c_str());
+      log(LOG_NORMAL, "ERROR loading module %s: %s", testmod.c_str(), DecodeModErr(e).c_str());
   }
   if(ModuleHandler::LoadModule(Config->PingModule) != MOD_ERR_OK)
     log(LOG_NORMAL, "ERROR loading module %s", Config->PingModule.c_str());

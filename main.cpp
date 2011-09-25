@@ -17,28 +17,7 @@
  * feature available, we have made it as easy as possible to make modules.
  * See the examples tab for an example module.
  */
-#include <flux_net_irc.hpp>
-
-/*#include "modules/ping_pong.h"
-#include "modules/modulehandler.h"
-#include "modules/system.h"
-#include "modules/navn.h"
-#include "modules/weather.h"
-#include "modules/world_clock.h"
-#include "modules/searcher.h"
-#include "modules/help.h"
-#include "modules/dns.h"
-#include "modules/dummy.h"
-#include "modules/ctcp.h"
-#include "modules/channel_logger.h"
-#include "modules/about_me.h"
-#include "modules/da_goat.h"
-#include "modules/Flux_Services.h"
-#include "modules/encyclopedia.h"*/
-/*====
-#include "modules/tinyurl.h"
-
-*/
+#include "flux_net_irc.hpp"
 
 bool SocketIO::Read(const Flux::string &buf) const
 {
@@ -79,26 +58,6 @@ int main (int argcx, char** argvx, char *envp[])
     //Set the username and nick
     Send->command->user(Config->Ident, Config->Realname);
     Send->command->nick(Config->BotNick);
-
-    /*Ping_pong _Ping(true);
-    modulehandler _modulehandler(true);
-    system_m _system_m(true);
-    navn _navn(true);
-    weather _weather(true);
-    world_clock _world_clock(true);
-    searcher _searcher(true);
-    help_m _help_m(true);
-    dns_m _dns_m(true);
-    dummy _dummy(true);
-    ctcp _ctcp(true);
-    Chanlog _Chanlog(true);
-    about_me _about_me(true);
-    Da_Goat _Da_Goat(true);
-    Flux_Services _Flux_Services(false);
-    encyclopedia _encyclopedia(false); */
-    /*
-    TinyURL _TinyURL(false);
-    */
     
     while(!quitting){
       log(LOG_RAWIO, "Top of main loop");
@@ -125,7 +84,7 @@ int main (int argcx, char** argvx, char *envp[])
     else
       log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
     log(LOG_TERMINAL, "\033[22;37m\n"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
-    exit(1);
+    return EXIT_FAILURE;
   }
   printf("Exiting\n");
   return EXIT_SUCCESS;
