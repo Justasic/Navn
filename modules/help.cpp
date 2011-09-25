@@ -32,8 +32,11 @@ public:
     int c=0;
    for(CommandMap::iterator it = Commandsmap.begin(), it_end = Commandsmap.end(); it != it_end; ++it)
    {
-     source.Reply("\2%-16s\2 %s", it->second->name.c_str(), it->second->GetDesc().c_str());
-     ++c;
+     if(it->second != NULL)
+     {
+	source.Reply("\2%-16s\2 %s", it->second->name.c_str(), it->second->GetDesc().c_str());
+	++c;
+     }
    }
    source.Reply("Total of %i commands", c);
    log(LOG_NORMAL, "%s used help command", source.u->nick.c_str());
