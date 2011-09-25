@@ -94,8 +94,12 @@ void process(const Flux::string &buffer){
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
   
+  if(message[0] == '\1' && message[message.length() -1] == '\1'){
+    FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, StringVector(message, ' ')));
+    return;
+  }
   if(command.is_pos_number_only())
-   FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str())));
+    FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str())));
   else
     FOREACH_MOD(I_OnCommand, OnCommand(command, StringVector(message, ' ')));
   
@@ -158,7 +162,7 @@ void process(const Flux::string &buffer){
   if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
   {
     if(!IsValidChannel(receiver))
-      Source.Reply("Unknown command \2%s\2", params2[0].c_str());
+      Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
     else
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
   }
