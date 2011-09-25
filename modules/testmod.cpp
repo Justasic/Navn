@@ -24,6 +24,7 @@ public:
   dummy():module("Dummy_bin", PRIORITY_LAST)
   { 
     this->AddCommand(&cmddmy);
+    this->SetAuthor("Justasic");
     
     ModuleHandler::Attach(I_OnReload, this);
   }

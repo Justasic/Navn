@@ -32,8 +32,7 @@ public:
     int c=0;
    for(CommandMap::iterator it = Commandsmap.begin(), it_end = Commandsmap.end(); it != it_end; ++it)
    {
-     Command *cm = it->second;
-     source.Reply("\2%-16s\2 %s", cm->name.c_str(), cm->GetDesc().c_str());
+     source.Reply("\2%-16s\2 %s", it->second->name.c_str(), it->second->GetDesc().c_str());
      ++c;
    }
    source.Reply("Total of %i commands", c);
@@ -45,7 +44,8 @@ class help_m:public module
   CommandHelp help;
 public:
   help_m():module("Help", PRIORITY_DONTCARE){ 
-    this->AddCommand(&help); 
+    this->AddCommand(&help);
+    this->SetAuthor("Justasic");
   }
 };
 MODULE_HOOK(help_m)

@@ -24,6 +24,7 @@ public:
   Ping_pong():module("Ping", PRIORITY_FIRST){
     /*Implementation i[] = { I_OnPrivmsg };*/
     ModuleHandler::Attach(I_OnCommand, this);
+    this->SetAuthor("Justasic");
   }
   void OnCommand(CommandSource &source, std::vector<Flux::string> &params){
     printf("Command!!!!!!!!\n");

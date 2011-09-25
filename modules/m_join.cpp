@@ -46,6 +46,7 @@ public:
   Join():module("JOIN", PRIORITY_DONTCARE)
   { 
     this->AddCommand(&cmdjoin);
+    this->SetAuthor("Justasic");
   }
 };
 
