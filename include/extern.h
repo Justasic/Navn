@@ -85,6 +85,7 @@ void ReadConfig();
 
 /************************************************************/
 /* 	This is the only #define allowed in this file	    */
+#define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
