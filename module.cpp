@@ -117,7 +117,13 @@ Flux::string DecodeModErr(ModErr err){
 }
 static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 {
-  Flux::string input = Config->Binary_Dir + "/" + name + ".so";
+  Flux::string input;
+  if(Config->ModuleDir.empty())
+    input = Config->Binary_Dir + "/" + name + ".so";
+  else
+    input = Config->Binary_Dir + "/" + Config->ModuleDir + "/" + name + ".so";
+  
+  printf("%s\n", input.c_str());
   
   struct stat s;
   if (stat(input.c_str(), &s) == -1)
@@ -236,6 +242,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   }
   m->filename = mdir;
   m->handle = handle;
+  std::cout << "MODP: " << m << std::endl;
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
   return MOD_ERR_OK;
 }
@@ -246,7 +253,9 @@ bool ModuleHandler::DeleteModule(module *m)
 
   void *handle = m->handle;
   Flux::string filename = m->filename;
-
+  
+  std::cout << "MODDP: " << m << std::endl;
+  
   log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
 
   dlerror();
@@ -317,6 +326,9 @@ void ReadConfig(){
     log(LOG_NORMAL, "ERROR loading module %s", Config->PingModule.c_str());
   
   if(ModuleHandler::LoadModule(Config->JoinModule) != MOD_ERR_OK)
+    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
+  
+  if(ModuleHandler::LoadModule(Config->HelpModule) != MOD_ERR_OK)
     log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
 }
 /******************End Configuration variables********************/

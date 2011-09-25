@@ -126,6 +126,8 @@ void BotConfig::Read(){
   this->testmod = Parser->Get("Modules", "testmod", "");
   this->PingModule = Parser->Get("Modules", "Ping Module", "");
   this->JoinModule = Parser->Get("Modules", "Join Module", "");
+  this->ModuleDir = Parser->Get("Modules", "ModuleDir", "");
+  this->HelpModule = Parser->Get("Modules", "Help Module", "");
   log(LOG_TERMINAL, "\033[22;31mReading Config File\033[22;30m...\033[22;36m");
 }
 

@@ -7,6 +7,7 @@ enum Implementation{
   I_BEGIN,
 	I_OnPrivmsg, I_OnModuleLoad, I_OnModuleUnload,
 	I_OnRestart, I_OnShutdown, I_OnReload, I_OnCommand,
+	I_OnStart,
   I_END
 };
 enum ModuleReturn{
@@ -37,6 +38,7 @@ public:
   virtual void OnShutdown() {}
   virtual void OnReload(bool) {}
   virtual void OnCommand(CommandSource&, const std::vector<Flux::string>&) {}
+  virtual void OnStart(int argc, char** argv) {}
 };
 
 class ModuleHandler

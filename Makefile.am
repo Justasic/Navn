@@ -22,12 +22,14 @@ all:
 	@$(PERL) $(CXX) $(CFLAGS) -c channel.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c INIReader.cpp
 	@$(PERL) $(CXX) $(CFLAGS) $(LIBS) main.o misc.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(EXECUTABLE) -rdynamic
-	@$(PERL) $(CXX) $(CFLAGS) -c testmod.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)testmod.so -o testmod.so testmod.o
-	@$(PERL) $(CXX) $(CFLAGS) -c ping_pong.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)ping_pong.so -o ping_pong.so ping_pong.o
-	@$(PERL) $(CXX) $(CFLAGS) -c join.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)join.so -o join.so join.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/testmod.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/testmod.so -o modules/testmod.so testmod.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_ping.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/m_ping.so -o modules/m_ping.so m_ping.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_join.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/m_join.so -o modules/m_join.so m_join.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/help.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/help.so -o modules/help.so help.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 

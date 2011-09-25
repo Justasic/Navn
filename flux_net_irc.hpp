@@ -519,6 +519,7 @@ void startup(int argc, char** argv) {
   }
    WritePID();
    log(LOG_NORMAL, "%s Started. PID: %d", Config->BotNick.c_str(), getpid());
+   FOREACH_MOD(I_OnStart, OnStart(argc, argv));
    if (!nofork){
 	int i;
 	if((i = fork()) < 0)

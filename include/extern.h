@@ -43,6 +43,9 @@ MOD_ERR_FILE_IO,
 MOD_ERR_EXCEPTION
 };
 
+/* Typedef's */
+typedef std::map<Flux::string, Command *, std::less<ci::string> > CommandMap;
+
 /*  Class pointer finder definitions */
 Channel *findchannel(const Flux::string&);
 User *finduser(const Flux::string &nick);
@@ -53,6 +56,7 @@ Command *FindCommand(const Flux::string &name);
 extern SocketIO *sock;
 extern SendMessage *Send;
 extern BotConfig *Config;
+extern CommandMap Commandsmap;
 extern Flux::string binary_path, bot_bin, binary_dir, server_name;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);
@@ -68,9 +72,6 @@ extern Flux::map<module*> Modules;
 extern Flux::insensitive_map<User *> UserNickList;
 extern Flux::insensitive_map<Channel*> ChanMap;
 extern char **my_av, **my_envp;
-
-/* Typedef's */
-
 
 /* void's */
 void ListChans(CommandSource &source);

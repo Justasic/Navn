@@ -65,6 +65,8 @@ public:
   Flux::string UserPass;
   Flux::string OperatorAccount;
   Flux::string OperatorPass;
+  Flux::string ModuleDir;
+  Flux::string HelpModule;
   Flux::string testmod;
 private:
   void Read();

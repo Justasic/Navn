@@ -58,7 +58,6 @@ public:
   void kline(const Flux::string&, const Flux::string&, const Flux::string&);
   void gline(const Flux::string&, const Flux::string&, const Flux::string&);
 };
-typedef std::map<Flux::string, Command *, std::less<ci::string> > CommandMap;
 class Command
 {
   Flux::string desc;
