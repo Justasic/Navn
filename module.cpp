@@ -347,5 +347,8 @@ void ReadConfig(){
   
   if(ModuleHandler::LoadModule(Config->modhandler) != MOD_ERR_OK)
     log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
+  
+  if(ModuleHandler::LoadModule(Config->SystemMod) != MOD_ERR_OK)
+    log(LOG_NORMAL, "ERROR loading module %s", Config->JoinModule.c_str());
 }
 /******************End Configuration variables********************/

@@ -103,6 +103,7 @@ if(true) \
           log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
        } \
         _i = safei; \
+        printf("FOREACH_MOD pass\n"); \
     } \
 } \
 else \

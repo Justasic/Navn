@@ -68,6 +68,7 @@ public:
   Flux::string ModuleDir;
   Flux::string HelpModule;
   Flux::string modhandler;
+  Flux::string SystemMod;
   Flux::string testmod;
 private:
   void Read();

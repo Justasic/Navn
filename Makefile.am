@@ -32,6 +32,8 @@ all:
 	@$(PERL) $(CXX) $(MODFLAGS)modules/help.so -o modules/help.so help.o
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/modulehandler.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)modules/modulehandler.so -o modules/modulehandler.so modulehandler.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_system.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/m_system.so -o modules/m_system.so m_system.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 

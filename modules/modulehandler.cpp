@@ -22,7 +22,7 @@ public:
     }else
     { // There is probably a WAY easier way of doing this but whatever
       for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it){
-	if(priority.equals_ci("LOW") || priority == '1'){
+	if(priority.equals_ci("LAST") || priority == '1'){
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
 			ModuleHandler::DecodePriority(it->second->priority).c_str());
 	  ++c;
@@ -31,7 +31,7 @@ public:
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
 		     ModuleHandler::DecodePriority(it->second->priority).c_str());
 	  ++c;
-	}else if(priority.equals_ci("LOW") || priority == '3')
+	}else if(priority.equals_ci("FIRST") || priority == '3')
 	{
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
 		     ModuleHandler::DecodePriority(it->second->priority).c_str());
@@ -61,8 +61,15 @@ public:
     else if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
     else{
-      ModuleHandler::LoadModule(module);
-      log(LOG_NORMAL, "%s used LOAD to unload %s", source.u->nick.c_str(), module.c_str());
+      ModErr e = ModuleHandler::LoadModule(module);
+      if(e != MOD_ERR_OK)
+      {
+	source.Reply("Failed to load module %s: %s", module.c_str(), DecodeModErr(e).c_str());
+	log(LOG_NORMAL, "%s used LOAD to load %s and failed: %s", source.u->nick.c_str(), module.c_str(), DecodeModErr(e).c_str());
+      }else{
+	source.Reply("Module \2%s\2 loaded sucessfuly", module.c_str());
+	log(LOG_NORMAL, "%s used LOAD to load %s", source.u->nick.c_str(), module.c_str());
+      }
     }
   }
 };
