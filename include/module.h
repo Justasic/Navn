@@ -7,7 +7,7 @@ enum Implementation{
   I_BEGIN,
 	I_OnPrivmsg, I_OnModuleLoad, I_OnModuleUnload,
 	I_OnRestart, I_OnShutdown, I_OnReload, I_OnCommand,
-	I_OnStart,
+	I_OnStart, I_OnNumeric, I_OnPreConnect, I_OnPostConnect,
   I_END
 };
 enum ModuleReturn{
@@ -39,15 +39,18 @@ public:
   virtual void OnModuleUnload(module*){}
   virtual void OnRestart(const Flux::string&) {}
   virtual void OnShutdown() {}
+  virtual void OnNumeric(int) {}
   virtual void OnReload(bool) {}
-  virtual void OnCommand(CommandSource&, const std::vector<Flux::string>&) {}
+  virtual void OnCommand(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnStart(int argc, char** argv) {}
+  virtual void OnPreConnect(const Flux::string&, const Flux::string&) {}
+  virtual void OnPostConnect(SocketIO*) {}
 };
 
 class ModuleHandler
 {
 public:
-  static std::vector<module *> EventHandlers[I_END];
+  static std::vector<module*> EventHandlers[I_END];
   static ModErr LoadModule(const Flux::string&);
   static Flux::string DecodePriority(ModulePriority);
   static void SanitizeRuntime();
@@ -55,7 +58,9 @@ public:
   static bool Unload(module*);
   
   static bool Attach(Implementation i, module *mod);
+  static void Attach(Implementation *i, module *mod, size_t sz);
   static bool Detach(Implementation i, module *mod);
+  static void DetachAll(module*);
 private:
   static bool DeleteModule(module*);
 };

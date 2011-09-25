@@ -2,7 +2,8 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 //This code sucks, you know it and I know it. 
 //Move on and call me an idiot later.
-Flux::insensitive_map<module*> Modules; 
+Flux::insensitive_map<module*> Modules;
+std::vector<module *> ModuleHandler::EventHandlers[I_END];
 /** 
  * \fn module::module(Flux::string n, bool a, ModulePriority p)
  * \brief Module Constructor
@@ -20,7 +21,8 @@ module::module(const Flux::string &n, ModulePriority p):name(n){
   log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
 }
 module::~module(){
-    Modules.erase(this->name);
+  ModuleHandler::DetachAll(this);
+  Modules.erase(this->name);
 }
 void module::SetAuthor(const Flux::string &person) { this->author = person; }
 Flux::string module::GetAuthor() { return this->author; }
@@ -82,7 +84,6 @@ module *FindModule(const Flux::string &name){
 }
 /*******************************************************************/
 
-std::vector<module *> ModuleHandler::EventHandlers[I_END];
 /** 
  * \fn bool ModuleHandler::Attach(Implementation i, module *mod)
  * \brief Module hook for the FOREACH_MOD macro
@@ -94,6 +95,11 @@ bool ModuleHandler::Attach(Implementation i, module *mod){
     return false;
   EventHandlers[i].push_back(mod);
   return true;
+}
+void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
+{
+ for(size_t n = 0; n < sz; ++n)
+   Attach(i[n], mod);
 }
 Flux::string DecodeModErr(ModErr err){
  switch(err){
@@ -189,7 +195,11 @@ bool ModuleHandler::Detach(Implementation i, module *mod){
   EventHandlers[i].erase(x);
   return true;
 }
-
+void ModuleHandler::DetachAll(module *m)
+{
+ for(size_t n = I_BEGIN+1; n != I_END; ++n)
+   Detach(static_cast<Implementation>(n), m);
+}
 ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
   if(modname.empty())
@@ -251,12 +261,12 @@ bool ModuleHandler::DeleteModule(module *m)
 {
   if (!m || !m->handle)
 	  return false;
-
+  
   void *handle = m->handle;
   Flux::string filename = m->filename;
   
   log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
-
+  
   dlerror();
   void (*df)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
   const char *err = dlerror();

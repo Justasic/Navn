@@ -40,6 +40,7 @@ int main (int argcx, char** argvx, char *envp[])
       if(Config->Server.empty())
 	throw CoreException("No Server Specified.");
       log(LOG_NORMAL, "Connecting to server '%s:%s'", Config->Server.c_str(), Config->Port.c_str());
+      FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
       sock = new SocketIO(Config->Server, Config->Port);
       sock->Connect();
     }catch(SocketException &e){
@@ -58,6 +59,7 @@ int main (int argcx, char** argvx, char *envp[])
     //Set the username and nick
     Send->command->user(Config->Ident, Config->Realname);
     Send->command->nick(Config->BotNick);
+    FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
     
     while(!quitting){
       log(LOG_RAWIO, "Top of main loop");

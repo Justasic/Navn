@@ -22,15 +22,15 @@ class Ping_pong:public module
   PingTimer pingtimer;
 public:
   Ping_pong():module("Ping", PRIORITY_FIRST){
-    /*Implementation i[] = { I_OnPrivmsg };*/
-    ModuleHandler::Attach(I_OnCommand, this);
+    Implementation i[] = { I_OnNumeric, I_OnCommand };
+    ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
     this->SetAuthor("Justasic");
   }
-  void OnCommand(CommandSource &source, std::vector<Flux::string> &params){
+  void OnCommand(const Flux::string &command, std::vector<Flux::string> &params){
     printf("Command!!!!!!!!\n");
     Flux::string cmd = params.empty()?"":params[0];
     
-    if(source.command == "PONG")
+    if(command == "PONG")
     {
      Flux::string ts = params[0];
      int timestamp = atoi(ts.c_str());
@@ -40,10 +40,13 @@ public:
      if(protocoldebug)
         printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
     }
-    if(source.command == "451"){
+  }
+  void OnNumeric(int i)
+  {
+   if((i == 451)){
      Send->command->user(Config->Ident, Config->Realname);
-     Send->command->nick(Config->BotNick); 
-    }
+     Send->command->nick(Config->BotNick);
+   }
   }
 };
 MODULE_HOOK(Ping_pong)

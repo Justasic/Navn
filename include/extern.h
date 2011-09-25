@@ -86,6 +86,9 @@ void ReadConfig();
 /************************************************************/
 /* 	This is the only #define allowed in this file	    */
 #define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
+#define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
+#define ACCESS_DENIED "Access is Denied."
+#define GetCurrentDir getcwd
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
@@ -103,7 +106,7 @@ if(true) \
           log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
        } \
         _i = safei; \
-        printf("FOREACH_MOD pass\n"); \
+        printf("FOREACH_MOD call: %i\n", static_cast<int>(y)); \
     } \
 } \
 else \

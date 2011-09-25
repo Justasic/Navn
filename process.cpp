@@ -94,6 +94,11 @@ void process(const Flux::string &buffer){
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
   
+  if(command.is_pos_number_only())
+   FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str())));
+  else
+    FOREACH_MOD(I_OnCommand, OnCommand(command, StringVector(message, ' ')));
+  
   if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
     u = new User(nickname, uident, uhost);
   if(command == "PRIVMSG")
@@ -148,7 +153,6 @@ void process(const Flux::string &buffer){
    ProcessJoin(Source, c->name);
   }
   std::vector<Flux::string> params2 = StringVector(message, ' ');
-  FOREACH_MOD(I_OnCommand, OnCommand(Source, params2));
   if(source.empty() || message.empty() || params2.empty())
     return;
   if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
@@ -165,4 +169,5 @@ void process(const Flux::string &buffer){
     else
       static_cast<void>(0);
   }
+  command.clear();
 }
