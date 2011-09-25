@@ -2,7 +2,7 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 //This code sucks, you know it and I know it. 
 //Move on and call me an idiot later.
-Flux::map<module*> Modules; 
+Flux::insensitive_map<module*> Modules; 
 /** 
  * \fn module::module(Flux::string n, bool a, ModulePriority p)
  * \brief Module Constructor
@@ -75,7 +75,7 @@ Command *FindCommand(const Flux::string &name){
  * \param name A string containing the module name you're looking for
  */
 module *FindModule(const Flux::string &name){
-  Flux::map<module*>::iterator it = Modules.find(name);
+  Flux::insensitive_map<module*>::iterator it = Modules.find(name);
   if(it != Modules.end())
     return it->second;
  return NULL;
@@ -284,7 +284,7 @@ bool ModuleHandler::Unload(module *m){
   return true;
 }
 void ModuleHandler::UnloadAll(){
-  for(Flux::map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
+  for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
     Unload(it->second);
 }
 Flux::string ModuleHandler::DecodePriority(ModulePriority p)
