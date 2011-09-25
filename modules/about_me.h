@@ -30,37 +30,37 @@ class about_me : public module
 {
   
 public:
-  about_me(bool a):module("About Me", a, PRIORITY_DONTCARE){ this->SetDesc("Returns the information about yourself"); }
+  about_me():module("About Me", PRIORITY_DONTCARE){ 
+    this->SetAuthor("Justasic");
+    ModuleHandler::Attach(I_OnPrivmsg, this);
+  }
   
-  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params)
+  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
   {
     Flux::string cmd = params.empty()?"":params[0];
-    User *u = source.u;
-    Channel *c = source.c;
-  if(source.message.equals_ci("about me")){
-	source.Reply("Raw: %s", source.raw.c_str());
-	source.Reply("message: %s", source.message.c_str());
-	source.Reply("Nickname: %s", u->nick.c_str());
-	source.Reply("Ident: %s", u->ident.c_str());
-	source.Reply("Host: %s", u->host.c_str());
-	source.Reply("Channel: %s", c->name.c_str());
-	source.Reply("Fullhost: %s", u->fullhost.c_str());
-	log(LOG_NORMAL, "%s requested information about themself.", u->nick.c_str());
-  }
-  if(cmd.equals_ci("!decodehost")){
-    if(params.size() != 2){
-     source.Reply("Syntax: \2!decodehost \37hostname\15"); 
-     return MOD_STOP;
+    if(source.message.equals_ci("about me")){
+	  //u->SendMessage("Raw: %s", source.raw.c_str());
+	  //u->SendMessage("message: %s", source.message.c_str());
+	  u->SendMessage("Nickname: %s", u->nick.c_str());
+	  u->SendMessage("Ident: %s", u->ident.c_str());
+	  u->SendMessage("Host: %s", u->host.c_str());
+	  u->SendMessage("Channel: %s", c->name.c_str());
+	  u->SendMessage("Fullhost: %s", u->fullhost.c_str());
+	  log(LOG_NORMAL, "%s requested information about themself.", u->nick.c_str());
     }
-	Flux::string host = params[1];
-	IsoHost* Host = new IsoHost(host);
-	c->SendMessage("Nick: %s", Host->nick.c_str());
-	c->SendMessage("User: %s", Host->user.c_str());
-	c->SendMessage("Host: %s", Host->host.c_str());
-	c->SendMessage("Raw: %s", Host->raw.c_str());
-	delete Host;
-  }
-  return MOD_RUN;
+    if(cmd.equals_ci("!decodehost")){
+      if(params.size() != 2){
+      u->SendMessage("Syntax: \2!decodehost \37hostname\15"); 
+      return;
+      }
+	  Flux::string host = params[1];
+	  IsoHost* Host = new IsoHost(host);
+	  c->SendMessage("Nick: %s", Host->nick.c_str());
+	  c->SendMessage("User: %s", Host->user.c_str());
+	  c->SendMessage("Host: %s", Host->host.c_str());
+	  c->SendMessage("Raw: %s", Host->raw.c_str());
+	  delete Host;
+    }
  }
 };
 /**

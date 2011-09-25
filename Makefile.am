@@ -38,6 +38,8 @@ all:
 	@$(PERL) $(CXX) $(MODFLAGS)modules/searcher.so -o modules/searcher.so searcher.o
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_dns.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)modules/m_dns.so -o modules/m_dns.so m_dns.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/about_me.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/about_me.so -o modules/about_me.so about_me.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 

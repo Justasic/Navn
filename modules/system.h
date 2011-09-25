@@ -59,15 +59,6 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       log(LOG_NORMAL, "%s attempted to request the navn quit password.", u->nick.c_str());
     }
   }
-  if (cmd.equals_ci("restart")){
-    if(u->IsOwner()){
-      //Flux::string reason = "-no reason-";
-      Send->raw("QUIT :Restarting..\n");
-      restart("Restarting..");
-    }else{
-      source.Reply(ACCESS_DENIED);
-    }
-  }
   if(cmd.equals_ci("pid")){
     if(u->IsOwner()){
       source.Reply("My PID is: %i", getpid()); 
@@ -84,86 +75,6 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
     if(newnick == owner_nick)
       owner_nick = newnick;
     delete Host;
-  }
-  if (cmd.equals_ci("quit")){ //quits the bot.
-    Flux::string pass = params.size() == 2 ? params[1] : "";
-    if(pass.empty()){
-     source.Reply("Syntax: \2quit \37password\15");
-     return MOD_STOP;
-    }
-    if(pass == password || pass == usrpass){
-      source.Reply("Quitting..");
-      log(LOG_NORMAL, "%s quit the bot with password: \"%s\"", u->nick.c_str(), password.c_str());
-      Send->command->quit("Requested From \2%s\17. Pass: \00320%s\017", u->nick.c_str(), password.c_str());
-      quitting = true;
-    }else{
-      source.Reply(ACCESS_DENIED);
-      log(LOG_NORMAL, "%s attempted to change ownership of the bot", u->nick.c_str());
-    }
-  }
-  if(cmd.equals_ci("rehash")){
-    Flux::string pass = params.size() > 0 ? params[0] : "";
-    if(u->IsOwner() || pass == password || pass == usrpass){
-      source.Reply("Rehashing config file.");
-      log(LOG_NORMAL, "%s rehashed config file.", u->nick.c_str());
-      Rehash();
-    }else{
-      source.Reply(ACCESS_DENIED);
-      log(LOG_NORMAL, "%s attempted a rehash.", u->nick.c_str());
-    }
-  }
-  if(cmd.equals_ci("chown")){
-    Flux::string pass = params.size() > 0 ? params[0] : "";
-    if(pass == password || pass == usrpass){
-      log(LOG_NORMAL, "Changing ownership from %s to %s", owner_nick.c_str(), u->nick.c_str());
-      owner_nick = u->nick; //FIXME: i am broken from the new API!
-      source.Reply("New owner for \2%s\2 is \2%s\2", nick.c_str(), owner_nick.c_str());
-    }else{
-      source.Reply(ACCESS_DENIED);
-      log(LOG_NORMAL, "%s attempted to change ownership of the bot", u->nick.c_str());
-    }
-  }
-  /*Find the join numeric (376)
-   * This is so you can make things happen only if you know you are in
-   * a channel.
-   */
-  if(source.command == "376"){
-    std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-    std::cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
-    Send->notice(owner_nick, "The randomly generated password is: "+password);
-    started = true;
-  }
-  if(cmd.equals_ci("!chanlist")){
-    ListChans(source);
-  }
-  if(cmd.equals_ci("!userlist")){
-    ListUsers(source);
-  }
-  if(cmd.equals_ci("!loadmod")){
-    Flux::string cmds = params.size() == 2?params[1]:"";
-    if(cmds.empty())
-      return MOD_STOP;
-    if(!ModuleHandler::LoadModule(cmds))
-      source.Reply("Unable to load module \2%s\2\r", cmds.c_str());
-  }
-  if(source.command == "004"){
-    Send->command->mode(nick, "+B");
-    Channel *chan = new Channel(channel);
-    chan->SendJoin();
-    chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
-    if(!ouser.empty() || !opass.empty()){
-      Send->command->oper(ouser, opass);
-      IsOper = true;
-      Send->o = new Oper();
-    }
-    if(!nsacc.empty() || !nspass.empty()){
-      Send->privmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
-    }
-    log(LOG_NORMAL, "Successfully connected to the server \"%s:%s\" Master Channel: %s", server.c_str(), port.c_str(), channel.c_str());
-  }
-  if(source.command == "433"){
-   nick.push_back('_');
-   Send->command->nick(nick);
   }
   if(cmd == "\001DCC"){
     source.Reply("I do not accept or support DCC connections.");

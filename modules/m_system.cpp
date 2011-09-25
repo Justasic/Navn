@@ -21,7 +21,24 @@ public:
    log(LOG_NORMAL, "%s rehashed config file.", u->nick.c_str());
   }
 };
-
+class CommandRestart : public Command
+{
+public:
+  CommandRestart():Command("RESTART", 1, 1)
+  {
+   this->SetDesc("Restarts the bot");
+   this->SetSyntax("Restart \37reason\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    if(source.u->IsOwner()){
+      Send->command->quit("Restarting..");
+      restart("Restarting..");
+    }else{
+      source.Reply(ACCESS_DENIED);
+    }
+  }
+};
 class CommandKick : public Command
 {
 public:
@@ -104,6 +121,7 @@ class m_system : public module
   CommandKick cmdkick;
   CommandRehash cmdrehash;
   CommandQuit cmdquit;
+  CommandRestart cmdrestart;
 public:
   m_system():module("System", PRIORITY_DONTCARE)
   {
@@ -111,6 +129,7 @@ public:
     this->AddCommand(&cmdkick);
     this->AddCommand(&cmdchown);
     this->AddCommand(&cmdquit);
+    this->AddCommand(&cmdrestart);
     ModuleHandler::Attach(I_OnNumeric, this);
     this->SetAuthor("Justasic");
   }
@@ -130,6 +149,17 @@ public:
 	Send->privmsg("NickServ", "identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
       }
       log(LOG_NORMAL, "Successfully connected to the server \"%s:%s\" Master Channel: %s", Config->Server.c_str(), Config->Port.c_str(), Config->Channel.c_str());
+    }
+    if((i == 433)){
+      Config->BotNick.push_back('_');
+      Send->command->nick(Config->BotNick);
+    }
+    if((i == 376))
+    {
+     std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
+      std::cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
+      Send->notice(Config->Owner, "The randomly generated password is: "+password);
+      started = true; 
     }
   }
 };

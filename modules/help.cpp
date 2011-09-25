@@ -38,7 +38,7 @@ public:
 	++c;
      }
    }
-   source.Reply("Total of %i commands", c);
+   source.Reply("Total of \2%i\2 commands", c);
    log(LOG_NORMAL, "%s used help command", source.u->nick.c_str());
   }
 };
