@@ -105,8 +105,6 @@ void process(const Flux::string &buffer){
   
   if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
     u = new User(nickname, uident, uhost);
-  if(!protocoldebug)
-    log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
   if(command == "QUIT" && u){
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     delete u;
@@ -172,8 +170,10 @@ void process(const Flux::string &buffer){
     Command *com = FindCommand(params2[0]);
     if(com && !IsValidChannel(receiver))
       com->Run(Source, params2);
-    else
-      static_cast<void>(0); //This receives ALL server commands sent to the bot..
+    else{
+      if(!protocoldebug)
+	log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str()); //This receives ALL server commands sent to the bot..
+    }
   }
   command.clear();
 }

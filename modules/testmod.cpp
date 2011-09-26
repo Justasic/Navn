@@ -6,7 +6,7 @@
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("ModuleTest", 1, 1)
+  commanddummy() : Command("TEST", 0, 0)
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\2ModuleTest\2");
@@ -41,7 +41,6 @@ public:
     }
    printf("Channel message: %s\n", msg.c_str()); 
   }
-  
 };
 
 MODULE_HOOK(dummy)
