@@ -1,6 +1,5 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#ifndef WEATHER_H
-#define WEATHER_H
+#include "flux_net_irc.hpp"
 
 /**
  * \file weather.h Header file holding the \a weather function.
@@ -29,33 +28,45 @@
  */
 class weather:public module{
 public:
-  weather(bool act):module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
-  ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
+  weather():module("Weather", PRIORITY_DONTCARE){ 
+    this->SetAuthor("Lordofsraam");
+    ModuleHandler::Attach(I_OnPrivmsg, this);
+  }
+  void OnPrivmsg(User *u, Channel *c, std::vector<Flux::string> &params){
     Flux::string cmd = params.empty()?"":params[0];
-    User *u = source.u;
+    
+    Flux::string msg;
+    for(unsigned i=0; i < params.size(); ++i){
+      msg += params[i];
+      msg.AddSpace();
+    }
+    
     if(cmd.equals_ci("!weather")){
       if(params.size() < 2){
-	source.Reply("Syntax: \2!weather \037area\037\2");
-	return MOD_STOP;
+	u->SendMessage("Syntax: \2!weather \037area\037\2");
+	return;
       }
+      
       Flux::string area = params[params.size() - 1], tmpfile = TempFile(binary_dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
       if(tmpfile.empty()){
 	log(LOG_NORMAL, "Failed to get a temp file.");
-	return MOD_STOP;
+	return;
       }
       area.trim();
+      
       if(area.is_number_only())
 	wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+area;
       else
-	wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",source.raw));
+	wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",msg));
       system(wget.c_str());
+      
       if(!irc_string::said(xmlToString(tmpfile),"problem_cause")){
 	Flux::string ff = xmlToString(tmpfile);
 	ff.trim();
 	if(ff.empty()){
-	  source.c->SendMessage("Could not download/read %s", tmpfile.c_str());
+	  c->SendMessage("Could not download/read %s", tmpfile.c_str());
 	  log(LOG_NORMAL, "%s attempted to use !weather but downloading/reading the file '%s' failed.", tmpfile.c_str());
-	  return MOD_STOP;
+	  return;
 	}
 	Flux::string loc = findInXML("city","data",ff);
 	Flux::string cond = findInXML("condition","data",ff);
@@ -63,15 +74,14 @@ public:
 	Flux::string tempc = findInXML("temp_c","data",ff);
 	Delete(tmpfile.c_str());
 	loc.trim();
-	source.c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
+	c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
 	log(LOG_NORMAL, "%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());
       }
     }
-    return MOD_RUN;
   }
 };
 
 /**
  * @}
  */
-#endif
+MODULE_HOOK(weather)
