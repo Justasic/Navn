@@ -4,6 +4,7 @@
 //Move on and call me an idiot later.
 Flux::insensitive_map<module*> Modules;
 std::vector<module *> ModuleHandler::EventHandlers[I_END];
+CommandMap Commandsmap;
 /** 
  * \fn module::module(Flux::string n, bool a, ModulePriority p)
  * \brief Module Constructor
@@ -22,12 +23,14 @@ module::module(const Flux::string &n, ModulePriority p):name(n){
 }
 module::~module(){
   ModuleHandler::DetachAll(this);
+  for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
+    if(it->second->mod == this)
+     this->DelCommand(it->second);
   Modules.erase(this->name);
 }
 void module::SetAuthor(const Flux::string &person) { this->author = person; }
 Flux::string module::GetAuthor() { return this->author; }
 /* commands stuff */
-CommandMap Commandsmap;
 /** 
  * \fn int module::AddCommand(Command *c)
  * \brief Adds commands from modules into the bot
