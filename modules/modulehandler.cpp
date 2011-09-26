@@ -107,11 +107,10 @@ public:
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     const Flux::string modd = params.size() == 2?params[1]:"";
-    if(modd.empty())
+    if(modd.empty()){
       this->SendSyntax(source);
-    else if(!source.u->IsOwner())
-      source.Reply(ACCESS_DENIED);
-    else{
+      return;
+    }
       module *mo = FindModule(modd);
       if(!mo){
 	source.Reply("Module \2%s\2 is not loaded");
@@ -131,7 +130,7 @@ public:
       else
 	source.Reply("Adds commands: \2%s\2", cmds.c_str());
 	source.Reply("******** End Info ********");
-    }
+      log(LOG_NORMAL, "%s used MODINFO to show info on module %s", source.u->nick.c_str(), mo->name.c_str());
   }
 };
 
