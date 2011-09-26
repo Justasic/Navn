@@ -105,14 +105,8 @@ void process(const Flux::string &buffer){
   
   if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
     u = new User(nickname, uident, uhost);
-  if(command == "PRIVMSG")
-  {
-    if(!protocoldebug && !receiver.empty() && u && !params[1].empty())
-      log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), params[1].c_str());
-  }else{
-    if(!protocoldebug)
-      log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
-  }
+  if(!protocoldebug)
+    log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str());
   if(command == "QUIT" && u){
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     delete u;
@@ -167,6 +161,8 @@ void process(const Flux::string &buffer){
     return;
   if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
   {
+    if(!protocoldebug)
+      log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), params[1].c_str());
     if(!IsValidChannel(receiver))
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
     else
