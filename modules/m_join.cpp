@@ -75,6 +75,7 @@ public:
   { 
     this->AddCommand(&cmdjoin);
     this->AddCommand(&cmdpart);
+    this->SetVersion(VERSION);
     this->SetAuthor("Justasic");
   }
 };

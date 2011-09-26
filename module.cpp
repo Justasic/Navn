@@ -14,6 +14,7 @@ CommandMap Commandsmap;
  */
 module::module(const Flux::string &n, ModulePriority p):name(n){
   priority = p;
+  loadtime = time(NULL);
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
   
@@ -24,11 +25,16 @@ module::module(const Flux::string &n, ModulePriority p):name(n){
 module::~module(){
   ModuleHandler::DetachAll(this);
   for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
-    if(it->second->mod == this)
+    if(it->second->mod == this){
      this->DelCommand(it->second);
+     delete it->second;
+    }
   Modules.erase(this->name);
 }
 void module::SetAuthor(const Flux::string &person) { this->author = person; }
+void module::SetVersion(const Flux::string &ver) { this->version = ver; }
+Flux::string module::GetVersion() { return this->version; }
+time_t module::GetLoadTime() { return this->loadtime; }
 Flux::string module::GetAuthor() { return this->author; }
 /* commands stuff */
 /** 
@@ -255,7 +261,8 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
    log(LOG_NORMAL,"Error while loading %s: %s", modname.c_str(), e.GetReason());
    return MOD_ERR_EXCEPTION;
   }
-  m->filename = mdir;
+  m->filepath = mdir;
+  m->filename = modname+".so";
   m->handle = handle;
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
   return MOD_ERR_OK;
@@ -266,7 +273,7 @@ bool ModuleHandler::DeleteModule(module *m)
 	  return false;
   
   void *handle = m->handle;
-  Flux::string filename = m->filename;
+  Flux::string filepath = m->filepath;
   
   log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
   
@@ -284,8 +291,8 @@ bool ModuleHandler::DeleteModule(module *m)
   if (dlclose(handle))
 	  log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
 
-  if (!filename.empty())
-	  Delete(filename.c_str());
+  if (!filepath.empty())
+	  Delete(filepath.c_str());
   
   return true;
 }

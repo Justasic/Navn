@@ -7,6 +7,7 @@ public:
   encyclopedia():module("Encyclopedia", PRIORITY_LAST)
   { 
     this->SetAuthor("Lordofsraam");
+    this->SetVersion(VERSION);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)

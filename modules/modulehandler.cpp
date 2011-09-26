@@ -96,15 +96,57 @@ public:
   }
 };
 
+class CommandMInfo : public Command
+{
+public:
+  CommandMInfo():Command("MODINFO", 1, 2)
+  {
+   this->SetDesc("Provides info on a module");
+   this->SetSyntax("MODINFO \37name\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    const Flux::string modd = params.size() == 2?params[1]:"";
+    if(modd.empty())
+      this->SendSyntax(source);
+    else if(!source.u->IsOwner())
+      source.Reply(ACCESS_DENIED);
+    else{
+      module *mo = FindModule(modd);
+      if(!mo){
+	source.Reply("Module \2%s\2 is not loaded");
+	return;
+      }
+      source.Reply("******** \2%s\2 Info ********", mo->name.c_str());
+      source.Reply("Module: \2%s\2 Version: \2%s\2 Author: \2%s\2\nLoaded: \2%s\2", mo->filename.c_str(), mo->GetVersion().c_str(), mo->GetAuthor().c_str(), do_strftime(mo->GetLoadTime()).c_str());
+      Flux::string cmds;
+      for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
+	if((it->second->mod == mo)){
+	  cmds += it->second->name+" ";
+	 //source.Reply("Command \2%s\2", it->second->name.c_str()); 
+	}
+	cmds.trim();
+      if(cmds.empty())
+	source.Reply("Adds no commands");
+      else
+	source.Reply("Adds commands: \2%s\2", cmds.c_str());
+	source.Reply("******** End Info ********");
+    }
+  }
+};
+
 class M_Handler : public module
 {
   CommandMList list;
   CommandMLoad load;
   CommandMUnload unload;
+  CommandMInfo info;
 public:
   M_Handler():module("ModuleHandler", PRIORITY_FIRST)
   {
     this->SetAuthor("Justasic");
+    this->SetVersion(VERSION);
+    this->AddCommand(&info);
     this->AddCommand(&list);
     this->AddCommand(&load);
     this->AddCommand(&unload);

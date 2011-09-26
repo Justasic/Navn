@@ -25,6 +25,7 @@ public:
     Implementation i[] = { I_OnNumeric, I_OnCommand };
     ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
     this->SetAuthor("Justasic");
+    this->SetVersion(VERSION);
   }
   void OnCommand(const Flux::string &command, std::vector<Flux::string> &params){
     printf("Command!!!!!!!!\n");

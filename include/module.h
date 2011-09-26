@@ -21,16 +21,20 @@ enum ModulePriority{
   PRIORITY_LAST
 };
 class module{
-  Flux::string author;
+  Flux::string author, version;
+  time_t loadtime;
 protected:
   void SetAuthor(const Flux::string&);
+  void SetVersion(const Flux::string&);
   int AddCommand(Command *c);
   int DelCommand(Command *c);
 public:
   void *handle;
-  Flux::string name, filename;
+  Flux::string name, filename, filepath;
   ModulePriority priority;
   Flux::string GetAuthor();
+  Flux::string GetVersion();
+  time_t GetLoadTime();
   module(const Flux::string&, ModulePriority);
   
   virtual ~module();

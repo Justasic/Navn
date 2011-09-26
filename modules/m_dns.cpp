@@ -107,6 +107,7 @@ class dns_m:public module
 public:
   dns_m():module("DNS Resolver", PRIORITY_DONTCARE){ 
     this->SetAuthor("Justasic");
+    this->SetVersion(VERSION);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){

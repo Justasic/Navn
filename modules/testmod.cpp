@@ -43,6 +43,7 @@ public:
   { 
     this->AddCommand(&cmddmy); //Add our command to teh bot
     this->SetAuthor("Lordofsraam"); //Set the author
+    this->SetVersion(VERSION);
     
     Implementation i[] = { I_OnReload }; //Add that we have a module hook, this can be done in 2 ways
     ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));

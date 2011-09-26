@@ -133,6 +133,7 @@ public:
     Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");
+    this->SetVersion(VERSION);
   }
   void OnNumeric(int i)
   {

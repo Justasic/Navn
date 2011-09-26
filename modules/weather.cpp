@@ -30,6 +30,7 @@ class weather:public module{
 public:
   weather():module("Weather", PRIORITY_DONTCARE){ 
     this->SetAuthor("Lordofsraam");
+    this->SetVersion(VERSION);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
   void OnPrivmsg(User *u, Channel *c, std::vector<Flux::string> &params){
