@@ -76,9 +76,6 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       owner_nick = newnick;
     delete Host;
   }
-  if(cmd == "\001DCC"){
-    source.Reply("I do not accept or support DCC connections.");
-  }
   if(irc_string::said(source.message, "This nickname is registered and protected. If it is your")){
     if((!nsacc.empty() || !nspass.empty()) && u->nick == "NickServ")
       return MOD_STOP;

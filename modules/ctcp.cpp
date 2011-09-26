@@ -50,6 +50,8 @@ public:
       Send->notice(source, "\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
       Send->notice(source, "\1SOURCE git://gitorious.org/navn/navn.git\1");
     }
+    if(cmd == "\001DCC")
+      Send->notice(source, "I do not accept or support DCC connections.");
   }
 };
 /**

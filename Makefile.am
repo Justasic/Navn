@@ -42,6 +42,8 @@ all:
 	@$(PERL) $(CXX) $(MODFLAGS)modules/about_me.so -o modules/about_me.so about_me.o
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/ctcp.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)modules/ctcp.so -o modules/ctcp.so ctcp.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/encyclopedia.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/encyclopedia.so -o modules/encyclopedia.so encyclopedia.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 
