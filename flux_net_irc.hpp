@@ -290,17 +290,6 @@ Flux::string execute(const char *cmd) {
     #endif
     return result;
 }
-/**
- *\fn  Flux::string os_time()
- *\brief Get the operating system's time
- * This is just a simple function that gets the time.
- * \return A Flux::string of the current system time.
- */
-Flux::string os_time(){
-  time_t rawtime;
-  time(&rawtime);
-  return ctime(&rawtime);
-}
 
 /** 
  * \fn static void remove_pidfile()

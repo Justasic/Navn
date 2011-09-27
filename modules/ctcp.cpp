@@ -44,7 +44,7 @@ public:
 	Send->notice(source, "\001VERSION Navn-%s %s %s\001",VERSION_LONG.c_str(), uts.sysname, uts.machine);
     }
     if(cmd == "\001TIME\001"){ // for CTCP TIME reply
-	Send->notice(source,"\001TIME %s\001", strip(os_time()).c_str());
+	Send->notice(source,"\001TIME %s\001", do_strftime(time(NULL), true).c_str());
     }
     if(cmd == "\001SOURCE\001"){
       Send->notice(source, "\001SOURCE https://gitorious.org/navn/navn\001");
