@@ -81,54 +81,6 @@ public:
     else
       source.Reply("User: %s", u2->nick.c_str());
   }
-  if(cmd.equals_ci("kick")){
-    if(u->nick == owner_nick){
-      if(params.size() > 3 || params.size() < 3){
-	source.Reply("Syntax: \2kick channel \37nick\15");
-	return MOD_STOP;
-      }
-      Flux::string kickchan = params.size() == 3 ?params[1]:"";
-      Flux::string kickee = params.size() == 3 ?params[2]:"";
-      if(kickee.empty() || kickchan.empty()){
-	source.Reply("Syntax: \2kick channel \37nick\15");
-	return MOD_STOP;
-      }
-      if(!IsValidChannel(kickchan)){
-	source.Reply("Channel \2%s\2 is not a valad channel.", kickchan.c_str()); 
-	return MOD_STOP;
-      }
-      Channel *c2 = findchannel(kickchan);
-      if(!c2){
-	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
-	return MOD_STOP;
-      }
-      c2->kick(kickee, "Kick from %s", u->nick.c_str());
-    }else{
-      source.Reply(ACCESS_DENIED);
-    }
-  }
-  if(cmd.equals_ci("join")){
-    Flux::string blah = params.size() == 2 ? params[1] : "";
-    if(blah.empty()){
-      source.Reply("Syntax: \2Join \37channel\15"); 
-      return MOD_STOP;
-    }
-    if(!IsValidChannel(blah)){
-      source.Reply("Channel \2%s\2 is not a valad channel.", blah.c_str());
-      log(LOG_NORMAL, "%s attempted to make bot join %s", u->nick.c_str(), blah.c_str());
-    }else{
-      log(LOG_NORMAL, "%s made the bot join %s", u->nick.c_str(), blah.c_str());
-      Channel *chan = findchannel(blah);
-      if(chan){
-	chan->SendJoin();
-	chan->SendMessage(welcome_msg, nick.c_str(), nick.c_str());
-      }else{
-	Send->command->join(blah);
-	Send->privmsg(blah, welcome_msg, nick.c_str(), nick.c_str());
-      }
-      
-    }
-  }
   if(cmd.equals_ci("nick")){
     Flux::string newnick = params.size() == 2 ? params[1]:"";
     if(newnick.empty()){

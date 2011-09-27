@@ -42,12 +42,38 @@ public:
    log(LOG_NORMAL, "%s used help command", source.u->nick.c_str());
   }
 };
+
+class CommandCHelp : public Command
+{
+public:
+  CommandCHelp():Command("!HELP", 0, 0)
+  {
+   this->SetDesc("Displays Channel help messages");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string cmds;
+   for(CommandMap::iterator it = ChanCommandMap.begin(), it_end = ChanCommandMap.end(); it != it_end; ++it)
+   {
+     if(it->second != NULL)
+     {
+	cmds += it->second->name+" ";
+     }
+   }
+   cmds.trim();
+   source.c->SendMessage("Local %s Commands:", source.c->name.c_str());
+   source.c->SendMessage(cmds);
+   log(LOG_NORMAL, "%s used help command", source.u->nick.c_str());
+  }
+};
 class help_m:public module
 {
   CommandHelp help;
+  CommandCHelp chelp;
 public:
   help_m():module("Help", PRIORITY_DONTCARE){ 
     this->AddCommand(&help);
+    this->AddChanCommand(&chelp);
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");
   }

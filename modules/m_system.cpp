@@ -1,5 +1,6 @@
 #include "flux_net_irc.hpp"
 
+struct sysinfo sys_info;
 class CommandRehash : public Command
 {
 public:
@@ -21,6 +22,35 @@ public:
    log(LOG_NORMAL, "%s rehashed config file.", u->nick.c_str());
   }
 };
+
+class CommandNick : public Command
+{
+public:
+  CommandNick():Command("NICK", 1, 2)
+  {
+    this->SetDesc("Change the bots nickname");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    User *u = source.u;
+    Flux::string newnick = params.size() == 2 ? params[1]:"";
+    if(newnick.empty()){
+     this->SendSyntax(source);
+     return;
+    }
+    if(!u->IsOwner()){
+     source.Reply(ACCESS_DENIED);
+     return;
+    }
+    for(unsigned i = 0, end = newnick.length(); i < end; i++)
+      if(!isvalidnick(newnick[i])){
+	source.Reply("\2%s\2 is an invalid nickname.");
+	Config->BotNick = newnick;
+      }
+      Send->command->nick(newnick);
+  }
+};
+
 class CommandRestart : public Command
 {
 public:
@@ -39,6 +69,7 @@ public:
     }
   }
 };
+
 class CommandKick : public Command
 {
 public:
@@ -115,6 +146,113 @@ public:
   }
 };
 
+class CommandTopic: public Command
+{
+public:
+  CommandTopic():Command("TOPIC", 2, 3)
+  {
+    this->SetDesc("Set the topic on a channel");
+    this->SetSyntax("TOPIC \37channel\37 [\37topic\37]");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    User *u = source.u;
+    if(!u->IsOwner()){
+      source.Reply(ACCESS_DENIED);
+      return;
+    }
+    if(params.size() < 3){
+     this->SendSyntax(source);
+     return;
+    }
+    Flux::string tchan = params[1];
+    if(!IsValidChannel(tchan)){
+      source.Reply(CHANNEL_X_INVALID, tchan.c_str());
+      return;
+    }
+    Channel *ch = findchannel(tchan);
+    if(!ch){
+      source.Reply("I am not in channel \2%s\2", tchan.c_str());
+      return;
+    }
+    Flux::string msg = source.message;
+    msg = msg.erase(0,6);
+    msg = msg.erase(msg.find_first_of(tchan), tchan.size());
+    msg.trim();
+    ch->ChangeTopic(msg);
+    std::fstream topic;
+    topic.open("topic.tmp", std::fstream::in | std::fstream::out | std::fstream::app);
+    if(!topic.is_open()){
+	    source.Reply("Unable to write topic temp file");
+	    log(LOG_NORMAL, "%s used /msg %s topic to change %s's topic to \"%s\" but could not write to topic temp file '%s'", 
+		u->nick.c_str(), Config->BotNick.c_str(), tchan.c_str(), msg.c_str(), "topic.tmp");
+    }else{
+	    topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><topic> " << tchan << " Topic: " << strip(msg) << " </topic></channel></rss>" << std::endl;
+	    system("sh ftp.sh");
+    }
+    log(LOG_NORMAL, "%s used Da_Goats !topic command to change the topin in %s to \"%s\"",u->nick.c_str(), tchan.c_str(), strip(msg).c_str());
+  }
+};
+
+class CommandStats: public Command
+{
+public:
+  CommandStats():Command("STATS", 0, 0)
+  {
+    this->SetDesc("Shows system stats");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    int days, hours, mins;
+#ifndef _WIN32
+    if(sysinfo(&sys_info) != 0){//now here Justasic got pissed because c strings suck ass
+      Flux::string fuckingshit = Flux::string("sys_info Error: ") + strerror(errno);
+      throw ModuleException(fuckingshit.c_str());
+    }
+    struct utsname uts;
+    if(uname(&uts) < 0){
+      Flux::string fuckingshit = Flux::string("uname() Error: ") + strerror(errno);
+      throw ModuleException(fuckingshit.c_str());
+    }
+
+    // Uptime
+    days = sys_info.uptime / 86400;
+    hours = (sys_info.uptime / 3600) - (days * 24);
+    mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
+
+    source.Reply("Uptime: %d days, %d hours, %d minutes, %ld seconds",
+	  days, hours, mins, sys_info.uptime % 60);
+
+    // Load Averages for 1,5 and 15 minutes
+    source.Reply("Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
+		    sys_info.loads[0], sys_info.loads[1], sys_info.loads[2]);
+
+    // Total and free ram.
+    source.Reply("Total Ram: %ldk\tFree: %ldk", sys_info.totalram / 1024,
+			    sys_info.freeram / 1024);
+
+    // Shared and buffered ram.
+    source.Reply("Shared Ram: %ldk", sys_info.sharedram / 1024);
+    source.Reply("Buffered Ram: %ldk", sys_info.bufferram / 1024);
+
+    // Swap space
+    source.Reply("Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
+				sys_info.freeswap / 1024);
+
+    // Number of processes currently running.
+    source.Reply("Number of processes: %d", sys_info.procs);
+    source.Reply(" ");
+    source.Reply("System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
+    source.Reply("System Version: %s", uts.version);
+
+    source.Reply(strip(execute("grep 'model name' /proc/cpuinfo")));
+#else
+    source.Reply("This is currently not avalable on windows syetems, sorry.");
+#endif
+    User *u = source.u;
+    log(LOG_NORMAL, "%s used stats command", u->nick.c_str());
+  }
+};
 class m_system : public module
 {
   CommandChown cmdchown;
@@ -122,6 +260,9 @@ class m_system : public module
   CommandRehash cmdrehash;
   CommandQuit cmdquit;
   CommandRestart cmdrestart;
+  CommandTopic topic;
+  CommandStats stats;
+  CommandNick nick;
 public:
   m_system():module("System", PRIORITY_DONTCARE)
   {
@@ -130,6 +271,9 @@ public:
     this->AddCommand(&cmdchown);
     this->AddCommand(&cmdquit);
     this->AddCommand(&cmdrestart);
+    this->AddCommand(&nick);
+    this->AddCommand(&stats);
+    this->AddCommand(&topic);
     Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");

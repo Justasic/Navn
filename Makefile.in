@@ -519,6 +519,8 @@ all:
 	@$(PERL) $(CXX) $(MODFLAGS)modules/weather.so -o modules/weather.so weather.o
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/world_clock.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)modules/world_clock.so -o modules/world_clock.so world_clock.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/da_goat.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/da_goat.so -o modules/da_goat.so da_goat.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 
