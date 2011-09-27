@@ -98,10 +98,6 @@ void process(const Flux::string &buffer){
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, StringVector(message, ' ')));
     return;
   }
-  if(command.is_pos_number_only())
-    FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str())));
-  else
-    FOREACH_MOD(I_OnCommand, OnCommand(command, StringVector(message, ' ')));
   
   if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
     u = new User(nickname, uident, uhost);
@@ -115,6 +111,7 @@ void process(const Flux::string &buffer){
     else
      delete u;
   }
+  if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str()))); }
   if(command == "KICK"){ FOREACH_MOD(I_OnKick, OnKick(finduser(params[1]), findchannel(params[0]), params[2])); }
   /*if(command == "NICK"){
    if(u && u->nick == Config->BotNick){
@@ -171,7 +168,9 @@ void process(const Flux::string &buffer){
     if(com && !IsValidChannel(receiver))
       com->Run(Source, params2);
     else{
-      if(!protocoldebug)
+      if(!command.is_pos_number_only())
+	FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
+      else if(!protocoldebug)
 	log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str()); //This receives ALL server commands sent to the bot..
     }
   }

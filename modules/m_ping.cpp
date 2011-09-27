@@ -8,13 +8,13 @@ public:
   PingTimer():Timer(30, time(NULL), true) {}
   void Tick(time_t){
     Send->raw("PING :%i\n", time(NULL));
-    /*if(!timeout)
+    if(!timeout)
       timeout = true;
     if(timeout){
       ++pings;
       if(pings >= 3)
 	restart("Ping-Timeout: 121 seconds");
-    } */
+    }
   }
 };
 class Ping_pong:public module
@@ -27,10 +27,8 @@ public:
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
   }
-  void OnCommand(const Flux::string &command, std::vector<Flux::string> &params){
-    printf("Command!!!!!!!!\n");
-    Flux::string cmd = params.empty()?"":params[0];
-    
+  
+  void OnCommand(const Flux::string &command, const std::vector<Flux::string> &params){
     if(command == "PONG")
     {
      Flux::string ts = params[0];
@@ -42,6 +40,7 @@ public:
         printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
     }
   }
+  
   void OnNumeric(int i)
   {
    if((i == 451)){
