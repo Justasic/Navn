@@ -54,7 +54,7 @@ public:
   virtual void OnNickChange(User*, const Flux::string&) {}
   virtual void OnQuit(User*, const Flux::string&) {}
   virtual void OnJoin(User*, Channel*) {}
-  virtual void OnKick(User*, Channel*, const Flux::string&) {}
+  virtual void OnKick(User*, User*, Channel*, const Flux::string&) {}
   virtual void OnNumeric(int) {}
   virtual void OnReload(bool) {}
   virtual void OnCommand(const Flux::string&, const std::vector<Flux::string>&) {}

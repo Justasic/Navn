@@ -115,7 +115,7 @@ void process(const Flux::string &buffer){
      delete u;
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str()))); }
-  if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(finduser(params[1]), findchannel(params[0]), params[2])); }
+  if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
   if(command.equals_cs("NICK")) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); delete u; }
   if(command.equals_cs("NOTICE") && !source.find('.')){

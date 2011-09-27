@@ -3,7 +3,6 @@
 #define DERP_H
 #include "module.h"
 #include "defs.h"
-#define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 SendMessage *Send;
 SocketIO *sock;
 BotConfig *Config;

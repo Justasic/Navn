@@ -26,59 +26,57 @@
  * the google weather api. From there it pseudo-parses the file using functions from \a flux_net_irc 
  * and throws the needed contents out of the main socket as a private message (using \a privmsg).
  */
+class CommandCWeather : public Command
+{
+public:
+  CommandCWeather():Command("!WEATHER", 1, 2)
+  {
+    this->SetDesc("Displays the weather");
+    this->SetSyntax("!WEATHER \2location\2");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    User *u = source.u;
+    Channel *c = source.c;
+    Flux::string area = params[params.size() - 1], tmpfile = TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
+    if(tmpfile.empty()){
+      log(LOG_NORMAL, "Failed to get a temp file.");
+      return;
+    }
+    area.trim();
+    
+    if(area.is_number_only())
+      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+area;
+    else
+      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",source.message));
+    system(wget.c_str());
+    
+    if(!irc_string::said(xmlToString(tmpfile),"problem_cause")){
+      Flux::string ff = xmlToString(tmpfile);
+      ff.trim();
+      if(ff.empty()){
+	c->SendMessage("Could not download/read %s", tmpfile.c_str());
+	log(LOG_NORMAL, "%s attempted to use !weather but downloading/reading the file '%s' failed.", tmpfile.c_str());
+	return;
+      }
+      Flux::string loc = findInXML("city","data",ff);
+      Flux::string cond = findInXML("condition","data",ff);
+      Flux::string tempf = findInXML("temp_f","data",ff);
+      Flux::string tempc = findInXML("temp_c","data",ff);
+      Delete(tmpfile.c_str());
+      loc.trim();
+      c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
+      log(LOG_NORMAL, "%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());
+    }
+  }
+};
 class weather:public module{
+  CommandCWeather rainy;
 public:
   weather():module("Weather", PRIORITY_DONTCARE){ 
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
-    ModuleHandler::Attach(I_OnPrivmsg, this);
-  }
-  void OnPrivmsg(User *u, Channel *c, std::vector<Flux::string> &params){
-    Flux::string cmd = params.empty()?"":params[0];
-    
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i){
-      msg += params[i];
-      msg.AddSpace();
-    }
-    
-    if(cmd.equals_ci("!weather")){
-      if(params.size() < 2){
-	u->SendMessage("Syntax: \2!weather \037area\037\2");
-	return;
-      }
-      
-      Flux::string area = params[params.size() - 1], tmpfile = TempFile(binary_dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
-      if(tmpfile.empty()){
-	log(LOG_NORMAL, "Failed to get a temp file.");
-	return;
-      }
-      area.trim();
-      
-      if(area.is_number_only())
-	wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+area;
-      else
-	wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",msg));
-      system(wget.c_str());
-      
-      if(!irc_string::said(xmlToString(tmpfile),"problem_cause")){
-	Flux::string ff = xmlToString(tmpfile);
-	ff.trim();
-	if(ff.empty()){
-	  c->SendMessage("Could not download/read %s", tmpfile.c_str());
-	  log(LOG_NORMAL, "%s attempted to use !weather but downloading/reading the file '%s' failed.", tmpfile.c_str());
-	  return;
-	}
-	Flux::string loc = findInXML("city","data",ff);
-	Flux::string cond = findInXML("condition","data",ff);
-	Flux::string tempf = findInXML("temp_f","data",ff);
-	Flux::string tempc = findInXML("temp_c","data",ff);
-	Delete(tmpfile.c_str());
-	loc.trim();
-	c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
-	log(LOG_NORMAL, "%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());
-      }
-    }
+    this->AddChanCommand(&rainy);
   }
 };
 
