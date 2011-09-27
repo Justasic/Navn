@@ -381,6 +381,18 @@ public:
       }
     }
   }
+  void OnNickChange(User *u, const Flux::string &newnick)
+  {
+   /*if(source.command == "NICK"){
+    IsoHost *Host = new IsoHost(u->fullhost);
+    Flux::string newnick = Host->nick;
+    if (newnick == nick)
+      nick = newnick;
+    if(newnick == owner_nick)
+      owner_nick = newnick;
+    delete Host;
+  }*/ 
+  }
 };
 
 MODULE_HOOK(m_system)
