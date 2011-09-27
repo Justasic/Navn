@@ -9,7 +9,8 @@ enum Implementation{
 	I_OnRestart, I_OnShutdown, I_OnReload, I_OnCommand,
 	I_OnStart, I_OnNumeric, I_OnPreConnect, I_OnPostConnect,
 	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick, I_OnConnectionError,
-	I_OnNotice, I_OnNickChange,
+	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
+	I_OnChannelOp, I_OnPart,
   I_END
 };
 enum ModuleReturn{
@@ -44,24 +45,28 @@ public:
   virtual void OnPrivmsg(User*, const std::vector<Flux::string>&) {}
   virtual void OnPrivmsg(User*, Channel*, const std::vector<Flux::string>&) {}
   virtual void OnNotice(User*, const std::vector<Flux::string>&) {}
+  virtual void OnNotice(User*, Channel*, const std::vector<Flux::string>&) {}
   virtual void OnCTCP(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnModuleLoad(module*) {}
   virtual void OnModuleUnload(module*){}
   virtual void OnRestart(const Flux::string&) {}
   virtual void OnShutdown() {}
   virtual void OnNickChange(User*, const Flux::string&) {}
-  virtual void OnQuit(User *u, const Flux::string&) {}
-  virtual void OnJoin(User *u, Channel *c) {}
-  virtual void OnKick(User *u, Channel *c, const Flux::string&) {}
+  virtual void OnQuit(User*, Channel*, const Flux::string&) {}
+  virtual void OnJoin(User*, Channel*) {}
+  virtual void OnKick(User*, Channel*, const Flux::string&) {}
   virtual void OnNumeric(int) {}
   virtual void OnReload(bool) {}
   virtual void OnCommand(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnStart(int argc, char** argv) {}
+  virtual void OnChannelMode(User*, Channel*, const Flux::string&) {}
+  virtual void OnChannelOp(User*, Channel*, const Flux::string&, const Flux::string&) {}
+  virtual void OnPart(User*, Channel*, const Flux::string&) {}
+  virtual void OnUserMode(User*, const Flux::string&, const Flux::string&) {}
   virtual void OnPreConnect(const Flux::string&, const Flux::string&) {}
   virtual void OnPostConnect(SocketIO*) {}
   virtual void OnConnectionError(const Flux::string&) {}
 };
-
 class ModuleHandler
 {
 public:

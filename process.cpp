@@ -104,10 +104,11 @@ void process(const Flux::string &buffer){
   if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
     u = new User(nickname, uident, uhost);
   if(command == "QUIT" && u){
-    FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
+    FOREACH_MOD(I_OnQuit, OnQuit(u, c, params[0]));
     delete u;
   }
   if(command == "PART"){
+    FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
     else
@@ -116,8 +117,16 @@ void process(const Flux::string &buffer){
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str()))); }
   if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
-  if(command.equals_cs("NOTICE") && !source.find('.') && !IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); }
   if(command.equals_cs("NICK")) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); delete u; }
+  if(command.equals_cs("NOTICE") && !source.find('.')){
+    if(!IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); } 
+    else { FOREACH_MOD(I_OnNotice, OnNotice(u, c, params2)); }
+  }
+  if(command.equals_cs("MODE")) {
+    if(IsValidChannel(params[0]) && params.size() == 2) { FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1])); }
+    else if(IsValidChannel(params[0]) && params.size() == 3) { FOREACH_MOD(I_OnChannelOp, OnChannelOp(u, c, params[1], params[2])); }
+    else if(params[0] == Config->BotNick) { FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1])); }
+  }
   /*if(command == "NICK"){
    if(u && u->nick == Config->BotNick){
        nick = params[0];
