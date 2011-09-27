@@ -52,7 +52,7 @@ public:
   virtual void OnRestart(const Flux::string&) {}
   virtual void OnShutdown() {}
   virtual void OnNickChange(User*, const Flux::string&) {}
-  virtual void OnQuit(User*, Channel*, const Flux::string&) {}
+  virtual void OnQuit(User*, const Flux::string&) {}
   virtual void OnJoin(User*, Channel*) {}
   virtual void OnKick(User*, Channel*, const Flux::string&) {}
   virtual void OnNumeric(int) {}

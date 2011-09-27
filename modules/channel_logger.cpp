@@ -102,10 +102,8 @@ public:
       return;
     CLog("*** %s has joined %s", u->nick.c_str(), c->name.c_str());
   }
-   void OnQuit(User *u, Channel *c, const Flux::string &reason){
-     if(c->name != Config->LogChannel)
-      return;
-     CLog("*** %s has quit (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
+   void OnQuit(User *u, const Flux::string &reason){
+     CLog("*** %s has quit (%s)", u->nick.c_str(), reason.c_str());
   }
   void OnChannelMode(User *u, Channel *c, const Flux::string &mode){
       if(c->name != Config->LogChannel)

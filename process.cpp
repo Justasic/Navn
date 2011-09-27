@@ -104,7 +104,7 @@ void process(const Flux::string &buffer){
   if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
     u = new User(nickname, uident, uhost);
   if(command == "QUIT" && u){
-    FOREACH_MOD(I_OnQuit, OnQuit(u, c, params[0]));
+    FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     delete u;
   }
   if(command == "PART"){
