@@ -194,6 +194,45 @@ public:
   }
 };
 
+class CommandPID: public Command
+{
+public:
+  CommandPID():Command("PID", 0,0)
+  {
+    this->SetDesc("Gets the bots Process ID");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    User *u = source.u;
+    if(u->IsOwner()){
+      source.Reply("My PID is: \2%i\2", (int)getpid()); 
+      log(LOG_NORMAL, "%s used pid function to get PID %i", u->nick.c_str(), getpid());
+    }else{
+      source.Reply(ACCESS_DENIED);
+    }
+  }
+};
+
+class CommandPass: public Command
+{
+public:
+  CommandPass():Command("PASS", 0,0)
+  {
+    this->SetDesc("Gets the bots Random Password");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    User *u = source.u;
+    if (u->IsOwner()){
+      source.Reply("The password is:\2 %s", password.c_str());
+      log(LOG_NORMAL, "%s requested the navn quit password: %s", u->nick.c_str(), password.c_str());
+    }else{
+      source.Reply(ACCESS_DENIED);
+      log(LOG_NORMAL, "%s attempted to request the navn quit password.", u->nick.c_str());
+    }
+  }
+};
+
 class CommandStats: public Command
 {
 public:
@@ -263,10 +302,12 @@ class m_system : public module
   CommandTopic topic;
   CommandStats stats;
   CommandNick nick;
+  CommandPID pid;
+  CommandPass pass;
 public:
   m_system():module("System", PRIORITY_DONTCARE)
   {
-    this->AddCommand(&cmdrehash);
+    this->AddCommand(&cmdrehash);//So many commands! .-.
     this->AddCommand(&cmdkick);
     this->AddCommand(&cmdchown);
     this->AddCommand(&cmdquit);
@@ -274,7 +315,10 @@ public:
     this->AddCommand(&nick);
     this->AddCommand(&stats);
     this->AddCommand(&topic);
-    Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick };
+    this->AddCommand(&pid);
+    this->AddCommand(&pass);
+    
+    Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
@@ -302,9 +346,9 @@ public:
     }
     if((i == 376))
     {
-     std::cout << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m" << nl;
-      std::cout << "\033[22;34mSession Password: \033[01;32m"+password+"\033[22;36m"<<nl;
-      Send->notice(Config->Owner, "The randomly generated password is: "+password);
+      log(LOG_TERMINAL, "\033[22;31mStarted with PID \033[22;32m%i\033[22;36m", (int)getpid());
+      log(LOG_TERMINAL, "\033[22;34mSession Password: \033[01;32m%s\033[22;36m", password.c_str());
+      Send->notice(Config->Owner, "The randomly generated password is: %s", password.c_str());
       started = true; 
     }
   }
@@ -319,8 +363,23 @@ public:
      if(u->nick == Config->BotNick)
      {
        log(LOG_NORMAL, "%s kicked me from %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
-      c->SendJoin(); 
+	c->SendJoin(); 
      }
+  }
+  void OnNotice(User *u, const std::vector<Flux::string> &params)
+  {
+    Flux::string msg;
+    for(unsigned i=0; i < params.size(); ++i){
+      msg += params[i];
+      msg.AddSpace();
+    }
+    msg.trim();
+    if(irc_string::said(msg, "This nickname is registered and protected. If it is your")){
+      if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == "NickServ"){
+	u->SendPrivmsg("NickServ", "identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
+	log(LOG_NORMAL, "Identified to NickServ with account \"%s\"", Config->ServicesAccount.c_str());
+      }
+    }
   }
 };
 

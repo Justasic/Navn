@@ -45,28 +45,8 @@ class system_m:public module{
 public:
   system_m(bool a):module("System", a, PRIORITY_FIRST){ this->SetDesc("The system module"); }
 ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
-  /* use string to prevent segmentation faults */
-  Flux::string cmd = params.empty()?"":params[0];
   User *u = source.u;
-  Channel *c = source.c;
   
-  if (cmd.equals_ci("pass")){
-    if (u->IsOwner()){
-      source.Reply("The password is:\2 %s", password.c_str());
-      log(LOG_NORMAL, "%s requested the navn quit password: %s", u->nick.c_str(), password.c_str());
-    }else{
-      source.Reply(ACCESS_DENIED);
-      log(LOG_NORMAL, "%s attempted to request the navn quit password.", u->nick.c_str());
-    }
-  }
-  if(cmd.equals_ci("pid")){
-    if(u->IsOwner()){
-      source.Reply("My PID is: %i", getpid()); 
-      log(LOG_NORMAL, "%s used pid function to get PID %i", u->nick.c_str(), getpid());
-    }else{
-      source.Reply(ACCESS_DENIED);
-    }
-  }
   if(source.command == "NICK"){
     IsoHost *Host = new IsoHost(u->fullhost);
     Flux::string newnick = Host->nick;
@@ -76,12 +56,7 @@ ModuleReturn run(CommandSource &source, std::vector<Flux::string> &params){
       owner_nick = newnick;
     delete Host;
   }
-  if(irc_string::said(source.message, "This nickname is registered and protected. If it is your")){
-    if((!nsacc.empty() || !nspass.empty()) && u->nick == "NickServ")
-      return MOD_STOP;
-    u->SendPrivmsg("NickServ", "identify %s %s", nsacc.c_str(), nspass.c_str());
-    log(LOG_NORMAL, "Identified to NickServ with account \"%s\"", nsacc.c_str());
-  }
+  
   return MOD_RUN;
 }
 };

@@ -93,6 +93,7 @@ void process(const Flux::string &buffer){
   
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
+  std::vector<Flux::string> params2 = StringVector(message, ' ');
   /***********************************************/
   
   if(message[0] == '\1' && message[message.length() -1] == '\1'){
@@ -113,8 +114,10 @@ void process(const Flux::string &buffer){
      delete u;
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str()))); }
-  if(command == "KICK"){ FOREACH_MOD(I_OnKick, OnKick(finduser(params[1]), findchannel(params[0]), params[2])); }
+  if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
+  if(command.equals_cs("NOTICE") && !source.find('.') && !IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); }
+  if(command.equals_cs("NICK")) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); delete u; }
   /*if(command == "NICK"){
    if(u && u->nick == Config->BotNick){
        nick = params[0];
@@ -146,7 +149,6 @@ void process(const Flux::string &buffer){
   Source.params = params;
   Source.raw = buffer;
   Source.raw_source = nickname;
-  std::vector<Flux::string> params2 = StringVector(message, ' ');
   /**************************************/
   if(command == "352"){ ProcessJoin(Source, c->name); }
   if(source.empty() || message.empty() || params2.empty())
@@ -155,8 +157,10 @@ void process(const Flux::string &buffer){
   {
     if(!protocoldebug)
       log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), params[1].c_str());
-    if(!IsValidChannel(receiver))
+    if(!IsValidChannel(receiver)){
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
+      FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
+    }
     else{
       Command *ccom = FindChanCommand(params2[0]);
       if(ccom)
