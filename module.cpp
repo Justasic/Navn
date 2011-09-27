@@ -5,6 +5,7 @@
 Flux::insensitive_map<module*> Modules;
 std::vector<module *> ModuleHandler::EventHandlers[I_END];
 CommandMap Commandsmap;
+CommandMap ChanCommandMap;
 /** 
  * \fn module::module(Flux::string n, bool a, ModulePriority p)
  * \brief Module Constructor
@@ -22,11 +23,17 @@ module::module(const Flux::string &n, ModulePriority p):name(n){
   
   log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
 }
-module::~module(){
+module::~module(){ 
   ModuleHandler::DetachAll(this);
   for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
     if(it->second->mod == this){
      this->DelCommand(it->second);
+     delete it->second;
+    }
+    /*********************************/
+    for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
+    if(it->second->mod == this){
+     this->DelChanCommand(it->second);
      delete it->second;
     }
   Modules.erase(this->name);
@@ -66,6 +73,36 @@ int module::DelCommand(Command *c){
   c->mod = NULL;
   return 0;
 }
+/** 
+ * \fn int module::AddCommand(Command *c)
+ * \brief Adds commands from modules into the bot
+ * \param command The command to add
+ */
+int module::AddChanCommand(Command *c){
+ if(!c)
+   return 1;
+ std::pair<CommandMap::iterator, bool> it = ChanCommandMap.insert(std::make_pair(c->name, c));
+ if(it.second != true){
+   log(LOG_NORMAL, "Command %s already loaded!", c->name.c_str());
+   return 2;
+ }
+ c->mod = this;
+ return 0;
+}
+/** 
+ * \fn int module::DelCommand(Command *c)
+ * \brief delete commands from modules in the bot
+ * \param command The command to add
+ */
+int module::DelChanCommand(Command *c){
+  if(!c)
+    return 1;
+  if(!ChanCommandMap.erase(c->name))
+    return 2;
+  c->mod = NULL;
+  return 0;
+}
+
 /*******************************************************************/
 /** 
  * \fn Command *FindCommand(const Flux::string &name)
@@ -77,6 +114,14 @@ Command *FindCommand(const Flux::string &name){
    return NULL;
  CommandMap::iterator it = Commandsmap.find(name);
  if(it != Commandsmap.end())
+   return it->second;
+ return NULL;
+}
+Command *FindChanCommand(const Flux::string &name){
+  if(name.empty())
+   return NULL;
+ CommandMap::iterator it = ChanCommandMap.find(name);
+ if(it != ChanCommandMap.end())
    return it->second;
  return NULL;
 }

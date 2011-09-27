@@ -82,17 +82,18 @@ void process(const Flux::string &buffer){
      for(unsigned i =0; i < params.size(); ++i)
        log(LOG_TERMINAL, "Params %i: %s\n", i, Flux::Sanitize(params[i]).c_str());
   }
-  /**************************************/
+  /***********************************************/
+  /* make local variables instead of global ones */
   const Flux::string &receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
-  
-  /* make local variables instead of global ones */
+
   Flux::string nickname = isolate(':','!',source),
   uident = isolate('!','@',source),
   uhost = isolate('@',' ',source), cmd;
   
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
+  /***********************************************/
   
   if(message[0] == '\1' && message[message.length() -1] == '\1'){
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, StringVector(message, ' ')));
@@ -113,6 +114,7 @@ void process(const Flux::string &buffer){
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str()))); }
   if(command == "KICK"){ FOREACH_MOD(I_OnKick, OnKick(finduser(params[1]), findchannel(params[0]), params[2])); }
+  if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
   /*if(command == "NICK"){
    if(u && u->nick == Config->BotNick){
        nick = params[0];
@@ -135,10 +137,6 @@ void process(const Flux::string &buffer){
   }
   if(command == "004" && source.find('.'))
     server_name = source;
-  if(command == "PING") //this is here and not in ping_pong.h because some servers require it before connections
-      send_cmd("PONG :%s\n", params[0].c_str());
-  if(command.equals_ci("ERROR"))
-    throw CoreException(buffer.c_str());
   /**************************************/
   CommandSource Source;
   Source.u = u; //User class
@@ -148,10 +146,9 @@ void process(const Flux::string &buffer){
   Source.params = params;
   Source.raw = buffer;
   Source.raw_source = nickname;
-  if(command == "352"){
-   ProcessJoin(Source, c->name);
-  }
   std::vector<Flux::string> params2 = StringVector(message, ' ');
+  /**************************************/
+  if(command == "352"){ ProcessJoin(Source, c->name); }
   if(source.empty() || message.empty() || params2.empty())
     return;
   if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
@@ -165,8 +162,13 @@ void process(const Flux::string &buffer){
   }
   else{
     Command *com = FindCommand(params2[0]);
-    if(com && !IsValidChannel(receiver))
+    Command *ccom = FindChanCommand(params2[0]);
+    if(com && !IsValidChannel(receiver) && command == "PRIVMSG")
       com->Run(Source, params2);
+    else if(ccom && command == "PRIVMSG"){
+      ccom->Run(Source, params2);
+      printf("Channel command!");
+    }
     else{
       if(!command.is_pos_number_only())
 	FOREACH_MOD(I_OnCommand, OnCommand(command, params2));

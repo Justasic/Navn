@@ -8,7 +8,7 @@ enum Implementation{
 	I_OnPrivmsg, I_OnModuleLoad, I_OnModuleUnload,
 	I_OnRestart, I_OnShutdown, I_OnReload, I_OnCommand,
 	I_OnStart, I_OnNumeric, I_OnPreConnect, I_OnPostConnect,
-	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick,
+	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick, I_OnConnectionError,
   I_END
 };
 enum ModuleReturn{
@@ -26,8 +26,10 @@ class module{
 protected:
   void SetAuthor(const Flux::string&);
   void SetVersion(const Flux::string&);
-  int AddCommand(Command *c);
-  int DelCommand(Command *c);
+  int AddCommand(Command*);
+  int DelCommand(Command*);
+  int AddChanCommand(Command*);
+  int DelChanCommand(Command*);
 public:
   void *handle;
   Flux::string name, filename, filepath;
@@ -38,7 +40,6 @@ public:
   module(const Flux::string&, ModulePriority);
   
   virtual ~module();
-  
   virtual void OnPrivmsg(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string>&) {}
   virtual void OnCTCP(const Flux::string&, const std::vector<Flux::string>&) {}
@@ -55,6 +56,7 @@ public:
   virtual void OnStart(int argc, char** argv) {}
   virtual void OnPreConnect(const Flux::string&, const Flux::string&) {}
   virtual void OnPostConnect(SocketIO*) {}
+  virtual void OnConnectionError(const Flux::string&) {}
 };
 
 class ModuleHandler

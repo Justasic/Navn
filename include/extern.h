@@ -51,12 +51,14 @@ Channel *findchannel(const Flux::string&);
 User *finduser(const Flux::string &nick);
 module *FindModule(const Flux::string &name);
 Command *FindCommand(const Flux::string &name);
+Command *FindChanCommand(const Flux::string &name);
 
 /* extern's */
 extern SocketIO *sock;
 extern SendMessage *Send;
 extern BotConfig *Config;
 extern CommandMap Commandsmap;
+extern CommandMap ChanCommandMap;
 extern Flux::string binary_path, bot_bin, binary_dir, server_name;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);

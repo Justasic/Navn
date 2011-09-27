@@ -27,7 +27,6 @@ public:
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
   }
-  
   void OnCommand(const Flux::string &command, const std::vector<Flux::string> &params){
     if(command == "PONG")
     {
@@ -39,8 +38,16 @@ public:
      if(protocoldebug)
         printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
     }
+    if(command == "PING")
+    {
+      timeout = false;
+      send_cmd("PONG :%s\n", params[1].c_str());
+    }
   }
-  
+  void OnConnectionError(const Flux::string &buffer)
+  {
+   throw CoreException(buffer.c_str()); 
+  }
   void OnNumeric(int i)
   {
    if((i == 451)){

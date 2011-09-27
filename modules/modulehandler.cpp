@@ -73,7 +73,6 @@ public:
     }
   }
 };
-
 class CommandMUnload : public Command
 {
 public:
@@ -90,8 +89,16 @@ public:
     else if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
     else{
-      ModuleHandler::Unload(FindModule(module));
-      log(LOG_NORMAL, "%s used UNLOAD to unload %s", source.u->nick.c_str(), module.c_str());
+      bool e = ModuleHandler::Unload(FindModule(module));
+      if(!e)
+      {
+	source.Reply("Failed to unload module %s", module.c_str());
+	log(LOG_NORMAL, "%s used UNLOAD to load %s and failed", source.u->nick.c_str(), module.c_str());
+      }else{
+	source.Reply("Module \2%s\2 unloaded sucessfuly", module.c_str());
+	log(LOG_NORMAL, "%s used UNLOAD to unload %s", source.u->nick.c_str(), module.c_str());
+      }
+      
     }
   }
 };
@@ -113,18 +120,21 @@ public:
     }
       module *mo = FindModule(modd);
       if(!mo){
-	source.Reply("Module \2%s\2 is not loaded");
+	source.Reply("Module \2%s\2 is not loaded", modd.c_str());
 	return;
       }
       source.Reply("******** \2%s\2 Info ********", mo->name.c_str());
       source.Reply("Module: \2%s\2 Version: \2%s\2 Author: \2%s\2\nLoaded: \2%s\2", mo->filename.c_str(), mo->GetVersion().c_str(), mo->GetAuthor().c_str(), do_strftime(mo->GetLoadTime()).c_str());
       Flux::string cmds;
       for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
-	if((it->second->mod == mo)){
+	if((it->second->mod == mo)){ //For /msg commands
 	  cmds += it->second->name+" ";
-	 //source.Reply("Command \2%s\2", it->second->name.c_str()); 
 	}
-	cmds.trim();
+      for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
+	if((it->second->mod == mo)){ //For Channel Commands
+	  cmds += it->second->name+" ";
+	}
+      cmds.trim();
       if(cmds.empty())
 	source.Reply("Adds no commands");
       else
