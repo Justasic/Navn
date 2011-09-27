@@ -157,18 +157,18 @@ void process(const Flux::string &buffer){
       log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), params[1].c_str());
     if(!IsValidChannel(receiver))
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
-    else
-      FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
+    else{
+      Command *ccom = FindChanCommand(params2[0]);
+      if(ccom)
+	ccom->Run(Source, params2);
+      else
+	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
+    }
   }
   else{
     Command *com = FindCommand(params2[0]);
-    Command *ccom = FindChanCommand(params2[0]);
     if(com && !IsValidChannel(receiver) && command == "PRIVMSG")
       com->Run(Source, params2);
-    else if(ccom && command == "PRIVMSG"){
-      ccom->Run(Source, params2);
-      printf("Channel command!");
-    }
     else{
       if(!command.is_pos_number_only())
 	FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
