@@ -420,26 +420,7 @@ namespace Flux{
 	}
 	return (*this);
     }
-    inline void stripc()
-    { 
-      Flux::string &newbuf = *this;
-      char c = newbuf[newbuf.size() - 1];
-      while (c == '\n' || c == '\r'){
-	      newbuf.erase(newbuf.end() - 1);
-	      c = newbuf[newbuf.size() - 1];
-      }
-      (*this) == newbuf;
-    }
-    inline void stripc(const char &_chr)
-    {
-      Flux::string &newbuf = *this;
-     char c = newbuf[newbuf.size() - 1];
-	while ((c = _chr)){
-		newbuf.erase(newbuf.end() - 1);
-		c = newbuf[newbuf.size() - 1];
-	}
-	(*this) == newbuf;
-    }
+    
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     }; //end of string class
     template<typename T> class map : public std::map<string, T> { };

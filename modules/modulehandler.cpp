@@ -6,7 +6,7 @@ public:
   CommandMList():Command("MODLIST", 1, 2)
   {
     this->SetDesc("Lists all loaded modules");
-    this->SetSyntax("MODLIST \37priority\37");
+    this->SetSyntax("\37priority\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -51,7 +51,7 @@ public:
   CommandMLoad():Command("MODLOAD", 1, 2)
   {
     this->SetDesc("Load a module");
-    this->SetSyntax("MODLOAD \37name\37");
+    this->SetSyntax("\37name\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -79,7 +79,7 @@ public:
   CommandMUnload():Command("MODUNLOAD", 1, 2)
   {
     this->SetDesc("Unloads a module");
-    this->SetSyntax("MODUNLOAD \37name\37");
+    this->SetSyntax("\37name\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -109,7 +109,7 @@ public:
   CommandMInfo():Command("MODINFO", 1, 2)
   {
    this->SetDesc("Provides info on a module");
-   this->SetSyntax("MODINFO \37name\37");
+   this->SetSyntax("\37name\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {

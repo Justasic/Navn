@@ -29,10 +29,10 @@
 class CommandCWeather : public Command
 {
 public:
-  CommandCWeather():Command("!WEATHER", 1, 2)
+  CommandCWeather():Command("!WEATHER", 1, 1)
   {
     this->SetDesc("Displays the weather");
-    this->SetSyntax("!WEATHER \2location\2");
+    this->SetSyntax("\2location\2");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -48,7 +48,7 @@ public:
     if(area.is_number_only())
       wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+area;
     else
-      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand("!weather",source.message));
+      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand(ci::string(this->name.ci_str()),source.message));
     system(wget.c_str());
     
     if(!irc_string::said(xmlToString(tmpfile),"problem_cause")){

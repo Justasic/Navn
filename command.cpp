@@ -325,5 +325,7 @@ void Command::Run(CommandSource&, const std::vector<Flux::string>&) { }
 void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
 {
  this->SendSyntax(source);
- source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
+ CommandMap::iterator it = ChanCommandMap.find(this->name);
+ if((it->second != NULL)){}else
+    source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
 }

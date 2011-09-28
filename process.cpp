@@ -31,11 +31,12 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
     }
 }
 /*********************************************************************************/
-void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2, const Flux::string &buffer, const Flux::string &receiver)
+void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
+		    const Flux::string &receiver, const Flux::string &command)
 {
   User *u = Source.u;
   Channel *c = Source.c;
- if(!FindCommand(params2[0]) && Source.command == "PRIVMSG")
+ if(!FindCommand(params2[0]) && command == "PRIVMSG")
   {
     if(!protocoldebug)
       log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), Source.params[1].c_str());
@@ -46,11 +47,13 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2, c
     else{
       Command *ccom = FindChanCommand(params2[0]);
       if(ccom){
+	Source.command = ccom->name;
+	params2.erase(params2.begin());
 	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams){
 	 params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
-	 Source.params.erase(Source.params.begin() + ccom->MaxParams);
+	 params2.erase(params2.begin() + ccom->MaxParams);
 	}
-	if(Source.params.size() < ccom->MinParams) { ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
+	if(params2.size() < ccom->MinParams) { ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
 	ccom->Run(Source, params2);
       }else{
 	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
@@ -59,18 +62,20 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2, c
   }
   else{
     Command *com = FindCommand(params2[0]);
-    if(com && !IsValidChannel(receiver) && Source.command == "PRIVMSG"){
+    if(com && !IsValidChannel(receiver) && command == "PRIVMSG"){
+      Source.command = com->name;
+      params2.erase(params2.begin());
       while(com->MaxParams > 0 && params2.size() > com->MaxParams){
 	 params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
-	 Source.params.erase(Source.params.begin() + com->MaxParams);
+	 params2.erase(params2.begin() + com->MaxParams);
 	}
-	if(Source.params.size() < com->MinParams) { com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
+	if(params2.size() < com->MinParams) { com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
       com->Run(Source, params2);
     }else{
-      if(!Source.command.is_pos_number_only())
-	FOREACH_MOD(I_OnCommand, OnCommand(Source.command, params2));
+      if(!command.is_pos_number_only())
+	FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
       else if(!protocoldebug)
-	log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str()); //This receives ALL server commands sent to the bot..
+	log(LOG_DEBUG, "%s\n", Flux::Sanitize(Source.raw).c_str()); //This receives ALL server commands sent to the bot..
     }
   } 
 }
@@ -187,7 +192,6 @@ void process(const Flux::string &buffer){
   CommandSource Source;
   Source.u = u; //User class
   Source.c = c; //Channel class
-  Source.command = command;
   Source.message = message;
   Source.params = params;
   Source.raw = buffer;
@@ -196,6 +200,6 @@ void process(const Flux::string &buffer){
   if(command == "352"){ ProcessJoin(Source, c->name); }
   if(source.empty() || message.empty() || params2.empty())
     return;
-  ProcessCommand(Source, params2, buffer, receiver);
+  ProcessCommand(Source, params2, receiver, command);
   command.clear();
 }

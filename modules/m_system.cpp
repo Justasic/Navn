@@ -7,7 +7,6 @@ public:
   CommandRehash():Command("REHASH", 0, 0)
   {
     this->SetDesc("Rehashes the config file");
-    this->SetSyntax("REHASH");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -26,9 +25,10 @@ public:
 class CommandNick : public Command
 {
 public:
-  CommandNick():Command("NICK", 1, 2)
+  CommandNick():Command("NICK", 1, 1)
   {
     this->SetDesc("Change the bots nickname");
+    this->SetSyntax("\37nickname\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -57,7 +57,7 @@ public:
   CommandRestart():Command("RESTART", 1, 1)
   {
    this->SetDesc("Restarts the bot");
-   this->SetSyntax("Restart \37reason\37");
+   this->SetSyntax("\37reason\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -76,7 +76,7 @@ public:
   CommandKick():Command("KICK", 1, 3)
   {
     this->SetDesc("Kick a user from the channel");
-    this->SetSyntax("KICK channel \37nick\15");
+    this->SetSyntax("channel \37nick\15");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -107,10 +107,10 @@ public:
 class CommandChown : public Command
 {
 public:
-  CommandChown():Command("CHOWN", 1, 2)
+  CommandChown():Command("CHOWN", 1, 1)
   {
     this->SetDesc("Change ownership over the bot");
-    this->SetSyntax("CHOWN \37owner");
+    this->SetSyntax("\37owner\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -121,19 +121,16 @@ public:
 class CommandQuit : public Command
 {
 public:
-  CommandQuit():Command("QUIT", 1,2)
+  CommandQuit():Command("QUIT", 1, 1)
   {
     this->SetDesc("Quits the bot from IRC");
-    this->SetSyntax("QUIT \37randompass\37");
+    this->SetSyntax("\37randompass\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     User *u = source.u;
     Flux::string pass = params.size() == 2 ? params[1] : "";
-    if(pass.empty()){
-     this->SendSyntax(source);
-     return;
-    }
+    
     if(pass == password || pass == Config->UserPass){
       source.Reply("Quitting..");
       log(LOG_NORMAL, "%s quit the bot with password: \"%s\"", u->nick.c_str(), password.c_str());
@@ -149,10 +146,10 @@ public:
 class CommandTopic: public Command
 {
 public:
-  CommandTopic():Command("TOPIC", 2, 3)
+  CommandTopic():Command("TOPIC", 2, 2)
   {
     this->SetDesc("Set the topic on a channel");
-    this->SetSyntax("TOPIC \37channel\37 [\37topic\37]");
+    this->SetSyntax("\37channel\37 [\37topic\37]");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -160,10 +157,6 @@ public:
     if(!u->IsOwner()){
       source.Reply(ACCESS_DENIED);
       return;
-    }
-    if(params.size() < 3){
-     this->SendSyntax(source);
-     return;
     }
     Flux::string tchan = params[1];
     if(!IsValidChannel(tchan)){

@@ -9,7 +9,7 @@ public:
   CommandJoin() : Command("JOIN", 1, 2)
   {
    this->SetDesc("Joins a channel");
-   this->SetSyntax("\2JOIN \37channel\37\2");
+   this->SetSyntax("\37channel\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
@@ -42,7 +42,7 @@ public:
   CommandPart():Command("PART", 1,2)
   {
     this->SetDesc("Part a channel");
-    this->SetSyntax("PART \37channel\37");
+    this->SetSyntax("\37channel\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
