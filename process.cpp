@@ -95,14 +95,16 @@ void process(const Flux::string &buffer){
   Channel *c = findchannel(receiver);
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   /***********************************************/
-  
+  if(command == "004" && source.find('.')) { server_name = source; }
   if(message[0] == '\1' && message[message.length() -1] == '\1'){
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, StringVector(message, ' ')));
     return; //Dont allow the rest of the system to process ctcp's as it will be caught by the command handler.
   }
   if(command.equals_cs("NICK") && u) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); u->SetNewNick(params[0]); }
-  if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
-    u = new User(nickname, uident, uhost);
+  if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty())){
+    if(nickname.find('.') == Flux::string::npos)
+      u = new User(nickname, uident, uhost);
+  }
   if(command == "QUIT" && u){
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     delete u;
@@ -146,8 +148,6 @@ void process(const Flux::string &buffer){
       FOREACH_MOD(I_OnJoin, OnJoin(u, c));
     }
   }
-  if(command == "004" && source.find('.'))
-    server_name = source;
   /**************************************/
   CommandSource Source;
   Source.u = u; //User class
