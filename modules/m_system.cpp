@@ -33,7 +33,7 @@ public:
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     User *u = source.u;
-    Flux::string newnick = params.size() == 2 ? params[1]:"";
+    Flux::string newnick = params[1];
     if(newnick.empty()){
      this->SendSyntax(source);
      return;
@@ -54,7 +54,7 @@ public:
 class CommandRestart : public Command
 {
 public:
-  CommandRestart():Command("RESTART", 1, 1)
+  CommandRestart():Command("RESTART", 0, 1)
   {
    this->SetDesc("Restarts the bot");
    this->SetSyntax("\37reason\37");

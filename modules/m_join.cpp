@@ -6,7 +6,7 @@
 class CommandJoin : public Command
 {
 public:
-  CommandJoin() : Command("JOIN", 1, 2)
+  CommandJoin() : Command("JOIN", 1, 1)
   {
    this->SetDesc("Joins a channel");
    this->SetSyntax("\37channel\37");
@@ -14,7 +14,7 @@ public:
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     User *u = source.u;
-    Flux::string chan = params.size() == 2 ? params[1] : "";
+    Flux::string chan = params[1];
     if(!u->IsOwner()){
       source.Reply(ACCESS_DENIED);
       log(LOG_NORMAL, "%s attempted to make bot join %s", u->nick.c_str(), chan.c_str());
@@ -39,14 +39,14 @@ public:
 class CommandPart : public Command
 {
 public:
-  CommandPart():Command("PART", 1,2)
+  CommandPart():Command("PART", 1,1)
   {
     this->SetDesc("Part a channel");
     this->SetSyntax("\37channel\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
-    Flux::string chan = params.size() == 2 ? params[1] : "";
+    Flux::string chan = params[1];
     User *u = source.u;
     if(!u->IsOwner()){
      source.Reply(ACCESS_DENIED);
