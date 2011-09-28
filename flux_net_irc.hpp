@@ -224,6 +224,7 @@ Flux::string removeCommand(Flux::string command, Flux::string s){
  */
 Flux::string urlify(const Flux::string &received){
   Flux::string string = received;
+  string = string.replace_all_cs("%","%25"); //% is first so we dont replace something we just replaced
   string = string.replace_all_cs(" ","%20");
   string = string.replace_all_cs("+","%2B");
   string = string.replace_all_cs("$","%24");
@@ -238,7 +239,6 @@ Flux::string urlify(const Flux::string &received){
   string = string.replace_all_cs("#","%23");
   string = string.replace_all_cs(">","%3E");
   string = string.replace_all_cs("<","%3C");
-  string = string.replace_all_cs("%","%25");
   string = string.replace_all_cs("{","%7B");
   string = string.replace_all_cs("}","%7D");
   string = string.replace_all_cs("|","%7C");
