@@ -31,6 +31,50 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
     }
 }
 /*********************************************************************************/
+void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2, const Flux::string &buffer, const Flux::string &receiver)
+{
+  User *u = Source.u;
+  Channel *c = Source.c;
+ if(!FindCommand(params2[0]) && Source.command == "PRIVMSG")
+  {
+    if(!protocoldebug)
+      log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), Source.params[1].c_str());
+    if(!IsValidChannel(receiver)){
+      Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
+      FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
+    }
+    else{
+      Command *ccom = FindChanCommand(params2[0]);
+      if(ccom){
+	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams){
+	 params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
+	 Source.params.erase(Source.params.begin() + ccom->MaxParams);
+	}
+	if(Source.params.size() < ccom->MinParams) { ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
+	ccom->Run(Source, params2);
+      }else{
+	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
+      }
+    }
+  }
+  else{
+    Command *com = FindCommand(params2[0]);
+    if(com && !IsValidChannel(receiver) && Source.command == "PRIVMSG"){
+      while(com->MaxParams > 0 && params2.size() > com->MaxParams){
+	 params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
+	 Source.params.erase(Source.params.begin() + com->MaxParams);
+	}
+	if(Source.params.size() < com->MinParams) { com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
+      com->Run(Source, params2);
+    }else{
+      if(!Source.command.is_pos_number_only())
+	FOREACH_MOD(I_OnCommand, OnCommand(Source.command, params2));
+      else if(!protocoldebug)
+	log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str()); //This receives ALL server commands sent to the bot..
+    }
+  } 
+}
+/*********************************************************************************/
 
 /** 
  * \fn void process(const Flux::string &buffer)
@@ -128,15 +172,6 @@ void process(const Flux::string &buffer){
     else if(IsValidChannel(params[0]) && params.size() == 3) { FOREACH_MOD(I_OnChannelOp, OnChannelOp(u, c, params[1], params[2])); }
     else if(params[0] == Config->BotNick) { FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1])); }
   }
-  /*if(command == "NICK"){
-   if(u && u->nick == Config->BotNick){
-       nick = params[0];
-       delete u; //we shouldnt be a user in the 1st place (:
-  }else if(u->IsOwner())
-    owner_nick = params[0];
-  else
-    delete u; //we delete the user because the above if statement makes a new one for the nick change
-   }*/
   if(command == "JOIN"){
     if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
       u = new User(nickname, uident, uhost);
@@ -161,33 +196,6 @@ void process(const Flux::string &buffer){
   if(command == "352"){ ProcessJoin(Source, c->name); }
   if(source.empty() || message.empty() || params2.empty())
     return;
-  if(!FindCommand(params2[0]) && source != server_name && command == "PRIVMSG")
-  {
-    if(!protocoldebug)
-      log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), params[1].c_str());
-    if(!IsValidChannel(receiver)){
-      Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
-      FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
-    }
-    else{
-      Command *ccom = FindChanCommand(params2[0]);
-      if(ccom)
-	ccom->Run(Source, params2);
-      else{
-	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
-      }
-    }
-  }
-  else{
-    Command *com = FindCommand(params2[0]);
-    if(com && !IsValidChannel(receiver) && command == "PRIVMSG")
-      com->Run(Source, params2);
-    else{
-      if(!command.is_pos_number_only())
-	FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
-      else if(!protocoldebug)
-	log(LOG_DEBUG, "%s\n", Flux::Sanitize(buffer).c_str()); //This receives ALL server commands sent to the bot..
-    }
-  }
+  ProcessCommand(Source, params2, buffer, receiver);
   command.clear();
 }

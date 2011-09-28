@@ -6,6 +6,8 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <algorithm> //For std::transform for Flux::string.tolower() and toupper()
+#include <cctype>
 #include <sstream>
 #include <cstdio>
 #include "config.h" /* we include the config header from ./configure */
@@ -311,6 +313,8 @@ namespace Flux{
      while(!this->_string.empty() && isspace(this->_string[this->_string.length() - 1]))
        this->_string.erase(this->_string.length() - 1);
     }
+    inline void tolower() { std::transform(_string.begin(), _string.end(), _string.begin(), ::tolower); }
+    inline void toupper() { std::transform(_string.begin(), _string.end(), _string.begin(), ::toupper); }
     
     inline void clear() { this->_string.clear(); }
     

@@ -61,6 +61,7 @@ public:
      }
    }
    cmds.trim();
+   cmds.tolower();
    source.c->SendMessage("Local %s Commands:", source.c->name.c_str());
    source.c->SendMessage(cmds);
    log(LOG_NORMAL, "%s used help command", source.u->nick.c_str());
