@@ -118,7 +118,8 @@ public:
       days = sys_info.uptime / 86400;
       hours = (sys_info.uptime / 3600) - (days * 24);
       mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
-      c->SendMessage("Uptime: %d days, %d hours, %d minutes, %ld seconds",days, hours, mins, sys_info.uptime % 60);
+      c->SendMessage("System Uptime: %d days, %d hours, %d minutes, %ld seconds",days, hours, mins, sys_info.uptime % 60);
+      c->SendMessage("Bot Uptime: %s", duration(time(NULL) - starttime).c_str());
 #else
       source.Reply("This is currently not avalable on windows systems, sorry.");
 #endif

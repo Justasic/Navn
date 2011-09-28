@@ -59,6 +59,7 @@ extern SendMessage *Send;
 extern BotConfig *Config;
 extern CommandMap Commandsmap;
 extern CommandMap ChanCommandMap;
+extern time_t starttime;
 extern Flux::string binary_path, bot_bin, binary_dir, server_name;
 extern Flux::string strip(const Flux::string &buf);
 extern Flux::string getprogdir(const Flux::string&);

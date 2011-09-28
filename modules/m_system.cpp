@@ -252,9 +252,10 @@ public:
     hours = (sys_info.uptime / 3600) - (days * 24);
     mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
 
-    source.Reply("Uptime: %d days, %d hours, %d minutes, %ld seconds",
+    source.Reply("System Uptime: %d days, %d hours, %d minutes, %ld seconds",
 	  days, hours, mins, sys_info.uptime % 60);
-
+    source.Reply("Bot Uptime: %s", duration(time(NULL) - starttime).c_str());
+    
     // Load Averages for 1,5 and 15 minutes
     source.Reply("Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
 		    sys_info.loads[0], sys_info.loads[1], sys_info.loads[2]);

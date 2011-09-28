@@ -14,6 +14,7 @@ bool nofork, dev, protocoldebug, IsOper, quitting, started = false;
 const Flux::string nl = "\n";
 Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name;
 const Flux::string password = make_pass();
+time_t starttime = 0;
 /**********************Version Variables*************************/
 #define VERSION_EXTRA "-with-netflix-and-chicken"
 const Flux::string VERSION_LONG = Flux::stringify(VERSION)+Flux::stringify(VERSION_EXTRA);
