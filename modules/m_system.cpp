@@ -374,10 +374,10 @@ public:
       msg += params[i];
       msg.AddSpace();
     }
-    msg.trim();
+    msg.trim(); // Auto-Identify
     if(irc_string::said(msg, "This nickname is registered and protected. If it is your")){
       if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == "NickServ"){
-	u->SendPrivmsg("NickServ", "identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
+	u->SendPrivmsg("identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
 	log(LOG_NORMAL, "Identified to NickServ with account \"%s\"", Config->ServicesAccount.c_str());
       }
     }

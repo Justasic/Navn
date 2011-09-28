@@ -45,15 +45,21 @@ public:
     this->SetAuthor("Lordofsraam"); //Set the author
     this->SetVersion(VERSION);
     
-    Implementation i[] = { I_OnReload }; //Add that we have a module hook, this can be done in 2 ways
-    ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
+    //Implementation i[] = {  }; //Add that we have a module hook, this can be done in 2 ways
+    ModuleHandler::Attach(I_OnPrivmsg, this);
     /*or you can do the easy way
      * ModuleHandler::Attach(I_OnReload, this);
      */
   }
-  void OnReload(bool)
+  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
   {
-   log(LOG_TERMINAL, "RELOAD! YAAY!\n"); 
+   if(params[0].equals_ci("!userlist"))
+   {
+     Flux::string users;
+    for(Flux::insensitive_map<User*>::iterator it = UserNickList.begin(); it != UserNickList.end(); ++it)
+      users += it->second->nick+" ";
+    u->SendMessage(users);
+   }
   }
 };
 

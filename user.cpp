@@ -62,6 +62,15 @@ bool User::IsOwner(){
    return true;
  return false;
 }
+void User::SetNewNick(const Flux::string &newnick)
+{
+  if(newnick.empty())
+    throw CoreException("User::SetNewNick() was called with empty arguement");
+  
+  UserNickList.erase(this->nick);
+  this->nick = newnick;
+  UserNickList[this->nick] = this;
+}
 void User::SendMessage(const Flux::string &message){
   Send->notice(this->nick, message);
 }

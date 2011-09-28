@@ -13,6 +13,7 @@ public:
   void kick(Channel*, const Flux::string&);
   void kill(const Flux::string&);
   bool IsOwner();
+  void SetNewNick(const Flux::string&);
   void SendWho();
   void SendMessage(const Flux::string&);
   void SendMessage(const char*, ...);

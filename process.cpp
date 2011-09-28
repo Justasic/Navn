@@ -98,10 +98,10 @@ void process(const Flux::string &buffer){
   
   if(message[0] == '\1' && message[message.length() -1] == '\1'){
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, StringVector(message, ' ')));
-    return;
+    return; //Dont allow the rest of the system to process ctcp's as it will be caught by the command handler.
   }
-  
-  if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
+  if(command.equals_cs("NICK") && u) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); u->SetNewNick(params[0]); }
+  if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty()) /*&& !nickname.find('.')*/)
     u = new User(nickname, uident, uhost);
   if(command == "QUIT" && u){
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
@@ -117,7 +117,6 @@ void process(const Flux::string &buffer){
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str()))); }
   if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
-  if(command.equals_cs("NICK")) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); delete u; }
   if(command.equals_cs("NOTICE") && !source.find('.')){
     if(!IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); } 
     else { FOREACH_MOD(I_OnNotice, OnNotice(u, c, params2)); }
@@ -174,8 +173,9 @@ void process(const Flux::string &buffer){
       Command *ccom = FindChanCommand(params2[0]);
       if(ccom)
 	ccom->Run(Source, params2);
-      else
+      else{
 	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
+      }
     }
   }
   else{
