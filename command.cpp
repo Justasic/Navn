@@ -1,5 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#include <command.h>
+#include "command.h"
+#include "module.h"
 /**
  *\file  command.cpp 
  *\brief Contains the command class.
@@ -295,9 +296,17 @@ void CommandSource::Reply(const Flux::string &msg){
 /* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
 Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
 {
+  this->mod = NULL;
 }
 Command::~Command()
 {
+  if(this->mod){
+    CommandMap::iterator it = ChanCommandMap.find(this->name);
+   if(it->second != NULL)
+     this->mod->DelChanCommand(this);
+   else
+     this->mod->DelCommand(this);
+  }
 }
 void Command::SetDesc(const Flux::string &d){
  this->desc = d; 

@@ -25,17 +25,6 @@ module::module(const Flux::string &n, ModulePriority p):name(n){
 }
 module::~module(){ 
   ModuleHandler::DetachAll(this);
-  for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
-    if(it->second->mod == this){
-     this->DelCommand(it->second);
-     delete it->second;
-    }
-    /*********************************/
-    for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
-    if(it->second->mod == this){
-     this->DelChanCommand(it->second);
-     delete it->second;
-    }
   Modules.erase(this->name);
 }
 void module::SetAuthor(const Flux::string &person) { this->author = person; }
@@ -335,7 +324,6 @@ bool ModuleHandler::DeleteModule(module *m)
 
   if (dlclose(handle))
 	  log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
-
   if (!filepath.empty())
 	  Delete(filepath.c_str());
   

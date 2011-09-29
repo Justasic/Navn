@@ -50,7 +50,7 @@ struct sysinfo sys_info;
 class CommandCVersion: public Command
 {
 public:
-  CommandCVersion():Command("!VERSION", 0,0)
+  CommandCVersion():Command("!VERSION")
   {
     this->SetDesc("Displays the bots version info into the channel");
   }
@@ -68,7 +68,7 @@ public:
 class CommandCSpam: public Command
 {
 public:
-  CommandCSpam():Command("!SPAM", 0,0)
+  CommandCSpam():Command("!SPAM")
   {
     this->SetDesc("Displays the spam warning");
   }
@@ -81,7 +81,7 @@ public:
 class CommandCRules: public Command
 {
 public:
-  CommandCRules():Command("!RULES", 0, 0)
+  CommandCRules():Command("!RULES")
   {
     this->SetDesc("Displays the rules of the chatroom");
   }
@@ -101,7 +101,7 @@ public:
 class CommandCUptime: public Command
 {
 public:
-  CommandCUptime():Command("!UPTIME", 0, 0)
+  CommandCUptime():Command("!UPTIME")
   {
     this->SetDesc("Prints Syatem Uptime in the channel");
   }
@@ -129,7 +129,7 @@ public:
 class CommandCSocialInfo: public Command
 {
 public:
-  CommandCSocialInfo():Command("!SOCIALINFO", 0,0)
+  CommandCSocialInfo():Command("!SOCIALINFO")
   {
     this->SetDesc("Displays Flux-Net's Social Information");
   }
@@ -145,7 +145,7 @@ public:
 class CommandCRegister: public Command
 {
 public:
-  CommandCRegister():Command("!REGISTER", 0,0)
+  CommandCRegister():Command("!REGISTER")
   {
     this->SetDesc("Displays how to register your nickname");
   }
@@ -170,7 +170,7 @@ public:
 class CommandCRename: public Command
 {
 public:
-  CommandCRename():Command("!RENAME", 0,0)
+  CommandCRename():Command("!RENAME")
   {
     this->SetDesc("Displays how to rename");
   }
@@ -186,7 +186,7 @@ public:
 class CommandCInfo : public Command
 {
 public:
-  CommandCInfo():Command("!INFO", 0,0)
+  CommandCInfo():Command("!INFO")
   {
     this->SetDesc("General Da_Goat info");
   }

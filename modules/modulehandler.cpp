@@ -3,7 +3,7 @@
 class CommandMList : public Command
 {
 public:
-  CommandMList():Command("MODLIST", 1, 2)
+  CommandMList():Command("MODLIST", 0, 1)
   {
     this->SetDesc("Lists all loaded modules");
     this->SetSyntax("\37priority\37");
@@ -76,21 +76,18 @@ public:
 class CommandMUnload : public Command
 {
 public:
-  CommandMUnload():Command("MODUNLOAD", 1, 2)
+  CommandMUnload():Command("MODUNLOAD", 1, 1)
   {
     this->SetDesc("Unloads a module");
     this->SetSyntax("\37name\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
-    const Flux::string module = params.size() == 2?params[1]:"";
-    if(module.empty())
-      this->SendSyntax(source);
-    else if(!source.u->IsOwner())
+    const Flux::string module = params[1];
+    if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
     else{
-      bool e = ModuleHandler::Unload(FindModule(module));
-      if(!e)
+      if(!ModuleHandler::Unload(FindModule(module)))
       {
 	source.Reply("Failed to unload module %s", module.c_str());
 	log(LOG_NORMAL, "%s used UNLOAD to load %s and failed", source.u->nick.c_str(), module.c_str());

@@ -29,10 +29,10 @@ protected:
   void SetAuthor(const Flux::string&);
   void SetVersion(const Flux::string&);
   int AddCommand(Command*);
-  int DelCommand(Command*);
   int AddChanCommand(Command*);
-  int DelChanCommand(Command*);
 public:
+  int DelChanCommand(Command*);
+  int DelCommand(Command*);
   void *handle;
   Flux::string name, filename, filepath;
   ModulePriority priority;

@@ -7,6 +7,11 @@
 
 /* #define's */
 #define Delete unlink
+#define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
+#define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
+#define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
+#define ACCESS_DENIED "Access is Denied."
+#define GetCurrentDir getcwd
 
 /* Classes */
 class Channel;
@@ -91,12 +96,6 @@ void ReadConfig();
 
 /************************************************************/
 /* 	This is the only #define allowed in this file	    */
-#define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
-#define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
-#define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
-#define ACCESS_DENIED "Access is Denied."
-#define GetCurrentDir getcwd
-
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
