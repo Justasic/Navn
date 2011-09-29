@@ -485,6 +485,7 @@ all:
 	@$(PERL) $(CXX) $(CFLAGS) -c Socket.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c Sepstream.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c process.cpp
+	@$(PERL) $(CXX) $(CFLAGS) -c thread.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c privmsg.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c thread.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c timers.cpp
