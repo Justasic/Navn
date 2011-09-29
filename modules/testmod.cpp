@@ -24,7 +24,7 @@
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("TEST", 0, 0)
+  commanddummy() : Command("TEST", 0, 0) //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\2TEST\2");
@@ -48,7 +48,7 @@ public:
     //Implementation i[] = {  }; //Add that we have a module hook, this can be done in 2 ways
     ModuleHandler::Attach(I_OnPrivmsg, this);
     /*or you can do the easy way
-     * ModuleHandler::Attach(I_OnReload, this);
+     * ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
      */
   }
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)

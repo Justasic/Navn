@@ -23,7 +23,7 @@
 class CommandHelp : public Command
 {
 public:
-  CommandHelp():Command("HELP", 0, 0)
+  CommandHelp():Command("HELP")
   {
    this->SetDesc("Displays help messages");
   }
@@ -46,7 +46,7 @@ public:
 class CommandCHelp : public Command
 {
 public:
-  CommandCHelp():Command("!HELP", 0, 0)
+  CommandCHelp():Command("!HELP")
   {
    this->SetDesc("Displays Channel help messages");
   }

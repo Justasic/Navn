@@ -3,6 +3,7 @@
 #define DERP_H
 #include "module.h"
 #include "defs.h"
+#include "moduledefines.h"
 SendMessage *Send;
 SocketIO *sock;
 BotConfig *Config;

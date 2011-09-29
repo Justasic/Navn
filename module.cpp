@@ -232,7 +232,6 @@ template<class TYPE> TYPE class_cast(void *symbol)
  */
 bool ModuleHandler::Detach(Implementation i, module *mod){
   std::vector<module*>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
-  
   if(x == EventHandlers[i].end())
     return false;
   EventHandlers[i].erase(x);
