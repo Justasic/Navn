@@ -412,6 +412,24 @@ void sigact(int sig)
       log(LOG_NORMAL, "Recieved weird signal from terminal. Sig Number: %i\n",sig);
   }
 }
+class InputThread : public Thread
+{
+public:
+  InputThread():Thread() {}
+  ~InputThread() { log(LOG_TERMINAL, "Thread Ran Successfuly"); }
+  void ToRun()
+  {
+    std::string buf;
+    while(true)
+    {
+      std::getline(std::cin, buf);
+      if(Flux::string(buf).find_first_of_ci("QUIT") != Flux::string::npos)
+	quitting = true;
+      send_cmd("%s\n", buf.c_str());
+    }
+    SetExitState();
+  }
+};
 /** 
  * \fn static void WritePID()
  * \brief Write the bots PID file
@@ -526,6 +544,10 @@ void startup(int argc, char** argv) {
 	}
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
+  }else
+  {
+    Thread *t = new InputThread();
+    t->Start();
   }
 }
 /** 
