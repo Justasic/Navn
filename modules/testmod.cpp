@@ -21,31 +21,10 @@
  * \brief Replies to a test
  * We will try to put as many examples here in the future as we can.
  */
-class TestThread : public Thread
-{
-public:
-  TestThread(const Flux::string &nickname):Thread(), snick(nickname) {}
-  Flux::string snick;
-  ~TestThread()
-  {
-    log(LOG_TERMINAL, "Thread Ran Successfuly");
-  }
-  void ToRun()
-  {
-     int i = 0;
-     User *u = finduser(snick);
-     while(i != 5)
-     {
-      u->SendMessage("THREAD TEST: %i", i);
-      ++i;
-     }
-     SetExitState();
-  }
-};
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("TEST", 0, 0) //The 0's are how many params the command gets, they're not required and can be removed.
+  commanddummy() : Command("TEST") //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\2TEST\2");
@@ -53,8 +32,6 @@ public:
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     source.Reply("YAY!");
-    Thread *t = new TestThread(source.u->nick);
-    t->Start();
   }
   
 };

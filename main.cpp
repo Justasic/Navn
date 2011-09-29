@@ -19,6 +19,23 @@
  */
 #include "flux_net_irc.hpp"
 
+class InputThread : public Thread
+{
+public:
+  InputThread():Thread() {}
+  ~InputThread() { log(LOG_TERMINAL, "Thread Ran Successfuly"); }
+  void ToRun()
+  {
+    std::string buf;
+    while(true)
+    {
+      std::getline(std::cin, buf);
+      send_cmd("%s\n", buf.c_str());
+    }
+    SetExitState();
+  }
+};
+
 bool SocketIO::Read(const Flux::string &buf) const
 {
   process(buf); /* Process the buffer for navn */
@@ -32,6 +49,8 @@ int main (int argcx, char** argvx, char *envp[])
   try
   {
     startup(argcx, argvx);
+    Thread *t = new InputThread();
+    t->Start();
     int startcount = 0;
     SocketStart:
     ++startcount;
@@ -60,6 +79,7 @@ int main (int argcx, char** argvx, char *envp[])
     Send->command->user(Config->Ident, Config->Realname);
     Send->command->nick(Config->BotNick);
     FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+    
     
     while(!quitting){
       log(LOG_RAWIO, "Top of main loop");

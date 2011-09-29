@@ -307,22 +307,23 @@ bool ModuleHandler::DeleteModule(module *m)
   
   void *handle = m->handle;
   Flux::string filepath = m->filepath;
+  Flux::string name = m->name;
   
-  log(LOG_DEBUG, "Unloading module %s", m->name.c_str());
+  log(LOG_DEBUG, "Unloading module %s", name.c_str());
   
   dlerror();
   void (*df)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
   const char *err = dlerror();
   if (!df || err)
   {
-	  log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", m->name.c_str());
+	  log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", name.c_str());
 	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
   }
   else
 	  df(m); /* Let the module delete it self, just in case */
 
   if (dlclose(handle))
-	  log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
+	  log(LOG_NORMAL, "[%s.so] %s", name.c_str(), dlerror());
   if (!filepath.empty())
 	  Delete(filepath.c_str());
   
