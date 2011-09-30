@@ -1,7 +1,7 @@
 CXX = c++
 EXECUTABLE = @PACKAGE@
 PERL = $(srcdir)/run-cc.pl
-CFLAGS = -Wall -ansi -pipe -Wshadow -pedantic -g -Wl,--export-dynamic -ldl -lnsl -I$(srcdir)/include -I$(srcdir)
+CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -pedantic -g -Wl,--export-dynamic -ldl -lnsl -I$(srcdir)/include -I$(srcdir)
 LIBS = -lpthread -ldl
 MODFLAGS = -fPIC -g -lnsl $(LIBS) -shared -Wl,-soname,
 all: 

@@ -13,17 +13,19 @@ CommandMap ChanCommandMap;
  * \param activated Wether the module is activated or not
  * \param priority The module priority
  */
-module::module(const Flux::string &n, ModulePriority p):name(n){
-  priority = p;
-  loadtime = time(NULL);
+module::module(const Flux::string &n, ModulePriority p){
+  this->name = n;
+  this->priority = p;
+  this->handle = NULL;
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
   
   Modules[this->name] = this;
-  
+   this->loadtime = time(NULL);
   log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
 }
-module::~module(){ 
+module::~module(){
+  //log(LOG_DEBUG, "Unloading module %s", this->name.c_str());
   ModuleHandler::DetachAll(this);
   Modules.erase(this->name);
 }
@@ -251,7 +253,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   log(LOG_NORMAL,"Attempting to load module [%s]", modname.c_str());
   
   Flux::string mdir = Config->Binary_Dir + "/runtime/"+modname;
-  if(modname.find(".so"))
+  if(modname.find(".so") != Flux::string::npos)
     mdir += ".XXXXXX";
   else
     mdir += ".so.XXXXXX";
@@ -307,23 +309,20 @@ bool ModuleHandler::DeleteModule(module *m)
   
   void *handle = m->handle;
   Flux::string filepath = m->filepath;
-  Flux::string name = m->name;
-  
-  log(LOG_DEBUG, "Unloading module %s", name.c_str());
   
   dlerror();
   void (*df)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
   const char *err = dlerror();
   if (!df || err)
   {
-	  log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", name.c_str());
+	  log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", m->name.c_str());
 	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
   }
   else
 	  df(m); /* Let the module delete it self, just in case */
 
   if (dlclose(handle))
-	  log(LOG_NORMAL, "[%s.so] %s", name.c_str(), dlerror());
+	  log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
   if (!filepath.empty())
 	  Delete(filepath.c_str());
   

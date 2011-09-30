@@ -412,6 +412,9 @@ void sigact(int sig)
       log(LOG_NORMAL, "Recieved weird signal from terminal. Sig Number: %i\n",sig);
   }
 }
+/** \class InputThread
+ * This thread allows for user input to be possible, this is activated when the nofork option is specified.
+ */
 class InputThread : public Thread
 {
 public:

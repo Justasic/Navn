@@ -136,15 +136,15 @@ Flux::string duration(const time_t &t)
 
 Flux::string do_strftime(const time_t &t, bool short_output)
 {
-	tm tm = *localtime(&t);
-	char buf[4098];
-	strftime(buf, sizeof(buf), "%b %d %H:%M:%S %Y %Z", &tm);
-	if (short_output)
-		return buf;
-	if (t < time(NULL))
-		return Flux::string(buf) + " " + fsprintf("(%s ago)", duration(time(NULL) - t).c_str());
-	else
-		return Flux::string(buf) + " " + fsprintf("(%s from now)", duration(t - time(NULL)).c_str());
+  tm tm = *localtime(&t);
+  char buf[4098];
+  strftime(buf, sizeof(buf), "%b %d %H:%M:%S %Y %Z", &tm);
+  if (short_output)
+    return buf;
+  if (t < time(NULL))
+    return Flux::string(buf) + " " + fsprintf("(%s ago)", duration(time(NULL) - t).c_str());
+  else
+    return Flux::string(buf) + " " + fsprintf("(%s from now)", duration(t - time(NULL)).c_str());
 }
 /**
   * \fn Flux::string isolate(char begin, char end, Flux::string msg)

@@ -27,7 +27,7 @@ public:
   commanddummy() : Command("TEST") //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
-   this->SetSyntax("\2TEST\2");
+   this->SetSyntax("\37TEST\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
