@@ -238,12 +238,12 @@ public:
     int days, hours, mins;
 #ifndef _WIN32
     if(sysinfo(&sys_info) != 0){//now here Justasic got pissed because c strings suck ass
-      Flux::string fuckingshit = Flux::string("sys_info Error: ") + strerror(errno);
+      Flux::string fuckingshit = Flux::string("sys_info Error: ") + Flux::string(strerror(errno));
       throw ModuleException(fuckingshit.c_str());
     }
     struct utsname uts;
     if(uname(&uts) < 0){
-      Flux::string fuckingshit = Flux::string("uname() Error: ") + strerror(errno);
+      Flux::string fuckingshit = Flux::string("uname() Error: ") + Flux::string(strerror(errno));
       throw ModuleException(fuckingshit.c_str());
     }
 

@@ -420,6 +420,13 @@ namespace Flux{
 	}
 	return (*this);
     }
+    inline operator int() {
+      std::stringstream integer;
+      int i=0;
+      integer << _string;
+      integer >> i;
+      return i;
+    }
     
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     }; //end of string class
