@@ -297,7 +297,7 @@ namespace Flux{
     inline size_type size() const { return this->_string.size(); }
     inline size_type capacity() const { return this->_string.capacity(); }
     inline void push_back(char c) { return this->_string.push_back(c); }
-    inline void push_back(string &_str) { if (this != &_str) this->_string += _str._string; }
+    inline void push_back(const string &_str) { if (this != &_str) this->_string += _str._string; }
     inline void resize(size_type n) { return this->_string.resize(n); }
     inline void AddSpace() { return this->_string.push_back(' '); }
     
@@ -402,6 +402,7 @@ namespace Flux{
     
     inline char &operator[](size_type n) { return this->_string[n]; }
     inline const char &operator[](size_type n) const { return this->_string[n]; }
+    inline operator std::string() { return this->_string; }
     
     inline string strip()
     { 
@@ -420,7 +421,7 @@ namespace Flux{
     {
       std::stringstream integer;
       int i=0;
-      integer << _string;
+      integer << this->_string;
       integer >> i;
       return i;
     }
@@ -428,15 +429,15 @@ namespace Flux{
     {
      std::stringstream integer;
       float f=0;
-      integer << _string;
+      integer << this->_string;
       integer >> f;
       return f; 
     }
     inline operator double()
     {
-     std::stringstream integer;
+      std::stringstream integer;
       double d=0;
-      integer << _string;
+      integer << this->_string;
       integer >> d;
       return d; 
     }
@@ -444,11 +445,10 @@ namespace Flux{
     {
      std::stringstream integer;
       long i=0;
-      integer << _string;
+      integer << this->_string;
       integer >> i;
       return i; 
     }
-    inline operator std::string() { return _string; }
     
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     }; //end of string class
