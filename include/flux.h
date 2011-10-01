@@ -404,6 +404,7 @@ namespace Flux{
     inline const char &operator[](size_type n) const { return this->_string[n]; }
     inline operator std::string() { return this->_string; }
     
+    /* Strip Return chars */
     inline string strip()
     { 
 	Flux::string new_buf = *this;
@@ -411,12 +412,93 @@ namespace Flux{
 	new_buf.replace_all_cs("\r", "");
 	return new_buf;
     }
+    /* Strip specific chars */
     inline string strip(const char &_delim)
     {
 	Flux::string new_buf = *this;
 	new_buf.replace_all_cs(_delim, "");
 	return new_buf;
     }
+    inline string b64encode()
+    {
+      static const string Base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+      static const char Pad64 = '=';
+      string output, src = _string;
+      size_t src_pos = 0, src_len = src.length();
+      unsigned char input[3];
+
+      while (src_len - src_pos > 2)
+      {
+	input[0] = src[src_pos++];
+	input[1] = src[src_pos++];
+	input[2] = src[src_pos++];
+
+	output += Base64[input[0] >> 2];
+	output += Base64[((input[0] & 0x03) << 4) + (input[1] >> 4)];
+	output += Base64[((input[1] & 0x0f) << 2) + (input[2] >> 6)];
+	output += Base64[input[2] & 0x3f];
+      }
+      /* Now we worry about padding */
+      if (src_pos != src_len)
+      {
+	input[0] = input[1] = input[2] = 0;
+	for (size_t i = 0; i < src_len - src_pos; ++i)
+		input[i] = src[src_pos + i];
+
+	output += Base64[input[0] >> 2];
+	output += Base64[((input[0] & 0x03) << 4) + (input[1] >> 4)];
+	if (src_pos == src_len - 1)
+		output += Pad64;
+	else
+		output += Base64[((input[1] & 0x0f) << 2) + (input[2] >> 6)];
+	output += Pad64;
+      }
+      return output;
+    }
+    inline string b64decode()
+    {
+      static const string Base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+      static const char Pad64 = '=';
+      string output, src = _string;
+      unsigned state = 0;
+      string::const_iterator ch = src.begin(), send = src.end();
+      for (; ch != send; ++ch)
+      {
+	if (isspace(*ch)) /* Skip whitespace anywhere */
+	  continue;
+
+	if (*ch == Pad64)
+	  break;
+
+	size_t pos = Base64.find(*ch);
+	if (pos == string::npos) /* A non-base64 character */
+	  return "";
+	switch (state)
+	{
+	  case 0:
+	    output += pos << 2;
+	    state = 1;
+	    break;
+	  case 1:
+	    output[output.length() - 1] |= pos >> 4;
+	    output += (pos & 0x0f) << 4;
+	    state = 2;
+	    break;
+	  case 2:
+	    output[output.length() - 1] |= pos >> 2;
+	    output += (pos & 0x03) << 6;
+	    state = 3;
+	    break;
+	  case 3:
+	    output[output.length() - 1] |= pos;
+	    state = 0;
+	}
+      }
+      if (!output[output.length() - 1])
+	output.erase(output.length() - 1);
+      return output;
+    }
+    /* Cast into an integer */
     inline operator int()
     {
       std::stringstream integer;
@@ -425,6 +507,7 @@ namespace Flux{
       integer >> i;
       return i;
     }
+    /* Cast into a float */
     inline operator float()
     {
      std::stringstream integer;
@@ -433,6 +516,7 @@ namespace Flux{
       integer >> f;
       return f; 
     }
+    /* Cast into a double */
     inline operator double()
     {
       std::stringstream integer;
@@ -441,6 +525,7 @@ namespace Flux{
       integer >> d;
       return d; 
     }
+    /* Cast into a long integer */
     inline operator long()
     {
      std::stringstream integer;
