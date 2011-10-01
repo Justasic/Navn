@@ -313,6 +313,7 @@ namespace Flux{
      while(!this->_string.empty() && isspace(this->_string[this->_string.length() - 1]))
        this->_string.erase(this->_string.length() - 1);
     }
+    
     inline void tolower() { std::transform(_string.begin(), _string.end(), _string.begin(), ::tolower); }
     inline void toupper() { std::transform(_string.begin(), _string.end(), _string.begin(), ::toupper); }
     
@@ -404,21 +405,16 @@ namespace Flux{
     
     inline string strip()
     { 
-	char c = (*this)[(*this).size() - 1];
-	while (c == '\n' || c == '\r'){
-		(*this).erase((*this).end() - 1);
-		c = (*this)[(*this).size() - 1];
-	}
-	return (*this);
+	Flux::string new_buf = *this;
+	new_buf.replace_all_cs("\n", "");
+	new_buf.replace_all_cs("\r", "");
+	return new_buf;
     }
-    inline string strip(const char &_str)
+    inline string strip(const char &_delim)
     {
-	char c = (*this)[(*this).size() - 1];
-	while ((c = _str)){
-		(*this).erase((*this).end() - 1);
-		c = (*this)[(*this).size() - 1];
-	}
-	return (*this);
+	Flux::string new_buf = *this;
+	new_buf.replace_all_cs(_delim, "");
+	return new_buf;
     }
     inline operator int() {
       std::stringstream integer;
