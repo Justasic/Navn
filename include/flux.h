@@ -416,13 +416,39 @@ namespace Flux{
 	new_buf.replace_all_cs(_delim, "");
 	return new_buf;
     }
-    inline operator int() {
+    inline operator int()
+    {
       std::stringstream integer;
       int i=0;
       integer << _string;
       integer >> i;
       return i;
     }
+    inline operator float()
+    {
+     std::stringstream integer;
+      float f=0;
+      integer << _string;
+      integer >> f;
+      return f; 
+    }
+    inline operator double()
+    {
+     std::stringstream integer;
+      double d=0;
+      integer << _string;
+      integer >> d;
+      return d; 
+    }
+    inline operator long()
+    {
+     std::stringstream integer;
+      long i=0;
+      integer << _string;
+      integer >> i;
+      return i; 
+    }
+    inline operator std::string() { return _string; }
     
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     }; //end of string class
