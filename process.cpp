@@ -29,6 +29,7 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
      if(!channel.empty())
        c = new Channel(channel);
     }
+    u->AddChan(c);
 }
 /*********************************************************************************/
 void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
@@ -36,6 +37,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 {
   User *u = Source.u;
   Channel *c = Source.c;
+  if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
  if(!FindCommand(params2[0]) && command == "PRIVMSG")
   {
     if(!protocoldebug)
@@ -68,13 +70,11 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       while(com->MaxParams > 0 && params2.size() > com->MaxParams){
 	 params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
 	 params2.erase(params2.begin() + com->MaxParams);
-	}
-	if(params2.size() < com->MinParams) { com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
+      }
+      if(params2.size() < com->MinParams) { com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
       com->Run(Source, params2);
     }else{
-      if(!command.is_pos_number_only())
-	FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
-      else if(!protocoldebug)
+      if(!protocoldebug)
 	log(LOG_DEBUG, "%s\n", Flux::Sanitize(Source.raw).c_str()); //This receives ALL server commands sent to the bot..
     }
   } 
@@ -162,12 +162,17 @@ void process(const Flux::string &buffer){
     FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
-    else
-     delete u;
+    else{
+     if(!u->FindChan(c))
+       delete u;
+     else
+       u->DelChan(c);
+    }
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric(atoi(command.c_str()))); }
   if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
+  if(command.equals_cs("INVITE")) { FOREACH_MOD(I_OnInvite, OnInvite(u, params[1])); }
   if(command.equals_cs("NOTICE") && !source.find('.')){
     if(!IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); } 
     else { FOREACH_MOD(I_OnNotice, OnNotice(u, c, params2)); }

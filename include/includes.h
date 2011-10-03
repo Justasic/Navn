@@ -24,13 +24,11 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <pthread.h>
-#include <sstream>
 #include <csignal>
 #include <unistd.h>
 #include <cstdlib>
 #include <sys/sysinfo.h>
 #include <sys/utsname.h>
-#include <cstdio>
 #include <alloca.h>
 #endif
 

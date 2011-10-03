@@ -8,11 +8,15 @@ class User
 public:
   User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "", const Flux::string &server ="");
   virtual ~User();
+  std::list<Channel*> ChannelList;
   Flux::string nick, host, realname, ident, fullhost, server;
   void kick(const Flux::string&, const Flux::string&);
   void kick(Channel*, const Flux::string&);
   void kill(const Flux::string&);
   bool IsOwner();
+  void AddChan(Channel*);
+  void DelChan(Channel*);
+  Channel *FindChan(Channel*);
   void SetNewNick(const Flux::string&);
   void SendWho();
   void SendMessage(const Flux::string&);

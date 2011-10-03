@@ -14,7 +14,6 @@
 
 #include <includes.h>
 #include <time.h>
-#include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
 

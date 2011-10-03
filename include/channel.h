@@ -7,6 +7,7 @@ class Channel
 public:
   Channel(const Flux::string&, time_t ts = time(NULL));
   ~Channel();
+  Flux::map<User*> UserList;
   //some day we will hhave a mode manager here :P
   //some day we will also have a user finder for a channel ;P
   Flux::string name;

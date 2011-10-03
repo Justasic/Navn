@@ -10,7 +10,7 @@ enum Implementation{
 	I_OnStart, I_OnNumeric, I_OnPreConnect, I_OnPostConnect,
 	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick, I_OnConnectionError,
 	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
-	I_OnChannelOp, I_OnPart,
+	I_OnChannelOp, I_OnPart, I_OnInvite,
   I_END
 };
 enum ModuleReturn{
@@ -66,6 +66,7 @@ public:
   virtual void OnPreConnect(const Flux::string&, const Flux::string&) {}
   virtual void OnPostConnect(SocketIO*) {}
   virtual void OnConnectionError(const Flux::string&) {}
+  virtual void OnInvite(User *u, const Flux::string&) {}
 };
 class ModuleHandler
 {
