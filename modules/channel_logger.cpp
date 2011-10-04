@@ -64,10 +64,9 @@ public:
     if(c->name != Config->LogChannel)
       return;
     Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i){
-      msg += params[i];
-      msg.AddSpace();
-    }
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i]+' ';
+    
     msg.trim();
     if(nolog != "#nl" && u){
       if(nolog == "\001ACTION"){
@@ -82,10 +81,9 @@ public:
     if(c->name != Config->LogChannel)
       return;
     Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i){
-      msg += params[i];
-      msg.AddSpace();
-    }
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i]+' ';
+      
     msg.trim();
     Flux::string nolog = params.size() == 2?params[1]:"";
     if(nolog != "#nl" && u){

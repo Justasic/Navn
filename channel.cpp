@@ -144,7 +144,7 @@ void ListChans(CommandSource &source){
   for(Flux::map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it){
     Channel *ch = it->second;
     channels += ch->name;
-    channels.AddSpace();
+    channels += ' ';
   }
   source.Reply("Channels: %s\n", channels.c_str());
 }

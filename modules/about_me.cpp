@@ -58,10 +58,9 @@ public:
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
   {
     Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i){
-      msg += params[i];
-      msg.AddSpace();
-    }
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i]+' ';
+    
     msg.trim();
     if(msg.equals_ci("about me")){
 	  //u->SendMessage("Raw: %s", source.raw.c_str()); This is broke till Justasic can find a fix.

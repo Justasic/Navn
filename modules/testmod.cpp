@@ -24,13 +24,21 @@
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("TEST", 1,1) //The 0's are how many params the command gets, they're not required and can be removed.
+  commanddummy() : Command("TEST", 0,1) //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\37TEST\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
+    /*User *u = finduser(params[1]);
+    if(!u)
+      return;
+    for(std::list<Channel*>::iterator it = u->ChannelList.begin(), it_end = u->ChannelList.end(); it != it_end; ++it)
+    {
+     if(it != it_end)
+	 source.Reply("CHANNEL: %s", (*it)->name.c_str());
+    }*/
     source.Reply("YAY!");
   }
   

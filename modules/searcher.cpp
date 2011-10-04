@@ -74,10 +74,8 @@ public:
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
   Flux::string cmd = params.empty()?"":params[0];
   Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i){
-      msg += params[i];
-      msg.AddSpace();
-    }
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i]+' ';
 
     if(cmd.equals_ci("!google")){
 	      // if !google is said in the channel

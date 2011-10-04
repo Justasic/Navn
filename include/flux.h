@@ -214,12 +214,15 @@ inline bool operator!=(const std::string &leftval, const ci::string &rightval)
  *\author Justasic and Anope
  * This class has all the inline string functions we needed
  * to make the string class a little bit more functioning.
- * most function programming for the string class goes to The Anope development team
+ * most function programming for the string class goes to The Anope development team but
+ * a lot (casting operator for example) is done by Justasic
  */
 namespace Flux{
   /* This class was ported from Anope IRC services to work with Navn
    * most function programming credit goes to The Anope Team
    * See http://tinyurl.com/6btqne4
+   * 
+   * All casting functions are written by Justasic
    */
   class string
   {
@@ -300,7 +303,6 @@ namespace Flux{
     inline void push_back(char c) { return this->_string.push_back(c); }
     inline void push_back(const string &_str) { if (this != &_str) this->_string += _str._string; }
     inline void resize(size_type n) { return this->_string.resize(n); }
-    inline void AddSpace() { return this->_string.push_back(' '); }
     
     inline string erase(size_t pos = 0, size_t n = std::string::npos) { return this->_string.erase(pos, n); }
     inline iterator erase(const iterator &i) { return this->_string.erase(i); }
@@ -531,8 +533,9 @@ namespace Flux{
       string bin;
       for(unsigned j = 0; j < _string.size(); ++j){
 	bin += std::bitset<10>(_string[j]).to_string();
-	bin.AddSpace();
+	bin += ' ';
       }
+      bin.trim();
       return bin;
     }
     /* Cast into an integer */

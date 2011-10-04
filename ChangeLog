@@ -62,6 +62,7 @@ Added Shared Object (.so) Modules, Converted modules to conform to such function
 Rewrote the socket engine to clean up slop code, this removes std::queue from the socket engine
 Moved MANY config values to a new (but may not stay) config system for navn.
 Added Command class for channel commands such as !rename, these commands are literal
+Removed Flux::string.AddSpace()
 
 Navn 2.0.0
 ==========

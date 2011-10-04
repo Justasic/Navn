@@ -366,7 +366,7 @@ public:
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i){
       msg += params[i];
-      msg.AddSpace();
+      msg += ' ';
     }
     msg.trim(); // Auto-Identify
     if(irc_string::said(msg, "This nickname is registered and protected. If it is your")){

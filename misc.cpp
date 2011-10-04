@@ -220,6 +220,18 @@ void log(LogType type, const char *fmt, ...){
   va_end(args);
   log.close();
 }
+/** Check if a file exists
+ * \param filename The file
+ * \return true if the file exists, false if it doens't
+ */
+bool IsFile(const Flux::string &filename)
+{
+	struct stat fileinfo;
+	if (!stat(filename.c_str(), &fileinfo))
+		return true;
+
+	return false;
+}
 /** 
  * \fn Flux::string TempFile(const Flux::string &file)
  * \brief Creates a temporary file name for use in navn, can be quite useful.
