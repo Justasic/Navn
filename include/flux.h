@@ -10,6 +10,7 @@
 #include <cctype>
 #include <sstream>
 #include <cstdio>
+#include <bitset>
 #include "config.h" /* we include the config header from ./configure */
 #ifdef __GNUC__
 #define DEPRECATED(func) func __attribute__ ((deprecated))
@@ -497,6 +498,42 @@ namespace Flux{
       if (!output[output.length() - 1])
 	output.erase(output.length() - 1);
       return output;
+    }
+    inline string hex_str()
+    {
+      const char* data = (*this).c_str();
+      const char hexchars[] = "0123456789abcdef";
+      size_t l = (*this).length();
+      string rv;
+      for(size_t i =0; i < l; ++i)
+      {
+	unsigned char c = data[i];
+	rv += hexchars[c >> 4];
+	rv += hexchars[c & 0xF];
+      }
+      return rv;
+    }
+    inline string unhex()
+    {
+      size_t len = _string.size();
+      string rv;
+      for(size_t i =0; i < len; ++i)
+      {
+	char h = _string[i], l = _string[i + 1];
+	unsigned char byte = (h >= 'a' ? h - 'a' + 10 : h - '0') << 4;
+	byte += (l >= 'a' ? l - 'a' + 10 : l - '0');
+	rv += byte;
+      }
+      return rv;
+    }
+    inline string bin_str()
+    {
+      string bin;
+      for(unsigned j = 0; j < _string.size(); ++j){
+	bin += std::bitset<10>(_string[j]).to_string();
+	bin.AddSpace();
+      }
+      return bin;
     }
     /* Cast into an integer */
     inline operator int()
