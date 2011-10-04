@@ -501,30 +501,30 @@ namespace Flux{
     }
     inline string hex_str()
     {
-      const char* data = (*this).c_str();
-      const char hexchars[] = "0123456789abcdef";
-      size_t l = (*this).length();
+      const char hextable[] = "0123456789abcdef";
+
+      size_t l = _string.length();
       string rv;
-      for(size_t i =0; i < l; ++i)
+      for (size_t i = 0; i < l; ++i)
       {
-	unsigned char c = data[i];
-	rv += hexchars[c >> 4];
-	rv += hexchars[c & 0xF];
+	      unsigned char c = _string[i];
+	      rv += hextable[c >> 4];
+	      rv += hextable[c & 0xF];
       }
       return rv;
     }
     inline string unhex()
     {
-      size_t len = _string.size();
-      string rv;
-      for(size_t i =0; i < len; ++i)
-      {
-	char h = _string[i], l = _string[i + 1];
-	unsigned char byte = (h >= 'a' ? h - 'a' + 10 : h - '0') << 4;
-	byte += (l >= 'a' ? l - 'a' + 10 : l - '0');
-	rv += byte;
-      }
-      return rv;
+      size_t len = _string.length();
+	string rv;
+	for (size_t i = 0; i < len; i += 2)
+	{
+		char h = _string[i], l = _string[i + 1];
+		unsigned char byte = (h >= 'a' ? h - 'a' + 10 : h - '0') << 4;
+		byte += (l >= 'a' ? l - 'a' + 10 : l - '0');
+		rv += byte;
+	}
+	return rv;
     }
     inline string bin_str()
     {
