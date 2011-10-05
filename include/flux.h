@@ -422,17 +422,18 @@ namespace Flux{
     inline string strip()
     { 
 	Flux::string new_buf = *this;
-	new_buf.replace_all_cs("\n", "");
-	new_buf.replace_all_cs("\r", "");
+	new_buf = new_buf.replace_all_cs("\n", "");
+	new_buf = new_buf.replace_all_cs("\r", "");
 	return new_buf;
     }
     /* Strip specific chars */
     inline string strip(const char &_delim)
     {
 	Flux::string new_buf = *this;
-	new_buf.replace_all_cs(_delim, "");
+	new_buf = new_buf.replace_all_cs(_delim, "");
 	return new_buf;
     }
+    //Transform from Text to Base64
     inline string b64encode()
     {
       static const string Base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -469,6 +470,7 @@ namespace Flux{
       }
       return output;
     }
+    //Transform from Base64 to Human readable text
     inline string b64decode()
     {
       static const string Base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -512,33 +514,36 @@ namespace Flux{
 	output.erase(output.length() - 1);
       return output;
     }
+    //Transform into Hexidecimal text string
     inline string hex_str()
     {
-      const char hextable[] = "0123456789abcdef";
+      const char hextable[] = "0123456789ABCDEF";
 
       size_t l = _string.length();
       string rv;
       for (size_t i = 0; i < l; ++i)
       {
-	      unsigned char c = _string[i];
-	      rv += hextable[c >> 4];
-	      rv += hextable[c & 0xF];
+	unsigned char c = _string[i];
+	rv += hextable[c >> 4];
+	rv += hextable[c & 0xF];
       }
       return rv;
     }
+    //Transform into human readable text from hexidecimal
     inline string unhex()
     {
       size_t len = _string.length();
 	string rv;
 	for (size_t i = 0; i < len; i += 2)
 	{
-		char h = _string[i], l = _string[i + 1];
-		unsigned char byte = (h >= 'a' ? h - 'a' + 10 : h - '0') << 4;
-		byte += (l >= 'a' ? l - 'a' + 10 : l - '0');
-		rv += byte;
+	  char h = _string[i], l = _string[i + 1];
+	  unsigned char byte = (h >= 'a' ? h - 'a' + 10 : h - '0') << 4;
+	  byte += (l >= 'a' ? l - 'a' + 10 : l - '0');
+	  rv += byte;
 	}
 	return rv;
     }
+    //Transform into binary equivalent of the string
     inline string bin_str()
     {
       string bin;

@@ -29,7 +29,7 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_FUNC_FORK
-AC_CHECK_FUNCS([atexit gethostbyname inet_ntoa memset select socket strerror strtol sysinfo uname backtrace])
+AC_CHECK_FUNCS([atexit gethostbyname inet_ntoa memset select socket strerror strtol sysinfo uname backtrace gettimeofday])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

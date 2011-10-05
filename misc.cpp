@@ -166,6 +166,31 @@ Flux::string isolate(char begin, char end, const Flux::string &msg){
   }
   return to_find;
 }
+Flux::string TimeStamp()
+{
+ char tbuf[256];
+  time_t t;
+
+  if (time(&t) < 0)
+	  throw CoreException("time() failed");
+  tm tm = *localtime(&t);
+#if HAVE_GETTIMEOFDAY
+  if (protocoldebug)
+  {
+    char *s;
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    strftime(tbuf, sizeof(tbuf) - 1, "[%b %d %H:%M:%S", &tm);
+    s = tbuf + strlen(tbuf);
+    s += snprintf(s, sizeof(tbuf) - (s - tbuf), ".%06d", static_cast<int>(tv.tv_usec));
+    strftime(s, sizeof(tbuf) - (s - tbuf) - 1, " %Y]", &tm);
+  }
+  else
+#endif
+    strftime(tbuf, sizeof(tbuf) - 1, "[%b %d %H:%M:%S %Y]", &tm);
+    
+  return tbuf;
+}
 /** 
  * \fn void log(LogType type = LOG_NORMAL, const char *fmt, ...)
  * This is what logs everything that goes on with the bot
@@ -174,50 +199,46 @@ Flux::string isolate(char begin, char end, const Flux::string &msg){
  */
 void log(LogType type, const char *fmt, ...){
   std::fstream log;
-  Flux::string timestamp;
+  std::stringstream ss;
+  
   va_list args;
   va_start(args, fmt);
-  
-  time_t t = time(NULL);
-  struct tm *tm = localtime(&t);
-  
-  char buf[512];
-  std::stringstream ss;
-  strftime(buf, sizeof(buf) - 1, "[%b %d %H:%M:%S %Y]", tm);
-  timestamp = buf;
-  vsnprintf(buf, sizeof(buf), fmt, args);
-  ss << Flux::Sanitize(buf) << std::endl;
+  char buffer[4096] = "";
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  ss << Flux::Sanitize(buffer) << std::endl;
+  va_end(args);
+
   if((type == LOG_TERMINAL)){
    printf("%s", ss.str().c_str());
    return;
   }
+  
   try{
-  log.open(Config->LogFile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-  if(!log.is_open()){
-    std::stringstream lerr;
-    if(!Config->LogFile.empty())
-      lerr << "Failed to open log file "<< Config->LogFile <<": " << strerror(errno);
-    else
-      lerr << "Cannot find logfile.";
-     throw LogException(lerr.str().c_str());
-  }
+    log.open(Config->LogFile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+    if(!log.is_open()){
+      std::stringstream lerr;
+      if(!Config->LogFile.empty())
+	lerr << "Failed to open log file "<< Config->LogFile <<": " << strerror(errno);
+      else
+	lerr << "Cannot find logfile.";
+      throw LogException(lerr.str().c_str());
+    }
   }catch (LogException &e){
    std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
   }
+  
   if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug){
-    printf("%s %s", timestamp.c_str(), ss.str().c_str());
-    log << timestamp << " " << ss.str();
+    printf("%s %s", TimeStamp().c_str(), ss.str().c_str());
+    log << TimeStamp() << " " << ss.str();
   }
   else if((type == LOG_DEBUG) && dev){
     if(nofork)
-      printf("%s %s", timestamp.c_str(), ss.str().c_str());
-    log << timestamp << " " << ss.str();
+      printf("%s %s", TimeStamp().c_str(), ss.str().c_str());
+    log << TimeStamp() << " " << ss.str();
   }else if((type == LOG_NORMAL)){
-    printf("%s %s", timestamp.c_str(), ss.str().c_str());
-    log << timestamp << " " << ss.str();
+    printf("%s %s", TimeStamp().c_str(), ss.str().c_str());
+    log << TimeStamp() << " " << ss.str();
   }
-  va_end(args);
-  va_end(args);
   log.close();
 }
 /** Check if a file exists
