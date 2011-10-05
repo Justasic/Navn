@@ -10,6 +10,7 @@
 #include <cctype>
 #include <sstream>
 #include <cstdio>
+#include <iomanip>
 #include <bitset>
 #include "config.h" /* we include the config header from ./configure */
 #ifdef __GNUC__
@@ -20,6 +21,12 @@
 #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 #define DEPRECATED(func) func
 #endif
+template<typename T> inline std::string strify(const T &x){
+    std::ostringstream stream;
+    if(!(stream << std::setprecision(400) << x))
+	    throw;
+    return stream.str();
+}
 namespace Flux{
  class string; 
 }
@@ -238,6 +245,10 @@ namespace Flux{
     
     string() : _string("") { }
     string(char chr) : _string() { _string = chr; }
+    string(int i) : _string() { _string = strify(i); }
+    string(float f) : _string() { _string = strify(f); }
+    string(double d) : _string() { _string = strify(d); }
+    string(long l) : _string() { _string = strify(l); }
     string(size_type n, char chr) : _string(n, chr) { }
     string(const char *_str) : _string(_str) { }
     string(const std::string &_str) : _string(_str) { }
