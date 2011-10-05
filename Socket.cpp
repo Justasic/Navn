@@ -84,10 +84,8 @@ bool SocketIO::Connect()
   }
   
   if (connected == -1)
-  {
     throw SocketException("Connection Failed.");
-    return false;
-  }
+    
   freeaddrinfo(servinfo); //Clear up used memory we dont need anymore
   
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);

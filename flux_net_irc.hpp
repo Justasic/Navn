@@ -549,12 +549,12 @@ void startup(int argc, char** argv) {
  */
 
 Flux::string xmlToString(const Flux::string &fileName){
-  std::string buf, line;
+  Flux::string buf, line;
   std::ifstream in(fileName.c_str());
-  while(std::getline(in,line)){
+  while(std::getline(in,line.std_str())){
     buf += line;
   }
-  return buf.c_str();
+  return buf;
 }
 /** 
  * \fn Flux::string findInXML(Flux::string node, Flux::string info, Flux::string fileString)
