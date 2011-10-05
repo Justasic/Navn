@@ -143,8 +143,7 @@ void ListChans(CommandSource &source){
   Flux::string channels;
   for(Flux::map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it){
     Channel *ch = it->second;
-    channels += ch->name;
-    channels += ' ';
+    channels += ch->name+' ';
   }
   source.Reply("Channels: %s\n", channels.c_str());
 }

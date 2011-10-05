@@ -20,9 +20,9 @@ public:
       log(LOG_NORMAL, "%s attempted to make bot join %s", u->nick.c_str(), chan.c_str());
       return;
     }
-    if(!IsValidChannel(chan)){
+    if(!IsValidChannel(chan))
       source.Reply(CHANNEL_X_INVALID, chan.c_str());
-    }else{
+    else{
       log(LOG_NORMAL, "%s made the bot join %s", u->nick.c_str(), chan.c_str());
       Channel *c = findchannel(chan);
       if(c){
@@ -54,9 +54,8 @@ public:
      return;
     }
     if(!IsValidChannel(chan))
-    {
      source.Reply(CHANNEL_X_INVALID, chan.c_str());
-    }else{
+    else{
       Channel *c = findchannel(chan);
       if(c)
 	c->SendPart();

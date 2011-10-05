@@ -11,7 +11,6 @@ connects to, do so here, NOT in the main code.
 */
 char **my_av, **my_envp;
 bool nofork, dev, protocoldebug, IsOper, quitting, started = false;
-const Flux::string nl = "\n";
 Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name;
 const Flux::string password = make_pass();
 time_t starttime = 0;

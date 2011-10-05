@@ -95,7 +95,6 @@ public:
 	source.Reply("Module \2%s\2 unloaded sucessfuly", module.c_str());
 	log(LOG_NORMAL, "%s used UNLOAD to unload %s", source.u->nick.c_str(), module.c_str());
       }
-      
     }
   }
 };

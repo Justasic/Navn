@@ -354,7 +354,6 @@ public:
   }
   void OnKick(User *u, User *kickee, Channel *c, const Flux::string &reason)
   {
-    std::cout << "User: " << u << " Kickee: " << kickee << " Channel: " << c << " Reason: " << reason << std::endl;
      if(kickee && kickee->nick.equals_ci(Config->BotNick))
      {
        log(LOG_NORMAL, "%s kicked me from %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
