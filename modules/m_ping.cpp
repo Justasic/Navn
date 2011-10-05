@@ -31,12 +31,11 @@ public:
     if(command == "PONG")
     {
      Flux::string ts = params[0];
-     int timestamp = atoi(ts.c_str());
-     int lag = time(NULL)-timestamp;
+     int lag = time(NULL)-(int)ts;
      timeout = false;
      pings = 0;
      if(protocoldebug)
-        printf("%i sec lag (%i - %i)\n", lag, timestamp, (int)time(NULL));
+        printf("%i sec lag (%i - %i)\n", lag, (int)ts, (int)time(NULL));
     }
     if(command == "PING")
     {

@@ -37,107 +37,111 @@
 * Looks up a domain name to ip address
 * @Param(Socket, Destination, Domain Name)
 */
-void dns(Flux::string dest, Flux::string host){
-  struct hostent *he;
-  he = gethostbyname(host.c_str());
-  if (he <= 0){
-  Send->privmsg(dest, "\0034[DNS]\017 Error: %i", he);
-  }else{
-  Send->privmsg(dest, "\0034[DNS]\017 %s", inet_ntoa(*(struct in_addr*)he->h_addr));
+class CommandCDNS : public Command
+{
+public:
+  CommandCDNS():Command("!DNS", 1, 1)
+  {
+    this->SetDesc("Displays a resolved hostname/domain");
+    this->SetSyntax("hostname"); 
   }
-}
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    struct hostent *he;
+    he = gethostbyname(params[1].c_str());
+    if (he <= 0)
+	source.c->SendMessage("\0034[DNS]\017 Error: %i", he);
+    else
+	source.c->SendMessage("\0034[DNS]\017 %s", inet_ntoa(*(struct in_addr*)he->h_addr));
+  }
+};
 /** Reverse DNS Lookup
 * Looks up an IP address to host
 * @Param rdns(Socket, rawircFlux::string, Destination, ipaddress)
 */
 // http://en.wikipedia.org/wiki/Getaddrinfo
-void rdns(Flux::string dest, Flux::string host){
-  struct addrinfo *result;
-  struct addrinfo *res;
-  int error;
-  
-  error = getaddrinfo(host.c_str(), NULL, NULL, &result);
-  if (error != 0){ 
-    Send->privmsg(dest, "\0034[rDNS]\017 Error: %s\n", gai_strerror(error)); 
-  }else{
-   char hostname[NI_MAXHOST] = "";
-   res = result;
-    error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
-    if(error != 0){ 
-      Send->privmsg(dest, "\0034[rDNS]\017 Error: %s", gai_strerror(error));
-    }
-    if(*hostname != '\0')
-      Send->privmsg(dest, "\0034[rDNS]\017 %s", hostname);
-    freeaddrinfo(result);
+class CommandCRDNS : public Command
+{
+public:
+  CommandCRDNS():Command("!RDNS", 1, 1)
+  {
+    this->SetDesc("Displays a reversely resolved DNS IP Address");
+    this->SetSyntax("ipaddress"); 
   }
-}
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    struct addrinfo *result;
+    struct addrinfo *res;
+    int error;
+    
+    error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
+    if (error != 0)
+      source.c->SendMessage("\0034[rDNS]\017 Error: %s\n", gai_strerror(error)); 
+    else{
+    char hostname[NI_MAXHOST] = "";
+    res = result;
+      error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+      if(error != 0)
+	source.c->SendMessage("\0034[rDNS]\017 Error: %s", gai_strerror(error));
+      if(*hostname != '\0')
+	source.c->SendMessage("\0034[rDNS]\017 %s", hostname);
+      freeaddrinfo(result);
+    }
+  }
+};
 /** All hosts reverse DNS Lookup
 * Looks up an IP address to all the host
 * @Param rdns(SendMessage, Flux::string hostname, Flux::string destination)
 */
-void alldns(Flux::string host, Flux::string dest){
-  struct addrinfo *result;
-  struct addrinfo *res;
-  int error;
-  int count = 0;
-  
-  error = getaddrinfo(host.c_str(), NULL, NULL, &result);
-  if (error != 0){ 
-    Send->privmsg(dest, "\0034[All rDNS]\017 Error: %s\n", gai_strerror(error)); 
-  }else{
-  for (res = result; res != NULL; res = res->ai_next){
-    char hostname[NI_MAXHOST] = "";
-    error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
-    if(error != 0){ 
-      Send->privmsg(dest, "\0034[All rDNS]\017 error in getnameinfo: %s", gai_strerror(error)); 
-      continue; 
+class CommandCARDNS : public Command
+{
+public:
+  CommandCARDNS():Command("!ARDNS", 1, 1)
+  {
+    this->SetDesc("Displays ALL reverse DNS ip addresses");
+    this->SetSyntax("ipaddress"); 
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    struct addrinfo *result;
+    struct addrinfo *res;
+    int error;
+    int count = 0;
+    
+    error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
+    if (error != 0){ 
+      source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error)); 
+    }else{
+    for (res = result; res != NULL; res = res->ai_next){
+      char hostname[NI_MAXHOST] = "";
+      error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+      if(error != 0){ 
+	source.c->SendMessage("\0034[All rDNS]\017 error in getnameinfo: %s", gai_strerror(error)); 
+	continue; 
+      }
+      if(*hostname != '\0'){
+	source.c->SendMessage("\0034[All rDNS]\017 %s", hostname);
+	count++;
+      }
     }
-    if(*hostname != '\0'){
-      Send->privmsg(dest, "\0034[All rDNS]\017 %s", hostname);
-      count++;
+    source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostnames.", count);
+    freeaddrinfo(result);
     }
   }
-  Send->privmsg(dest, "\0034[All rDNS]\017 Total of %i hostnames.", count);
-  freeaddrinfo(result);
-  }
-}
+};
 
 class dns_m:public module
 {
+  CommandCARDNS ardns;
+  CommandCRDNS rdns;
+  CommandCDNS dns;
 public:
   dns_m():module("DNS Resolver", PRIORITY_DONTCARE){ 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
-    ModuleHandler::Attach(I_OnPrivmsg, this);
-  }
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
-    Flux::string cmd = params.empty()?"":params[0];
-    
-    if(cmd.equals_ci("!rdns")){
-     if(params.size() < 2){
-       u->SendMessage("Syntax: \2!RDNS \37ipaddress\15");
-       return;
-     }
-      Flux::string ip = params[params.size() -1];
-      rdns(c->name, ip);
-    }
-    if(cmd.equals_ci("!dns")){
-     if(params.size() < 2){
-       u->SendMessage("Syntax: \2!DNS \37hostname\15");
-       return;
-     }
-      Flux::string host = params[params.size() -1];
-      dns(c->name, host);
-    }
-    if(cmd.equals_ci("!ardns")){
-     if(params.size() < 2){
-       u->SendMessage("Syntax: \2!ARDNS \37hostname\15");
-       return;
-     }
-     Flux::string host = params[params.size() -1];
-     alldns(host, c->name);
-      
-    }
+    this->AddChanCommand(&ardns);
+    this->AddChanCommand(&rdns);
+    this->AddChanCommand(&dns);
   }
 };
 /**

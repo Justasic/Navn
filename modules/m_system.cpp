@@ -364,10 +364,9 @@ public:
   void OnNotice(User *u, const std::vector<Flux::string> &params)
   {
     Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i){
-      msg += params[i];
-      msg += ' ';
-    }
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i]+' ';
+      
     msg.trim(); // Auto-Identify
     if(irc_string::said(msg, "This nickname is registered and protected. If it is your")){
       if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == "NickServ"){

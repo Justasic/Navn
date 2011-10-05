@@ -74,7 +74,7 @@ extern Flux::string isolate(char begin, char end, const Flux::string &msg);
 extern Flux::string make_pass();
 extern Flux::string do_strftime(const time_t &t, bool short_output = false);
 extern Flux::string duration(const time_t &t);
-extern Flux::string sprintf(const char*, ...);
+extern Flux::string fsprintf(const char*, ...);
 extern int randint(int x, int y);
 extern bool IsValidChannel(const Flux::string&);
 extern bool IsFile(const Flux::string&);

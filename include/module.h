@@ -56,7 +56,7 @@ public:
   virtual void OnJoin(User*, Channel*) {}
   virtual void OnKick(User*, User*, Channel*, const Flux::string&) {}
   virtual void OnNumeric(int) {}
-  virtual void OnReload(bool) {}
+  virtual void OnReload() {}
   virtual void OnCommand(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnStart(int argc, char** argv) {}
   virtual void OnChannelMode(User*, Channel*, const Flux::string&) {}

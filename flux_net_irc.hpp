@@ -328,9 +328,8 @@ void restart(Flux::string reason){
  * \brief Reload the bot config file
  * \param boolean this boolean tells rehash if we are starting from start or not
  */
-static void Rehash(bool onstart = false){
-  if(!onstart)
-    log(LOG_NORMAL, "Rehashing Config File: bot.conf");
+static void Rehash(){
+  log(LOG_NORMAL, "Rehashing Config File: bot.conf");
   try{
       BotConfig *configtmp = Config;
       Config = new BotConfig();
@@ -338,22 +337,14 @@ static void Rehash(bool onstart = false){
     if(Config->Parser->ParseError() == -1)
       throw ConfigException("Cannot open file bot.conf");
     if (Config->Parser->ParseError() != 0) {
-      Flux::string error = "Error on line ";
-      error += Flux::stringify(Config->Parser->ParseError());
-	throw ConfigException(error);
+	throw ConfigException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));
     }
-    FOREACH_MOD(I_OnReload, OnReload(onstart));
+    FOREACH_MOD(I_OnReload, OnReload());
     ReadConfig();
   }catch(const ConfigException &ex){
-    if(onstart){
-      Flux::string cfgerr = "Config: ";
-      cfgerr += ex.GetReason();
-      throw CoreException(cfgerr.c_str());
-    }
     log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
-    if(!onstart)
-      Send->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
-  } 
+    Send->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
+  }
 }
 /**Random Quit message selector
  * This is where it will set the quit message if there was a terminal quit or signal interrupt (ctrl+c)
@@ -395,7 +386,7 @@ void sigact(int sig)
   switch (sig){
     case SIGHUP:
       signal(sig, SIG_IGN);
-      Rehash(false);
+      Rehash();
       break;
     case SIGINT:
     case SIGKILL:
@@ -426,7 +417,7 @@ public:
     while(true)
     {
       std::getline(std::cin, buf);
-      if(Flux::string(buf).find_first_of_ci("QUIT") != Flux::string::npos)
+      if(Flux::string(buf).find_first_of_ci("QUIT") == Flux::string::npos)
 	quitting = true;
       send_cmd("%s\n", buf.c_str());
     }
@@ -467,9 +458,7 @@ void startup(int argc, char** argv) {
   if(Config->Parser->ParseError() == -1)
       throw CoreException("Cannot open file bot.conf");
   if (Config->Parser->ParseError() != 0) {
-    Flux::string error = "Error on line ";
-    error += Flux::stringify(Config->Parser->ParseError());
-      throw CoreException(error);
+      throw CoreException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));
   }
   ModuleHandler::SanitizeRuntime();
   ReadConfig();
