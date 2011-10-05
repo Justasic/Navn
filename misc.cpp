@@ -239,16 +239,16 @@ bool IsFile(const Flux::string &filename)
  * NOTE: THIS _MUST_ HAVE 6 X's (XXXXXX) to work properly.
  */
 Flux::string TempFile(const Flux::string &file){
-char *tmp_output = strdup(file.c_str());
-int target_fd = mkstemp(tmp_output);
-if (target_fd == -1 || close(target_fd) == -1)
-{
-	free(tmp_output);
-	return "";
-}
-Flux::string filestring = tmp_output;
-free(tmp_output);
-return filestring;
+  char *tmp_output = strdup(file.c_str());
+  int target_fd = mkstemp(tmp_output);
+  if (target_fd == -1 || close(target_fd) == -1)
+  {
+	  free(tmp_output);
+	  return "";
+  }
+  Flux::string filestring = tmp_output;
+  free(tmp_output);
+  return filestring;
 }
 /** 
  * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)

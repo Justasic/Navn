@@ -104,8 +104,7 @@ void ListUsers(CommandSource &source){
   Flux::string users;
   for(Flux::map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end; ++it){
     User *u2 = it->second;
-    users += u2->nick;
-    users += ' ';
+    users += u2->nick+' ';
   }
   source.Reply("Users: %s\n", users.c_str());
 }

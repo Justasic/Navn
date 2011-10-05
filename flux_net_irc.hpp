@@ -588,38 +588,6 @@ Flux::string findInXML(const Flux::string &node, const Flux::string &info, const
   }
   return output;
 }
-/*******************************************************************/
-namespace ThreadHandler
-{
-  class Thread
-  {
-  public:
-    virtual void ToRun(){};
-  };
-  Thread * porker;
-  void *nullpointer;
-  static inline pthread_attr_t *GetAttr()
-  {
-   static pthread_attr_t attr;
-   if(pthread_attr_init(&attr))
-     throw CoreException("Error calling pthread_attr_init for Threads");
-   if(pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE))
-     throw CoreException("Unable to make threads joinable");
-   return &attr;
-  }
-  void *bnyeh(void*)
-  {
-    porker->ToRun();
-    return nullpointer;
-  }
-  
-  void RunThread(Thread piggy)
-  {    
-    porker = &piggy;
-    pthread_t t1;
-    pthread_create(&t1,NULL,&bnyeh,NULL);
-  }
-}
 
 /***************************************************************************/
 
