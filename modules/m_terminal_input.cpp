@@ -1,0 +1,41 @@
+#include "flux_net_irc.hpp"
+
+/** \class InputThread
+ * This thread allows for user input to be possible, this is activated when the nofork option is specified.
+ */
+class InputThread : public Thread
+{
+public:
+  InputThread():Thread() {}
+  ~InputThread() { log(LOG_TERMINAL, "Thread Ran Successfuly"); }
+  void ToRun()
+  {
+    std::string buf;
+    while(true)
+    {
+      std::getline(std::cin, buf);
+      if(Flux::string(buf).find_first_of_ci("QUIT") == Flux::string::npos)
+	quitting = true;
+      send_cmd("%s\n", buf.c_str());
+    }
+    SetExitState();
+  }
+};
+
+class ModTerminalInput : public module
+{
+public:
+  ModTerminalInput():module("TerminalInput", PRIORITY_DONTCARE)
+  {
+    this->SetVersion(VERSION);
+    this->SetAuthor("Justasic");
+    ModuleHandler::Attach(I_OnStart, this);
+  }
+  void OnStart(int, char**)
+  {
+    Thread *t = new InputThread();
+    t->Start();
+  }
+};
+
+MODULE_HOOK(ModTerminalInput)

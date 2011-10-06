@@ -166,6 +166,7 @@ Flux::string isolate(char begin, char end, const Flux::string &msg){
   }
   return to_find;
 }
+
 Flux::string TimeStamp()
 {
  char tbuf[256];

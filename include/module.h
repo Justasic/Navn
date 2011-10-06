@@ -85,4 +85,7 @@ public:
 private:
   static bool DeleteModule(module*);
 };
+#define MODULE_HOOK(x) \
+extern "C" module *ModInit() { return new x(); } \
+extern "C" void Moduninit(x *m) { if(m) delete m; }
 #endif

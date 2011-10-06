@@ -524,6 +524,8 @@ all:
 	@$(PERL) $(CXX) $(MODFLAGS)modules/da_goat.so -o modules/da_goat.so da_goat.o
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/channel_logger.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)modules/channel_logger.so -o modules/channel_logger.so channel_logger.o
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_terminal_input.cpp
+	@$(PERL) $(CXX) $(MODFLAGS)modules/m_terminal_input.so -o modules/m_terminal_input.so m_terminal_input.o
 	@echo " "
 	@echo "Build complete. Run './$(EXECUTABLE)' to execute the binary."
 

@@ -403,27 +403,6 @@ void sigact(int sig)
       log(LOG_NORMAL, "Recieved weird signal from terminal. Sig Number: %i\n",sig);
   }
 }
-/** \class InputThread
- * This thread allows for user input to be possible, this is activated when the nofork option is specified.
- */
-class InputThread : public Thread
-{
-public:
-  InputThread():Thread() {}
-  ~InputThread() { log(LOG_TERMINAL, "Thread Ran Successfuly"); }
-  void ToRun()
-  {
-    std::string buf;
-    while(true)
-    {
-      std::getline(std::cin, buf);
-      if(Flux::string(buf).find_first_of_ci("QUIT") == Flux::string::npos)
-	quitting = true;
-      send_cmd("%s\n", buf.c_str());
-    }
-    SetExitState();
-  }
-};
 /** 
  * \fn static void WritePID()
  * \brief Write the bots PID file
@@ -536,10 +515,6 @@ void startup(int argc, char** argv) {
 	}
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
-  }else
-  {
-    Thread *t = new InputThread();
-    t->Start();
   }
 }
 /** 
@@ -590,16 +565,5 @@ Flux::string findInXML(const Flux::string &node, const Flux::string &info, const
 }
 
 /***************************************************************************/
-
-//const Flux::string &modname,
-#define MODULE_HOOK(x) \
-extern "C" module *ModInit() \
-        { \
-                return new x(); \
-        } \
-        extern "C" void Moduninit(x *m) \
-        { \
-                delete m; \
-        }
         
 #endif
