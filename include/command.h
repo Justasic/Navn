@@ -30,6 +30,7 @@ public:
   void join(const Flux::string&);
   void whois(const Flux::string&);
   void names(const Flux::string&);
+  void away(const Flux::string&);
 };
 class Oper
 {

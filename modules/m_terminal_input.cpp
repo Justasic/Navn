@@ -8,12 +8,14 @@
 class InputThread : public Thread
 {
 public:
+  bool exiting;
   InputThread():Thread() {}
-  ~InputThread() { log(LOG_TERMINAL, "Input Thread Exiting."); }
+  ~InputThread() { log(LOG_TERMINAL, "Input Thread Exiting."); exiting = true; }
   void ToRun()
   {
+    exiting = false;
     std::string buf;
-    while(!this->GetExitState())
+    while(!exiting)
     {
       printf("Top of Input Loop\n");
       std::getline(std::cin, buf);

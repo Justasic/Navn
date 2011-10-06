@@ -105,6 +105,9 @@ void Commands::topic(const Flux::string &chan, const Flux::string &msg){
 void Commands::nick(const Flux::string &bnick){
   this->raw("NICK %s\n", bnick.c_str());
 }
+void Commands::away(const Flux::string &message){
+ send_cmd("AWAY :%s", message.c_str()); 
+}
 /**
  * \fn void command::oper(Flux::string oper, Flux::string password)
  * \brief Sends IRC command /oper
