@@ -2,6 +2,24 @@
 #include <ios>
 #include <istream>
 
+void ProcessInput(const Flux::string &str)
+{
+  std::vector<Flux::string> params = StringVector(str, ' ');
+  if(params.empty())
+    return;
+  
+  if(params[0].equals_ci("QUIT")){
+	quitting = true;
+	send_cmd("%s\n", str.c_str());
+  }
+  else if(str.find_first_of_ci("MSG") == Flux::string::npos)
+    send_cmd("PRIVMSG %s\n", str.c_str());
+  else if(str.find_first_of_ci("NICK") == Flux::string::npos)
+    send_cmd("NICK %s\n", str.c_str());
+  else
+    send_cmd("%s\n", str.c_str());
+}
+
 /** \class InputThread
  * This thread allows for user input to be possible, this is activated when the nofork option is specified.
  */
@@ -19,9 +37,8 @@ public:
     {
       printf("Top of Input Loop\n");
       std::getline(std::cin, buf);
-      if(Flux::string(buf).find_first_of_ci("QUIT") == Flux::string::npos)
-	quitting = true;
-      send_cmd("%s\n", buf.c_str());
+      if(!buf.empty())
+	ProcessInput(buf);
     }
     SetExitState();
   }
