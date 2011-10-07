@@ -63,6 +63,24 @@ Rewrote the socket engine to clean up slop code, this removes std::queue from th
 Moved MANY config values to a new (but may not stay) config system for navn.
 Added Command class for channel commands such as !rename, these commands are literal
 Removed Flux::string.AddSpace()
+Added search(), tolower(), toupper(), b64encode(), b64decode(), hex_str(), Unhex(), bin_str(), and the ability to accept integers, floats, doubles, and longs into Flux::string.
+Fully Deprecated irc_string class with the new search() function added to Flux::string
+Added/Fixed Thread class, now threads can be created.
+Added User Input via terminal into a module, Added parsing for commands and command aliases.
+Converted m_dns module to conform with the new command system
+Made !help list all commands in lower case
+Changed some module stuff to cast Flux::string into integers, floats, etc.
+Added a list of loaded modules into the config system
+Added SimpleMod.cpp which should be a better example module
+Added a user list into the channel class and a channel list in the user class; this will show the users in the channel or the channels the user is in.
+Added Throws into the socket engine, cleaned up the code a bit, also added better error handling and fixed a crash on Ctrl + C when we dont connect to a server.
+Added SendMessage->command->away() into the protocol class, i think we all know what this does.
+Rewrote the log function to log to terminal and log with nanosecond timestamps in protocoldebug.
+Added fsprintf() which returns a Flux::string after it has been parsed by va_list.
+Added duration() and do_strftime(), this parses timestamps into something humans can read.
+Added TempFile() which returns a temporary location for temporary files, also generates a temporary file name.
+Added IsFile() which returns if a file is.. well.. a file.
+Commands can now have the number of params specified.. if they're are too many then the vector will resize to fit that number, if they're too few then it will send a syntax error.
 
 Navn 2.0.0
 ==========

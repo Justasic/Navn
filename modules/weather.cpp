@@ -51,7 +51,7 @@ public:
       wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand(ci::string(this->name.ci_str()),source.message));
     system(wget.c_str());
     
-    if(!irc_string::said(xmlToString(tmpfile),"problem_cause")){
+    if(!xmlToString(tmpfile).search("problem_cause")){
       Flux::string ff = xmlToString(tmpfile);
       ff.trim();
       if(ff.empty()){

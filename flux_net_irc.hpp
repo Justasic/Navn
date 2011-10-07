@@ -169,7 +169,7 @@ DEPRECATED(bool said(Flux::string findee)){
   *  very useful to have outside of an \a irc_string object.
   * \return True if \a findee was found, false otherwise.
   */
-static bool said(Flux::string source, Flux::string findee){
+DEPRECATED(static bool said(Flux::string source, Flux::string findee)){
   unsigned i = source.find(findee);
   if (i != Flux::string::npos){
     return true;
@@ -183,7 +183,8 @@ static bool said(Flux::string source, Flux::string findee){
  * \brief Wrapper for an irc host
  * This was written by Justasic to break up the parts of a messages host for easier use.
  */
-class IsoHost:Flux::string{
+class IsoHost:Flux::string
+{
 public:
     Flux::string raw;
     Flux::string nick;
@@ -265,12 +266,12 @@ Flux::string urlify(const Flux::string &received){
  * \return A Flux::string containing the response from the OS.
  */
 Flux::string execute(const char *cmd) {
-/* 
- * Roses are red,
- * Violets are blue,
- * I read StackOverflow
- * And so do you!
- */
+   /* 
+    * Roses are red,
+    * Violets are blue,
+    * I read StackOverflow
+    * And so do you!
+    */
     #ifdef _WIN32
     FILE* pipe = _popen
     #else
@@ -289,15 +290,6 @@ Flux::string execute(const char *cmd) {
     pclose(pipe);
     #endif
     return result;
-}
-
-/** 
- * \fn static void remove_pidfile()
- * \brief Removes the PID file on exit
- */
-static void remove_pidfile()
-{
- Delete(Config->PidFile.c_str());
 }
 /** 
  * \fn static void restart(Flux::string reason)
@@ -403,6 +395,11 @@ void sigact(int sig)
       log(LOG_NORMAL, "Recieved weird signal from terminal. Sig Number: %i\n",sig);
   }
 }
+/** 
+ * \fn static void remove_pidfile()
+ * \brief Removes the PID file on exit
+ */
+static void remove_pidfile() { Delete(Config->PidFile.c_str()); }
 /** 
  * \fn static void WritePID()
  * \brief Write the bots PID file
