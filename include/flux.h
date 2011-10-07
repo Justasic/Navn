@@ -244,11 +244,9 @@ namespace Flux{
     static const size_type npos = static_cast<size_type>(-1);
     
     string() : _string("") { }
-    string(char chr) : _string() { _string = chr; }
-    string(int i) : _string() { _string = strify(i); }
     string(float f) : _string() { _string = strify(f); }
     string(double d) : _string() { _string = strify(d); }
-    string(long l) : _string() { _string = strify(l); }
+    string(char chr) : _string() { _string = chr; }
     string(size_type n, char chr) : _string(n, chr) { }
     string(const char *_str) : _string(_str) { }
     string(const std::string &_str) : _string(_str) { }

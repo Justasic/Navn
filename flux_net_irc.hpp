@@ -310,7 +310,7 @@ void restart(Flux::string reason){
     if(execvpret > 0){
       throw CoreException("Restart Failed, Exiting");
     }
-    remove_pidfile();
+    Delete(Config->PidFile.c_str());
     exit(1);
   }
 }
