@@ -446,16 +446,15 @@ void startup(int argc, char** argv) {
   dir = "." + dir.substr(n);
   //gets the command line paramitors if any.
   int Terminal = isatty(0) && isatty(1) && isatty(2);
-  if (argc < 1 || argv[1] == NULL){
-  }else{
-    Flux::string arg = argv[1];
-    for(int Arg=0; Arg < argc; ++Arg){
+  if (!(argc < 1) || argv[1] != NULL){
+    for(int Arg=1; Arg < argc; ++Arg){
+      Flux::string arg = argv[Arg];
        if(arg == "--developer" || arg == "--dev" || arg == "-d")
        {
          dev = nofork = true;
 	 log(LOG_DEBUG, "%s is started in Developer mode. (%s)", Config->BotNick.c_str(), arg.c_str());
        }
-       else if (arg == "--nofork" || arg == "-f"){
+       else if (arg == "--nofork" || arg == "-n"){
          nofork = true;
          log(LOG_DEBUG, "%s is started With No Forking enabled. (%s)", Config->BotNick.c_str(), arg.c_str());
        }
@@ -483,7 +482,6 @@ void startup(int argc, char** argv) {
        }
        else if(arg == "--protocoldebug" || "-p"){
 	 protocoldebug = true;
-	 nofork = true;
 	 log(LOG_RAWIO, "%s is started in Protocol Debug mode. (%s)", Config->BotNick.c_str(), arg.c_str());
        }
        else
@@ -491,7 +489,7 @@ void startup(int argc, char** argv) {
 	log(LOG_TERMINAL, "Unknown option %s", arg.c_str());
 	exit(0);
        }
-  }
+    }
   }
    WritePID();
    log(LOG_NORMAL, "%s Started. PID: %d", Config->BotNick.c_str(), getpid());

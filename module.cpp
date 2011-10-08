@@ -253,7 +253,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   log(LOG_NORMAL,"Attempting to load module [%s]", modname.c_str());
   
   Flux::string mdir = Config->Binary_Dir + "/runtime/"+modname;
-  if(modname.find(".so") != Flux::string::npos)
+  if(modname.search(".so"))
     mdir += ".XXXXXX";
   else
     mdir += ".so.XXXXXX";
@@ -270,7 +270,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   if(!handle && err && *err)
   {
    log(LOG_NORMAL, "[%s] %s", modname.c_str(), err);
-   remove(modname.c_str());
+   Delete(modname.c_str());
    return MOD_ERR_NOLOAD;
   }
   dlerror();
@@ -280,7 +280,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   if(!f && err && *err){
    log(LOG_NORMAL, "No module init function, moving on.");
    dlclose(handle);
-   remove(modname.c_str());
+   Delete(modname.c_str());
    return MOD_ERR_NOLOAD;
   }
   if(!f)
