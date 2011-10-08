@@ -4,10 +4,11 @@ class encyclopedia : public module
 {
 
 public:
-  encyclopedia():module("Encyclopedia", PRIORITY_LAST)
+  encyclopedia(const Flux::string &Name):module(Name)
   { 
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_LAST);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)

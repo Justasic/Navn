@@ -72,10 +72,11 @@ class help_m:public module
   CommandHelp help;
   CommandCHelp chelp;
 public:
-  help_m():module("Help", PRIORITY_DONTCARE){ 
+  help_m(const Flux::string &Name):module(Name){ 
     this->AddCommand(&help);
     this->AddChanCommand(&chelp);
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_FIRST);
     this->SetAuthor("Justasic");
   }
 };

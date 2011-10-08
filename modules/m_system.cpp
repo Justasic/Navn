@@ -299,7 +299,7 @@ class m_system : public module
   CommandPID pid;
   CommandPass pass;
 public:
-  m_system():module("System", PRIORITY_DONTCARE)
+  m_system(const Flux::string &Name):module(Name)
   {
     this->AddCommand(&cmdrehash);//So many commands! .-.
     this->AddCommand(&cmdkick);
@@ -311,7 +311,6 @@ public:
     this->AddCommand(&topic);
     this->AddCommand(&pid);
     this->AddCommand(&pass);
-    
     Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");

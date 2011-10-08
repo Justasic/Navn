@@ -17,11 +17,12 @@ class SimpleMod : public module
 {
   CommandSimple s;
 public:
-  SimpleMod():module("SimpleMod", PRIORITY_LAST)
+  SimpleMod(const Flux::string &Name):module(Name)
   {
     this->SetVersion("1.0");
     this->SetAuthor("Justasic & Lordofsraam");
     this->AddCommand(&s);
+    this->SetPriority(PRIORITY_LAST);
     Implementation i[] = { I_OnPrivmsg, I_OnNotice } 
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }

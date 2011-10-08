@@ -73,7 +73,7 @@ public:
 class weather:public module{
   CommandCWeather rainy;
 public:
-  weather():module("Weather", PRIORITY_DONTCARE){ 
+  weather(const Flux::string &Name):module(Name){ 
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
     this->AddChanCommand(&rainy);

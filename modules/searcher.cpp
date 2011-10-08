@@ -66,7 +66,7 @@ Flux::string search(Flux::string s, Flux::string command){
 class searcher:public module
 {
 public:
-  searcher():module("Searcher", PRIORITY_DONTCARE){
+  searcher(const Flux::string &Name):module(Name){
     ModuleHandler::Attach(I_OnPrivmsg, this);
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);

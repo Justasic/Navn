@@ -7,22 +7,23 @@ std::vector<module *> ModuleHandler::EventHandlers[I_END];
 CommandMap Commandsmap;
 CommandMap ChanCommandMap;
 /** 
- * \fn module::module(Flux::string n, bool a, ModulePriority p)
+ * \fn module::module(Flux::string n)
  * \brief Module Constructor
  * \param name Name of the module
  * \param activated Wether the module is activated or not
  * \param priority The module priority
  */
-module::module(const Flux::string &n, ModulePriority p){
+module::module(const Flux::string &n){
   this->name = n;
-  this->priority = p;
   this->handle = NULL;
+  this->Priority = PRIORITY_DONTCARE;
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
   
   Modules[this->name] = this;
-   this->loadtime = time(NULL);
-  log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
+  this->loadtime = time(NULL);
+  //if(!nofork)
+    //log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
 }
 module::~module(){
   //log(LOG_DEBUG, "Unloading module %s", this->name.c_str());
@@ -31,9 +32,11 @@ module::~module(){
 }
 void module::SetAuthor(const Flux::string &person) { this->author = person; }
 void module::SetVersion(const Flux::string &ver) { this->version = ver; }
+void module::SetPriority(ModulePriority p) { this->Priority = p; }
 Flux::string module::GetVersion() { return this->version; }
 time_t module::GetLoadTime() { return this->loadtime; }
 Flux::string module::GetAuthor() { return this->author; }
+ModulePriority module::GetPriority() { return this->Priority; }
 /* commands stuff */
 /** 
  * \fn int module::AddCommand(Command *c)
@@ -275,7 +278,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   }
   dlerror();
   
-  module *(*f)() = class_cast<module *(*)()>(dlsym(handle, "ModInit"));
+  module *(*f)(const Flux::string&) = class_cast<module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
   err = dlerror();
   if(!f && err && *err){
    log(LOG_NORMAL, "No module init function, moving on.");
@@ -289,7 +292,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   module *m;
   try
   {
-    m = f(); 
+    m = f(modname); 
   }
   catch (const ModuleException &e)
   {

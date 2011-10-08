@@ -190,7 +190,7 @@ Flux::string TimeStamp()
 #endif
     strftime(tbuf, sizeof(tbuf) - 1, "[%b %d %H:%M:%S %Y]", &tm);
     
-  return tbuf;
+  return Flux::Sanitize(tbuf);
 }
 /** 
  * \fn void log(LogType type = LOG_NORMAL, const char *fmt, ...)
@@ -200,47 +200,44 @@ Flux::string TimeStamp()
  */
 void log(LogType type, const char *fmt, ...){
   std::fstream log;
-  std::stringstream ss;
+  Flux::string ToLog, tok;
   
   va_list args;
   va_start(args, fmt);
   char buffer[4096] = "";
   vsnprintf(buffer, sizeof(buffer), fmt, args);
-  ss << Flux::Sanitize(buffer) << std::endl;
+  ToLog = buffer;
   va_end(args);
-
-  if((type == LOG_TERMINAL)){
-   printf("%s", ss.str().c_str());
-   return;
-  }
   
-  try{
-    log.open(Config->LogFile.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-    if(!log.is_open()){
-      std::stringstream lerr;
-      if(!Config->LogFile.empty())
-	lerr << "Failed to open log file "<< Config->LogFile <<": " << strerror(errno);
-      else
-	lerr << "Cannot find logfile.";
-      throw LogException(lerr.str().c_str());
+  sepstream logsep(ToLog, '\n');
+  while(logsep.GetToken(tok))
+  {
+    tok = Flux::Sanitize(tok);
+    tok.trim();
+    if((type == LOG_TERMINAL)){
+      printf("%s\n", tok.c_str());
+      return;
     }
-  }catch (LogException &e){
-   std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
+    
+    try
+    {
+      log.open(Config->LogFile.c_str(), std::fstream::out);
+      if(!log.is_open())
+	throw LogException(Config->LogFile.empty()?Flux::string("Cannot fild Log File.").c_str():
+			    Flux::string("Failed to open Log File"+Config->LogFile+": "+strerror(errno)).c_str());
+    }
+    catch (LogException &e) { std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl; }
+    
+    if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug)
+      printf("%s %s\n", TimeStamp().c_str(), tok.c_str());
+    else if(type == LOG_NORMAL && nofork)
+      printf("%s %s\n", TimeStamp().c_str(), tok.c_str());
+    else if(type == LOG_DEBUG && dev && nofork)
+      printf("%s %s\n", TimeStamp().c_str(), tok.c_str());
+    log << TimeStamp() << " " << tok << std::endl;
   }
-  
-  if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug){
-    printf("%s %s", TimeStamp().c_str(), ss.str().c_str());
-    log << TimeStamp() << " " << ss.str();
-  }
-  else if((type == LOG_DEBUG) && dev){
-    if(nofork)
-      printf("%s %s", TimeStamp().c_str(), ss.str().c_str());
-    log << TimeStamp() << " " << ss.str();
-  }else if((type == LOG_NORMAL)){
-    printf("%s %s", TimeStamp().c_str(), ss.str().c_str());
-    log << TimeStamp() << " " << ss.str();
-  }
-  log.close();
+  if(log.is_open())
+    log.close();
 }
 /** Check if a file exists
  * \param filename The file

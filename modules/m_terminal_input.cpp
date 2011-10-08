@@ -48,7 +48,7 @@ class ModTerminalInput : public module
 {
   Thread *t;
 public:
-  ModTerminalInput():module("TerminalInput", PRIORITY_DONTCARE)
+  ModTerminalInput(const Flux::string &Name):module(Name)
   {
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");

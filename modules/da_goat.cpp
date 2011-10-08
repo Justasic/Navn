@@ -212,7 +212,7 @@ class Da_Goat:public module
   CommandCSpam spam; 
   CommandCVersion ver;
 public:
-    Da_Goat():module("Da_Goat", PRIORITY_DONTCARE){
+    Da_Goat(const Flux::string &Name):module(Name){
       this->SetAuthor("Justasic & Lordofsraam");
       this->SetVersion(VERSION);
       this->AddChanCommand(&info);

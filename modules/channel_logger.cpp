@@ -52,9 +52,10 @@ void CLog(const char *fmt, ...){
 }
 class Chanlog:public module{
 public:
-  Chanlog():module("ChannelLogger", PRIORITY_LAST){ 
+  Chanlog(const Flux::string &Name):module(Name){ 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_LAST);
     Implementation i[] = { I_OnPart, I_OnPrivmsg, I_OnNotice, I_OnJoin, I_OnQuit, I_OnJoin, I_OnChannelMode, I_OnChannelOp };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }

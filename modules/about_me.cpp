@@ -48,9 +48,10 @@ class about_me : public module
 {
   CommandDecodeHost host;
 public:
-  about_me():module("About_Me", PRIORITY_LAST){ 
+  about_me(const Flux::string &Name):module(Name){ 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_LAST);
     this->AddChanCommand(&host);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }

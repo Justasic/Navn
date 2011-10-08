@@ -26,9 +26,10 @@
 class ctcp:public module
 {
 public:
-  ctcp():module("CTCP", PRIORITY_FIRST){
+  ctcp(const Flux::string &Name):module(Name){
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_FIRST);
     ModuleHandler::Attach(I_OnCTCP, this);
   }
   void OnCTCP(const Flux::string &source, const std::vector<Flux::string> &params)

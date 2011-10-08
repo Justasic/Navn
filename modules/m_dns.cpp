@@ -136,7 +136,7 @@ class dns_m:public module
   CommandCRDNS rdns;
   CommandCDNS dns;
 public:
-  dns_m():module("DNS Resolver", PRIORITY_DONTCARE){ 
+  dns_m(const Flux::string &Name):module(Name){ 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->AddChanCommand(&ardns);

@@ -21,11 +21,12 @@ class Ping_pong:public module
 {
   PingTimer pingtimer;
 public:
-  Ping_pong():module("Ping", PRIORITY_FIRST){
+  Ping_pong(const Flux::string &Name):module(Name){
     Implementation i[] = { I_OnNumeric, I_OnCommand };
     ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_FIRST);
   }
   void OnCommand(const Flux::string &command, const std::vector<Flux::string> &params){
     if(command == "PONG")

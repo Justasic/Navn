@@ -431,13 +431,8 @@ void startup(int argc, char** argv) {
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
   Config = new BotConfig();
-  if(Config->Parser->ParseError() == -1)
-      throw CoreException("Cannot open file bot.conf");
-  if (Config->Parser->ParseError() != 0) {
-      throw CoreException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));
-  }
-  ModuleHandler::SanitizeRuntime();
-  ReadConfig();
+  if(Config->Parser->ParseError() == -1) throw CoreException("Cannot open file bot.conf");
+  if (Config->Parser->ParseError() != 0) throw CoreException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
@@ -459,11 +454,11 @@ void startup(int argc, char** argv) {
          log(LOG_DEBUG, "%s is started With No Forking enabled. (%s)", Config->BotNick.c_str(), arg.c_str());
        }
        else if (arg == "--help" || arg == "-h"){
-	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n", VERSION);
-	  log(LOG_TERMINAL, "Usage: %s [options]\n", dir.c_str());
-	  log(LOG_TERMINAL, "-h, --help\n");
-	  log(LOG_TERMINAL, "-d, --developer\n");
-	  log(LOG_TERMINAL, "-f, --nofork\n");
+	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n \
+	      Usage: %s [options]\n \
+	      -h, --help\n \
+	      -d, --developer\n \
+	      -f, --nofork\n", VERSION, dir.c_str());
 	  log(LOG_TERMINAL, "This bot does have Epic Powers.\n");
 	  exit(0);
        }
@@ -491,6 +486,11 @@ void startup(int argc, char** argv) {
        }
     }
   }
+  //*****************************************************//
+  log(LOG_TERMINAL, "\033[22;37m");
+  ModuleHandler::SanitizeRuntime();
+  ReadConfig();
+  //*****************************************************//
    WritePID();
    log(LOG_NORMAL, "%s Started. PID: %d", Config->BotNick.c_str(), getpid());
    FOREACH_MOD(I_OnStart, OnStart(argc, argv));
@@ -510,7 +510,8 @@ void startup(int argc, char** argv) {
 	}
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
-  }
+  }else
+    log(LOG_TERMINAL, "\033[22;36m");
 }
 /** 
  * \fn Flux::string xmlToString(Flux::string fileName)

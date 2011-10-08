@@ -10,7 +10,7 @@ enum Implementation{
 	I_OnStart, I_OnNumeric, I_OnPreConnect, I_OnPostConnect,
 	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick, I_OnConnectionError,
 	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
-	I_OnChannelOp, I_OnPart, I_OnInvite,
+	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument,
   I_END
 };
 enum ModuleReturn{
@@ -25,9 +25,11 @@ enum ModulePriority{
 class module{
   Flux::string author, version;
   time_t loadtime;
+  ModulePriority Priority;
 protected:
   void SetAuthor(const Flux::string&);
   void SetVersion(const Flux::string&);
+  void SetPriority(ModulePriority);
   int AddCommand(Command*);
   int AddChanCommand(Command*);
 public:
@@ -35,11 +37,11 @@ public:
   int DelCommand(Command*);
   void *handle;
   Flux::string name, filename, filepath;
-  ModulePriority priority;
   Flux::string GetAuthor();
   Flux::string GetVersion();
+  ModulePriority GetPriority();
   time_t GetLoadTime();
-  module(const Flux::string&, ModulePriority);
+  module(const Flux::string&);
   
   virtual ~module();
   virtual void OnPrivmsg(User*, const std::vector<Flux::string>&) {}
@@ -47,6 +49,7 @@ public:
   virtual void OnNotice(User*, const std::vector<Flux::string>&) {}
   virtual void OnNotice(User*, Channel*, const std::vector<Flux::string>&) {}
   virtual void OnCTCP(const Flux::string&, const std::vector<Flux::string>&) {}
+  virtual void OnArgument(int, const Flux::string&) {}
   virtual void OnModuleLoad(module*) {}
   virtual void OnModuleUnload(module*){}
   virtual void OnRestart(const Flux::string&) {}
@@ -58,7 +61,7 @@ public:
   virtual void OnNumeric(int) {}
   virtual void OnReload() {}
   virtual void OnCommand(const Flux::string&, const std::vector<Flux::string>&) {}
-  virtual void OnStart(int argc, char** argv) {}
+  virtual void OnStart(int, char**) {}
   virtual void OnChannelMode(User*, Channel*, const Flux::string&) {}
   virtual void OnChannelOp(User*, Channel*, const Flux::string&, const Flux::string&) {}
   virtual void OnPart(User*, Channel*, const Flux::string&) {}
@@ -86,6 +89,6 @@ private:
   static bool DeleteModule(module*);
 };
 #define MODULE_HOOK(x) \
-extern "C" module *ModInit() { return new x(); } \
+extern "C" module *ModInit(const Flux::string &name) { return new x(name); } \
 extern "C" void Moduninit(x *m) { if(m) delete m; }
 #endif

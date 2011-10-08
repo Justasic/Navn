@@ -82,11 +82,9 @@ int main (int argcx, char** argvx, char *envp[])
     log(LOG_TERMINAL, "\033[22;37m");
   }//try ends here
   catch(const CoreException& e){
-    if(!Config) //This is so we dont throw logging exceptions..
-        log(LOG_TERMINAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
-    else
-      log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
-    log(LOG_TERMINAL, "\033[22;37m\n"); /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
+    /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
+    log(LOG_TERMINAL, "Core Exception Caught: %s\033[22;37m", Flux::stringify(e.GetReason()).c_str());
+    log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
     return EXIT_FAILURE;
   }
   printf("Exiting\n");

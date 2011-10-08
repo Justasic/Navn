@@ -87,7 +87,7 @@ public:
 class world_clock:public module{
   CommandCWClock clock;
 public:
-  world_clock():module("World Clock", PRIORITY_DONTCARE){ 
+  world_clock(const Flux::string &Name):module(Name){ 
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
     this->AddChanCommand(&clock);

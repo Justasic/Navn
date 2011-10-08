@@ -47,11 +47,12 @@ class dummy : public module
 {
   commanddummy cmddmy; //Declare our command
 public:
-  dummy():module("Dummy", PRIORITY_LAST)
+  dummy(const Flux::string &Name):module(Name)
   { 
     this->AddCommand(&cmddmy); //Add our command to teh bot
     this->SetAuthor("Lordofsraam"); //Set the author
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_LAST);
     
     //Implementation i[] = {  }; //Add that we have a module hook, this can be done in 2 ways
     ModuleHandler::Attach(I_OnPrivmsg, this);

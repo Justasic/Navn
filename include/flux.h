@@ -246,6 +246,7 @@ namespace Flux{
     string() : _string("") { }
     string(float f) : _string() { _string = strify(f); }
     string(double d) : _string() { _string = strify(d); }
+    string(int i) : _string() { _string = strify(i); }
     string(char chr) : _string() { _string = chr; }
     string(size_type n, char chr) : _string(n, chr) { }
     string(const char *_str) : _string(_str) { }

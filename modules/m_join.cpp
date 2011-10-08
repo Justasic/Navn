@@ -70,7 +70,7 @@ class Join : public module
   CommandJoin cmdjoin;
   CommandPart cmdpart;
 public:
-  Join():module("JOIN", PRIORITY_DONTCARE)
+  Join(const Flux::string &Name):module(Name)
   { 
     this->AddCommand(&cmdjoin);
     this->AddCommand(&cmdpart);

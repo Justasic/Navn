@@ -16,7 +16,7 @@ public:
     {
       for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it){
 	source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-		     ModuleHandler::DecodePriority(it->second->priority).c_str());
+		     ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	++c;
       }
     }else
@@ -24,17 +24,17 @@ public:
       for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it){
 	if(priority.equals_ci("LAST") || priority == '1'){
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-			ModuleHandler::DecodePriority(it->second->priority).c_str());
+			ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	  ++c;
 	}else if(priority.equals_ci("NORMAL") || priority == '2')
 	{
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-		     ModuleHandler::DecodePriority(it->second->priority).c_str());
+		     ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	  ++c;
 	}else if(priority.equals_ci("FIRST") || priority == '3')
 	{
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-		     ModuleHandler::DecodePriority(it->second->priority).c_str());
+		     ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	  ++c;
 	}
       }
@@ -147,10 +147,11 @@ class M_Handler : public module
   CommandMUnload unload;
   CommandMInfo info;
 public:
-  M_Handler():module("ModuleHandler", PRIORITY_FIRST)
+  M_Handler(const Flux::string &Name):module(Name)
   {
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    this->SetPriority(PRIORITY_FIRST);
     this->AddCommand(&info);
     this->AddCommand(&list);
     this->AddCommand(&load);
