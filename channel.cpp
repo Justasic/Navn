@@ -26,12 +26,14 @@ void Channel::SendPart(){
  Send->command->part(this->name);
 }
 void Channel::SendPart(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->SendPart(Flux::string(buffer));
-  va_end(args);
+  if(fmt){
+    char buffer[4096] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->SendPart(Flux::string(buffer));
+    va_end(args);
+  }
 }
 void Channel::SendPart(const Flux::string &reason){
   Send->command->part(this->name, reason);
@@ -40,20 +42,24 @@ void Channel::kick(User *u, const Flux::string &reason){
  u->kick(this->name, reason);
 }
 void Channel::kick(User *u, const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->kick(u, Flux::string(buffer));
-  va_end(args);
+  if(fmt){
+    char buffer[4096] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->kick(u, Flux::string(buffer));
+    va_end(args);
+  }
 }
 void Channel::kick(const Flux::string &u, const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->kick(u, Flux::string(buffer));
-  va_end(args);
+  if(fmt){
+    char buffer[4096] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->kick(u, Flux::string(buffer));
+    va_end(args);
+  }
 }
 void Channel::kick(const Flux::string &u, const Flux::string &reason){
  Send->command->kick(this->name, u, reason);
@@ -92,45 +98,53 @@ void Channel::RemoveMode(User *u, const Flux::string &mode){
   }
 }
 void Channel::ChangeTopic(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->ChangeTopic(Flux::string(buffer));
-  va_end(args);
+  if(fmt){
+    char buffer[4096] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->ChangeTopic(Flux::string(buffer));
+    va_end(args);
+  }
 }
 void Channel::ChangeTopic(const Flux::string &topicstr){
  Send->command->topic(this->name, topicstr); 
 }
 void Channel::SendMessage(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->SendMessage(Flux::string(buffer));
-  va_end(args);
+  if(fmt){
+    char buffer[4096] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->SendMessage(Flux::string(buffer));
+    va_end(args);
+  }
 }
 void Channel::SendMessage(const Flux::string &message){
  Send->privmsg(this->name, message); 
 }
 void Channel::SendAction(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->SendMessage(Flux::string(buffer));
-  va_end(args);
+  if(fmt){
+    char buffer[4096] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->SendMessage(Flux::string(buffer));
+    va_end(args);
+  }
 }
 void Channel::SendAction(const Flux::string &message){
  Send->privmsg(this->name, message); 
 }
 void Channel::SendNotice(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  this->SendNotice(Flux::string(buffer));
-  va_end(args); 
+  if(fmt){
+    char buffer[4096] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    this->SendNotice(Flux::string(buffer));
+    va_end(args);
+  }
 }
 void Channel::SendNotice(const Flux::string &message){
  Send->notice(this->name, message); 

@@ -225,38 +225,45 @@ Flux::string removeCommand(Flux::string command, Flux::string s){
  * \return A Flux::string without any special characters other than %
  */
 Flux::string urlify(const Flux::string &received){
-  Flux::string string = received;
-  string = string.replace_all_cs("%","%25"); //% is first so we dont replace something we just replaced
-  string = string.replace_all_cs(" ","%20");
-  string = string.replace_all_cs("+","%2B");
-  string = string.replace_all_cs("$","%24");
-  string = string.replace_all_cs("&","%26");
-  string = string.replace_all_cs(",","%2C");
-  string = string.replace_all_cs("/","%2F");
-  string = string.replace_all_cs(":","%3A");
-  string = string.replace_all_cs(";","%3B");
-  string = string.replace_all_cs("=","%3D");
-  string = string.replace_all_cs("?","%3F");
-  string = string.replace_all_cs("@","%40");
-  string = string.replace_all_cs("#","%23");
-  string = string.replace_all_cs(">","%3E");
-  string = string.replace_all_cs("<","%3C");
-  string = string.replace_all_cs("{","%7B");
-  string = string.replace_all_cs("}","%7D");
-  string = string.replace_all_cs("|","%7C");
-  string = string.replace_all_cs("\\","%5C");
-  string = string.replace_all_cs("^","%5E");
-  string = string.replace_all_cs("~","%7E");
-  string = string.replace_all_cs("[","%5B");
-  string = string.replace_all_cs("]","%5D");
-  string = string.replace_all_cs("`","%60");
-  string = string.replace_all_cs("*","%2A");
-  string = string.replace_all_cs("(","%28");
-  string = string.replace_all_cs(")","%29");
-  string = string.replace_all_cs("'","%27");
-  string = string.replace_all_cs("\"","%22");
-  string = string.replace_all_cs(".","%2E");
-  string = string.replace_all_cs("-","%2D");
+  Flux::string string;
+  for(unsigned i=0; i < received.size(); ++i){
+    switch(received[i]){
+      case '%': string = string+"%25"; break;
+      case ' ': string = string+"%20"; break;
+      case '+': string = string+"%2B"; break;
+      case '$': string = string+"%24"; break;
+      case '&': string = string+"%26"; break;
+      case ',': string = string+"%2C"; break;
+      case '/': string = string+"%2F"; break;
+      case ':': string = string+"%3A"; break;
+      case ';': string = string+"%3B"; break;
+      case '=': string = string+"%3D"; break;
+      case '?': string = string+"%3F"; break;
+      case '@': string = string+"%40"; break;
+      case '#': string = string+"%23"; break;
+      case '>': string = string+"%3E"; break;
+      case '<': string = string+"%3C"; break;
+      case '{': string = string+"%7B"; break;
+      case '}': string = string+"%7D"; break;
+      case '|': string = string+"%7C"; break;
+      case '\\':string = string+"%5C"; break;
+      case '^': string = string+"%5E"; break;
+      case '~': string = string+"%7E"; break;
+      case '[': string = string+"%5B"; break;
+      case ']': string = string+"%5D"; break;
+      case '`': string = string+"%60"; break;
+      case '*': string = string+"%2A"; break;
+      case '(': string = string+"%28"; break;
+      case ')': string = string+"%29"; break;
+      case '\'':string = string+"%27"; break;
+      case '"': string = string+"%22"; break;
+      case '.': string = string+"%2E"; break;
+      case '-': string = string+"%2D"; break;
+      default:
+	string = string+received[i];
+    }
+    //string = string.erase(0, received.size());
+  }
   return string;
 }
 /** 

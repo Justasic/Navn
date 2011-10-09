@@ -225,8 +225,12 @@ public:
       this->AddChanCommand(&ver);
       ModuleHandler::Attach(I_OnPrivmsg, this);
     }
-    void OnPrivmsg(User *u, Channel *c, std::vector<Flux::string> &params){
-      Flux::string cmd = params.empty()?"":params[0];
+    void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
+      Flux::string cmd = params.empty()?"":params[0], msg;
+      for(unsigned i=0; i < params.size(); ++i)
+	msg += params[i]+' ';
+      msg.trim();
+      printf("%s\n", msg.c_str());
       /*******************************Easter Eggs*********************************/
       if(cmd.equals_ci("!poke")){ //Easter egg ;P
 	Flux::string person = params.size() == 2?params[1]:"";
@@ -244,6 +248,10 @@ public:
 	  c->kick(person, "\002\00315Dont poke me!\017");
 	  Log() << u->nick << " used Da_Goats !poke command in " << c->name << " to poke " << person;
 	}
+      }
+      if(msg.search("Dun kick me, asswipe. -_-")){
+	Send->command->mode(c->name, "+b m:"+u->fullhost);
+	c->SendMessage("Shut up!");
       }
       if(cmd.equals_ci("!everything")){
 	c->SendMessage("Yes, there is a script for everything..\007");

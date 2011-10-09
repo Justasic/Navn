@@ -33,31 +33,152 @@
  * \brief generates search links for url's
  * This is what generates the search links.
  */
-Flux::string search(Flux::string s, Flux::string command){
-  Flux::string raw_searchstring;
-  Flux::string searchstring;
-  size_t pos = s.find(command);
-  raw_searchstring = s.substr(pos+(command.size())+1);
+Flux::string search(const Flux::string &s, const Flux::string &command){
+  printf("Search! %s\n", s.c_str());
+  Flux::string raw_searchstring = s, searchstring;
+  raw_searchstring = raw_searchstring.erase(0, command.size()+1);
+  printf("SSTRING! %s\n", raw_searchstring.c_str());
   searchstring = urlify(raw_searchstring);
+  printf("URLSTRING! %s\n", searchstring.c_str());
   if (searchstring.empty())
     return "Empty searchstring.";
   else{
-    if(command == "!google")
+    if(command.equals_ci("!google"))
       return "http://www.google.com/search?q="+searchstring;
-    else if(command == "!youtube")
+    else if(command.equals_ci("!youtube"))
       return "http://www.youtube.com/results?search_query="+searchstring;
-    else if(command == "!tpb")
+    else if(command.equals_ci("!tpb"))
       return "http://thepiratebay.org/search/"+searchstring;
-    else if(command == "!define")
+    else if(command.equals_ci("!define"))
       return "http://dictionary.reference.com/browse/"+searchstring;
-    else if(command == "!urban")
+    else if(command.equals_ci("!urban"))
       return "http://www.urbandictionary.com/define.php?term="+searchstring;
-    else if(command == "!movie")
+    else if(command.equals_ci("!movie"))
       return "www.letmewatchthis.ch/index.php?search_keywords="+searchstring;
     else
       return "http://www.google.com/search?q="+searchstring;
   }
 }
+class CommandCGoogle : public Command
+{
+public:
+  CommandCGoogle():Command("!GOOGLE", 1,1)
+  {
+    this->SetDesc("Generate a Google search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel Google Search from " << source.u->nick << " \"" << str << "\"";
+  }
+};
+class CommandCYoutube : public Command
+{
+public:
+  CommandCYoutube():Command("!YOUTUBE", 1,1)
+  {
+    this->SetDesc("Generate a youtube search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel youtube Search from " << source.u->nick << "\"" << str << "\"";
+  }
+};
+class CommandCPirateBay : public Command
+{
+public:
+  CommandCPirateBay():Command("!TPB", 1,1)
+  {
+    this->SetDesc("Generate a Pirate Bay search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel The Pirate Bay Search from " << source.u->nick << " \"" << str << "\"";
+  }
+};
+class CommandCDefine : public Command
+{
+public:
+  CommandCDefine():Command("!DEFINE", 1,1)
+  {
+    this->SetDesc("Generate a Dictionary search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel define Search from " << source.u->nick << " \"" << str << "\"";
+  }
+};
+class CommandCUrban : public Command
+{
+public:
+  CommandCUrban():Command("!URBAN", 1,1)
+  {
+    this->SetDesc("Generate a Urban Dictionary search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel urban dictionary Search from " << source.u->nick << " \"" << str << "\"";
+  }
+};
+class CommandCMovie : public Command
+{
+public:
+  CommandCMovie():Command("!MOVIE", 1,1)
+  {
+    this->SetDesc("Generate a movie search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel movie Search from " << source.u->nick << " \"" << str << "\"";
+  }
+};
+class CommandCWiki : public Command
+{
+public:
+  CommandCWiki():Command("!WIKI", 1,1)
+  {
+    this->SetDesc("Generate a wikipedia search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel Wikipedia Search from " << source.u->nick << " \"" << str << "\"";
+  }
+};
+class CommandCMusic : public Command
+{
+public:
+  CommandCMusic():Command("!MUSIC", 1,1)
+  {
+    this->SetDesc("Generate a music search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    source.c->SendMessage(str);
+    Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
+  }
+};
 /**
  * \fn class searcher(bool a):module("Searcher Handler", a, PRIORITY_DONTCARE){ this->SetDesc("Search Module used to search for stuff"); }
  * \brief Returns search links for different sites.
@@ -65,83 +186,26 @@ Flux::string search(Flux::string s, Flux::string command){
  */
 class searcher:public module
 {
+  CommandCGoogle google;
+  CommandCYoutube yt;
+  CommandCPirateBay tpb;
+  CommandCDefine d;
+  CommandCUrban urban;
+  CommandCMovie movie;
+  CommandCWiki wiki;
+  CommandCMusic music;
 public:
   searcher(const Flux::string &Name):module(Name){
-    ModuleHandler::Attach(I_OnPrivmsg, this);
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
-  }
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
-  Flux::string cmd = params.empty()?"":params[0];
-  Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i]+' ';
-
-    if(cmd.equals_ci("!google")){
-	      // if !google is said in the channel
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!google \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!google"));
-	      Log() << "Channel Google Search from " << u->nick << " \"" << search(msg, "!google") << "\"";
-    }
-    if(cmd.equals_ci("!youtube")){ // if !youtube is said in the channel
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!youtube \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!youtube"));
-	      Log() << "Channel youtube Search from " << u->nick << "\"" << search(msg, "!youtube") << "\"";
-    }
-    if(cmd.equals_ci("!tpb")){ // if !tpb xor !thepiratebay is said in the channel
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!tpb \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!tpb"));
-	      Log() << "Channel The Pirate Bay Search from " << u->nick << " \"" << search(msg, "!tpb") << "\"";
-    }
-    if(cmd.equals_ci("!define")){
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!define \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!define"));
-	      Log() << "Channel define Search from " << u->nick << " \"" << search(msg, "!define") << "\"";
-    }
-    if(cmd.equals_ci("!urban")){ 
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!urban \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!urban"));
-	      Log() << "Channel urban dictionary Search from " << u->nick << " \"" << search(msg, "!urban") << "\"";
-    }
-    if(cmd.equals_ci("!movie")){ 
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!movie \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!movie"));
-	      Log() << "Channel movie Search from " << u->nick << " \"" << search(msg, "!movie") << "\"";
-    }
-    if(cmd.equals_ci("!wiki")){ 
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!wiki \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!wiki"));
-	      Log() << "Channel Wikipedia Search from " << u->nick << " \"" << search(msg, "!wiki") << "\"";
-    }
-    if(cmd.equals_ci("!music")){ 
-	      if(params.size() < 2){
-		u->SendMessage("Syntax: \2!music \37message\15");
-		return;
-	      }
-	      c->SendMessage(search(msg, "!music"));
-	      Log() << "Channel music Search from " << u->nick << " \"" << search(msg, "!music") << "\"";
-    }
+    this->AddChanCommand(&google);
+    this->AddChanCommand(&yt);
+    this->AddChanCommand(&tpb);
+    this->AddChanCommand(&d);
+    this->AddChanCommand(&urban);
+    this->AddChanCommand(&movie);
+    this->AddChanCommand(&wiki);
+    this->AddChanCommand(&music);
   }
 };
 /**
