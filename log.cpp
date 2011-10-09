@@ -26,11 +26,10 @@ Flux::string TimeStamp()
   return Flux::Sanitize(tbuf);
 }
 
-Log::Log(LogType t) : type(t) {}
-Log::Log(LogType t, User *user):type(t), u(user) { if(!u) throw CoreException("No user argument in Log()"); }
-Log::Log(User *user):u(user) { this->type = LOG_NORMAL; if(!u) throw CoreException("No user argument in Log()"); }
-Log::Log(User *user, Command *command):u(user), c(command) { 
-  this->type = LOG_NORMAL; 
+Log::Log(LogType t) : type(t), u(NULL), c(NULL) {}
+Log::Log(LogType t, User *user):type(t), u(user), c(NULL) { if(!u) throw CoreException("No user argument in Log()"); }
+Log::Log(User *user): type(LOG_NORMAL), u(user), c(NULL) { if(!u) throw CoreException("No user argument in Log()"); }
+Log::Log(User *user, Command *command):type(LOG_NORMAL), u(user), c(command) { 
   if(!u) throw CoreException("No user argument in Log()");
   if(!c) throw CoreException("No command argument in Log()");
 }
@@ -41,11 +40,10 @@ Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command) 
 Log::~Log()
 {
   Flux::string message = Flux::Sanitize(this->buffer.str());
-  
-  //if(this->u)
-   //message = this->u->nick + " " + message;
-  //else if(this->u && this->c)
-    //message = this->u->nick + " used " + this->c->name + " " + message;
+  if(this->u && !this->c)
+   message = this->u->nick + " " + message;
+  if(this->u && this->c)
+    message = this->u->nick + " used " + this->c->name + " " + message;
   
   if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug)
     std::cout << TimeStamp() << " " << message << std::endl;
