@@ -22,11 +22,11 @@ module::module(const Flux::string &n){
   
   Modules[this->name] = this;
   this->loadtime = time(NULL);
-  //if(!nofork)
-    //log(LOG_NORMAL, "Loaded module %s", this->name.c_str());
+  if(!nofork)
+    Log() << "Loaded module " << n;
 }
 module::~module(){
-  //log(LOG_DEBUG, "Unloading module %s", this->name.c_str());
+  Log(LOG_DEBUG) << "Unloading module " << this->name;
   ModuleHandler::DetachAll(this);
   Modules.erase(this->name);
 }

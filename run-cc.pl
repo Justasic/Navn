@@ -107,6 +107,15 @@ my @msgfilters = (
                 return $str;
         } ],
 
+	[ qr/^.* multiple definition of / => sub {
+                my ($msg) = @_;
+                my $str = "";
+                $str = "An error occured when executing:\e[37;1m $cc " . join(' ', @ARGV) . "\n" unless $showncmdline;
+                $showncmdline = 1;
+                $str .= $location . "\e[31;1m$msg (did you forget an extern?)\e[0m\n";
+                $location = "";
+                return $str;
+        } ],
 	[ qr/./ => sub {
 		my ($msg) = @_;
 		$msg = $location . $msg;

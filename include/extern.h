@@ -67,7 +67,7 @@ E BotConfig *Config;
 E CommandMap Commandsmap;
 E CommandMap ChanCommandMap;
 E time_t starttime;
-E Flux::string binary_path, bot_bin, binary_dir, server_name;
+E Flux::string binary_path, bot_bin, binary_dir, server_name, quitmsg;
 E Flux::string strip(const Flux::string &buf);
 E Flux::string getprogdir(const Flux::string&);
 E Flux::string TempFile(const Flux::string&);
