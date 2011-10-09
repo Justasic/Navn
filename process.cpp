@@ -166,7 +166,8 @@ void process(const Flux::string &buffer){
      if(!u->FindChan(c))
        delete u;
      else
-       u->DelChan(c);
+       static_cast<void>(0);
+       //u->DelChan(c);
     }
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric((int)command)); }
