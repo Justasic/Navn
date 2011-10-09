@@ -230,7 +230,6 @@ public:
       for(unsigned i=0; i < params.size(); ++i)
 	msg += params[i]+' ';
       msg.trim();
-      printf("%s\n", msg.c_str());
       /*******************************Easter Eggs*********************************/
       if(cmd.equals_ci("!poke")){ //Easter egg ;P
 	Flux::string person = params.size() == 2?params[1]:"";
