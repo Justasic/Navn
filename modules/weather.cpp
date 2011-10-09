@@ -40,7 +40,7 @@ public:
     Channel *c = source.c;
     Flux::string area = params[params.size() - 1], tmpfile = TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
     if(tmpfile.empty()){
-      log(LOG_NORMAL, "Failed to get a temp file.");
+      Log() << "Failed to get temp file";
       return;
     }
     area.trim();
@@ -56,7 +56,7 @@ public:
       ff.trim();
       if(ff.empty()){
 	c->SendMessage("Could not download/read %s", tmpfile.c_str());
-	log(LOG_NORMAL, "%s attempted to use !weather but downloading/reading the file '%s' failed.", tmpfile.c_str());
+	Log(u) << "failed to use " << this->name << " because of failure to download/read file '" << tmpfile << '\'';
 	return;
       }
       Flux::string loc = findInXML("city","data",ff);
@@ -66,7 +66,7 @@ public:
       Delete(tmpfile.c_str());
       loc.trim();
       c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
-      log(LOG_NORMAL, "%s used !weather to get weather for area '%s'", u->nick.c_str(), area.c_str());
+      Log(u, this) << "to get weather for area '" << area << "'";
     }
   }
 };

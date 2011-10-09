@@ -15,10 +15,9 @@ public:
       source.Reply(ACCESS_DENIED);
    else{
      source.Reply("Rehashing Configuration file");
-     log(LOG_NORMAL, "%s rehashed config file.", u->nick.c_str());
+     Log(u, this) << "to rehash the configuration";
      Rehash();
    }
-   log(LOG_NORMAL, "%s rehashed config file.", u->nick.c_str());
   }
 };
 
@@ -48,6 +47,7 @@ public:
 	Config->BotNick = newnick;
       }
       Send->command->nick(newnick);
+    Log(u, this) << "to change the bots nickname to " << newnick;
   }
 };
 
@@ -64,9 +64,9 @@ public:
     if(source.u->IsOwner()){
       Send->command->quit("Restarting..");
       restart("Restarting..");
-    }else{
+      Log(source.u, this) << " to restart the bot.";
+    }else
       source.Reply(ACCESS_DENIED);
-    }
   }
 };
 
@@ -133,12 +133,12 @@ public:
     
     if(pass == password || pass == Config->UserPass){
       source.Reply("Quitting..");
-      log(LOG_NORMAL, "%s quit the bot with password: \"%s\"", u->nick.c_str(), password.c_str());
+      Log(u) << "quit the bot with password: \"" << password << "\"";
       Send->command->quit("Requested From \2%s\17. Pass: \00320%s\017", u->nick.c_str(), password.c_str());
       quitting = true;
     }else{
       source.Reply(ACCESS_DENIED);
-      log(LOG_NORMAL, "%s attempted to change ownership of the bot", u->nick.c_str());
+      Log(u) << "Attempted to quit the bot";
     }
   }
 };
@@ -177,13 +177,12 @@ public:
     topic.open("topic.tmp", std::fstream::in | std::fstream::out | std::fstream::app);
     if(!topic.is_open()){
 	    source.Reply("Unable to write topic temp file");
-	    log(LOG_NORMAL, "%s used /msg %s topic to change %s's topic to \"%s\" but could not write to topic temp file '%s'", 
-		u->nick.c_str(), Config->BotNick.c_str(), tchan.c_str(), msg.c_str(), "topic.tmp");
+	    Log(u, this) << " in an attempt to change the topic in " << tchan << " and failed to write to temp file 'topic.tmp'";
     }else{
 	    topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><topic> " << tchan << " Topic: " << strip(msg) << " </topic></channel></rss>" << std::endl;
 	    system("sh ftp.sh");
     }
-    log(LOG_NORMAL, "%s used Da_Goats !topic command to change the topin in %s to \"%s\"",u->nick.c_str(), tchan.c_str(), strip(msg).c_str());
+    Log(u, this) << "to change " << tchan << "'s topic to \"" << Flux::Sanitize(msg) << "\"";
   }
 };
 
@@ -198,8 +197,8 @@ public:
   {
     User *u = source.u;
     if(u->IsOwner()){
-      source.Reply("My PID is: \2%i\2", (int)getpid()); 
-      log(LOG_NORMAL, "%s used pid function to get PID %i", u->nick.c_str(), getpid());
+      source.Reply("My PID is: \2%i\2", (int)getpid());
+      Log(u, this) << "command to get navn's PID " << getpid();
     }else{
       source.Reply(ACCESS_DENIED);
     }
@@ -218,10 +217,10 @@ public:
     User *u = source.u;
     if (u->IsOwner()){
       source.Reply("The password is:\2 %s", password.c_str());
-      log(LOG_NORMAL, "%s requested the navn quit password: %s", u->nick.c_str(), password.c_str());
+      Log(u, this) << "to request navn's quit password: " << password;
     }else{
       source.Reply(ACCESS_DENIED);
-      log(LOG_NORMAL, "%s attempted to request the navn quit password.", u->nick.c_str());
+      Log(u, this) << " and attempted to request navn's quit password.";
     }
   }
 };
@@ -282,8 +281,7 @@ public:
 #else
     source.Reply("This is currently not avalable on windows syetems, sorry.");
 #endif
-    User *u = source.u;
-    log(LOG_NORMAL, "%s used stats command", u->nick.c_str());
+    Log(source.u, this) << "command";
   }
 };
 class m_system : public module
@@ -331,7 +329,7 @@ public:
       if(!Config->ServicesAccount.empty() || !Config->ServicesPass.empty()){
 	Send->privmsg("NickServ", "identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
       }
-      log(LOG_NORMAL, "Successfully connected to the server \"%s:%s\" Master Channel: %s", Config->Server.c_str(), Config->Port.c_str(), Config->Channel.c_str());
+      Log() << "Successfully connected to the server \"" << Config->Server+":"+Config->Port << "\" Master Channel: " << Config->Channel;
     }
     if((i == 433)){
       Config->BotNick.push_back('_');
@@ -339,8 +337,8 @@ public:
     }
     if((i == 376))
     {
-      log(LOG_TERMINAL, "\033[22;31mStarted with PID \033[22;32m%i\033[22;36m", (int)getpid());
-      log(LOG_TERMINAL, "\033[22;34mSession Password: \033[01;32m%s\033[22;36m", password.c_str());
+      Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m";
+      Log(LOG_TERMINAL) << "\033[22;34mSession Password: \033[01;32m" << password << "\033[22;36m";
       Send->notice(Config->Owner, "The randomly generated password is: %s", password.c_str());
       started = true; 
     }
@@ -349,13 +347,13 @@ public:
   {
     u->SendMessage("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(),
 		   c->name.c_str(), Config->BotNick.c_str());
-    log(LOG_NORMAL, "%s joined %s", u->nick.c_str(), c->name.c_str());
+    Log() << u->nick << " joined " << c->name;
   }
   void OnKick(User *u, User *kickee, Channel *c, const Flux::string &reason)
   {
      if(kickee && kickee->nick.equals_ci(Config->BotNick))
      {
-       log(LOG_NORMAL, "%s kicked me from %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
+       Log() << u->nick << " kicked me from " << c->name << '(' << reason << ')';
 	c->SendJoin(); 
      }
   }
@@ -369,7 +367,7 @@ public:
     if(msg.search("This nickname is registered and protected. If it is your")){
       if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == "NickServ"){
 	u->SendPrivmsg("identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
-	log(LOG_NORMAL, "Identified to NickServ with account \"%s\"", Config->ServicesAccount.c_str());
+	Log() << "Identified to NickServ with account \"" << Config->ServicesAccount << "\"";
       }
     }
   }

@@ -28,7 +28,7 @@ class InputThread : public Thread
 public:
   bool exiting;
   InputThread():Thread() {}
-  ~InputThread() { log(LOG_TERMINAL, "Input Thread Exiting."); exiting = true; }
+  ~InputThread() { Log(LOG_TERMINAL) << "Input Thread Exiting."; exiting = true; }
   void ToRun()
   {
     exiting = false;

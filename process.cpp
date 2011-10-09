@@ -41,7 +41,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
  if(!FindCommand(params2[0]) && command == "PRIVMSG")
   {
     if(!protocoldebug)
-      log(LOG_TERMINAL, "<%s-%s> %s\n", u->nick.c_str(), receiver.c_str(), Source.params[1].c_str());
+      Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
     if(!IsValidChannel(receiver)){
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
@@ -75,7 +75,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       com->Run(Source, params2);
     }else{
       if(!protocoldebug)
-	log(LOG_DEBUG, "%s\n", Flux::Sanitize(Source.raw).c_str()); //This receives ALL server commands sent to the bot..
+	Log(LOG_DEBUG) << Flux::Sanitize(Source.raw); //This receives ALL server commands sent to the bot..
     }
   } 
 }
@@ -120,16 +120,16 @@ void process(const Flux::string &buffer){
     else
       params.push_back(bufferseparator_token);
   }
-  log(LOG_RAWIO, "Received: %s\n", Flux::Sanitize(buffer).c_str());
+  Log(LOG_RAWIO) << "Received: " << Flux::Sanitize(buffer);
   if(protocoldebug)
   {
-   log(LOG_TERMINAL, "Source: %s\n", source.empty() ? "No Source" : source.c_str());
-   log(LOG_TERMINAL, "%s: %s\n", command.is_number_only() ? "Numeric" : "Command", command.c_str());
+    Log(LOG_TERMINAL) << "Source: " << (source.empty()?"No Source":source);
+    Log(LOG_TERMINAL) << (command.is_number_only()?"Numeric":"Command") << ": " << command;
    if(params.empty())
-     log(LOG_TERMINAL, "No Params\n");
+     Log(LOG_TERMINAL) << "No Params";
    else
      for(unsigned i =0; i < params.size(); ++i)
-       log(LOG_TERMINAL, "Params %i: %s\n", i, Flux::Sanitize(params[i]).c_str());
+       Log(LOG_TERMINAL) << "Params " << i << ": " << Flux::Sanitize(params[i]);
   }
   /***********************************************/
   /* make local variables instead of global ones */

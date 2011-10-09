@@ -16,6 +16,7 @@
 
 /* Classes */
 class Channel;
+class Log;
 class User;
 class SocketIO;
 class Commands;
@@ -90,7 +91,6 @@ E char **my_av, **my_envp;
 E void ListChans(CommandSource &source);
 E void ListUsers(CommandSource &source);
 E void send_cmd(const char *fmt, ...);
-E void log(LogType, const char *fmt, ...);
 E void process(const Flux::string&);
 E void ProcessJoin(CommandSource&, const Flux::string&);
 E void ProcessCommands(CommandSource&, std::vector<Flux::string>&);
@@ -112,7 +112,7 @@ if(true) \
        } \
        catch (const ModuleException &modexcept) \
        { \
-          log(LOG_NORMAL, "Exception caught: %s", modexcept.GetReason()); \
+	  Log() << "Exception caught: " << modexcept.GetReason(); \
        } \
         _i = safei; \
     } \

@@ -48,8 +48,8 @@ void SocketIO::get_address()
   rv = getaddrinfo(this->server.c_str(), this->port.c_str(), &hints, &servinfo);
   if (rv != 0)
   {
-    Flux::string info = "Could not resolve server: "+this->server+":"+this->port+" "+gai_strerror(rv);
-    throw SocketException(info.c_str());
+    throw SocketException(fsprintf("Could not resolve server: %s:%i %s",this->server.c_str(), 
+				   (int)this->port, gai_strerror(rv)).c_str());
   }
 }
 
@@ -91,7 +91,7 @@ bool SocketIO::Connect()
   inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
   this->SetNonBlocking();
   FD_SET(this->GetFD(), &ReadFD);
-  log(LOG_DEBUG, "Connected to %s:%s", this->server.c_str(), this->port.c_str());
+  Log(LOG_DEBUG) << "Connected to" << this->server << ":" << this->port;
   return true;
 }
 int SocketIO::Process()
@@ -104,14 +104,14 @@ int SocketIO::Process()
   FD_SET(this->GetFD(), &read);
   int sres = select(this->GetFD() + 1, &read, NULL, NULL, &timeout);
   if(sres == -1 && errno != EINTR){
-    log(LOG_DEBUG, "Select() error: %s", strerror(errno));
+    Log(LOG_DEBUG) << "Select() error: " << strerror(errno);
     return errno;
   }
   if(FD_ISSET(this->GetFD(), &read) && sres)
   {
   if(this->recv() == -1 && !quitting)
       {
-	log(LOG_RAWIO, "Socket Error: %s", strerror(errno));
+	Log(LOG_RAWIO) << "Socket Error: " << strerror(errno);
 	return errno;
       }else
       {
@@ -138,9 +138,9 @@ const int SocketIO::recv() const
 }
 const int SocketIO::send(const Flux::string &buf) const
 {
- log(LOG_RAWIO, "Sent: %s\n", Flux::Sanitize(buf).c_str());
+ Log(LOG_RAWIO) << "Sent: " << Flux::Sanitize(buf);
  if(!protocoldebug)
-  log(LOG_DEBUG, "%s\n", Flux::Sanitize(buf).c_str());
+   Log(LOG_DEBUG) << Flux::Sanitize(buf);
  int i = write(this->GetFD(), buf.c_str(), buf.size());
  return i;
 }

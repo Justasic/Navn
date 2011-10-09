@@ -303,7 +303,7 @@ void restart(Flux::string reason){
     reason = "No Reason";
   }else{
     FOREACH_MOD(I_OnRestart, OnRestart(reason));
-    log(LOG_NORMAL, "Restarting: %s", reason.c_str());
+    Log() << "Restarting: " << reason;
     Send->command->quit("Restarting: %s", reason.c_str());
     chdir(CurrentPath);
     int execvpret = execvp(my_av[0], my_av);
@@ -321,7 +321,7 @@ void restart(Flux::string reason){
  * \param boolean this boolean tells rehash if we are starting from start or not
  */
 static void Rehash(){
-  log(LOG_NORMAL, "Rehashing Config File: bot.conf");
+  Log() << "Rehashing Configuration File";
   try{
       BotConfig *configtmp = Config;
       Config = new BotConfig();
@@ -334,7 +334,7 @@ static void Rehash(){
     FOREACH_MOD(I_OnReload, OnReload());
     ReadConfig();
   }catch(const ConfigException &ex){
-    log(LOG_NORMAL, "Config Exception Caught: %s", ex.GetReason());
+    Log() << "Configuration Exception Caught: " << ex.GetReason();
     Send->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
   }
 }
@@ -392,7 +392,7 @@ void sigact(int sig)
       quitting = true;
       break;
     default:
-      log(LOG_NORMAL, "Recieved weird signal from terminal. Sig Number: %i\n",sig);
+      Log() << "Recieved weird signal from terminal. Sig Number: " << sig;
   }
 }
 /** 
@@ -447,60 +447,61 @@ void startup(int argc, char** argv) {
        if(arg == "--developer" || arg == "--dev" || arg == "-d")
        {
          dev = nofork = true;
-	 log(LOG_DEBUG, "%s is started in Developer mode. (%s)", Config->BotNick.c_str(), arg.c_str());
+	 Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode. (" << arg << ")";
        }
        else if (arg == "--nofork" || arg == "-n"){
          nofork = true;
-         log(LOG_DEBUG, "%s is started With No Forking enabled. (%s)", Config->BotNick.c_str(), arg.c_str());
+	 Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
        }
        else if (arg == "--help" || arg == "-h"){
-	  log(LOG_TERMINAL, "\033[22;37mNavn Internet Relay Chat Bot v%s\n \
-	      Usage: %s [options]\n \
-	      -h, --help\n \
-	      -d, --developer\n \
-	      -f, --nofork\n", VERSION, dir.c_str());
-	  log(LOG_TERMINAL, "This bot does have Epic Powers.\n");
-	  exit(0);
+	 Log(LOG_TERMINAL) << "\033[22;37mNavn Internet Relay Chat Bot v" << VERSION;
+	 Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
+	 Log(LOG_TERMINAL) << "-h, --help";
+	 Log(LOG_TERMINAL) << "-d, --developer";
+	 Log(LOG_TERMINAL) << "-f, --nofork";
+	 Log(LOG_TERMINAL) << "-p, --protocoldebug";
+	 Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+	 exit(0);
        }
        else if (arg == "--version" || arg == "-v"){
-         log(LOG_TERMINAL, "\033[22;37mNavn IRC C++ Bot Version %s",VERSION_LONG.c_str());
-         log(LOG_TERMINAL, "This bot was programmed from scratch by Justasic and Lordofsraam.");
-         log(LOG_TERMINAL, "\n");
-         log(LOG_TERMINAL, "IRC: IRC.Flux-Net.net #Computers");
-         log(LOG_TERMINAL, "WWW: http://www.Flux-Net.net");
-         log(LOG_TERMINAL, "Email: Staff@Flux-Net.net");
-         log(LOG_TERMINAL, "Git: git://gitorious.org:navn/navn.git");
-         log(LOG_TERMINAL, "\n");
-         log(LOG_TERMINAL, "This bot does have Epic Powers.");
-         log(LOG_TERMINAL, "Type %s --help for help on how to use navn, or read the readme.", dir.c_str());
+	 Log(LOG_TERMINAL) << "\033[22;37mNavn IRC C++ Bot Version " << VERSION_LONG;
+	 Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
+	 Log(LOG_TERMINAL) << "";
+	 Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
+	 Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
+	 Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
+	 Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
+	 Log(LOG_TERMINAL) << "";
+	 Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+	 Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
          exit(0);
        }
        else if(arg == "--protocoldebug" || "-p"){
 	 protocoldebug = true;
-	 log(LOG_RAWIO, "%s is started in Protocol Debug mode. (%s)", Config->BotNick.c_str(), arg.c_str());
+	 Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode. (" << arg << ")";
        }
        else
        {
-	log(LOG_TERMINAL, "Unknown option %s", arg.c_str());
+	Log(LOG_TERMINAL) << "Unknown option " << arg;
 	exit(0);
        }
     }
   }
   //*****************************************************//
-  log(LOG_TERMINAL, "\033[22;37m");
+  Log(LOG_TERMINAL) << "\033[22;37m";
   ModuleHandler::SanitizeRuntime();
   ReadConfig();
   //*****************************************************//
    WritePID();
-   log(LOG_NORMAL, "%s Started. PID: %d", Config->BotNick.c_str(), getpid());
+   Log() << Config->BotNick << " Started, PID: " << getpid();
    FOREACH_MOD(I_OnStart, OnStart(argc, argv));
    if (!nofork){
 	int i;
 	if((i = fork()) < 0)
 		throw CoreException("Unable to fork");
 	else if (i != 0){
-		log(LOG_TERMINAL, "Navn IRC Bot v%s Started.", VERSION);
-		log(LOG_TERMINAL, "Forking to background. PID: %i\033[22;37m", i);
+		Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
+		Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[22;37m";
 		exit(0);
 	}
 	if(Terminal){
@@ -511,7 +512,7 @@ void startup(int argc, char** argv) {
 	if(setpgid(0, 0) < 0)
 		throw CoreException("Unable to setpgid()");
   }else
-    log(LOG_TERMINAL, "\033[22;36m");
+    Log(LOG_TERMINAL) << "\033[22;36m";
 }
 /** 
  * \fn Flux::string xmlToString(Flux::string fileName)

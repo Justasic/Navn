@@ -71,7 +71,7 @@ public:
 	  u->SendMessage("Host: %s", u->host.c_str());
 	  u->SendMessage("Channel: %s", c->name.c_str());
 	  u->SendMessage("Fullhost: %s", u->fullhost.c_str());
-	  log(LOG_NORMAL, "%s requested information about themself.", u->nick.c_str());
+	  Log() << u->nick << " requested information about themself";
     }
  }
 };

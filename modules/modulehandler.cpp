@@ -40,8 +40,7 @@ public:
       }
     }
     source.Reply("Total of \2%i\2 Modules", c);
-    log(LOG_NORMAL, "%s used MODLIST to list all modules%s", source.u->nick.c_str(), 
-	priority.empty()?"":Flux::string(" with priority "+priority).c_str());
+    Log(source.u, this) << "to list all module" << (priority.empty()?"":" with priority "+priority);
   }
 };
 
@@ -65,10 +64,10 @@ public:
       if(e != MOD_ERR_OK)
       {
 	source.Reply("Failed to load module %s: %s", module.c_str(), DecodeModErr(e).c_str());
-	log(LOG_NORMAL, "%s used LOAD to load %s and failed: %s", source.u->nick.c_str(), module.c_str(), DecodeModErr(e).c_str());
+	Log(source.u, this) << "to load " << module << " and failed: " << DecodeModErr(e);
       }else{
 	source.Reply("Module \2%s\2 loaded sucessfuly", module.c_str());
-	log(LOG_NORMAL, "%s used LOAD to load %s", source.u->nick.c_str(), module.c_str());
+	Log(source.u, this) << "to load " << module;
       }
     }
   }
@@ -90,10 +89,10 @@ public:
       if(!ModuleHandler::Unload(FindModule(module)))
       {
 	source.Reply("Failed to unload module %s", module.c_str());
-	log(LOG_NORMAL, "%s used UNLOAD to load %s and failed", source.u->nick.c_str(), module.c_str());
+	Log(source.u, this) << "to unload " << module << " and failed";
       }else{
 	source.Reply("Module \2%s\2 unloaded sucessfuly", module.c_str());
-	log(LOG_NORMAL, "%s used UNLOAD to unload %s", source.u->nick.c_str(), module.c_str());
+	Log(source.u, this) << "to unload " << module;
       }
     }
   }
@@ -136,7 +135,7 @@ public:
       else
 	source.Reply("Adds commands: \2%s\2", cmds.c_str());
 	source.Reply("******** End Info ********");
-      log(LOG_NORMAL, "%s used MODINFO to show info on module %s", source.u->nick.c_str(), mo->name.c_str());
+      Log(source.u, this) << "to show info on module " << mo->name;
   }
 };
 

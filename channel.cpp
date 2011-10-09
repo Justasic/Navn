@@ -12,12 +12,12 @@ Channel::Channel(const Flux::string &nname, time_t ts){
   this->creation_time = ts;
   this->topic_time = 0;
   ChanMap[this->name] = this;
-  log(LOG_DEBUG, "Created new channel: %s", this->name.c_str());
+  Log(LOG_DEBUG) << "Created new channel: " << nname;
 }
 Channel::~Channel()
 {
- log(LOG_DEBUG, "Deleted channel: %s", this->name.c_str());
- ChanMap.erase(this->name);
+  Log(LOG_DEBUG) << "Deleted channel " << this->name;
+  ChanMap.erase(this->name);
 }
 void Channel::SendJoin(){
  Send->command->join(this->name);

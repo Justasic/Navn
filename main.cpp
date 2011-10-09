@@ -39,7 +39,7 @@ int main (int argcx, char** argvx, char *envp[])
       //Make the socket used to connect to the server
       if(Config->Server.empty())
 	throw CoreException("No Server Specified.");
-      log(LOG_NORMAL, "Connecting to server '%s:%s'", Config->Server.c_str(), Config->Port.c_str());
+      Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
       FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
       sock = new SocketIO(Config->Server, Config->Port);
       sock->Connect();
@@ -48,7 +48,7 @@ int main (int argcx, char** argvx, char *envp[])
 	throw CoreException(e.description().c_str());
       if(sock)
 	delete sock;
-      log(LOG_DEBUG, "Socket Exception Caught: %s", e.description().c_str());
+      Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
       goto SocketStart;
     }
     if(!sock)
@@ -63,7 +63,7 @@ int main (int argcx, char** argvx, char *envp[])
     
     
     while(!quitting){
-      log(LOG_RAWIO, "Top of main loop");
+      Log(LOG_RAWIO) << "Top of main loop";
       
       /* Process the socket engine */
       sock->Process();
@@ -79,15 +79,14 @@ int main (int argcx, char** argvx, char *envp[])
     FOREACH_MOD(I_OnShutdown, OnShutdown());
     ModuleHandler::UnloadAll();
     ModuleHandler::SanitizeRuntime();
-    log(LOG_TERMINAL, "\033[22;37m");
+    Log(LOG_TERMINAL) << "\033[22;37m";
   }//try ends here
   catch(const CoreException& e){
     /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
-    log(LOG_TERMINAL, "Core Exception Caught: %s\033[22;37m", Flux::stringify(e.GetReason()).c_str());
-    log(LOG_NORMAL, "Core Exception Caught: %s", Flux::stringify(e.GetReason()).c_str());
+    Log(LOG_TERMINAL) << "\033[22;37m";
+    Log() << "Core Exception Caught: " << e.GetReason();
     return EXIT_FAILURE;
   }
-  printf("Exiting\n");
   return EXIT_SUCCESS;
 }
 

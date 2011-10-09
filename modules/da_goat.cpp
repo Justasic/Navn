@@ -62,7 +62,7 @@ public:
     c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
     c->SendMessage("Report all bugs at: \2http://flux-net.net/bugs/\2");
     c->SendMessage("Navn is managed by \2%s\2", Config->Owner.c_str());
-    log(LOG_NORMAL, "%s used Da_Goats !version command in %s", u->nick.c_str(), c->name.c_str());
+    Log(u, this) << "command in " << c->name;
   }
 };
 class CommandCSpam: public Command
@@ -74,7 +74,7 @@ public:
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
-    log(LOG_NORMAL, "%s used Da_Goats !spam command in %s", source.u->nick.c_str(), source.c->name.c_str());
+    Log(source.u, this) << "command in " << source.c->name;
     source.c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
   }
 };
@@ -95,7 +95,7 @@ public:
     c->SendMessage("Do not Mini-mod the chatroom. The moderators are there for a reason, we don't need more.");
     c->SendMessage("Do not spam the chatroom. This includes flooding by text, private messages, join/quit commands, External links, etc.");
     c->SendMessage("If you violate any of these rules you will be kicked and possably banned from %s.", c->name.c_str());
-    log(LOG_NORMAL, "%s used Da_Goats !rules command in %s", u->nick.c_str(), c->name.c_str());
+    Log(u, this) << "command in " << c->name;
   }
 };
 class CommandCUptime: public Command
@@ -123,7 +123,7 @@ public:
 #else
       source.Reply("This is currently not avalable on windows systems, sorry.");
 #endif
-      log(LOG_NORMAL, "%s used !uptime command in %s", u->nick.c_str(), c->name.c_str());
+      Log(u, this) << "command in " << c->name;
   }
 };
 class CommandCSocialInfo: public Command
@@ -139,7 +139,7 @@ public:
     User *u = source.u;
     c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.flux-net.net:6667");
     c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nGalaxy.Flux-Net.net:9987");
-    log(LOG_NORMAL, "%s used Da_Goats !socialinfo command in %s", u->nick.c_str(), c->name.c_str());
+    Log(u, this) << "command in " << c->name;
   }
 };
 class CommandCRegister: public Command
@@ -163,7 +163,7 @@ public:
     c->SendMessage("\00312/identify [passwordhere]\017");
     c->SendMessage("\0034You will need to indetify everytime you join into the chatroom\017");
     c->SendMessage("Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
-    log(LOG_NORMAL, "%s used Da_Goats !register command in %s", u->nick.c_str(), c->name.c_str());
+    Log(u, this) << "command in " << c->name;
   }
 };
 
@@ -180,7 +180,7 @@ public:
     User *u = source.u;
     c->SendMessage("This channel is a Nickname only channel. This means that you MUST have your own Nickname! If you do not choose your own nick name you WILL be kicked.");
     c->SendMessage("To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
-    log(LOG_NORMAL, "%s used Da_Goats !rename command in %s", u->nick.c_str(), c->name.c_str());
+    Log(u, this) << "command in " << c->name;
   }
 };
 class CommandCInfo : public Command
@@ -197,7 +197,7 @@ public:
     c->SendMessage("Our forum is at \037http://flux-net.net/forum2/\017");
     c->SendMessage("Our Website is \002Flux-Net.net\017");
     c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
-    log(LOG_NORMAL, "%s used Da_Goats !info command in %s", u->nick.c_str(), c->name.c_str());
+    Log(u, this) << "command in " << c->name;
   }
 };
 
@@ -238,11 +238,11 @@ public:
 	if(person.empty()){
 	  c->SendAction("is angry at %s", u->nick.c_str());
 	  c->kick(u, "\002\00315Dont poke me!\017");
-	  log(LOG_NORMAL, "%s found Da_Goats !poke command in %s", u->nick.c_str(), c->name.c_str());
+	  Log() << u->nick << " found Da_Goats !poke command in " << c->name;
 	}else{
 	  c->SendAction("Is angry at %s", person.c_str());
 	  c->kick(person, "\002\00315Dont poke me!\017");
-	  log(LOG_NORMAL, "%s used Da_Goats !poke command in %s to poke %s", u->nick.c_str(), c->name.c_str(), person.c_str());
+	  Log() << u->nick << " used Da_Goats !poke command in " << c->name << " to poke " << person;
 	}
       }
       if(cmd.equals_ci("!everything")){
@@ -254,7 +254,6 @@ public:
       }
       if(cmd.equals_ci("!git")){
 	u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
-      	log(LOG_NORMAL, "%s requested Git repository link.", u->nick.c_str());
       }
   }
 };

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "INIReader.h"
+#include "log.h"
 int INIReader::Parse(const Flux::string &filename)
 {
  std::ifstream file(filename.c_str());
@@ -125,6 +126,6 @@ void BotConfig::Read(){
   this->OperatorPass = this->Parser->Get("Oper","Oper_Password","");
   this->ModuleDir = Parser->Get("Modules", "ModuleDir", "");
   this->Modules = Parser->Get("Modules", "Modules", "");
-  log(LOG_TERMINAL, "\033[22;31mReading Config File\033[22;30m...\033[22;36m");
+  Log(LOG_TERMINAL) << "\033[22;31mReading Config File\033[22;30m...\033[22;36m";
 }
 

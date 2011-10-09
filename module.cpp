@@ -48,7 +48,7 @@ int module::AddCommand(Command *c){
    return 1;
  std::pair<CommandMap::iterator, bool> it = Commandsmap.insert(std::make_pair(c->name, c));
  if(it.second != true){
-   log(LOG_NORMAL, "Command %s already loaded!", c->name.c_str());
+   Log() << "Command " << c->name << " already loaded!";
    return 2;
  }
  c->mod = this;
@@ -77,7 +77,7 @@ int module::AddChanCommand(Command *c){
    return 1;
  std::pair<CommandMap::iterator, bool> it = ChanCommandMap.insert(std::make_pair(c->name, c));
  if(it.second != true){
-   log(LOG_NORMAL, "Command %s already loaded!", c->name.c_str());
+   Log() << "Command " << c->name << " already loaded!";
    return 2;
  }
  c->mod = this;
@@ -191,8 +191,8 @@ static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 	  return MOD_ERR_NOEXIST;
   
   output = TempFile(output);
-
-  log(LOG_RAWIO, "Runtime module location: %s", output.c_str());
+  
+  Log(LOG_RAWIO) << "Runtime module location: " << output;
   
   std::ofstream target(output.c_str(), std::ios_base::in | std::ios_base::binary);
   if (!target.is_open())
@@ -253,7 +253,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     return MOD_ERR_PARAMS;
   if(FindModule(modname))
     return MOD_ERR_EXISTS;
-  log(LOG_NORMAL,"Attempting to load module [%s]", modname.c_str());
+  Log() << "Attempting to load module [" << modname << ']';
   
   Flux::string mdir = Config->Binary_Dir + "/runtime/"+modname;
   if(modname.search(".so"))
@@ -263,7 +263,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   
   ModErr er = ModuleCopy(modname, mdir);
   if(er != MOD_ERR_OK){
-    log(LOG_TERMINAL, "Runtime copy error: %s", DecodeModErr(er).c_str());
+    Log(LOG_TERMINAL) << "Runtime copy error: " << DecodeModErr(er);
     return er;
   }
   dlerror();
@@ -272,19 +272,19 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   const char *err = dlerror();
   if(!handle && err && *err)
   {
-   log(LOG_NORMAL, "[%s] %s", modname.c_str(), err);
-   Delete(modname.c_str());
-   return MOD_ERR_NOLOAD;
+    Log() << '[' << modname << "] " << err;
+    Delete(modname.c_str());
+    return MOD_ERR_NOLOAD;
   }
   dlerror();
   
   module *(*f)(const Flux::string&) = class_cast<module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
   err = dlerror();
   if(!f && err && *err){
-   log(LOG_NORMAL, "No module init function, moving on.");
-   dlclose(handle);
-   Delete(modname.c_str());
-   return MOD_ERR_NOLOAD;
+    Log() << "No module init function, moving on.";
+    dlclose(handle);
+    Delete(modname.c_str());
+    return MOD_ERR_NOLOAD;
   }
   if(!f)
     throw CoreException("Can't find module constructor, yet no moderr?");
@@ -296,8 +296,8 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   }
   catch (const ModuleException &e)
   {
-   log(LOG_NORMAL,"Error while loading %s: %s", modname.c_str(), e.GetReason());
-   return MOD_ERR_EXCEPTION;
+    Log() << "Error while loading " << modname << ": " << e.GetReason();
+    return MOD_ERR_EXCEPTION;
   }
   m->filepath = mdir;
   m->filename = modname+".so";
@@ -318,16 +318,16 @@ bool ModuleHandler::DeleteModule(module *m)
   const char *err = dlerror();
   if (!df || err)
   {
-	  log(LOG_DEBUG, "No destroy function found for %s, chancing delete...", m->name.c_str());
+	  Log(LOG_DEBUG) << "No destroy function found for " << m->name << ", chancing delete...";
 	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
   }
   else
 	  df(m); /* Let the module delete it self, just in case */
 
   if (dlclose(handle))
-	  log(LOG_NORMAL, "[%s.so] %s", m->name.c_str(), dlerror());
+    Log() << "[" << m->name << ".so] " << dlerror();
   if (!filepath.empty())
-	  Delete(filepath.c_str());
+    Delete(filepath.c_str());
   
   return true;
 }
@@ -359,12 +359,12 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 }
 void ModuleHandler::SanitizeRuntime()
 {
-  log(LOG_DEBUG, "Cleaning up runtime directory.");
+  Log(LOG_DEBUG) << "Cleaning up runtime directory.";
   Flux::string dirbuf = Config->Binary_Dir + "/runtime";
   DIR *dirp = opendir(dirbuf.c_str());
 	if (!dirp)
 	{
-		log(LOG_DEBUG, "Cannot open directory (%s)", dirbuf.c_str());
+		Log(LOG_DEBUG) << "Cannot open directory (" << dirbuf << ')';
 		return;
 	}
 	struct dirent *dp;
@@ -392,7 +392,7 @@ void ReadConfig(){
     tok.trim();
     ModErr e = ModuleHandler::LoadModule(tok);
     if(e != MOD_ERR_OK)
-      log(LOG_NORMAL, "ERROR loading module %s: %s", tok.c_str(), DecodeModErr(e).c_str());
+      Log() << "ERROR loading module " << tok << ": " << DecodeModErr(e);
   }
 }
 /******************End Configuration variables********************/

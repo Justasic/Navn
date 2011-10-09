@@ -21,12 +21,13 @@
 #include <queue>
 #include <arpa/inet.h>
 #include "extern.h"
+#include "log.h"
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
 class SocketIO
 {
 private:
-  std::string server, port;
+  Flux::string server, port;
   int sockn;
   size_t recvlen;
   struct addrinfo hints, *servinfo;

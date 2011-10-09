@@ -15,16 +15,15 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  this->fullhost = snick+"!"+sident+"@"+shost;
  UserNickList[snick] = this;
  if(protocoldebug)
-   printf("New user! %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+   Log(LOG_TERMINAL) << "New user! " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
  ++usercnt;
  if(usercnt > maxusercnt){
   maxusercnt = usercnt;
-  printf("New maximum user count: %i\n", (int)maxusercnt);
+  Log(LOG_TERMINAL) << "New maximum user count: " << maxusercnt;
  }
 }
 User::~User(){
-  printf("Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
-  log(LOG_NORMAL, "Deleting user %s!%s@%s%s\n", this->nick.c_str(), this->ident.c_str(), this->host.c_str(), this->realname.empty()?"":Flux::string(" :"+this->realname).c_str());
+  Log() << "Deleting user " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
   UserNickList.erase(this->nick);
 }
 void User::kick(const Flux::string &channel, const Flux::string &reason){

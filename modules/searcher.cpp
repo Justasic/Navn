@@ -84,7 +84,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!google"));
-	      log(LOG_NORMAL, "Channel Google Search from %s \"%s\"", u->nick.c_str(), search(msg, "!google").c_str());
+	      Log() << "Channel Google Search from " << u->nick << " \"" << search(msg, "!google") << "\"";
     }
     if(cmd.equals_ci("!youtube")){ // if !youtube is said in the channel
 	      if(params.size() < 2){
@@ -92,7 +92,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!youtube"));
-	      log(LOG_NORMAL, "Channel youtube Search from %s \"%s\"", u->nick.c_str(), search(msg, "!youtube").c_str());
+	      Log() << "Channel youtube Search from " << u->nick << "\"" << search(msg, "!youtube") << "\"";
     }
     if(cmd.equals_ci("!tpb")){ // if !tpb xor !thepiratebay is said in the channel
 	      if(params.size() < 2){
@@ -100,7 +100,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!tpb"));
-	      log(LOG_NORMAL, "Channel tpb Search from %s \"%s\"", u->nick.c_str(), search(msg, "!tpb").c_str());
+	      Log() << "Channel The Pirate Bay Search from " << u->nick << " \"" << search(msg, "!tpb") << "\"";
     }
     if(cmd.equals_ci("!define")){
 	      if(params.size() < 2){
@@ -108,7 +108,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!define"));
-	      log(LOG_NORMAL, "Channel define Search from %s \"%s\"", u->nick.c_str(), search(msg, "!define").c_str());
+	      Log() << "Channel define Search from " << u->nick << " \"" << search(msg, "!define") << "\"";
     }
     if(cmd.equals_ci("!urban")){ 
 	      if(params.size() < 2){
@@ -116,7 +116,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!urban"));
-	      log(LOG_NORMAL, "Channel urban Search from %s \"%s\"", u->nick.c_str(), search(msg, "!urban").c_str());
+	      Log() << "Channel urban dictionary Search from " << u->nick << " \"" << search(msg, "!urban") << "\"";
     }
     if(cmd.equals_ci("!movie")){ 
 	      if(params.size() < 2){
@@ -124,7 +124,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!movie"));
-	      log(LOG_NORMAL, "Channel movie Search from %s \"%s\"", u->nick.c_str(), search(msg, "!movie").c_str());
+	      Log() << "Channel movie Search from " << u->nick << " \"" << search(msg, "!movie") << "\"";
     }
     if(cmd.equals_ci("!wiki")){ 
 	      if(params.size() < 2){
@@ -132,7 +132,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!wiki"));
-	      log(LOG_NORMAL, "Channel wiki Search from %s \"%s\"", u->nick.c_str(), search(msg, "!wiki").c_str());
+	      Log() << "Channel Wikipedia Search from " << u->nick << " \"" << search(msg, "!wiki") << "\"";
     }
     if(cmd.equals_ci("!music")){ 
 	      if(params.size() < 2){
@@ -140,7 +140,7 @@ public:
 		return;
 	      }
 	      c->SendMessage(search(msg, "!music"));
-	      log(LOG_NORMAL, "Channel music Search from %s \"%s\"", u->nick.c_str(), search(msg, "!music").c_str());
+	      Log() << "Channel music Search from " << u->nick << " \"" << search(msg, "!music") << "\"";
     }
   }
 };

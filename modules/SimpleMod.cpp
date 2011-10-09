@@ -32,7 +32,7 @@ public:
     for(unsigned i=0; i < params.size(), ++i)
       msg += params[i] +' ';
     if(irc_string::said(msg, "I am a very long command")){
-      log(LOG_TERMINAL, "PRIVMSG: %s", msg.c_str());
+      Log(LOG_TERMINAL( << "PRIVMSG: " << msg;
     }
   }
   void OnNotice(User *u, const std::vector<Flux::string> &params)
@@ -41,7 +41,7 @@ public:
     for(unsigned i=0; i < params.size(), ++i)
       msg += params[i] +' ';
     if(irc_string::said(msg, "I am a very long notice")){
-      log(LOG_TERMINAL, "NOTICE: %s", msg.c_str());
+      Log(LOG_TERMINAL( << "NOTICE: " << msg;
     }
   }
 };

@@ -33,7 +33,7 @@ void CLog(const char *fmt, ...){
     if(!clog.is_open())
       throw LogException("Failed to open log file.");
   }catch (LogException &e){
-    log(LOG_NORMAL, "Log Exception Caught: %s", e.GetReason());
+    Log() << "Channel Logger Exception: " << e.GetReason();
   }
   va_list args;
   va_start(args, fmt);
