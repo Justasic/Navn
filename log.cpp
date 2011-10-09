@@ -60,7 +60,7 @@ Log::~Log()
   
   try
     {
-      log.open(Config->LogFile.c_str(), std::fstream::out);
+      log.open(Config->LogFile.c_str(), std::fstream::out | std::fstream::app);
       if(!log.is_open())
 	throw LogException(Config->LogFile.empty()?Flux::string("Cannot fild Log File.").c_str():
 			    Flux::string("Failed to open Log File"+Config->LogFile+": "+strerror(errno)).c_str());
