@@ -22,10 +22,7 @@ SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : soc
   hints.ai_socktype = SOCK_STREAM;
   /****************************/ 
 }
-int SocketIO::GetFD() const
-{
- return sockn; 
-}
+int SocketIO::GetFD() const { return sockn; }
 bool SocketIO::SetNonBlocking()
 {
  int flags = fcntl(this->GetFD(), F_GETFL, 0);

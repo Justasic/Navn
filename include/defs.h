@@ -13,6 +13,7 @@ char **my_av, **my_envp;
 bool nofork, dev, protocoldebug, IsOper, quitting, started = false;
 Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name;
 const Flux::string password = make_pass();
+char segv_location[255];
 time_t starttime = 0;
 /**********************Version Variables*************************/
 #define VERSION_EXTRA "-with-netflix-and-chicken"

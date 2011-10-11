@@ -302,6 +302,7 @@ namespace Flux{
     inline bool operator<(const string &_str) const { return this->_string < _str._string; }
     
     inline const char *c_str() const { return this->_string.c_str(); }
+    inline const char *data() const { return this->_string.data(); }
     inline ci::string ci_str() const { return ci::string(this->_string.c_str()); }
     inline const std::string &std_str() const { return this->_string; }
     inline std::string &std_str() { return this->_string; }

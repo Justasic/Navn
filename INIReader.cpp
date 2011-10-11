@@ -10,6 +10,7 @@ int INIReader::Parse(const Flux::string &filename)
 {
  std::ifstream file(filename.c_str());
   int linenum, error =0;
+  unsigned c=0, len =0;
   bool in_comment = false;
   Flux::string line, section, name, value;
   if(file.is_open())
@@ -18,9 +19,41 @@ int INIReader::Parse(const Flux::string &filename)
    { 
     std::getline(file, line.std_str());
     linenum++;
+    len = line.length();
     line.trim();
+    printf("UNPARSED: %s\n", line.c_str());
     
     if(line[0] == ';' || line[0] == '#' || line.empty()){ continue; } // Do nothing if any of this is true
+    else if(line.search("/*") || line.search("*/")){
+      if(line.search("/*") && line.search("*/")){
+	line = line.erase(line.find("/*"), line.find("*/"));
+	printf("1_LINE_MULTI_COMMENT: %s\n", line.c_str());
+      }else{
+	for(; c < len; ++c)
+	{
+	  char ch = line[c];
+	  if(in_comment){
+	      if(ch == '*' && c + 1 < len && line[c + 1] == '/')
+	      {
+		in_comment = false;
+		printf("END_IN_COMMENT: %s\n", line.c_str());
+		++c;
+	      }
+	      continue;
+	  }
+	  if(ch == '/' && c + 1 < len && line[c + 1] == '*'){
+	    in_comment = true;
+	    printf("IN_COMMENT: %s\n", line.c_str());
+	    ++c;
+	    continue;
+	  }
+	}
+      }
+    }
+    if(in_comment){
+      printf("IN_COMMENT: %s\n", line.c_str());
+      continue;
+    }
     else if(line[0] == '[' && line[line.size() -1] == ']')
     {
       line = line.erase(0,1);
@@ -51,7 +84,7 @@ int INIReader::Parse(const Flux::string &filename)
       }
       value.trim();
       /************************************/
-      
+      printf("LINE: %s\n", line.c_str());
       if(error != 0)
 	break;
       else if(value.empty() || section.empty() || name.empty() || value.find(';') != (unsigned)-1)

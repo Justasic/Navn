@@ -8,11 +8,14 @@
 /* #define's */
 #define Delete unlink
 #define E extern
+#define S static
 #define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 #define ACCESS_DENIED "Access is Denied."
 #define GetCurrentDir getcwd
+#define SET_SEGV_LOCATION() fprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+#define CLEAR_SEGV_LOCATION() segv_location[0]='\0';
 
 /* Classes */
 class Channel;
@@ -68,6 +71,7 @@ E CommandMap Commandsmap;
 E CommandMap ChanCommandMap;
 E time_t starttime;
 E Flux::string binary_path, bot_bin, binary_dir, server_name, quitmsg;
+E const Flux::string VERSION_LONG;
 E Flux::string strip(const Flux::string &buf);
 E Flux::string getprogdir(const Flux::string&);
 E Flux::string TempFile(const Flux::string&);
@@ -88,6 +92,7 @@ E Flux::insensitive_map<Channel*> ChanMap;
 E char **my_av, **my_envp;
 
 /* void's */
+E void handle_sigsegv(int);
 E void ListChans(CommandSource &source);
 E void ListUsers(CommandSource &source);
 E void send_cmd(const char *fmt, ...);
@@ -95,6 +100,9 @@ E void process(const Flux::string&);
 E void ProcessJoin(CommandSource&, const Flux::string&);
 E void ProcessCommands(CommandSource&, std::vector<Flux::string>&);
 E void ReadConfig();
+
+/* Char's */
+extern char segv_location[255];
 
 /**************************************************************/
 /* This is the only #define allowed at the bottom of the file */

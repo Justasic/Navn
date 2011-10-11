@@ -487,6 +487,7 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c main.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c misc.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c module.cpp
+	@$(PERL) $(CXX) $(CFLAGS) -c segfault.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c Socket.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c Sepstream.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c process.cpp
@@ -499,7 +500,7 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c channel.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c INIReader.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c log.cpp
-	@$(PERL) $(CXX) $(CFLAGS)  main.o misc.o log.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(EXECUTABLE) -rdynamic
+	@$(PERL) $(CXX) $(CFLAGS)  main.o misc.o log.o segfault.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(EXECUTABLE) -rdynamic
 testmod:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/testmod.cpp
 	@$(PERL) $(CXX) $(MODFLAGS)modules/testmod.so -o modules/testmod.so testmod.o

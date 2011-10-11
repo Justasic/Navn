@@ -20,7 +20,7 @@ AC_CHECK_LIB([pthread], [main])
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_RESOLV
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdint.h stdlib.h string.h sys/socket.h unistd.h pthread.h time.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdint.h stdlib.h string.h sys/socket.h unistd.h pthread.h time.h execinfo.h setjump.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

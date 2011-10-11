@@ -443,6 +443,7 @@ void startup(int argc, char** argv) {
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
+  signal(SIGSEGV, handle_sigsegv);
   Flux::string dir = argv[0];
   Flux::string::size_type n = dir.rfind('/');
   dir = "." + dir.substr(n);

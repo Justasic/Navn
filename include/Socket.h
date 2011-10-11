@@ -28,6 +28,7 @@ class SocketIO
 {
 private:
   Flux::string server, port;
+  Flux::string lastbuf;
   int sockn;
   size_t recvlen;
   struct addrinfo hints, *servinfo;
