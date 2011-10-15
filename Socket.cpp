@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <iostream>
 #define NET_BUFSIZE 65535
-fd_set ReadFD, WriteFD, ExceptFD;
+fd_set ReadFD/*, WriteFD, ExceptFD*/;
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
@@ -37,7 +37,7 @@ SocketIO::~SocketIO(){
  if(is_valid()) 
    close(sockn);
  FD_CLR(this->GetFD(), &ReadFD);
- FD_CLR(this->GetFD(), &WriteFD);
+ //FD_CLR(this->GetFD(), &WriteFD);
 }
 void SocketIO::get_address()
 {
@@ -96,7 +96,7 @@ int SocketIO::Process()
   timeval timeout;
   timeout.tv_sec = 5;
   timeout.tv_usec = 0; //this timeout keeps the bot from being a CPU hog for no reason :)
-  fd_set read = ReadFD, write = WriteFD, except = ExceptFD;
+  fd_set read = ReadFD/*, write = WriteFD, except = ExceptFD*/;
   FD_ZERO(&read);
   FD_SET(this->GetFD(), &read);
   int sres = select(this->GetFD() + 1, &read, NULL, NULL, &timeout);

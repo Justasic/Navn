@@ -1,0 +1,78 @@
+#!/bin/bash
+MAKEFILE="Makefile.am"
+# Make sure the folder exists
+if [ -d modules ] ; then
+  echo derp &>/dev/null
+else
+  echo "Module folder not found. Exiting..."
+  exit 1
+fi
+# Make sure there is at least one cpp file in there
+if [ -f modules/m_system.cpp ] ; then
+  echo derp &>/dev/null
+else
+  echo "No modules found. Exiting..."
+  exit 1
+fi
+if [ -f $MAKEFILE ] ; then
+  rm -rf $MAKEFILE
+else
+  echo "Making new makefile.."
+fi
+# Write to file
+modulelist=""
+echo "AUTOMAKE_OPTIONS 	= foreign" >> $MAKEFILE
+echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
+echo "CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -pedantic -g -Wl,--export-dynamic \$(LIBS) -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
+echo "LIBS = -lpthread -ldl -lnsl" >> $MAKEFILE
+echo "MODFLAGS = -fPIC -g \$(LIBS) -shared -Wl,-soname," >> $MAKEFILE
+echo "" >> $MAKEFILE
+echo "navn:
+	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
+	@echo \"Navn Version \$(VERSION)-with-netflix-and-chicken\"
+	@echo \" \"
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c main.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c misc.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c module.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c segfault.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c Socket.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c Sepstream.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c process.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c thread.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c privmsg.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c thread.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c timers.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c user.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c command.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c channel.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c INIReader.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c log.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS)  main.o misc.o log.o segfault.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o \$(PACKAGE) -rdynamic" >> $MAKEFILE
+echo "" >> $MAKEFILE
+for file in modules/*.cpp ; do
+  name=${file%\.*}
+  bsoname=$name.so #full filename path
+  name=${name##modules/}
+  modulelist=`echo $modulelist $name.so`
+  soname=$name.so #name only
+  #These will be the contents of the file
+  echo "$soname:" >> $MAKEFILE
+  echo "	@\$(PERL) \$(CXX) \$(CFLAGS) -c $file" >> $MAKEFILE
+  echo "	@\$(PERL) \$(CXX) \$(MODFLAGS)$file -o $bsoname $name.o" >> $MAKEFILE
+done
+echo "" >> $MAKEFILE
+echo "modules: "$modulelist >> $MAKEFILE
+echo "" >> $MAKEFILE
+echo "all-am: navn "$modulelist >> $MAKEFILE
+echo "	@echo \" \"
+	@echo \"Build complete. Run \'./\$(PACKAGE)\' to execute the binary.\"" >> $MAKEFILE
+echo "clean:
+	rm -f *.o *.so \$(PACKAGE) config.h config.status
+	rm -f *.o *.so \$(srcdir)/modules/*.so" >> $MAKEFILE
+if [ "$1" = "-nc" ] ; then
+  echo "Generating Makefile complete!"
+  echo "Skipping ./configure"
+else
+  echo "Generating Makefile complete!"
+  /bin/bash configure
+fi

@@ -3,6 +3,11 @@
 #define MODULE_H
 #include "user.h"
 #include "includes.h"
+#ifdef HAVE_FCNTL_H
+# include <dlfcn.h>
+#else
+# error dlfcn.h is required by navn to compile modules!
+#endif
 enum Implementation{
   I_BEGIN,
 	I_OnPrivmsg, I_OnModuleLoad, I_OnModuleUnload,

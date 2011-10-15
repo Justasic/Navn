@@ -18,7 +18,6 @@
 #include <stdint.h> 
 #include <arpa/nameser.h>
 #include <resolv.h>
-#include <dlfcn.h>
 #include <dirent.h>
 #include <pthread.h>
 #include <csignal>

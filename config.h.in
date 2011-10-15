@@ -27,6 +27,9 @@
 /* Define to 1 if you have the `backtrace' function. */
 #undef HAVE_BACKTRACE
 
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
 /* Define to 1 if you have the <execinfo.h> header file. */
 #undef HAVE_EXECINFO_H
 
@@ -48,8 +51,14 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the `dl' library (-ldl). */
+#undef HAVE_LIBDL
+
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 #undef HAVE_LIBPTHREAD
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -135,6 +144,9 @@
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
 
+/* cpu-machine-OS */
+#undef OS
+
 /* Name of package */
 #undef PACKAGE
 
@@ -155,6 +167,9 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* The size of `off_t', as computed by sizeof. */
+#undef SIZEOF_OFF_T
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -181,6 +196,18 @@
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
+
+/* Define to `unsigned short' if <sys/types.h> does not define. */
+#undef u_int16_t
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef u_int32_t
+
+/* Define to `unsigned long long' if <sys/types.h> does not define. */
+#undef u_int64_t
+
+/* Define to `unsigned char' if <sys/types.h> does not define. */
+#undef u_int8_t
 
 /* Define as `fork' if `vfork' does not work. */
 #undef vfork
