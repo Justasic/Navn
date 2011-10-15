@@ -13,7 +13,7 @@ System support: Linux/Unix i386 (x86)
 How to Install:
 1. Extract the source with unzip on linux.
 2. Make sure you have updated Gpp and G++ to latest versions or have build-essentials installed.
-3. run ./configure
+3. run ./Config
 4. Run make
 5. To start the bot run ./navn
 
