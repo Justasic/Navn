@@ -50,7 +50,7 @@ echo "navn:
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c log.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o segfault.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
 echo "" >> $MAKEFILE
-for file in modules/*.cpp ; do
+for file in modules/*.cpp ; do #Loop cred to Lordofsraam
   name=${file%\.*}
   bsoname=$name.so #full filename path
   name=${name##modules/}

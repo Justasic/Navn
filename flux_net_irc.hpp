@@ -438,8 +438,10 @@ void startup(int argc, char** argv) {
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
   Config = new BotConfig();
-  if(Config->Parser->ParseError() == -1) throw CoreException("Cannot open file bot.conf");
-  if (Config->Parser->ParseError() != 0) throw CoreException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));
+  if(Config->Parser->ParseError() == -1)
+    throw CoreException("Cannot open file bot.conf");
+  if(Config->Parser->ParseError() != 0) 
+    throw CoreException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);

@@ -7,42 +7,6 @@
 #include "INIReader.h"
 #include "log.h"
 bool in_comment = false;
-bool IsMulti_LineComment(Flux::string &line)
-{
-  unsigned len = line.length();
-  if(line.search("/*") || line.search("*/")){
-    if(line.search("/*") && line.search("*/")){
-      line = line.erase(line.find("/*"), line.find("*/"));
-      printf("1_LINE_MULTI_COMMENT: %s\n", line.c_str());
-    }
-    else
-    {
-      for(unsigned c=0; c < len; ++c)
-      {
-	if(in_comment){
-	    if(line[c] == '*' && c + 1 < len && line[c + 1] == '/')
-	    {
-	      in_comment = false;
-	      printf("END_IN_COMMENT: %s\n", line.c_str());
-	      ++c;
-	    }
-	    continue;
-	}
-	if(line[c] == '/' && c + 1 < len && line[c + 1] == '*'){
-	  in_comment = true;
-	  printf("IN_COMMENT: %s\n", line.c_str());
-	  ++c;
-	  continue;
-	}
-      }
-    }
-  }
-  if(in_comment){
-    printf("IN_COMMENT: %s\n", line.c_str());
-    return in_comment;
-  }else
-    return false;
-}
 int INIReader::Parse(const Flux::string &filename)
 {
  std::ifstream file(filename.c_str());
@@ -51,28 +15,60 @@ int INIReader::Parse(const Flux::string &filename)
   if(file.is_open())
   {
    while(file.good())
-   { 
-     in_comment = false;
+   {
+    bool contin = false;
     std::getline(file, line.std_str());
     linenum++;
     line.trim();
     //printf("UNPARSED: %s\n", line.c_str());
     
-    if(line[0] == ';' || line[0] == '#' || line.empty() /*|| IsMulti_LineComment(line)*/)
+    if(line[0] == ';' || line[0] == '#' || line.empty())
       continue;  // Do nothing if any of this is true
-    else if(line[0] == '[' && line[line.size() -1] == ']')
+    /********************************************/
+    unsigned c=0, len = line.length();
+    for(; c < len; ++c)
+    {
+      char ch = line[c];
+      if(in_comment){
+	if(ch == '*' && c+1 < len && line[c+1] == '/')
+	{
+	  in_comment = false;
+	  contin = true;
+	  ++c;
+	}
+	continue;
+      }
+      else if(ch == '/' && c+1 < len && line[c+1] == '*')
+      {
+	in_comment = true;
+	++c;
+	continue;
+      }
+    }
+    if(line.search("/*") && line.search("*/")){
+      in_comment = contin = false;
+      line = line.erase(line.find("/*"), line.find("*/"));
+      line.trim();
+      //printf("%s\n", line.c_str());
+    }
+    if(in_comment || contin)
+      continue;
+    /********************************************/
+    //printf("PARSING: %s\n", line.c_str());
+    if(line[0] == '[' && line[line.size() -1] == ']')
     {
       line = line.erase(0,1);
       section = line.erase(line.size()-1,line.size());
       section.trim(); 
     }
-    else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']'))
-      error = linenum; 
+    else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']')){
+      error = linenum; /*printf("C1: %i\n", error);*/ }
     else if(!line.empty() && line.find_first_of('=')){
       name = line;
       int d = line.find_first_of('=');
       if(line.find_first_of(';') < (unsigned)d){
 	error = linenum;
+	//printf("C2: %i\n", error);
       }
       else if(d > 0){
 	name = name.erase(d, name.size()-d);
@@ -85,20 +81,20 @@ int INIReader::Parse(const Flux::string &filename)
       if(value.find_first_of(';')){ //We only erase ';' (semi-colons) if we find them, we cannot erase # signs for
 	int i = value.find_first_of(';'); // channels would look like comments.. maybe we can fix this one day..
 	if(i > 0){
-	  value = value.erase(i, value.size()-i);
+	  value = value.erase(i, Flux::string::npos);
 	}
       }
       value.trim();
       /************************************/
-      //printf("LINE: %s\n", line.c_str());
+      //printf("PARSED: %s | %s | %s | %s | %i\n", line.c_str(), value.c_str(), name.c_str(), section.c_str(), error);
       if(error != 0)
 	break;
-      else if(value.empty() || section.empty() || name.empty() || value.find(';') != (unsigned)-1)
-	error = linenum;
+      else if(value.empty() || section.empty() || name.empty() || value.search(';')){
+	error = linenum; std::cout << value.empty() << " | " << section.empty() << " | "  << name.empty() << " | " << (value.search(';')?"True":"false") << std::endl; }
       else
       _values[this->MakeKey(section, name)] = value;
-    }else
-      error = linenum;
+    }else{
+      error = linenum; /*printf("C4: %i\n", error);*/ }
    }
    file.close();
   }else
