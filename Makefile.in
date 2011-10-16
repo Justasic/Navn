@@ -69,7 +69,7 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -pedantic -g -Wl,--export-dynamic $(LIBS) -I$(srcdir)/include -I$(srcdir)
+CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -DPIC  -L. -fno-leading-underscore -pedantic -g -Wl,--export-dynamic $(INCLUDES)
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -92,7 +92,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
-LIBS = -lpthread -ldl -lnsl
+LIBS = -pthread -ldl -lnsl -lrt -lstdc++
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
@@ -155,6 +155,7 @@ top_srcdir = @top_srcdir@
 unamepath = @unamepath@
 AUTOMAKE_OPTIONS = foreign
 PERL = $(srcdir)/run-cc.pl
+INCLUDES = -I$(srcdir)/include -I$(srcdir)
 MODFLAGS = -fPIC -g $(LIBS) -shared -Wl,-soname,
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -497,59 +498,59 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c channel.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c INIReader.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c log.cpp
-	@$(PERL) $(CXX) $(CFLAGS)  main.o misc.o log.o segfault.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(PACKAGE) -rdynamic
+	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o segfault.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(PACKAGE) $(LIBS) -rdynamic
 
 about_me.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/about_me.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/about_me.cpp -o modules/about_me.so about_me.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/about_me.cpp -o modules/about_me.so about_me.o
 channel_logger.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/channel_logger.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/channel_logger.cpp -o modules/channel_logger.so channel_logger.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/channel_logger.cpp -o modules/channel_logger.so channel_logger.o
 ctcp.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/ctcp.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/ctcp.cpp -o modules/ctcp.so ctcp.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/ctcp.cpp -o modules/ctcp.so ctcp.o
 da_goat.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/da_goat.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/da_goat.cpp -o modules/da_goat.so da_goat.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/da_goat.cpp -o modules/da_goat.so da_goat.o
 encyclopedia.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/encyclopedia.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/encyclopedia.cpp -o modules/encyclopedia.so encyclopedia.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/encyclopedia.cpp -o modules/encyclopedia.so encyclopedia.o
 help.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/help.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/help.cpp -o modules/help.so help.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/help.cpp -o modules/help.so help.o
 m_dns.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_dns.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_dns.cpp -o modules/m_dns.so m_dns.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_dns.cpp -o modules/m_dns.so m_dns.o
 m_join.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_join.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_join.cpp -o modules/m_join.so m_join.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_join.cpp -o modules/m_join.so m_join.o
 modulehandler.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/modulehandler.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/modulehandler.cpp -o modules/modulehandler.so modulehandler.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/modulehandler.cpp -o modules/modulehandler.so modulehandler.o
 m_ping.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_ping.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_ping.cpp -o modules/m_ping.so m_ping.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_ping.cpp -o modules/m_ping.so m_ping.o
 m_system.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_system.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_system.cpp -o modules/m_system.so m_system.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_system.cpp -o modules/m_system.so m_system.o
 m_terminal_input.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_terminal_input.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_terminal_input.cpp -o modules/m_terminal_input.so m_terminal_input.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_terminal_input.cpp -o modules/m_terminal_input.so m_terminal_input.o
 searcher.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/searcher.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/searcher.cpp -o modules/searcher.so searcher.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/searcher.cpp -o modules/searcher.so searcher.o
 SimpleMod.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/SimpleMod.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/SimpleMod.cpp -o modules/SimpleMod.so SimpleMod.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/SimpleMod.cpp -o modules/SimpleMod.so SimpleMod.o
 testmod.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/testmod.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/testmod.cpp -o modules/testmod.so testmod.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/testmod.cpp -o modules/testmod.so testmod.o
 weather.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/weather.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/weather.cpp -o modules/weather.so weather.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/weather.cpp -o modules/weather.so weather.o
 world_clock.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/world_clock.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/world_clock.cpp -o modules/world_clock.so world_clock.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/world_clock.cpp -o modules/world_clock.so world_clock.o
 
 modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 

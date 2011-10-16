@@ -23,8 +23,9 @@ fi
 modulelist=""
 echo "AUTOMAKE_OPTIONS 	= foreign" >> $MAKEFILE
 echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
-echo "CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -pedantic -g -Wl,--export-dynamic \$(LIBS) -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
-echo "LIBS = -lpthread -ldl -lnsl" >> $MAKEFILE
+echo "LIBS = -pthread -ldl -lnsl -lrt -lstdc++" >> $MAKEFILE
+echo "INCLUDES = -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
+echo "CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -DPIC  -L. -fno-leading-underscore -pedantic -g -Wl,--export-dynamic \$(INCLUDES)" >> $MAKEFILE
 echo "MODFLAGS = -fPIC -g \$(LIBS) -shared -Wl,-soname," >> $MAKEFILE
 echo "" >> $MAKEFILE
 echo "navn:
@@ -47,7 +48,7 @@ echo "navn:
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c channel.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c INIReader.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c log.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS)  main.o misc.o log.o segfault.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o \$(PACKAGE) -rdynamic" >> $MAKEFILE
+	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o segfault.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
 echo "" >> $MAKEFILE
 for file in modules/*.cpp ; do
   name=${file%\.*}
@@ -58,7 +59,7 @@ for file in modules/*.cpp ; do
   #These will be the contents of the file
   echo "$soname:" >> $MAKEFILE
   echo "	@\$(PERL) \$(CXX) \$(CFLAGS) -c $file" >> $MAKEFILE
-  echo "	@\$(PERL) \$(CXX) \$(MODFLAGS)$file -o $bsoname $name.o" >> $MAKEFILE
+  echo "	@\$(PERL) \$(CXX) \$(LIBS) \$(MODFLAGS)$file -o $bsoname $name.o" >> $MAKEFILE
 done
 echo "" >> $MAKEFILE
 echo "modules: "$modulelist >> $MAKEFILE

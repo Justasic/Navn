@@ -23,25 +23,25 @@ public:
     this->SetAuthor("Justasic & Lordofsraam");
     this->AddCommand(&s);
     this->SetPriority(PRIORITY_LAST);
-    Implementation i[] = { I_OnPrivmsg, I_OnNotice } 
+    Implementation i[] = { I_OnPrivmsg, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
   void OnPrivmsg(User *u, const std::vector<Flux::string> &params)
   {
     Flux::string msg;
-    for(unsigned i=0; i < params.size(), ++i)
+    for(unsigned i=0; i < params.size(); ++i)
       msg += params[i] +' ';
-    if(irc_string::said(msg, "I am a very long command")){
-      Log(LOG_TERMINAL( << "PRIVMSG: " << msg;
+    if(msg.search("I am a very long command")){
+      Log(LOG_TERMINAL) << "PRIVMSG: " << msg;
     }
   }
   void OnNotice(User *u, const std::vector<Flux::string> &params)
   {
     Flux::string msg;
-    for(unsigned i=0; i < params.size(), ++i)
+    for(unsigned i=0; i < params.size(); ++i)
       msg += params[i] +' ';
-    if(irc_string::said(msg, "I am a very long notice")){
-      Log(LOG_TERMINAL( << "NOTICE: " << msg;
+    if(msg.search("I am a very long notice")){
+      Log(LOG_TERMINAL) << "NOTICE: " << msg;
     }
   }
 };

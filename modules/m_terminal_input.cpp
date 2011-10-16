@@ -12,9 +12,9 @@ void ProcessInput(const Flux::string &str)
 	quitting = true;
 	send_cmd("%s\n", str.c_str());
   }
-  else if(str.find_first_of_ci("MSG") == Flux::string::npos)
+  else if(params[0].equals_ci("MSG"))
     send_cmd("PRIVMSG %s\n", str.c_str());
-  else if(str.find_first_of_ci("NICK") == Flux::string::npos)
+  else if(params[0].equals_ci("NICK"))
     send_cmd("NICK %s\n", str.c_str());
   else
     send_cmd("%s\n", str.c_str());
