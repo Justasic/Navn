@@ -29,55 +29,55 @@ navn:
 
 about_me.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/about_me.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/about_me.cpp $(LIBS) -o modules/about_me.so about_me.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/about_me.cpp -o modules/about_me.so about_me.o
 channel_logger.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/channel_logger.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/channel_logger.cpp $(LIBS) -o modules/channel_logger.so channel_logger.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/channel_logger.cpp -o modules/channel_logger.so channel_logger.o
 ctcp.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/ctcp.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/ctcp.cpp $(LIBS) -o modules/ctcp.so ctcp.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/ctcp.cpp -o modules/ctcp.so ctcp.o
 da_goat.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/da_goat.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/da_goat.cpp $(LIBS) -o modules/da_goat.so da_goat.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/da_goat.cpp -o modules/da_goat.so da_goat.o
 encyclopedia.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/encyclopedia.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/encyclopedia.cpp $(LIBS) -o modules/encyclopedia.so encyclopedia.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/encyclopedia.cpp -o modules/encyclopedia.so encyclopedia.o
 help.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/help.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/help.cpp $(LIBS) -o modules/help.so help.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/help.cpp -o modules/help.so help.o
 m_dns.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_dns.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_dns.cpp $(LIBS) -o modules/m_dns.so m_dns.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_dns.cpp -o modules/m_dns.so m_dns.o
 m_join.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_join.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_join.cpp $(LIBS) -o modules/m_join.so m_join.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_join.cpp -o modules/m_join.so m_join.o
 modulehandler.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/modulehandler.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/modulehandler.cpp $(LIBS) -o modules/modulehandler.so modulehandler.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/modulehandler.cpp -o modules/modulehandler.so modulehandler.o
 m_ping.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_ping.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_ping.cpp $(LIBS) -o modules/m_ping.so m_ping.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_ping.cpp -o modules/m_ping.so m_ping.o
 m_system.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_system.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_system.cpp $(LIBS) -o modules/m_system.so m_system.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_system.cpp -o modules/m_system.so m_system.o
 m_terminal_input.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_terminal_input.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/m_terminal_input.cpp $(LIBS) -o modules/m_terminal_input.so m_terminal_input.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_terminal_input.cpp -o modules/m_terminal_input.so m_terminal_input.o
 searcher.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/searcher.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/searcher.cpp $(LIBS) -o modules/searcher.so searcher.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/searcher.cpp -o modules/searcher.so searcher.o
 SimpleMod.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/SimpleMod.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/SimpleMod.cpp $(LIBS) -o modules/SimpleMod.so SimpleMod.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/SimpleMod.cpp -o modules/SimpleMod.so SimpleMod.o
 testmod.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/testmod.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/testmod.cpp $(LIBS) -o modules/testmod.so testmod.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/testmod.cpp -o modules/testmod.so testmod.o
 weather.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/weather.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/weather.cpp $(LIBS) -o modules/weather.so weather.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/weather.cpp -o modules/weather.so weather.o
 world_clock.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/world_clock.cpp
-	@$(PERL) $(CXX) $(MODFLAGS)modules/world_clock.cpp $(LIBS) -o modules/world_clock.so world_clock.o
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/world_clock.cpp -o modules/world_clock.so world_clock.o
 
 modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 

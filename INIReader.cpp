@@ -49,7 +49,6 @@ int INIReader::Parse(const Flux::string &filename)
       in_comment = contin = false;
       line = line.erase(line.find("/*"), line.find("*/"));
       line.trim();
-      //printf("%s\n", line.c_str());
     }
     if(in_comment || contin)
       continue;
@@ -61,15 +60,13 @@ int INIReader::Parse(const Flux::string &filename)
       section = line.erase(line.size()-1,line.size());
       section.trim(); 
     }
-    else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']')){
-      error = linenum; /*printf("C1: %i\n", error);*/ }
+    else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']'))
+      error = linenum;
     else if(!line.empty() && line.find_first_of('=')){
       name = line;
       int d = line.find_first_of('=');
-      if(line.find_first_of(';') < (unsigned)d){
+      if(line.find_first_of(';') < (unsigned)d)
 	error = linenum;
-	//printf("C2: %i\n", error);
-      }
       else if(d > 0){
 	name = name.erase(d, name.size()-d);
 	name.trim();
@@ -89,13 +86,15 @@ int INIReader::Parse(const Flux::string &filename)
       //printf("PARSED: %s | %s | %s | %s | %i\n", line.c_str(), value.c_str(), name.c_str(), section.c_str(), error);
       if(error != 0)
 	break;
-      else if(value.empty() || section.empty() || name.empty() || value.search(';')){
-	error = linenum; std::cout << value.empty() << " | " << section.empty() << " | "  << name.empty() << " | " << (value.search(';')?"True":"false") << std::endl; }
+      else if(value.empty() || section.empty() || name.empty() || value.search(';'))
+	error = linenum;
       else
       _values[this->MakeKey(section, name)] = value;
-    }else{
-      error = linenum; /*printf("C4: %i\n", error);*/ }
+    }else
+      error = linenum;
    }
+   if(in_comment)
+      error = linenum;
    file.close();
   }else
     return -1;
@@ -139,9 +138,22 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
 BotConfig::BotConfig()
 {
  Flux::string conffile = binary_dir + "/bot.conf";
- this->Parser = new INIReader(conffile);
- this->Binary_Dir = binary_dir;
- this->Read();
+ try
+ {
+  this->Parser = new INIReader(conffile);
+  this->Binary_Dir = binary_dir;
+  this->Read();
+  if(this->Parser->ParseError() == -1)
+    throw ConfigException("Cannot open '"+conffile+"'");
+  if(this->Parser->ParseError() != 0)
+    throw ConfigException("Error on line "+this->Parser->ParseError());
+ }catch(const ConfigException &e){
+   if (starttime == time(NULL))
+     throw CoreException(e.GetReason());
+   else
+      Log(LOG_TERMINAL) << "Config Exception: " << e.GetReason();
+   //delete this; //This makes segfault :D
+ }
 }
 BotConfig::~BotConfig() { if(Parser) delete Parser; }
 void BotConfig::Read(){

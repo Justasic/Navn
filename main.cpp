@@ -27,6 +27,9 @@ bool SocketIO::Read(const Flux::string &buf) const
 
 int main (int argcx, char** argvx, char *envp[])
 {
+  Config = NULL;
+  Send = NULL;
+  sock = NULL;
   my_av = argvx;
   my_envp = envp;
   try
@@ -84,7 +87,10 @@ int main (int argcx, char** argvx, char *envp[])
   catch(const CoreException& e){
     /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     Log(LOG_TERMINAL) << "\033[22;37m";
-    Log() << "Core Exception Caught: " << e.GetReason();
+    if(!Config)
+      Log(LOG_TERMINAL) << "Core Exception Caught: " << e.GetReason();
+    else
+      Log() << "Core Exception Caught: " << e.GetReason();
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

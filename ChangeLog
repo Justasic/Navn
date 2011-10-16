@@ -84,6 +84,8 @@ Commands can now have the number of params specified.. if they're are too many t
 Added Multi-Line comments to config
 Fixed x64 builds
 Added automake module detector
+Added what should be a Segmentation Fault handler
+Fixed Command Line arguements not working correctly
 
 Navn 2.0.0
 ==========
