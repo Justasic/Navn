@@ -81,6 +81,9 @@ Added duration() and do_strftime(), this parses timestamps into something humans
 Added TempFile() which returns a temporary location for temporary files, also generates a temporary file name.
 Added IsFile() which returns if a file is.. well.. a file.
 Commands can now have the number of params specified.. if they're are too many then the vector will resize to fit that number, if they're too few then it will send a syntax error.
+Added Multi-Line comments to config
+Fixed x64 builds
+Added automake module detector
 
 Navn 2.0.0
 ==========
