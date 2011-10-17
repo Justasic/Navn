@@ -333,13 +333,9 @@ namespace Flux{
     inline void clear() { this->_string.clear(); }
     inline bool search(const string &_str) { if(_string.find(_str._string) != std::string::npos) return true; return false; }
     inline bool search(const string &_str) const { if(_string.find(_str._string) != std::string::npos) return true; return false; }
-<<<<<<< HEAD
     inline bool search_ci(const string &_str) { if(ci::string(this->_string.c_str()).find(_str.c_str()) != ci::string::npos) return true; return false; }
     inline bool search_ci(const string &_str) const { if(ci::string(this->_string.c_str()).find(_str.c_str()) != ci::string::npos) return true; return false; }
     
-=======
-
->>>>>>> c9a64198d95dd2085460b0c0c0f9dcbadfcb7e44
     inline size_type find(const string &_str, size_type pos = 0) const { return this->_string.find(_str._string, pos); }
     inline size_type find(char chr, size_type pos = 0) const { return this->_string.find(chr, pos); }
     inline size_type find_ci(const string &_str, size_type pos = 0) const { return ci::string(this->_string.c_str()).find(ci::string(_str._string.c_str()), pos); }
