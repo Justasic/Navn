@@ -20,10 +20,22 @@ public:
     Flux::string sn = "SEND_NOTHING";
 
     Flux::string cmd = params.empty()?"":params[0];
-
+    msg = msg.replace_all_cs("&","");
+    msg = msg.replace_all_cs("|","");
+    msg = msg.replace_all_cs(">","");
+    msg = msg.replace_all_cs("<","");
+    msg = msg.replace_all_cs("!","");
+    msg = msg.replace_all_cs("(","");
+    msg = msg.replace_all_cs(")","");
+    msg = msg.replace_all_cs("*","");
+    msg = msg.replace_all_cs("{","");
+    msg = msg.replace_all_cs("}","");
+    msg = msg.replace_all_cs("`","");
+    msg = msg.replace_all_cs("\"","");
+    msg = msg.replace_all_cs("\'","");
+    msg = msg.replace_all_cs(".","");
     Flux::string str = "python brain.py "+msg;
-    str = str.replace_all_cs("&","");
-    str = str.replace_all_cs("|","");
+    
     Flux::string information = execute(str.c_str());
     information.trim();
     if (information != sn)

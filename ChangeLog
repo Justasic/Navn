@@ -86,6 +86,7 @@ Fixed x64 builds
 Added automake module detector
 Added what should be a Segmentation Fault handler
 Fixed Command Line arguements not working correctly
+Added multiple channels into Config
 
 Navn 2.0.0
 ==========
