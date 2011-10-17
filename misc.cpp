@@ -203,7 +203,8 @@ Flux::string TempFile(const Flux::string &file){
  * \param src The source string for it to break down
  * \param delim The char used to seperate the words in the source string
  */
-std::vector<Flux::string> StringVector(const Flux::string &src, char delim){
+std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
+{
  sepstream tok(src, delim);
  Flux::string token;
  std::vector<Flux::string> ret;

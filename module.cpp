@@ -185,10 +185,13 @@ static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
     input = Config->Binary_Dir + "/" + Config->ModuleDir + "/" + name + ".so";
   
   struct stat s;
+  if(stat(Flux::string(Config->Binary_Dir+"runtime/").c_str(), &s) == -1)
+    system(Flux::string("mkdir "+Config->Binary_Dir+"runtime/").c_str());
   if (stat(input.c_str(), &s) == -1)
 	  return MOD_ERR_NOEXIST;
   else if (!S_ISREG(s.st_mode))
 	  return MOD_ERR_NOEXIST;
+  
   std::ifstream source(input.c_str(), std::ios_base::in | std::ios_base::binary);
   if (!source.is_open())
 	  return MOD_ERR_NOEXIST;
@@ -366,6 +369,9 @@ void ModuleHandler::SanitizeRuntime()
 {
   SET_SEGV_LOCATION();
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
+  struct stat s;
+  if(stat(Flux::string(Config->Binary_Dir+"runtime/").c_str(), &s) == -1)
+    system(Flux::string("mkdir "+Config->Binary_Dir+"runtime/").c_str());
   Flux::string dirbuf = Config->Binary_Dir + "/runtime";
   DIR *dirp = opendir(dirbuf.c_str());
 	if (!dirp)

@@ -10,7 +10,7 @@ bool in_comment = false;
 int INIReader::Parse(const Flux::string &filename)
 {
   SET_SEGV_LOCATION();
- std::ifstream file(filename.c_str());
+  std::ifstream file(filename.c_str());
   int linenum, error =0;
   Flux::string line, section, name, value;
   if(file.is_open())
