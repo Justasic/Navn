@@ -23,24 +23,38 @@ private:
     victim = victim.replace_all_cs(".","");
     victim = victim.replace_all_cs("?","");
   }
+  Flux::string RandomOops()
+  {
+    Flux::string Errors[] = {
+      "I'm sorry, I don't know anything about that.",
+      "Forgive me, I cannot seem to find anything about that subject matter.",
+      "Pardon my ignorance, I am drawing a blank on the subject."
+    };
+    return Errors[randint(0,2)];
+  }
+  Flux::string RandomAmb()
+  {
+    Flux::string Errors[] = {
+      "Please be a little more specific.",
+      "Sorry, but that was a little ambiguous. Please specify what you are referring to.",
+      "That was a little vague. Try one more time?"
+    };
+    return Errors[randint(0,2)];
+  }
   void Brain(User *u, Flux::string q)
   {
     Sanitize(q);
     Flux::string str = "python brain.py "+q;
     Flux::string information = execute(str.c_str());
     information.trim();
-    u->SendMessage(information);
+    if (information.search_ci("For search options, see Help:Searching")) u->SendMessage(RandomOops());
+    else if (information.search_ci("may refer to:")) u->SendMessage(RandomAmb());
+    else u->SendMessage(information);
   }
   void SetQuery(unsigned n, const std::vector<Flux::string> &params)
   {
     query.clear();
-    if (n < params.size())
-    {
-      for(unsigned i=n; i < params.size(); ++i)
-      {
-	query += params[i]+' ';
-      }
-    }
+    if (n < params.size()) for(unsigned i=n; i < params.size(); ++i) query += params[i]+' ';
   }
 
 public:
@@ -65,22 +79,22 @@ public:
       SetQuery(1, params);
       Brain(u,query);
     }
-    if(msg.search(Config->BotNick+", what do you know about "))
+    if(msg.search_ci(Config->BotNick+", what do you know about "))
     {
       SetQuery(6, params);
       Brain(u, query);
     }
-    else if(msg.search(Config->BotNick+", what is a ") ^ msg.search(Config->BotNick+", what is the") ^ msg.search(Config->BotNick+", tell me about ") ^ msg.search(Config->BotNick+", who are the ") ^ msg.search(Config->BotNick+", what is an "))
+    else if(msg.search_ci(Config->BotNick+", what is a ") ^ msg.search_ci(Config->BotNick+", what is the") ^ msg.search_ci(Config->BotNick+", tell me about ") ^ msg.search_ci(Config->BotNick+", who are the ") ^ msg.search_ci(Config->BotNick+", what is an "))
     {
       SetQuery(4, params);
       Brain(u, query);
     }
-    else if(msg.search(Config->BotNick+", what is ") ^ msg.search(Config->BotNick+", what are ") ^ msg.search(Config->BotNick+", who is ") ^ msg.search(Config->BotNick+", what's a ") ^ msg.search(Config->BotNick+", what's an "))
+    else if(msg.search_ci(Config->BotNick+", what is ") ^ msg.search_ci(Config->BotNick+", what are ") ^ msg.search_ci(Config->BotNick+", who is ") ^ msg.search_ci(Config->BotNick+", what's a ") ^ msg.search_ci(Config->BotNick+", what's an "))
     {
       SetQuery(3, params);
       Brain(u, query);
     }
-    else if(msg.search(Config->BotNick+", tell me what you know about "))
+    else if(msg.search_ci(Config->BotNick+", tell me what you know about "))
     {
       SetQuery(7, params);
       Brain(u, query);
