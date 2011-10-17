@@ -435,6 +435,7 @@ static void WritePID(){
  * @param startup(int, char)
  */
 void startup(int argc, char** argv) {
+  SET_SEGV_LOCATION();
   starttime = time(NULL); //for bot uptime
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')

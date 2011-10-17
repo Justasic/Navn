@@ -9,6 +9,7 @@
 bool in_comment = false;
 int INIReader::Parse(const Flux::string &filename)
 {
+  SET_SEGV_LOCATION();
  std::ifstream file(filename.c_str());
   int linenum, error =0;
   Flux::string line, section, name, value;
@@ -137,6 +138,7 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
 /**************************************************************************************/
 BotConfig::BotConfig()
 {
+  SET_SEGV_LOCATION();
  Flux::string conffile = binary_dir + "/bot.conf";
  try
  {
@@ -157,6 +159,7 @@ BotConfig::BotConfig()
 }
 BotConfig::~BotConfig() { if(Parser) delete Parser; }
 void BotConfig::Read(){
+  SET_SEGV_LOCATION();
   this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
   this->ServicesAccount = this->Parser->Get("Bot","NickServ_Account","");
   this->ServicesPass = this->Parser->Get("Bot","NickServ_Password","");

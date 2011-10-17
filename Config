@@ -66,7 +66,7 @@ echo "modules: "$modulelist >> $MAKEFILE
 echo "" >> $MAKEFILE
 echo "all-am: navn "$modulelist >> $MAKEFILE
 echo "	@echo \" \"
-	@echo \"Build complete. Run \'./\$(PACKAGE)\' to execute the binary.\"" >> $MAKEFILE
+	@echo \"Build complete. Run './\$(PACKAGE)' to execute the binary.\"" >> $MAKEFILE
 echo "clean:
 	rm -f *.o *.so \$(PACKAGE) config.h config.status
 	rm -f *.o *.so \$(srcdir)/modules/*.so" >> $MAKEFILE

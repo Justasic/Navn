@@ -8,6 +8,7 @@
  * \param chan The channel we're processing
  */
 void ProcessJoin(CommandSource &source, const Flux::string &chan){
+    SET_SEGV_LOCATION();
     std::vector<Flux::string> &params = source.params;
     if(params.size() < 7)
       return;
@@ -35,6 +36,7 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
 void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 		    const Flux::string &receiver, const Flux::string &command)
 {
+  SET_SEGV_LOCATION();
   User *u = Source.u;
   Channel *c = Source.c;
   if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
@@ -87,6 +89,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
  * \param buffer The raw socket buffer
  */
 void process(const Flux::string &buffer){
+  SET_SEGV_LOCATION();
   Flux::string buf = buffer;
   buf = buf.replace_all_cs("  ", " ");
   if(buf.empty())

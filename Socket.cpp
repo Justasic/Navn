@@ -14,6 +14,7 @@ fd_set ReadFD/*, WriteFD, ExceptFD*/;
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
 SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1){
+  SET_SEGV_LOCATION();
   this->server = cserver.std_str();
   this->port = cport.std_str();
   
@@ -34,6 +35,7 @@ bool SocketIO::SetBlocking()
   return !fcntl(this->GetFD(), F_SETFL, flags & ~O_NONBLOCK);
 }
 SocketIO::~SocketIO(){
+  SET_SEGV_LOCATION();
  if(is_valid()) 
    close(sockn);
  FD_CLR(this->GetFD(), &ReadFD);
@@ -41,6 +43,7 @@ SocketIO::~SocketIO(){
 }
 void SocketIO::get_address()
 {
+  SET_SEGV_LOCATION();
   int rv = 1;
   rv = getaddrinfo(this->server.c_str(), this->port.c_str(), &hints, &servinfo);
   if (rv != 0)
@@ -52,6 +55,7 @@ void SocketIO::get_address()
 
 void *get_in_addr(struct sockaddr *sa)
 {
+  SET_SEGV_LOCATION();
     if (sa->sa_family == AF_INET) {
         return &(((struct sockaddr_in*)sa)->sin_addr);
     }
@@ -60,6 +64,7 @@ void *get_in_addr(struct sockaddr *sa)
 
 bool SocketIO::Connect()
 {
+  SET_SEGV_LOCATION();
   struct addrinfo *p;
   int connected = 0;
   char s[INET6_ADDRSTRLEN];

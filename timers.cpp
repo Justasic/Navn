@@ -19,6 +19,7 @@ std::vector<Timer *> TimerManager::Timers;
  */
 Timer::Timer(long time_from_now, time_t now, bool repeating)
 {
+	SET_SEGV_LOCATION();
 	trigger = now + time_from_now;
 	secs = time_from_now;
 	repeat = repeating;
@@ -111,6 +112,7 @@ void TimerManager::DelTimer(Timer *T)
  */
 void TimerManager::TickTimers(time_t ctime)
 {
+	SET_SEGV_LOCATION();
 	while (Timers.size() && ctime > Timers.front()->GetTimer())
 	{
 		Timer *t = Timers.front();

@@ -556,7 +556,7 @@ modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.s
 
 all-am: navn about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 	@echo " "
-	@echo "Build complete. Run \'./$(PACKAGE)\' to execute the binary."
+	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 clean:
 	rm -f *.o *.so $(PACKAGE) config.h config.status
 	rm -f *.o *.so $(srcdir)/modules/*.so

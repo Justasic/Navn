@@ -14,6 +14,7 @@ CommandMap ChanCommandMap;
  * \param priority The module priority
  */
 module::module(const Flux::string &n){
+  SET_SEGV_LOCATION();
   this->name = n;
   this->handle = NULL;
   this->Priority = PRIORITY_DONTCARE;
@@ -26,6 +27,7 @@ module::module(const Flux::string &n){
     Log() << "Loaded module " << n;
 }
 module::~module(){
+  SET_SEGV_LOCATION();
   Log(LOG_DEBUG) << "Unloading module " << this->name;
   ModuleHandler::DetachAll(this);
   Modules.erase(this->name);
@@ -175,6 +177,7 @@ Flux::string DecodeModErr(ModErr err){
 }
 static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 {
+  SET_SEGV_LOCATION();
   Flux::string input;
   if(Config->ModuleDir.empty())
     input = Config->Binary_Dir + "/" + name + ".so";
@@ -249,6 +252,7 @@ void ModuleHandler::DetachAll(module *m)
 }
 ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
+  SET_SEGV_LOCATION();
   if(modname.empty())
     return MOD_ERR_PARAMS;
   if(FindModule(modname))
@@ -307,6 +311,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 }
 bool ModuleHandler::DeleteModule(module *m)
 {
+  SET_SEGV_LOCATION();
   if (!m || !m->handle)
 	  return false;
   
@@ -359,6 +364,7 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 }
 void ModuleHandler::SanitizeRuntime()
 {
+  SET_SEGV_LOCATION();
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
   Flux::string dirbuf = Config->Binary_Dir + "/runtime";
   DIR *dirp = opendir(dirbuf.c_str());

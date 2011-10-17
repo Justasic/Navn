@@ -318,9 +318,15 @@ public:
   {
     if((i == 4)){
       Send->command->mode(Config->BotNick, "+B");
-      Channel *c = new Channel(Config->Channel);
-      c->SendJoin();
-      c->SendMessage(welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
+      sepstream cs(Config->Channel, ',');
+      Flux::string tok;
+      while(cs.GetToken(tok))
+      {
+	tok.trim();
+	Channel *c = new Channel(tok);
+	c->SendJoin();
+	c->SendMessage(welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
+      }
       if(!Config->OperatorAccount.empty() || !Config->OperatorPass.empty()){
 	Send->command->oper(Config->OperatorAccount, Config->OperatorPass);
 	IsOper = true;

@@ -299,10 +299,12 @@ void CommandSource::Reply(const Flux::string &msg){
 /* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
 Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
 {
+  SET_SEGV_LOCATION();
   this->mod = NULL;
 }
 Command::~Command()
 {
+  SET_SEGV_LOCATION();
   if(this->mod){
     CommandMap::iterator it = ChanCommandMap.find(this->name);
    if(it->second != NULL)

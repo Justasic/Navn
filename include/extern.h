@@ -14,7 +14,7 @@
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 #define ACCESS_DENIED "Access is Denied."
 #define GetCurrentDir getcwd
-#define SET_SEGV_LOCATION() fprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
+#define SET_SEGV_LOCATION() snprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 #define CLEAR_SEGV_LOCATION() segv_location[0]='\0';
 
 /* Classes */
@@ -39,7 +39,8 @@ enum LogType
   LOG_DEBUG,
   LOG_NORMAL,
   LOG_RAWIO,
-  LOG_TERMINAL
+  LOG_TERMINAL,
+  LOG_SILENT
 };
 enum ModErr{
 MOD_ERR_OK,

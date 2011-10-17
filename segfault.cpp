@@ -36,17 +36,19 @@ void handle_sigsegv(int)
      mbuf += it->second->name+" ";
    mbuf.trim();
    slog << "Modules Loaded: " << (mbuf.empty()?"None":mbuf) << std::endl;
+   slog << "Location: " << segv_location << std::endl;
    //slog << "recbuf: " << sock->getlastbuf() << std::endl; //Fucking C++ cant dereference a Flux::string, so this is broke till it can do that.
    strings = backtrace_symbols(array, size);
    for(unsigned i=1; i < size; i++)
      slog << "BackTrace(" << (i - 1) << "): " << strings[i] << std::endl;
    free(strings);
    slog << "======================== END OF REPORT ==========================" << std::endl;
-   slog.close();
-   printf("\033[22;37mSegmentation Fault, Please read SEGFAULT.log\n");
+   slog.close(); 
+   Log() << "\033[22;37mSegmentation Fault, Please read SEGFAULT.log";
  }else
    throw CoreException("Segmentation Fault, cannot write backtrace!");
 #else
+   Log(LOG_SILENT) << "Segmentation Fault";
    printf("\033[22;37mOh no! A Segmentation Fault has occured!\n");
    printf("This system does not support backtracing, please use gdb or a similar debugger!\n");
    printf("Please follow these instructions on how to file a bug report of Flux-Net:\n");

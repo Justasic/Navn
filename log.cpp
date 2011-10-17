@@ -54,7 +54,7 @@ Log::~Log()
   else if(type == LOG_TERMINAL){
     std::cout << this->buffer.str() << std::endl;
     return;
-  }
+  }else if(type == LOG_SILENT){}
   
   try
     {

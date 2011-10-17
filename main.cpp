@@ -27,6 +27,7 @@ bool SocketIO::Read(const Flux::string &buf) const
 
 int main (int argcx, char** argvx, char *envp[])
 {
+  SET_SEGV_LOCATION();
   Config = NULL;
   Send = NULL;
   sock = NULL;
