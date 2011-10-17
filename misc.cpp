@@ -9,7 +9,8 @@
  * \param &buf String to be stripped
  * \return \a &buf without the '\r' and '\n'.
  */
-Flux::string strip(const Flux::string &buf){
+Flux::string strip(const Flux::string &buf)
+{
 	Flux::string newbuf = buf;
 	char c = newbuf[newbuf.size() - 1];
 	while (c == '\n' || c == '\r'){
@@ -22,12 +23,14 @@ Flux::string strip(const Flux::string &buf){
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(int x, int y)
  */
-int randint(int x, int y){
+int randint(int x, int y)
+{
   srand(time(NULL));
   return rand()%(y-x+1)+x;
 }
 
-Flux::string Flux::Sanitize(const Flux::string &string){
+Flux::string Flux::Sanitize(const Flux::string &string)
+{
  static struct special_chars{
    Flux::string character;
    Flux::string replace;
@@ -48,9 +51,9 @@ Flux::string Flux::Sanitize(const Flux::string &string){
   for(int i = 0; special[i].character.empty() == false; ++i){
     ret = ret.replace_all_cs(special[i].character, special[i].replace);
   }
-  return ret.c_str(); 
+  return ret.c_str();
 }
-/** 
+/**
  * \fn Flux::string make_pass()
  * \brief Makes a random password
  * This generates a 5 number random password for the bots
@@ -60,7 +63,7 @@ Flux::string Flux::Sanitize(const Flux::string &string){
 Flux::string make_pass(){
   int p1,p2,p3,p4,p5;
   srand(time(NULL));
-  p1 = rand()%10; 
+  p1 = rand()%10;
   p2 = rand()%10;
   p3 = rand()%10;
   p4 = rand()%10;
@@ -179,7 +182,7 @@ bool IsFile(const Flux::string &filename)
 
 	return false;
 }
-/** 
+/**
  * \fn Flux::string TempFile(const Flux::string &file)
  * \brief Creates a temporary file name for use in navn, can be quite useful.
  * \param Flux::string The Flux::string of the file location/name
@@ -197,7 +200,7 @@ Flux::string TempFile(const Flux::string &file){
   free(tmp_output);
   return filestring;
 }
-/** 
+/**
  * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
  * \brief creates a vector that breaks down a string word-by-word using the delim as the seperater
  * \param src The source string for it to break down
