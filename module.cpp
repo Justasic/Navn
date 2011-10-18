@@ -306,6 +306,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     Log() << "Error while loading " << modname << ": " << e.GetReason();
     return MOD_ERR_EXCEPTION;
   }
+  std::cout << m << std::endl;
   m->filepath = mdir;
   m->filename = modname+".so";
   m->handle = handle;
@@ -320,9 +321,10 @@ bool ModuleHandler::DeleteModule(module *m)
   
   void *handle = m->handle;
   Flux::string filepath = m->filepath;
+  //std::cout << m << std::endl;
   
   dlerror();
-  void (*df)(module *m) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
+  void (*df)(module*) = class_cast<void (*)(module *)>(dlsym(m->handle, "Moduninit"));
   const char *err = dlerror();
   if (!df || err)
   {
@@ -343,8 +345,7 @@ bool ModuleHandler::Unload(module *m){
   if(!m)
     return false;
   FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
-  DeleteModule(m);
-  return true;
+  return DeleteModule(m);
 }
 void ModuleHandler::UnloadAll(){
   for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)

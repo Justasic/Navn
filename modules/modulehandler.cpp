@@ -47,14 +47,14 @@ public:
 class CommandMLoad : public Command
 {
 public:
-  CommandMLoad():Command("MODLOAD", 1, 2)
+  CommandMLoad():Command("MODLOAD", 1, 1)
   {
     this->SetDesc("Load a module");
     this->SetSyntax("\37name\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
-    const Flux::string module = params.size() == 2?params[1]:"";
+    const Flux::string module = params[1];
     if(module.empty())
       this->SendSyntax(source);
     else if(!source.u->IsOwner())
@@ -101,14 +101,14 @@ public:
 class CommandMInfo : public Command
 {
 public:
-  CommandMInfo():Command("MODINFO", 1, 2)
+  CommandMInfo():Command("MODINFO", 1, 1)
   {
    this->SetDesc("Provides info on a module");
    this->SetSyntax("\37name\37");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
-    const Flux::string modd = params.size() == 2?params[1]:"";
+    const Flux::string modd = params[1];
     if(modd.empty()){
       this->SendSyntax(source);
       return;

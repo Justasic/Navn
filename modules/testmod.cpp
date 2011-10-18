@@ -62,6 +62,12 @@ public:
   }
   void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
   {
+    Flux::string s;
+    for(unsigned i=0; i < params.size(); ++i)
+      s = params[i]+' ';
+    s.trim();
+    if(s.search_ci("Blah Blah"))
+      u->SendMessage("Derp DERp");
    if(params[0].equals_ci("!userlist"))
    {
      Flux::string users;

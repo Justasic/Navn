@@ -252,6 +252,9 @@ public:
 	Send->command->mode(c->name, "+b m:"+u->fullhost);
 	c->SendMessage("Shut up!");
       }
+      if(msg.search_ci("no u!") || msg.search_ci("no u")){
+	c->SendMessage("NO U!");
+      }
       if(cmd.equals_ci("!everything")){
 	c->SendMessage("Yes, there is a script for everything..\007");
       }

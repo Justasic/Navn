@@ -17,8 +17,9 @@ void handle_sigsegv(int)
  size = backtrace(array, 10);
  if(IsFile("SEGFAULT.log"))
    Delete("SEGFAULT.log");
- std::fstream slog("SEGFAULT.log", std::ifstream::out | std::ifstream::app);
- if(slog.is_open())
+ std::stringstream slog;
+ std::fstream sslog("SEGFAULT.log", std::ifstream::out | std::ifstream::app);
+ if(sslog.is_open())
  {
    struct utsname uts;
    if(uname(&uts) < 0)
@@ -43,7 +44,9 @@ void handle_sigsegv(int)
      slog << "BackTrace(" << (i - 1) << "): " << strings[i] << std::endl;
    free(strings);
    slog << "======================== END OF REPORT ==========================" << std::endl;
-   slog.close(); 
+   sslog << slog.str() << std::endl;
+   sslog.close();
+   std::cout << slog.str() << std::endl;
    Log() << "\033[22;37mSegmentation Fault, Please read SEGFAULT.log";
  }else
    throw CoreException("Segmentation Fault, cannot write backtrace!");

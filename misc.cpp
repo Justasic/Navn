@@ -40,7 +40,6 @@ Flux::string Flux::Sanitize(const Flux::string &string)
   special_chars("  ", " "),
   special_chars("\n",""),
   special_chars("\002",""),
-  special_chars("\003",""),
   special_chars("\035",""),
   special_chars("\037",""),
   special_chars("\026",""),
@@ -48,9 +47,17 @@ Flux::string Flux::Sanitize(const Flux::string &string)
   special_chars("","")
  };
   Flux::string ret = string.c_str();
-  for(int i = 0; special[i].character.empty() == false; ++i){
-    ret = ret.replace_all_cs(special[i].character, special[i].replace);
+  while(ret.search('\003')){ //Strip color codes completely
+      size_t l = ret.find('\003');
+      if(isdigit(ret[l+1]))
+	ret = ret.erase(l, l+1);
+      else if(isdigit(ret[l+2]))
+	ret = ret.erase(l, l+2);
+      else if(isdigit(ret[l+3]))
+	ret = ret.erase(l, l+3);
   }
+  for(int i = 0; special[i].character.empty() == false; ++i)
+    ret = ret.replace_all_cs(special[i].character, special[i].replace);
   return ret.c_str();
 }
 /**

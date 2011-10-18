@@ -309,7 +309,7 @@ public:
     this->AddCommand(&topic);
     this->AddCommand(&pid);
     this->AddCommand(&pass);
-    Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick, I_OnNotice };
+    Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick, I_OnNotice, I_OnChannelOp };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
@@ -377,6 +377,12 @@ public:
       }
     }
   }
+  void OnChannelOp(User *u, Channel *c, const Flux::string &modes, const Flux::string &modeex){
+      if(modes.search("-b") && c->name.equals_ci("#Computers") && !u->IsOwner() && !u->nick.equals_ci("DeathBlade")){
+	Send->command->mode("#Computers", "+b", modeex);
+	c->SendMessage("no u!");
+      }
+    }
   void OnNickChange(User *u, const Flux::string &newnick)
   {
    /*if(source.command == "NICK"){
