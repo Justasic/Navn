@@ -3,6 +3,11 @@
 #define USER_H
 #include "privmsg.h"
 #include "channel.h"
+/**
+ * \class User "user.h" USER_H
+ * \brief A Class for IRC Users
+ * This class wraps around IRC Users and includes several useful commands as well as User information.
+ */
 class User
 {
 public:
@@ -10,17 +15,17 @@ public:
   virtual ~User();
   std::list<Channel*> ChannelList;
   Flux::string nick
-  /*!< \var Flux::string nick
+  /*!< \property Flux::string nick
   \brief The IRC nickname of the User. */ ,
-  host /*!< \var Flux::string host
+  host /*!< \property Flux::string host
   \brief The IRC host of the User. */,
-  realname /*!< \var Flux::string realname
+  realname /*!< \property Flux::string realname
   \brief The IRC Real Name of the User. */,
-  ident /*!< \var Flux::string ident
+  ident /*!< \property Flux::string ident
   \brief The IRC Identification line of the User. */,
-  fullhost /*!< \var Flux::string fullhost
+  fullhost /*!< \property Flux::string fullhost
   \brief The full IRC host line of the User. */,
-  server /*!< \var Flux::string server
+  server /*!< \property Flux::string server
   \brief The IRC server of the User. */;
   void kick(const Flux::string&, const Flux::string&);
   void kick(Channel*, const Flux::string&);
@@ -37,9 +42,14 @@ public:
   void SendPrivmsg(const char*, ...);
 };
 /*********************************************************************************/
+/**
+ * \struct CommandSource "user.h" USER_H
+ * \brief A wrapper class for the source of the Command
+ * Contains information about where the command came from, as well as a Reply() function to quickly send a PrivMessage to the Command sender.
+ */
 struct CommandSource
 {
- User *u; /*!< \var User *u
+ User *u; /*!< \property User *u
   \brief The User who sent the Command. */
  Channel *c; /* Channel name, this will be replaced with channel class */
  Flux::string command;
