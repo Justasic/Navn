@@ -30,7 +30,7 @@
  * \subsection rules !rules
  * Say \a !rules to learn about our IRC rules.
  * \subsection spam !spam
- * Say \a !spam to get flux-net's definition of 
+ * Say \a !spam to get flux-net's definition of
  * \subsection version !version
  * Say \a !version to get Navn's verion.
  * \subsection everything !everything
@@ -43,7 +43,7 @@
 /**
  * \fn class Da_Goat(bool a):module("Da_Goat", a, PRIORITY_DONTCARE){ this->SetDesc("Da_Goat bot"); }
  * \brief Runs Da_Goat
- * Da Goat is used to repeat a lot of things we got tired of saying, like teaching new people how to do thigns and what the 
+ * Da Goat is used to repeat a lot of things we got tired of saying, like teaching new people how to do thigns and what the
  * rules of the server were.
  */
 struct sysinfo sys_info;
@@ -209,7 +209,7 @@ class Da_Goat:public module
   CommandCSocialInfo sinfo;
   CommandCUptime uptime;
   CommandCRules rules;
-  CommandCSpam spam; 
+  CommandCSpam spam;
   CommandCVersion ver;
 public:
     Da_Goat(const Flux::string &Name):module(Name){
@@ -231,14 +231,17 @@ public:
 	msg += params[i]+' ';
       msg.trim();
       /*******************************Easter Eggs*********************************/
-      if(cmd.equals_ci("!poke")){ //Easter egg ;P
+      if(cmd.equals_ci("!poke"))
+      { //Easter egg ;P
 	Flux::string person = params.size() == 2?params[1]:"";
 	person.trim();
-	if(u->IsOwner()){
+	if(u->IsOwner())
+	{
 	  c->SendMessage("why would I wanna kick my master!?");
 	  return;
 	}
-	if(person.empty()){
+	if(person.empty())
+	{
 	  c->SendAction("is angry at %s", u->nick.c_str());
 	  c->kick(u, "\002\00315Dont poke me!\017");
 	  Log() << u->nick << " found Da_Goats !poke command in " << c->name;
@@ -248,22 +251,31 @@ public:
 	  Log() << u->nick << " used Da_Goats !poke command in " << c->name << " to poke " << person;
 	}
       }
-      if(msg.search("Dun kick me, asswipe. -_-")){
+      if(msg.search("Dun kick me, asswipe. -_-"))
+      {
 	Send->command->mode(c->name, "+b m:"+u->fullhost);
 	c->SendMessage("Shut up!");
       }
-      if(msg.search_ci("no u!") || msg.search_ci("no u")){
+      if(msg.search_ci("no u!") || msg.search_ci("no u"))
+      {
 	c->SendMessage("NO U!");
       }
-      if(cmd.equals_ci("!everything")){
+      if(cmd.equals_ci("!everything"))
+      {
 	c->SendMessage("Yes, there is a script for everything..\007");
       }
       /***********************End Da_Goat Functions*******************************/
-      if(cmd.equals_ci("!bugs")){
+      if(cmd.equals_ci("!bugs"))
+      {
 	c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
       }
-      if(cmd.equals_ci("!git")){
+      if(cmd.equals_ci("!git"))
+      {
 	u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
+      }
+      if(msg.search_ci("the game"))
+      {
+	c->SendMessage("YOU JUST LOST THE GAME.");
       }
   }
 };

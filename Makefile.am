@@ -63,6 +63,9 @@ m_system.so:
 m_terminal_input.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/m_terminal_input.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/m_terminal_input.cpp -o modules/m_terminal_input.so m_terminal_input.o
+PvP.so:
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/PvP.cpp
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/PvP.cpp -o modules/PvP.so PvP.o
 searcher.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/searcher.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/searcher.cpp -o modules/searcher.so searcher.o
@@ -79,9 +82,9 @@ world_clock.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/world_clock.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/world_clock.cpp -o modules/world_clock.so world_clock.o
 
-modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
+modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 
-all-am: navn about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
+all-am: navn about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 	@echo " "
 	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 clean:
