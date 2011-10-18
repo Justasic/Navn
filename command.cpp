@@ -300,6 +300,9 @@ void CommandSource::Reply(const Flux::string &msg){
 Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
 {
   SET_SEGV_LOCATION();
+  for(unsigned i=0; i < sname.size(); ++i) //commands with spaces can screw up the command handler
+    if(isspace(sname[i]))
+      throw ModuleException("Commands cannot contain spaces!");
   this->mod = NULL;
 }
 Command::~Command()
