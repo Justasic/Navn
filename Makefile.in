@@ -35,9 +35,10 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	TODO install-sh missing
+	TODO depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -479,7 +480,7 @@ uninstall-am:
 
 navn:
 	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
-	@echo "Navn Version $(VERSION)-with-netflix-and-chicken"
+	@echo "Navn Version $(VERSION)$()"
 	@echo " "
 	@$(PERL) $(CXX) $(CFLAGS) -c main.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c misc.cpp

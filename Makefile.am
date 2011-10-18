@@ -7,7 +7,7 @@ MODFLAGS = -fPIC -g $(LIBS) -shared -Wl,-soname,
 
 navn:
 	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
-	@echo "Navn Version $(VERSION)-with-netflix-and-chicken"
+	@echo "Navn Version $(VERSION)$()"
 	@echo " "
 	@$(PERL) $(CXX) $(CFLAGS) -c main.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c misc.cpp

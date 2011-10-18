@@ -16,6 +16,7 @@ Navn 2.0.1
   [x] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
   [x] Add some kind of command handler so it can list all loaded commands from all modules
   [+] Fix glibc crashes with this system
+  [ ] Fix crash in timer system
 
 [x] Make default channel's in the config
 [x] Make a server numeric catcher

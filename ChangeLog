@@ -87,6 +87,11 @@ Added automake module detector
 Added what should be a Segmentation Fault handler
 Fixed Command Line arguements not working correctly
 Added multiple channels into Config
+Segfault handler now prints output to the terminal as well as to SEGFAULT.log
+Commands now throw ModuleException() if a command contains a space
+Flux::Sanitize now stirps IRC color codes and color code numbers from strings
+
+ 
 
 Navn 2.0.0
 ==========

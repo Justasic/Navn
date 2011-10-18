@@ -16,7 +16,6 @@ const Flux::string password = make_pass();
 char segv_location[255];
 time_t starttime = 0;
 /**********************Version Variables*************************/
-#define VERSION_EXTRA "-with-netflix-and-chicken"
-const Flux::string VERSION_LONG = Flux::stringify(VERSION)+Flux::stringify(VERSION_EXTRA);
+const Flux::string VERSION_LONG = Flux::stringify(VERSION)+"-"+Flux::stringify(VERSION_GIT)+Flux::stringify(VERSION_EXTRA);
 #endif
 
