@@ -28,7 +28,7 @@ public:
       BattleField::AddPlayer(Source.u->nick);
       Source.Reply("Welcome to the PvP game. Watch your back.");
     }
-    else { Source.Reply("You are already in the game.") }
+    else { Source.Reply("You are already in the game."); }
   }
 };
 class Info : public Command
