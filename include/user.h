@@ -3,6 +3,11 @@
 #define USER_H
 #include "privmsg.h"
 #include "channel.h"
+/**
+ * \class User
+ * \brief A Class for IRC Users
+ * This class wraps around IRC Users and includes several useful commands as well as User information.
+ */
 class User
 {
 public:
