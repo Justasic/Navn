@@ -1,0 +1,97 @@
+#include "flux_net_irc.hpp"
+#include "Player.h"
+
+namespace BattleField
+{
+  std::map<Flux::string, Player> Players;
+
+  bool PlayerInField(Flux::string PlayerName) { if (BattleField::Players.find(PlayerName) != BattleField::Players.end()) return true; else return false; }
+
+  void AddPlayer(Flux::string PlayerName)
+  {
+    Player p(PlayerName);
+    Players[PlayerName] = p;
+  }
+}
+
+class Join : public Command
+{
+public:
+  Join():Command("!joinPvP")
+  {
+    this->SetDesc("Say !joinPvP to join the PvP game.");
+  }
+  void Run(CommandSource &Source, const std::vector<Flux::string> &params)
+  {
+    if (!BattleField::PlayerInField(Source.u->nick))
+    {
+      BattleField::AddPlayer(Source.u->nick);
+      Source.Reply("Welcome to the PvP game. Watch your back.");
+    }
+    else { Source.Reply("You are already in the game.") }
+  }
+};
+class Info : public Command
+{
+public:
+  Info():Command("!PvPInfo")
+  {
+    this->SetDesc("Say !PvPInfo to get information about the game.");
+  }
+  void Run(CommandSource &Source, const std::vector<Flux::string> &params)
+  {
+    if (params[1] == "me" ^ params[1] == "myself" ^ params[1] == Source.u->nick)
+    {
+      if (BattleField::PlayerInField(Source.u->nick))
+      {
+	Source.Reply("Your health: %i" , BattleField::Players[Source.u->nick].Health());
+      }
+      else { Source.Reply("Sorry, but you aren't in the game."); }
+    }
+  }
+};
+class Stab : public Command
+{
+public:
+  Stab():Command("!stab")
+  {
+    this->SetDesc("Say !stab <victim> to stab someone! (Uses 5 energy).");
+  }
+  void Run(CommandSource &Source, const std::vector<Flux::string> &params)
+  {
+    if (BattleField::PlayerInField(params[1])) BattleField::Players[params[1]].HurtBy(5);
+    Source.Reply("You just stabbed " + BattleField::Players[params[1]].Name() + "!");
+  }
+};
+
+class PvPModule : public module
+{
+  Join join;
+  Stab stab;
+  Info info;
+public:
+  PvPModule(const Flux::string &Name):module(Name)
+  {
+    this->SetVersion("1.0");
+    this->SetAuthor("Lordofsraam");
+    this->AddCommand(&join);
+    this->AddChanCommand(&stab);
+    this->AddChanCommand(&info);
+    this->SetPriority(PRIORITY_LAST);
+    Implementation i[] = { I_OnPrivmsg, I_OnNotice };
+    ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
+  }
+  void OnPrivmsg(User *u, const std::vector<Flux::string> &params)
+  {
+    Flux::string msg;
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i] +' ';
+  }
+  void OnNotice(User *u, const std::vector<Flux::string> &params)
+  {
+    Flux::string msg;
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i] +' ';
+  }
+};
+MODULE_HOOK(PvPModule)
