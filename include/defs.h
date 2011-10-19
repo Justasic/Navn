@@ -5,10 +5,14 @@
 #include "extern.h"
 #include "flux.h"
 
+
 /*List the constants used throughout the script.
 If you wanna edit the server, channel, nick, etc that the bot
 connects to, do so here, NOT in the main code.
 */
+#ifdef HAVE_SETJMP_H
+jmp_buf sigbuf;
+#endif
 char **my_av, **my_envp;
 bool nofork, dev, protocoldebug, IsOper, quitting, started = false;
 Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name;

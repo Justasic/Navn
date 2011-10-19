@@ -23,9 +23,12 @@ How to start in developer mode
 
 How to start in Protocol Debug mode
 1. Follow above instructions.
-2. Start the bot with ./navn -p
+2. Start the bot with ./navn -n -p
 
 Dependencies:
   Encyclopedia module:
     python-pip
     [Then run "pip install requests"]
+  Segmentation fault traces:
+    for backtrace dumps: C++ include '<execinfo.h>'
+    for attempts to restore program before crash 'libunwind-setjmp0-dev' and 'libunwind-setjmp0'

@@ -2946,7 +2946,11 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 ac_config_headers="$ac_config_headers config.h"
 
 
+
 $as_echo "#define VERSION_EXTRA \"-with-netflix-and-chicken\"" >>confdefs.h
+
+
+$as_echo "#define VERSION_GIT \"\"" >>confdefs.h
 
 
 # Checks for programs.

@@ -10,10 +10,6 @@
  * way then do so.
  */
 
-#ifdef HAVE_SETJMP_H
-#include <setjmp>
-#endif
-
 #include "Socket.h"
 #include "timers.h"
 #include "SocketException.h"

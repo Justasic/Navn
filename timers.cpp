@@ -125,7 +125,7 @@ void TimerManager::TickTimers(time_t ctime)
 			sort(Timers.begin(), Timers.end(), TimerManager::TimerComparison);
 		}
 		else
-			delete t;
+			TestRun(delete t);
 	}
 }
 

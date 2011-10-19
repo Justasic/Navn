@@ -49,6 +49,7 @@ Navn 2.0.2
 
 [ ] Add more event handlers (FOREACH_MOD)
 [ ] Better config format
+[ ] Better startup switch management
 [ ] Add Oper Protocol modules
 [ ] Better terminal Commands Parsing
 [ ] Add a flags system like channel/user modes
