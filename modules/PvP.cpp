@@ -12,6 +12,8 @@ namespace BattleField
     Player p(PlayerName);
     Players[PlayerName] = p;
   }
+
+  int NumberOfPlayers() { return Players.size(); }
 }
 
 class Join : public Command
@@ -44,10 +46,11 @@ public:
     {
       if (BattleField::PlayerInField(Source.u->nick))
       {
-	Source.Reply("Your health: %i" , BattleField::Players[Source.u->nick].Health());
+	Source.Reply("Your health: %i ; Your energy: %i" , BattleField::Players[Source.u->nick].Health(), BattleField::Players[Source.u->nick].Energy());
       }
       else { Source.Reply("Sorry, but you aren't in the game."); }
     }
+    else { Source.Reply("Number of players: %i", BattleField::NumberOfPlayers()); }
   }
 };
 class Stab : public Command
@@ -72,7 +75,7 @@ class PvPModule : public module
 public:
   PvPModule(const Flux::string &Name):module(Name)
   {
-    this->SetVersion("1.0");
+    this->SetVersion("1.0.3");
     this->SetAuthor("Lordofsraam");
     this->AddCommand(&join);
     this->AddChanCommand(&stab);

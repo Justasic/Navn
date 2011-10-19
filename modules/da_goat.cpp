@@ -212,7 +212,8 @@ class Da_Goat:public module
   CommandCSpam spam;
   CommandCVersion ver;
 public:
-    Da_Goat(const Flux::string &Name):module(Name){
+    Da_Goat(const Flux::string &Name):module(Name)
+    {
       this->SetAuthor("Justasic & Lordofsraam");
       this->SetVersion(VERSION);
       this->AddChanCommand(&info);
@@ -225,7 +226,8 @@ public:
       this->AddChanCommand(&ver);
       ModuleHandler::Attach(I_OnPrivmsg, this);
     }
-    void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
+    void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+    {
       Flux::string cmd = params.empty()?"":params[0], msg;
       for(unsigned i=0; i < params.size(); ++i)
 	msg += params[i]+' ';
@@ -262,7 +264,7 @@ public:
       }
       if(cmd.equals_ci("!everything"))
       {
-	c->SendMessage("Yes, there is a script for everything..\007");
+	c->SendMessage("Yes, there is a script for everything...\007");
       }
       /***********************End Da_Goat Functions*******************************/
       if(cmd.equals_ci("!bugs"))
