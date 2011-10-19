@@ -38,7 +38,7 @@ for i in range(1,len(sys.argv)):
 	recieved += str(sys.argv[i]+" ")
 
 query = urllib2.quote(recieved)
-r = requests.get('http://en.wikipedia.org/wiki/Special:Export?search='+query+'&go=Go')
+r = requests.get('http://en.wikipedia.org/w/index.php?title='+query+'&action=render')
 html_content = r.content
 first_paragraph = ""
 for i in range(html_content.index("<p>"),html_content.index("</p>")):
