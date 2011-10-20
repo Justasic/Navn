@@ -42,7 +42,7 @@ public:
   }
   void Run(CommandSource &Source, const std::vector<Flux::string> &params)
   {
-    if (params[1] == "me" ^ params[1] == "myself" ^ params[1] == Source.u->nick)
+    if ((params[1] == "me") ^ (params[1] == "myself") ^ (params[1] == Source.u->nick))
     {
       if (BattleField::PlayerInField(Source.u->nick))
       {
