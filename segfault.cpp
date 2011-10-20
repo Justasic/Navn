@@ -69,7 +69,7 @@ void HandleSegfault(module *m)
 void handle_sigsegv(int)
 {
   static int running = 0;
-  if(running = 1){ //Stop segv bombs
+  if((running = 1)){ //Stop segv bombs
     exit(EXIT_FAILURE);
   }else{
     running = 1;
