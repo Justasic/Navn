@@ -48,7 +48,7 @@ private:
     Flux::string information = execute(str.c_str());
     information.trim();
     if (information.search_ci("For search options, see Help:Searching")) u->SendMessage(RandomOops());
-    else if (information.search_ci("may refer to:")) u->SendMessage(RandomAmb());
+    else if (information.search_ci("may refer to:") ||  information.search_ci("reasons this message may be displayed:") ) u->SendMessage(RandomAmb());
     else u->SendMessage(information);
   }
   void SetQuery(unsigned n, const std::vector<Flux::string> &params)
