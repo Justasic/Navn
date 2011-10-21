@@ -34,7 +34,12 @@ int INIReader::Parse(const Flux::string &filename)
 	if(ch == '*' && c+1 < len && line[c+1] == '/')
 	{
 	  in_comment = false;
-	  contin = true;
+	  line = line.erase(c, c+2);
+	  line.trim();
+	  if((line[0] == '[' && line[line.size() -1] == ']') || (!line.empty() && line.find_first_of('=')))
+	    continue;
+	  else
+	    contin = true;
 	  ++c;
 	}
 	continue;
@@ -148,12 +153,13 @@ BotConfig::BotConfig()
   if(this->Parser->ParseError() == -1)
     throw ConfigException("Cannot open '"+conffile+"'");
   if(this->Parser->ParseError() != 0)
-    throw ConfigException("Error on line "+this->Parser->ParseError());
+    throw ConfigException(fsprintf("Error on line %i", this->Parser->ParseError()));
  }catch(const ConfigException &e){
    if (starttime == time(NULL))
-     throw CoreException(e.GetReason());
+     throw CoreException(fsprintf("Config: %s", e.GetReason()));
    else
       Log(LOG_TERMINAL) << "Config Exception: " << e.GetReason();
+   return;
    //delete this; //This makes segfault :D
  }
 }
