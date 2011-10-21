@@ -14,19 +14,7 @@ public:
   User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "", const Flux::string &server ="");
   virtual ~User();
   std::list<Channel*> ChannelList;
-  Flux::string nick
-  /*!< \property Flux::string nick
-  \brief The IRC nickname of the User. */ ,
-  host /*!< \property Flux::string host
-  \brief The IRC host of the User. */,
-  realname /*!< \property Flux::string realname
-  \brief The IRC Real Name of the User. */,
-  ident /*!< \property Flux::string ident
-  \brief The IRC Identification line of the User. */,
-  fullhost /*!< \property Flux::string fullhost
-  \brief The full IRC host line of the User. */,
-  server /*!< \property Flux::string server
-  \brief The IRC server of the User. */;
+  Flux::string nick,host,realname,ident,fullhost,server;
   void kick(const Flux::string&, const Flux::string&);
   void kick(Channel*, const Flux::string&);
   void kill(const Flux::string&);
@@ -49,8 +37,7 @@ public:
  */
 struct CommandSource
 {
- User *u; /*!< \property User *u
-  \brief The User who sent the Command. */
+ User *u;
  Channel *c; /* Channel name, this will be replaced with channel class */
  Flux::string command;
  Flux::string message;

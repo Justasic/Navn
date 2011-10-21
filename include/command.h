@@ -15,7 +15,7 @@
  */
 /**
  * \class Commands
- * \brief A wrapper class for IRC Commands
+ * \brief A wrapper class for IRC Commands.
  * Contains functions used to send IRC protocol commands to the server.
  * \note The Commands class (which sends IRC Commands to the server), should
  * not be confused with the Command class (which is used to trigger module responses).

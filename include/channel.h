@@ -11,9 +11,10 @@
  */
 /**
  * \class Channel
- * \brief A wrapper class for IRC Channels
+ * \brief A wrapper class for IRC Channels.
  * Wraps around IRC Channels and contains their respective properties
  * as well as IRC channel related actions as functions.
+ * \property name The name of the IRC Channel.
  */
 class Channel
 {
