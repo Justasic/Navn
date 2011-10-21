@@ -14,7 +14,6 @@
  * \brief A wrapper class for IRC Channels.
  * Wraps around IRC Channels and contains their respective properties
  * as well as IRC channel related actions as functions.
- * \property name The name of the IRC Channel.
  */
 class Channel
 {
@@ -29,6 +28,10 @@ public:
   Flux::string topic_setter;
   time_t topic_time;
   time_t creation_time;
+  /**
+   * \var Flux::string name
+   * \property topic Topic of the IRC Channel.
+   */
   void SendJoin();
   void SendPart();
   void SendPart(const Flux::string&);
