@@ -15,6 +15,26 @@
  * Wraps around IRC Channels and contains their respective properties
  * as well as IRC channel related actions as functions.
  */
+/**
+ * \var Flux::string name
+ * \brief Name of the IRC Channel.
+ */
+/**
+ * \var Flux::string topic
+ * \brief Topic of the IRC Channel.
+ */
+/**
+ * \var Flux::string topic_setter
+ * \brief Name of the user who last set the topic of the IRC Channel.
+ */
+/**
+ * \var time_t topic_time
+ * \brief The time the topic of the IRC Channel was last set.
+ */
+/**
+ * \var time_t creation_time
+ * \brief Time the IRC Channel was last created.
+ */
 class Channel
 {
 public:
@@ -28,10 +48,6 @@ public:
   Flux::string topic_setter;
   time_t topic_time;
   time_t creation_time;
-  /**
-   * \var Flux::string name
-   * \property topic Topic of the IRC Channel.
-   */
   void SendJoin();
   void SendPart();
   void SendPart(const Flux::string&);
