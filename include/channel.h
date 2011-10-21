@@ -1,7 +1,20 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef CHANNEL_H
 #define CHANNEL_H
+/**
+ * \include privmsg.h
+ */
 #include "privmsg.h"
+/**
+ * \file channel.h
+ * \brief Contains the Channel class as well as all of it's contents as prototype declarations.
+ */
+/**
+ * \class Channel
+ * \brief A wrapper class for IRC Channels
+ * Wraps around IRC Channels and contains their respective properties
+ * as well as IRC channel related actions as functions.
+ */
 class Channel
 {
 public:

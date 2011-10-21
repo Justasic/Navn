@@ -7,7 +7,7 @@ void ProcessInput(const Flux::string &str)
   std::vector<Flux::string> params = StringVector(str, ' ');
   if(params.empty())
     return;
-  
+
   if(params[0].equals_ci("QUIT")){
 	quitting = true;
 	send_cmd("%s\n", str.c_str());
