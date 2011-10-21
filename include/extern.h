@@ -98,7 +98,7 @@ E int randint(int x, int y);
 E bool IsValidChannel(const Flux::string&);
 E bool IsFile(const Flux::string&);
 E bool InTerm();
-E bool protocoldebug, IsOper, dev, nofork, quitting, started;
+E bool protocoldebug, IsOper, dev, nofork, quitting, started, nocolor;
 E std::vector<Flux::string> StringVector(const Flux::string&, char);
 E Flux::insensitive_map<module*> Modules;
 E Flux::insensitive_map<User *> UserNickList;

@@ -143,7 +143,7 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
 /**************************************************************************************/
 BotConfig::BotConfig()
 {
-  SET_SEGV_LOCATION();
+ SET_SEGV_LOCATION();
  Flux::string conffile = binary_dir + "/bot.conf";
  try
  {

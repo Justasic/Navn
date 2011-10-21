@@ -83,11 +83,11 @@ int main (int argcx, char** argvx, char *envp[])
     FOREACH_MOD(I_OnShutdown, OnShutdown());
     ModuleHandler::UnloadAll();
     ModuleHandler::SanitizeRuntime();
-    Log(LOG_TERMINAL) << "\033[22;37m";
+    Log(LOG_TERMINAL) << "\033[0m";
   }//try ends here
   catch(const CoreException& e){
     /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
-    Log(LOG_TERMINAL) << "\033[22;37m";
+    Log(LOG_TERMINAL) << "\033[0m";
     if(!Config)
       Log(LOG_TERMINAL) << "Core Exception Caught: " << e.GetReason();
     else

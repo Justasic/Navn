@@ -28,6 +28,7 @@ int randint(int x, int y)
   srand(time(NULL));
   return rand()%(y-x+1)+x;
 }
+
 void Fork()
 {
   if (!nofork && InTerm()){
@@ -51,6 +52,7 @@ void Fork()
   }else
     Log() << Config->BotNick << " Started, PID: " << getpid() << "\033[22;36m";
 }
+
 Flux::string Flux::Sanitize(const Flux::string &string)
 {
  static struct special_chars{

@@ -1,5 +1,25 @@
 #include "log.h"
 
+Flux::string NoTermColor(const Flux::string &ret){
+  Flux::string str;
+  bool in_term_color = false;
+  for(unsigned i=0; i < ret.length(); ++i){
+    char c = ret[i];
+    if(in_term_color){
+      if(c == 'm')
+	in_term_color = false;
+      continue;
+    }
+    if(c == '\033'){
+      in_term_color = true;
+      continue;
+    }
+    if(!in_term_color)
+      str += c;
+  }
+  return str+"\0";
+}
+
 Flux::string TimeStamp()
 {
  char tbuf[256];
@@ -39,20 +59,20 @@ Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command) 
 }
 Log::~Log()
 {
-  Flux::string message = Flux::Sanitize(this->buffer.str());
+  Flux::string message = Flux::Sanitize(this->buffer.str()), raw = this->buffer.str();
   if(this->u && !this->c)
    message = this->u->nick + " " + message;
   if(this->u && this->c)
     message = this->u->nick + " used " + this->c->name + " " + message;
   
   if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug && InTerm())
-    std::cout << TimeStamp() << " " << message << std::endl;
+    std::cout << TimeStamp() << " " << (nocolor?NoTermColor(message):message) << std::endl;
   else if(type == LOG_NORMAL && nofork && InTerm())
-    std::cout << TimeStamp() << " " << message << std::endl;
+    std::cout << TimeStamp() << " " << (nocolor?NoTermColor(message):message) << std::endl;
   else if(type == LOG_DEBUG && dev && nofork && InTerm())
-    std::cout << TimeStamp() << " " << message << std::endl;
+    std::cout << TimeStamp() << " " << (nocolor?NoTermColor(message):message) << std::endl;
   else if(type == LOG_TERMINAL && InTerm()){
-    std::cout << this->buffer.str() << std::endl;
+    std::cout << (nocolor?NoTermColor(raw):raw) << std::endl;
     return;
   }else if(type == LOG_SILENT){}
   
@@ -63,7 +83,7 @@ Log::~Log()
 	throw LogException(Config->LogFile.empty()?Flux::string("Cannot fild Log File.").c_str():
 			    Flux::string("Failed to open Log File"+Config->LogFile+": "+strerror(errno)).c_str());
 	
-      log << TimeStamp() << " " << message << std::endl;
+      log << TimeStamp() << " " << NoTermColor(message) << std::endl;
       if(log.is_open())
 	log.close();
     }
