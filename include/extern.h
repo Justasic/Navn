@@ -97,6 +97,7 @@ E Flux::string fsprintf(const char*, ...);
 E int randint(int x, int y);
 E bool IsValidChannel(const Flux::string&);
 E bool IsFile(const Flux::string&);
+E bool InTerm();
 E bool protocoldebug, IsOper, dev, nofork, quitting, started;
 E std::vector<Flux::string> StringVector(const Flux::string&, char);
 E Flux::insensitive_map<module*> Modules;
@@ -106,6 +107,7 @@ E char **my_av, **my_envp;
 
 /* void's */
 E void Rehash();
+E void Fork();
 E void sigact(int);
 E void HandleSegfault(module*);
 E void restart(const Flux::string&);

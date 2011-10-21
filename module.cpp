@@ -306,7 +306,6 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     Log() << "Error while loading " << modname << ": " << e.GetReason();
     return MOD_ERR_EXCEPTION;
   }
-  std::cout << m << std::endl;
   m->filepath = mdir;
   m->filename = modname+".so";
   m->handle = handle;

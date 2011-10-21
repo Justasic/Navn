@@ -1,5 +1,5 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#include "user.h"
+#include "module.h"
 #include "INIReader.h"
 
 //General misc functions
@@ -28,7 +28,29 @@ int randint(int x, int y)
   srand(time(NULL));
   return rand()%(y-x+1)+x;
 }
-
+void Fork()
+{
+  if (!nofork && InTerm()){
+    int i = fork();
+    if(i > 0){
+	    Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
+	    Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[22;37m";
+	    FOREACH_MOD(I_OnFork, OnFork(i));
+	    exit(0);
+    }
+    if(isatty(fileno(stdout)))
+      fclose(stdout);
+    if(isatty(fileno(stdin)))
+      fclose(stdin);
+    if(isatty(fileno(stderr)))
+      fclose(stderr);
+    if(setpgid(0, 0) < 0)
+	    throw CoreException("Unable to setpgid()");
+    else if(i == -1)
+      Log() << "Error, unable to fork: " << strerror(errno);
+  }else
+    Log(LOG_TERMINAL) << "\033[22;36m";
+}
 Flux::string Flux::Sanitize(const Flux::string &string)
 {
  static struct special_chars{

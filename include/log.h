@@ -1,6 +1,5 @@
 #ifndef LOG_H
 #define LOG_H
-#include "includes.h"
 #include "command.h"
 #include "user.h"
 

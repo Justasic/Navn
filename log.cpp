@@ -45,13 +45,13 @@ Log::~Log()
   if(this->u && this->c)
     message = this->u->nick + " used " + this->c->name + " " + message;
   
-  if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug)
+  if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug && InTerm())
     std::cout << TimeStamp() << " " << message << std::endl;
-  else if(type == LOG_NORMAL && nofork)
+  else if(type == LOG_NORMAL && nofork && InTerm())
     std::cout << TimeStamp() << " " << message << std::endl;
-  else if(type == LOG_DEBUG && dev && nofork)
+  else if(type == LOG_DEBUG && dev && nofork && InTerm())
     std::cout << TimeStamp() << " " << message << std::endl;
-  else if(type == LOG_TERMINAL){
+  else if(type == LOG_TERMINAL && InTerm()){
     std::cout << this->buffer.str() << std::endl;
     return;
   }else if(type == LOG_SILENT){}
@@ -67,5 +67,5 @@ Log::~Log()
       if(log.is_open())
 	log.close();
     }
-    catch (LogException &e) { std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl; }
+    catch (LogException &e) { if(!InTerm()) std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl; }
 }

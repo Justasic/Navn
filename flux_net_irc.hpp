@@ -348,6 +348,7 @@ void Rehash(){
  * \brief Removes the PID file on exit
  */
 static void remove_pidfile() { Delete(Config->PidFile.c_str()); }
+bool InTerm() { return isatty(fileno(stdout) && isatty(fileno(stdin)) && isatty(fileno(stderr))); }
 /** 
  * \fn static void WritePID()
  * \brief Write the bots PID file
@@ -380,11 +381,8 @@ void startup(int argc, char** argv) {
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
   Config = new BotConfig();
-  if(/*Config->Parser->ParseError() == -1*/ !Config)
+  if(!Config)
     throw CoreException("Config Error.");
-    /*throw CoreException("Cannot open file bot.conf");
-  if(Config->Parser->ParseError() != 0) 
-    throw CoreException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));*/
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
@@ -393,20 +391,19 @@ void startup(int argc, char** argv) {
   Flux::string::size_type n = dir.rfind('/');
   dir = "." + dir.substr(n);
   //gets the command line paramitors if any.
-  int Terminal = isatty(0) && isatty(1) && isatty(2);
   if (!(argc < 1) || argv[1] != NULL){
     for(int Arg=1; Arg < argc; ++Arg){
       Flux::string arg = argv[Arg];
-       if(arg == "--developer" || arg == "--dev" || arg == "-d")
+       if(arg.equals_ci("--developer") || arg.equals_ci("--dev") || arg == "-d")
        {
          dev = nofork = true;
 	 Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode. (" << arg << ")";
        }
-       else if (arg == "--nofork" || arg == "-n"){
+       else if (arg.equals_ci("--nofork") || arg == "-n"){
          nofork = true;
 	 Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
        }
-       else if (arg == "--help" || arg == "-h"){
+       else if (arg.equals_ci("--help") || arg == "-h"){
 	 Log(LOG_TERMINAL) << "\033[22;37mNavn Internet Relay Chat Bot v" << VERSION;
 	 Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
 	 Log(LOG_TERMINAL) << "-h, --help";
@@ -416,7 +413,7 @@ void startup(int argc, char** argv) {
 	 Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
 	 exit(0);
        }
-       else if (arg == "--version" || arg == "-v"){
+       else if (arg.equals_ci("--version") || arg == "-v"){
 	 Log(LOG_TERMINAL) << "\033[22;37mNavn IRC C++ Bot Version " << VERSION_LONG;
 	 Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
 	 Log(LOG_TERMINAL) << "";
@@ -429,7 +426,7 @@ void startup(int argc, char** argv) {
 	 Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
          exit(0);
        }
-       else if(arg == "--protocoldebug" || "-p"){
+       else if(arg.equals_ci("--protocoldebug") || "-p"){
 	 protocoldebug = true;
 	 Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode. (" << arg << ")";
        }
@@ -441,31 +438,13 @@ void startup(int argc, char** argv) {
     }
   }
   //*****************************************************//
-  Log(LOG_TERMINAL) << "\033[22;37m";
   ModuleHandler::SanitizeRuntime();
   ReadConfig();
   //*****************************************************//
    WritePID();
    Log() << Config->BotNick << " Started, PID: " << getpid();
    FOREACH_MOD(I_OnStart, OnStart(argc, argv));
-   if (!nofork){
-	int i;
-	if((i = fork()) < 0)
-		throw CoreException("Unable to fork");
-	else if (i != 0){
-		Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
-		Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[22;37m";
-		exit(0);
-	}
-	if(Terminal){
-		close(0);
-		close(1);
-		close(2);
-	}
-	if(setpgid(0, 0) < 0)
-		throw CoreException("Unable to setpgid()");
-  }else
-    Log(LOG_TERMINAL) << "\033[22;36m";
+   Fork();
 }
 /** 
  * \fn Flux::string xmlToString(Flux::string fileName)

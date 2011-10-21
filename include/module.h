@@ -15,7 +15,7 @@ enum Implementation{
 	I_OnStart, I_OnNumeric, I_OnPreConnect, I_OnPostConnect,
 	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick, I_OnConnectionError,
 	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
-	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument,
+	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument, I_OnFork,
   I_END
 };
 enum ModuleReturn{
@@ -56,6 +56,7 @@ public:
   virtual void OnCTCP(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnArgument(int, const Flux::string&) {}
   virtual void OnModuleLoad(module*) {}
+  virtual void OnFork(int) {}
   virtual void OnModuleUnload(module*){}
   virtual void OnRestart(const Flux::string&) {}
   virtual void OnShutdown() {}
@@ -95,5 +96,5 @@ private:
 };
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const Flux::string &name) { return new x(name); } \
-extern "C" void Moduninit(x *m) { std::cout << m << std::endl; if(m) delete m; }
+extern "C" void Moduninit(x *m) { if(m) delete m; }
 #endif
