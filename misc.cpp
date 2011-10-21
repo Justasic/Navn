@@ -49,7 +49,7 @@ void Fork()
     else if(i == -1)
       Log() << "Error, unable to fork: " << strerror(errno);
   }else
-    Log(LOG_TERMINAL) << "\033[22;36m";
+    Log() << Config->BotNick << " Started, PID: " << getpid() << "\033[22;36m";
 }
 Flux::string Flux::Sanitize(const Flux::string &string)
 {

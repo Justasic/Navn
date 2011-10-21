@@ -442,7 +442,6 @@ void startup(int argc, char** argv) {
   ReadConfig();
   //*****************************************************//
    WritePID();
-   Log() << Config->BotNick << " Started, PID: " << getpid();
    FOREACH_MOD(I_OnStart, OnStart(argc, argv));
    Fork();
 }

@@ -96,5 +96,5 @@ private:
 };
 #define MODULE_HOOK(x) \
 extern "C" module *ModInit(const Flux::string &name) { return new x(name); } \
-extern "C" void Moduninit(x *m) { if(m) delete m; }
+extern "C" void ModunInit(x *m) { if(m) delete m; }
 #endif
