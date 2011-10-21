@@ -105,7 +105,10 @@ E Flux::insensitive_map<Channel*> ChanMap;
 E char **my_av, **my_envp;
 
 /* void's */
-E void handle_sigsegv(int);
+E void Rehash();
+E void sigact(int);
+E void HandleSegfault(module*);
+E void restart(const Flux::string&);
 E void ListChans(CommandSource &source);
 E void ListUsers(CommandSource &source);
 E void send_cmd(const char *fmt, ...);

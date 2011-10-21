@@ -303,23 +303,23 @@ Flux::string execute(const char *cmd) {
  * \brief Restart the bot process
  * \param reason The reason for the restart
  */
-void restart(Flux::string reason){
+void restart(const Flux::string &reason){
   char CurrentPath[FILENAME_MAX];
   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
+  FOREACH_MOD(I_OnRestart, OnRestart(reason));
   if(reason.empty()){
-    reason = "No Reason";
+    Log() << "Restarting: No Reason";
+    Send->command->quit("Restarting: No Reason");
   }else{
-    FOREACH_MOD(I_OnRestart, OnRestart(reason));
     Log() << "Restarting: " << reason;
     Send->command->quit("Restarting: %s", reason.c_str());
-    chdir(CurrentPath);
-    int execvpret = execvp(my_av[0], my_av);
-    if(execvpret > 0){
-      throw CoreException("Restart Failed, Exiting");
-    }
-    Delete(Config->PidFile.c_str());
-    exit(1);
   }
+  chdir(CurrentPath);
+  int execvpret = execvp(my_av[0], my_av);
+  if(execvpret > 0)
+    throw CoreException("Restart Failed, Exiting");
+  Delete(Config->PidFile.c_str());
+  exit(1);
 }
 
 /** 
@@ -327,7 +327,7 @@ void restart(Flux::string reason){
  * \brief Reload the bot config file
  * \param boolean this boolean tells rehash if we are starting from start or not
  */
-static void Rehash(){
+void Rehash(){
   Log() << "Rehashing Configuration File";
   try{
       BotConfig *configtmp = Config;
@@ -335,11 +335,6 @@ static void Rehash(){
       delete configtmp;
       if(!Config)
 	throw ConfigException("Could not read config.");
-    //if(Config->Parser->ParseError() == -1)
-      //throw ConfigException("Cannot open file bot.conf");
-    //if (Config->Parser->ParseError() != 0) {
-	//throw ConfigException(fsprintf("Error on line %i in the configuration.", Config->Parser->ParseError()));
-    //}
     FOREACH_MOD(I_OnReload, OnReload());
     ReadConfig();
   }catch(const ConfigException &ex){
@@ -347,63 +342,7 @@ static void Rehash(){
     Send->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
   }
 }
-/**Random Quit message selector
- * This is where it will set the quit message if there was a terminal quit or signal interrupt (ctrl+c)
- * @param siginit(integer)
- */
-Flux::string siginit(int sigstring){
-  Flux::string message;
-  switch(sigstring){
-    case 1: message = "Read on an empty pipe (ENOTOBACCO)"; break;
-    case 2: message = "Invalid syntax (EBEFOREI)"; break;
-    case 3: message = "Core dumped (ECHERNOBYL)"; break;
-    case 4: message = "Program exited before being run (ECRAY)"; break;
-    case 5: message = "The daemon is dead (EDINGDONG)"; break;
-    case 6: message = "System needs tuning (EFLAT)"; break;
-    case 7: message = "Program written by inept Frat member (EGEEK)"; break;
-    case 8: message = "Here-a-bug, there-a-bug, .... (EIEIO)"; break;
-    case 9: message = "Missing period (EIUD)"; break;
-    case 10: message = "Your code could stand to be cleaned up (ELECTROLUX)"; break;
-    case 11: message = "Wrong fork (EMILYPOST)"; break;
-    case 12: message = "Silo overflow (END.ARMS.CONTROL)"; break;
-    case 13: message = "Mount failed (ENOHORSE)"; break;
-    case 14: message = "C program not derived from main() { printf(\"Hello, world\"); } (ENONSEQUETOR)"; break;
-    case 15: message = "Extended tape gap (EWATERGATE)"; break;
-    case 16: message = "Aliens sighted (EWOK)"; break;
-    case 17: message = "Your code appears to have been stir-fried (EWOK)"; break;
-    case 18: message = "The feature you want has not been implemented yet (EWOULDBNICE)"; break;
-    case 19: message = "Nuclear event occurred (SIGNUKE)"; break;
-    case 20: message = "Someone pressed CTRL + C.."; break;
-  }
-  return message;
-}
-/** Terminal Signal Handler
- * Come here for weird signals
- * @param sigact(integer)
- */
-void sigact(int sig)
-{
-  Flux::string sigstr;
-  switch (sig){
-    case SIGHUP:
-      signal(sig, SIG_IGN);
-      Rehash();
-      break;
-    case SIGINT:
-    case SIGKILL:
-    case SIGTERM:
-      signal(sig, SIG_IGN);
-      signal(SIGHUP, SIG_IGN);
-      sigstr = siginit(randint(1,20));
-      quitmsg = "Recieved Signal: "+sigstr;
-      if(Send)
-        Send->command->quit(quitmsg);
-      quitting = true;
-      break;
-    default:
-      Log() << "Recieved weird signal from terminal. Sig Number: " << sig;
-  }
-}
+
 /** 
  * \fn static void remove_pidfile()
  * \brief Removes the PID file on exit
@@ -449,7 +388,7 @@ void startup(int argc, char** argv) {
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
-  signal(SIGSEGV, handle_sigsegv);
+  signal(SIGSEGV, sigact);
   Flux::string dir = argv[0];
   Flux::string::size_type n = dir.rfind('/');
   dir = "." + dir.substr(n);

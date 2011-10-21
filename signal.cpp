@@ -4,6 +4,37 @@
 #include <execinfo.h>
 #endif
 
+/**Random Quit message selector
+ * This is where it will set the quit message if there was a terminal quit or signal interrupt (ctrl+c)
+ * @param siginit(integer)
+ */
+Flux::string siginit(int sigstring){
+  Flux::string message;
+  switch(sigstring){
+    case 1: message = "Read on an empty pipe (ENOTOBACCO)"; break;
+    case 2: message = "Invalid syntax (EBEFOREI)"; break;
+    case 3: message = "Core dumped (ECHERNOBYL)"; break;
+    case 4: message = "Program exited before being run (ECRAY)"; break;
+    case 5: message = "The daemon is dead (EDINGDONG)"; break;
+    case 6: message = "System needs tuning (EFLAT)"; break;
+    case 7: message = "Program written by inept Frat member (EGEEK)"; break;
+    case 8: message = "Here-a-bug, there-a-bug, .... (EIEIO)"; break;
+    case 9: message = "Missing period (EIUD)"; break;
+    case 10: message = "Your code could stand to be cleaned up (ELECTROLUX)"; break;
+    case 11: message = "Wrong fork (EMILYPOST)"; break;
+    case 12: message = "Silo overflow (END.ARMS.CONTROL)"; break;
+    case 13: message = "Mount failed (ENOHORSE)"; break;
+    case 14: message = "C program not derived from main() { printf(\"Hello, world\"); } (ENONSEQUETOR)"; break;
+    case 15: message = "Extended tape gap (EWATERGATE)"; break;
+    case 16: message = "Aliens sighted (EWOK)"; break;
+    case 17: message = "Your code appears to have been stir-fried (EWOK)"; break;
+    case 18: message = "The feature you want has not been implemented yet (EWOULDBNICE)"; break;
+    case 19: message = "Nuclear event occurred (SIGNUKE)"; break;
+    case 20: message = "Someone pressed CTRL + C.."; break;
+  }
+  return message;
+}
+
 void HandleSegfault(module *m)
 {
 #ifdef HAVE_BACKTRACE
@@ -51,7 +82,7 @@ void HandleSegfault(module *m)
    slog << "======================== END OF REPORT ==========================" << std::endl;
    sslog << slog.str() << std::endl; //Write to SEGFAULT.log
    sslog.close();
-   std::cout << slog.str() << std::endl; //Write to terminal.
+   Log(LOG_TERMINAL) << slog.str(); //Write to terminal.
    if(m)
       Log() << "Segmentation Fault in module " << m->name << " please review SEGFAULT.log";
    else
@@ -66,28 +97,55 @@ void HandleSegfault(module *m)
    printf("1) type \"gdb navn\"\n2) type \"r -n --protocoldebug\"\n3) Cause the program to crash\n4) Type \"bt full\" and copy and paste the output to http://www.pastebin.com/\n5) File a bug report at http://flux-net.net/bugs/\n");
 #endif
 }
-void handle_sigsegv(int)
+/** Terminal Signal Handler
+ * Come here for weird signals
+ * @param sigact(integer)
+ */
+void sigact(int sig)
 {
-  static int running = 0;
-  if((running = 1)){ //Stop segv bombs
-    exit(EXIT_FAILURE);
-  }else{
-    running = 1;
+  Flux::string sigstr;
+  switch(sig){
+    case SIGHUP:
+      signal(sig, SIG_IGN);
+      Rehash();
+      break;
+    case SIGSEGV:
+      static int running = 0;
+      if((running = 1)){ //Stop segv bombs
+	HandleSegfault(NULL);
+	exit(EXIT_FAILURE);
+      }else{
+	running = 1;
+      }
+      /* this is where the module stack needs to be 
+      * 
+      * #ifdef HAVE_SETJMP_H
+      * if(somethingHappened){
+      * 	module *m = FindLastModule;
+      * 	HandleSegfault(m);
+      * 	ModuleHandler::Unload(m);
+      * 	Log() << "Attempting to restore Stack to before Crash";
+      * 	longjmp(segbuf, -1);
+      * 	Log() << "Finished restoring Stack";
+      * 	return;
+      *  }
+      * #endif
+      */
+      //HandleSegfault(NULL);
+      exit(EXIT_FAILURE);
+      break;
+    case SIGINT:
+    case SIGKILL:
+    case SIGTERM:
+      signal(sig, SIG_IGN);
+      signal(SIGHUP, SIG_IGN);
+      sigstr = siginit(randint(1,20));
+      quitmsg = "Recieved Signal: "+sigstr;
+      if(Send)
+        Send->command->quit(quitmsg);
+      quitting = true;
+      break;
+    default:
+      Log() << "Recieved weird signal from terminal. Sig Number: " << sig;
   }
-  /* this is where the module stack needs to be 
-   * 
-   * #ifdef HAVE_SETJMP_H
-   * if(somethingHappened){
-   * 	module *m = FindLastModule;
-   * 	HandleSegfault(m);
-   * 	ModuleHandler::Unload(m);
-   * 	Log() << "Attempting to restore Stack to before Crash";
-   * 	longjmp(segbuf, -1);
-   * 	Log() << "Finished restoring Stack";
-   * 	return;
-   *  }
-   * #endif
-   */
-  HandleSegfault(NULL);
-  exit(EXIT_FAILURE);
 }
