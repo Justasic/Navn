@@ -17,7 +17,7 @@ Flux::string NoTermColor(const Flux::string &ret){
     if(!in_term_color)
       str += c;
   }
-  return str+"\0";
+  return str;
 }
 
 Flux::string TimeStamp()

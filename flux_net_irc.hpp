@@ -404,7 +404,7 @@ void startup(int argc, char** argv) {
 	 Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
        }
        else if ((arg.equals_ci("--help")) ^ (arg == "-h")){
-	 Log(LOG_TERMINAL) << "\033[22;37mNavn Internet Relay Chat Bot v" << VERSION;
+	 Log(LOG_TERMINAL) << "Navn Internet Relay Chat Bot v" << VERSION;
 	 Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
 	 Log(LOG_TERMINAL) << "-h, --help";
 	 Log(LOG_TERMINAL) << "-d, --developer";
@@ -415,7 +415,7 @@ void startup(int argc, char** argv) {
 	 exit(0);
        }
        else if ((arg.equals_ci("--version")) ^ (arg == "-v")){
-	 Log(LOG_TERMINAL) << "\033[22;37mNavn IRC C++ Bot Version " << VERSION_LONG;
+	 Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_LONG;
 	 Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
 	 Log(LOG_TERMINAL) << "";
 	 Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
@@ -433,7 +433,7 @@ void startup(int argc, char** argv) {
        }
        else if((arg.equals_ci("--nocolor")) ^ (arg == "-c")){
 	 nocolor = true;
-	 Log(LOG_TERMINAL) << "\033[0m"; //reset terminal colors
+	 Log() << Config->BotNick << " is started in No Colors mode. (" << arg << ")\033[0m"; //reset terminal colors
        }
        else
        {
@@ -442,6 +442,7 @@ void startup(int argc, char** argv) {
        }
     }
   }
+  if(!nocolor) Log(LOG_TERMINAL) << "\033[22;36m";
   ModuleHandler::SanitizeRuntime();
   ReadConfig();
   WritePID();
