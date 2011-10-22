@@ -380,9 +380,6 @@ void startup(int argc, char** argv) {
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
-  Config = new BotConfig();
-  if(!Config)
-    throw CoreException("Config Error.");
   signal(SIGTERM, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
@@ -442,6 +439,9 @@ void startup(int argc, char** argv) {
        }
     }
   }
+  Config = new BotConfig();
+  if(!Config)
+    throw CoreException("Config Error.");
   if(!nocolor) Log(LOG_TERMINAL) << "\033[22;36m";
   ModuleHandler::SanitizeRuntime();
   ReadConfig();
