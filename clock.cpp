@@ -1,17 +1,13 @@
-#include "include/clock.h"
+#include "clock.h"
 
 Clock::Clock(){}
 
 void Clock::CorrectHour(int &h)
 {
   if (h < 0)
-  {
     h = 24 + h;
-  }
   else if (h > 24)
-  {
     h -= 24;
-  }
 }
 
 Flux::string Clock::Local()
@@ -24,8 +20,8 @@ Flux::string Clock::CustomOffset(int i)
 {
   std::stringstream r;
   int h = (ptm->tm_hour+i);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   CorrectHour(h);
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::MST()
