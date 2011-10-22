@@ -90,7 +90,9 @@ Added multiple channels into Config
 Segfault handler now prints output to the terminal as well as to SEGFAULT.log
 Commands now throw ModuleException() if a command contains a space
 Flux::Sanitize now stirps IRC color codes and color code numbers from strings
-
+Added Clock class
+Added a PVP game
+Strip terminal colors from the logs, added --nocolor to command line args
  
 
 Navn 2.0.0
