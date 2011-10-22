@@ -1,10 +1,5 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
-#define MST (-6)
-#define UTC (0)
-#define CCT (+8)
-#define EST (-4)
-#define PST (-7)
-#define AUS (+10)
+
 #include "flux_net_irc.hpp"
 
 /**
@@ -42,19 +37,22 @@ public:
     location.trim();
     if(location.empty())
     {
-      Clock * _clock = new Clock();
+      Clock * wclock = new Clock();
       time_t rawtime;
       tm * ptm;
       time(&rawtime);
       ptm = gmtime(&rawtime);
-      int minutes = (ptm->tm_min);
-      int seconds = (ptm->tm_sec);
+      Flux::string utc = wclock->UTC();
+      Flux::string est = wclock->EST();
+      Flux::string pst = wclock->PST();
+      Flux::string cct = wclock->CCT();
+      Flux::string aus = wclock->AUS();
       c->SendMessage("Current time around the World:");
-      c->SendMessage("GMT == %2d:%02d:%02d", (ptm->tm_hour+UTC)%24, minutes, seconds);
-      c->SendMessage("New York (USA) == %2d:%02d:%02d", (ptm->tm_hour+EST)%24, minutes, seconds);
-      c->SendMessage("California (USA) == %2d:%02d:%02d", (ptm->tm_hour+PST)%24, minutes, seconds);
-      c->SendMessage("Beijing (China) == %2d:%02d:%02d", (ptm->tm_hour+CCT)%24, minutes, seconds);
-      c->SendMessage("Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);
+      c->SendMessage("GMT == %s", utc.c_str());
+      c->SendMessage("New York (USA) == %s", est.c_str());
+      c->SendMessage("California (USA) == %s", pst.c_str());
+      c->SendMessage("Beijing (China) == %s", cct.c_str());
+      c->SendMessage("Sydney (Australia) == %s", aus.c_str());
       char buf[100];
       ptm = localtime(&rawtime);
       strftime(buf,100,"Navn's Time: %Z %c",ptm);

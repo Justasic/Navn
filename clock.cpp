@@ -1,5 +1,7 @@
 #include "include/clock.h"
 
+Clock::Clock(){}
+
 void Clock::CorrectHour(int &h)
 {
   if (h < 0)
@@ -22,7 +24,7 @@ Flux::string Clock::CustomOffset(int i)
 {
   std::stringstream r;
   int h = (ptm->tm_hour+i);
-  r << h << ":" << ptm->tm_min;
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   CorrectHour(h);
   return r.str();
 }
@@ -33,7 +35,7 @@ Flux::string Clock::MST()
   std::stringstream r;
   int h = ptm->tm_hour-6;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min;
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::EST()
@@ -43,7 +45,7 @@ Flux::string Clock::EST()
   std::stringstream r;
   int h = (ptm->tm_hour)-4;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min;
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::UTC()
@@ -53,7 +55,7 @@ Flux::string Clock::UTC()
   std::stringstream r;
   int h = (ptm->tm_hour);
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min;
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::CCT()
@@ -63,7 +65,7 @@ Flux::string Clock::CCT()
   std::stringstream r;
   int h = (ptm->tm_hour)+8;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min;
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::PST()
@@ -73,7 +75,7 @@ Flux::string Clock::PST()
   std::stringstream r;
   int h = (ptm->tm_hour)-7;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min;
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::AUS()
@@ -83,6 +85,6 @@ Flux::string Clock::AUS()
   std::stringstream r;
   int h = (ptm->tm_hour)+10;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min;
+  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
