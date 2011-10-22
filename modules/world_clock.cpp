@@ -38,21 +38,15 @@ public:
     if(location.empty())
     {
       Clock * wclock = new Clock();
-      time_t rawtime;
-      tm * ptm;
-      time(&rawtime);
-      ptm = gmtime(&rawtime);
-      Flux::string utc = wclock->UTC();
-      Flux::string est = wclock->EST();
-      Flux::string pst = wclock->PST();
-      Flux::string cct = wclock->CCT();
-      Flux::string aus = wclock->AUS();
       c->SendMessage("Current time around the World:");
-      c->SendMessage("GMT == %s", utc.c_str());
-      c->SendMessage("New York (USA) == %s", est.c_str());
-      c->SendMessage("California (USA) == %s", pst.c_str());
-      c->SendMessage("Beijing (China) == %s", cct.c_str());
-      c->SendMessage("Sydney (Australia) == %s", aus.c_str());
+      c->SendMessage("GMT == %s", wclock->UTC().c_str());
+      c->SendMessage("New York (USA) == %s", wclock->EST().c_str());
+      c->SendMessage("California (USA) == %s", wclock->PST().c_str());
+      c->SendMessage("Beijing (China) == %s", wclock->CCT().c_str());
+      c->SendMessage("Sydney (Australia) == %s", wclock->AUS().c_str());
+      tm *ptm;
+      time_t rawtime;
+      time(&rawtime);
       char buf[100];
       ptm = localtime(&rawtime);
       strftime(buf,100,"Navn's Time: %Z %c",ptm);
