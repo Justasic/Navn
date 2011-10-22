@@ -21,6 +21,9 @@ Channel::~Channel()
   Log(LOG_DEBUG) << "Deleted channel " << this->name;
   ChanMap.erase(this->name);
 }
+User *Channel::finduser(const Flux::string &usr){
+  return NULL;
+}
 void Channel::SendJoin(){
  Send->command->join(this->name);
 }
@@ -136,7 +139,7 @@ void Channel::SendAction(const char *fmt, ...){
   }
 }
 void Channel::SendAction(const Flux::string &message){
- Send->privmsg(this->name, message); 
+ Send->action(this->name, message); 
 }
 void Channel::SendNotice(const char *fmt, ...){
   if(fmt){

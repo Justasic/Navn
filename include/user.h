@@ -8,12 +8,13 @@
  * \brief A Class for IRC Users
  * This class wraps around IRC Users and includes several useful commands as well as User information.
  */
+typedef std::map<Channel*, User*> CList;
 class User
 {
 public:
   User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "", const Flux::string &server ="");
   virtual ~User();
-  std::list<Channel*> ChannelList;
+  CList ChannelList;
   Flux::string nick,host,realname,ident,fullhost,server;
   void kick(const Flux::string&, const Flux::string&);
   void kick(Channel*, const Flux::string&);
@@ -21,7 +22,7 @@ public:
   bool IsOwner();
   void AddChan(Channel*);
   void DelChan(Channel*);
-  Channel *FindChan(Channel*);
+  Channel *findchannel(const Flux::string&);
   void SetNewNick(const Flux::string&);
   void SendWho();
   void SendMessage(const Flux::string&);

@@ -35,12 +35,14 @@
  * \var time_t creation_time
  * \brief Time the IRC Channel was last created.
  */
+typedef std::map<User*, Channel*> UList;
 class Channel
 {
 public:
   Channel(const Flux::string&, time_t ts = time(NULL));
   ~Channel();
-  Flux::map<User*> UserList;
+  UList UserList;
+  User *finduser(const Flux::string&);
   //some day we will hhave a mode manager here :P
   //some day we will also have a user finder for a channel ;P
   Flux::string name;

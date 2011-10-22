@@ -30,7 +30,8 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
      if(!channel.empty())
        c = new Channel(channel);
     }
-    u->AddChan(c);
+    if(u)
+      u->AddChan(c);
 }
 /*********************************************************************************/
 void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
@@ -183,7 +184,7 @@ void process(const Flux::string &buffer){
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
     else{
-     if(!u->FindChan(c))
+     if(!u->findchannel(c->name))
        delete u;
      else
        static_cast<void>(0);

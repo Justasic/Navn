@@ -12,7 +12,8 @@
 #ifndef TIMERS_H
 #define TIMERS_H
 
-#include <includes.h>
+#include "includes.h"
+#include "clock.h"
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
