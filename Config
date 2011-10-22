@@ -24,7 +24,7 @@ modulelist=""
 githead=$(git rev-parse HEAD)
 rev=$(git describe ${githead} 2>/dev/null)
 [[ -z ${rev} ]] && rev=${githead:0:7}
-/bin/sed 's/^\x23define VERSION_GIT ".*"/\x23define VERSION_GIT "'$rev'"/' config.in.tmpl 1> config.h.in 
+/bin/sed 's/^\x23define VERSION_GIT ".*"/\x23define VERSION_GIT "'$rev'"/' config.in.tmpl 1> config.h.in
 echo "AUTOMAKE_OPTIONS 	= foreign" >> $MAKEFILE
 echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
 echo "LIBS = -pthread -ldl -lnsl -lrt -lstdc++" >> $MAKEFILE
@@ -52,7 +52,8 @@ echo "navn:
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c channel.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c INIReader.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c log.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c clock.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
 echo "" >> $MAKEFILE
 for file in modules/*.cpp ; do #Loop cred to Lordofsraam
   name=${file%\.*}

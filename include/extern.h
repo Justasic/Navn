@@ -43,6 +43,7 @@ class SendMessage;
 class ModuleHandler;
 class INIReader;
 class BotConfig;
+class Clock;
 struct CommandSource;
 
 /* Enumorations */
@@ -54,7 +55,8 @@ enum LogType
   LOG_TERMINAL,
   LOG_SILENT
 };
-enum ModErr{
+enum ModErr
+{
 MOD_ERR_OK,
 MOD_ERR_MEMORY,
 MOD_ERR_PARAMS,

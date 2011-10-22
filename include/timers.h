@@ -1,9 +1,9 @@
 /* Timer include stuff.
  *
  * Functions ported from Anope IRC Services
- * 
+ *
  * (C) 2003-2011 Anope Team
- * 
+ *
  * Based on the original code of Epona by Lara.
  * Based on the original code of Services by Andy Church.
  * All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html)
@@ -37,34 +37,46 @@ class Timer
 	bool repeat;
 
  public:
-	/** Default constructor, initializes the triggering time
+	/**
+	 * @fn Timer(long time_from_now, time_t now = time(NULL), bool repeating = false)
+	 * Default constructor, initializes the triggering time
 	 * @param time_from_now The number of seconds from now to trigger the timer
 	 * @param now The time now
 	 * @param repeating Repeat this timer every time_from_now if this is true
 	 */
 	Timer(long time_from_now, time_t now = time(NULL), bool repeating = false);
 
-	/** Default destructor, removes the timer from the list
+	/**
+	 * @fn virtual ~Timer()
+	 * Default destructor, removes the timer from the list
 	 */
 	virtual ~Timer();
 
-	/** Set the trigger time to a new value
+	/**
+	 * @fn void SetTimer(time_t t)
+	 * Set the trigger time to a new value
 	 * @param t The new time
 	 */
 	void SetTimer(time_t t);
 
-	/** Retrieve the triggering time
+	/**
+	 * @fn time_t GetTimer()
+	 * Retrieve the triggering time
 	 * @return The trigger time
 	 */
 	time_t GetTimer() const;
 
-	/** Returns true if the timer is set to repeat
+	/**
+	 * @fn bool GetRepeat()
+	 * Returns true if the timer is set to repeat
 	 * @return Returns true if the timer is set to repeat
 	 */
 	bool GetRepeat() const;
 
-	/** Set the interval between ticks
-	 * @paramt t The new interval
+	/**
+	 * @fn void SetSecs(time_t t)
+	 * Set the interval between ticks
+	 * @param t The new interval
 	 */
 	void SetSecs(time_t t);
 

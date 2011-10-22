@@ -25,7 +25,8 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c channel.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c INIReader.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c log.cpp
-	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o -o $(PACKAGE) $(LIBS) -rdynamic
+	@$(PERL) $(CXX) $(CFLAGS) -c clock.cpp
+	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o -o $(PACKAGE) $(LIBS) -rdynamic
 
 about_me.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/about_me.cpp

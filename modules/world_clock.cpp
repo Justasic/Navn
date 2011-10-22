@@ -40,7 +40,9 @@ public:
     Channel *c = source.c;
     Flux::string location = params.empty()?"":params[1];
     location.trim();
-    if(location.empty()){
+    if(location.empty())
+    {
+      Clock * _clock = new Clock();
       time_t rawtime;
       tm * ptm;
       time(&rawtime);
@@ -52,22 +54,24 @@ public:
       c->SendMessage("New York (USA) == %2d:%02d:%02d", (ptm->tm_hour+EST)%24, minutes, seconds);
       c->SendMessage("California (USA) == %2d:%02d:%02d", (ptm->tm_hour+PST)%24, minutes, seconds);
       c->SendMessage("Beijing (China) == %2d:%02d:%02d", (ptm->tm_hour+CCT)%24, minutes, seconds);
-      c->SendMessage("Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);	
+      c->SendMessage("Sydney (Australia) == %2d:%02d:%02d", (ptm->tm_hour+AUS)%24, minutes, seconds);
       char buf[100];
       ptm = localtime(&rawtime);
       strftime(buf,100,"Navn's Time: %Z %c",ptm);
       c->SendMessage(buf);
       Log(source.u, this) << "command in " << c->name;
       return;
-    }else{
+    }else
+    {
       Flux::string wget, tmpfile = TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
       	if(location.is_number_only())
 	  wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+location;
 	else
 	  wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand(this->name.ci_str(), source.message.ci_str()));
 	system(wget.c_str());
-	
-	if(!xmlToString(tmpfile).search("problem_cause")){
+
+	if(!xmlToString(tmpfile).search("problem_cause"))
+	{
 	  Flux::string ff = xmlToString(tmpfile);
 	  ff.trim();
 	  if(ff.empty()){
@@ -81,13 +85,13 @@ public:
 	  Delete(tmpfile.c_str());
 	  Log(source.u, this) << "to get time for " << location;
 	  }
-	}
+      }
   }
 };
 class world_clock:public module{
   CommandCWClock clock;
 public:
-  world_clock(const Flux::string &Name):module(Name){ 
+  world_clock(const Flux::string &Name):module(Name){
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
     this->AddChanCommand(&clock);
