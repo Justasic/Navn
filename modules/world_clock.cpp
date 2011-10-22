@@ -53,31 +53,26 @@ public:
       c->SendMessage(buf);
       Log(source.u, this) << "command in " << c->name;
       return;
-    }else
-    {
+    }else{
       Flux::string wget, tmpfile = TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
-      	if(location.is_number_only())
-	  wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+location;
-	else
-	  wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand(this->name.ci_str(), source.message.ci_str()));
-	system(wget.c_str());
+      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(location.is_number_only()?location:urlify(removeCommand(this->name.ci_str(), source.message.ci_str())));
+      system(wget.c_str());
 
-	if(!xmlToString(tmpfile).search("problem_cause"))
-	{
-	  Flux::string ff = xmlToString(tmpfile);
-	  ff.trim();
-	  if(ff.empty()){
-	   c->SendMessage("Could not download/read %s", tmpfile.c_str());
-	   Log(source.u) << "failed to use " << this->name << " because of failure to download/read file '" << tmpfile << '\'';
-	   return;
-	  }
-	  Flux::string loc = findInXML("city","data",ff);
-	  Flux::string time = findInXML("current_date_time","data",ff);
-	  c->SendMessage("The current time in %s is %s", loc.c_str(), time.c_str());
-	  Delete(tmpfile.c_str());
-	  Log(source.u, this) << "to get time for " << location;
-	  }
-      }
+      if(!xmlToString(tmpfile).search("problem_cause"))
+      {
+	Flux::string ff = xmlToString(tmpfile);
+	ff.trim();
+	if(ff.empty()){
+	  c->SendMessage("Could not download/read %s", tmpfile.c_str());
+	  Log(source.u) << "failed to use " << this->name << " because of failure to download/read file '" << tmpfile << '\'';
+	  return;
+	}
+	Flux::string loc = findInXML("city","data",ff), time = findInXML("current_date_time","data",ff);
+	c->SendMessage("The current time in %s is %s", loc.c_str(), time.c_str());
+	Delete(tmpfile.c_str());
+	Log(source.u, this) << "to get time for " << location;
+	}
+    }
   }
 };
 class world_clock:public module{

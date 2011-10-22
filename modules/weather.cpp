@@ -44,11 +44,7 @@ public:
       return;
     }
     area.trim();
-    
-    if(area.is_number_only())
-      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+area;
-    else
-      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+urlify(removeCommand(ci::string(this->name.ci_str()),source.message));
+    wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(area.is_number_only()?area:urlify(removeCommand(ci::string(this->name.ci_str()),source.message)));
     system(wget.c_str());
     
     if(!xmlToString(tmpfile).search("problem_cause")){
@@ -59,10 +55,8 @@ public:
 	Log(u) << "failed to use " << this->name << " because of failure to download/read file '" << tmpfile << '\'';
 	return;
       }
-      Flux::string loc = findInXML("city","data",ff);
-      Flux::string cond = findInXML("condition","data",ff);
-      Flux::string tempf = findInXML("temp_f","data",ff);
-      Flux::string tempc = findInXML("temp_c","data",ff);
+      Flux::string loc = findInXML("city","data",ff), cond = findInXML("condition","data",ff), tempf = findInXML("temp_f","data",ff),
+      tempc = findInXML("temp_c","data",ff);
       Delete(tmpfile.c_str());
       loc.trim();
       c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
