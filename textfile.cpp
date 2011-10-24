@@ -23,7 +23,7 @@ void TextFile::Clear() { std::vector<Flux::string> empty; lines = empty; Content
 
 bool TextFile::Empty()
 {
-  for (int i = 0; i < lines.size(); i++) { if (!lines[i].empty()) return false; }
+  for (unsigned i = 0; i < lines.size(); i++) { if (!lines[i].empty()) return false; }
   return true;
 }
 
@@ -34,7 +34,7 @@ bool TextFile::WriteToDisk(Flux::string &FileName)
   {
     if (Contents != lines)
     {
-      for (int i = 0; i < Contents.size(); i++)
+      for (unsigned i = 0; i < Contents.size(); i++)
       {
 	Contents[i].strip();
 	f << Contents[i] << "\n";
@@ -42,7 +42,7 @@ bool TextFile::WriteToDisk(Flux::string &FileName)
     }
     else
     {
-      for (int i = 0; i < lines.size(); i++)
+      for (unsigned i = 0; i < lines.size(); i++)
       {
 	lines[i].strip();
 	f << lines[i] << "\n";

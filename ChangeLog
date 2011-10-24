@@ -133,6 +133,7 @@ Fixed /msg topic not correctly setting topic
 Fixed xmlToString not reading the xml temp file
 Added error handling to findInXML and to the modules that use it (clock and weather)
 Cleaned up clock and weather modules
+Added Flux::string which is based on std::string
 ----------
 
 Navn 1.4.3

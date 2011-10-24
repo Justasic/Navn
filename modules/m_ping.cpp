@@ -7,7 +7,7 @@ class PingTimer:public Timer
 public:
   PingTimer():Timer(30, time(NULL), true) {}
   void Tick(time_t){
-    Send->raw("PING :%i\n", time(NULL));
+    send_cmd("PING :%i\n", time(NULL));
     if(!timeout)
       timeout = true;
     if(timeout)
@@ -39,7 +39,7 @@ public:
      timeout = false;
      pings = 0;
      if(protocoldebug)
-        printf("%i sec lag (%i - %i)\n", lag, (int)ts, (int)time(NULL));
+        Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL);
     }
     if(command == "PING")
     {

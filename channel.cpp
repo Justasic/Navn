@@ -126,7 +126,7 @@ void Channel::SendMessage(const char *fmt, ...){
   }
 }
 void Channel::SendMessage(const Flux::string &message){
- Send->privmsg(this->name, message); 
+ Send->privmsg(this->name, message);
 }
 void Channel::SendAction(const char *fmt, ...){
   if(fmt){

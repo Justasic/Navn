@@ -237,20 +237,21 @@ public:
     { //Easter egg ;P
       Flux::string person = params.size() == 2?params[1]:"";
       person.trim();
-      if(u->IsOwner())
+      User *u2 = finduser(person);
+      if(u2 && u2->IsOwner())
       {
 	c->SendMessage("why would I wanna kick my master!?");
 	return;
       }
-      if(person.empty())
+      else if(!u2)
       {
 	c->SendAction("is angry at %s", u->nick.c_str());
 	c->kick(u, "\002\00315Dont poke me!\017");
 	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
       }else{
-	c->SendAction("Is angry at %s", person.c_str());
-	c->kick(person, "\002\00315Dont poke me!\017");
-	Log() << u->nick << " used Da_Goats !poke command in " << c->name << "to poke " << person;
+	c->SendAction("is angry at %s", u2->nick.c_str());
+	c->kick(u2, "\002\00315Dont poke me!\017");
+	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
       } 
     }
     if(msg.search("Dun kick me, asswipe. -_-"))

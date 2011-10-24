@@ -34,6 +34,7 @@ Navn 2.0.2
 
 [ ] Add Mode Handler
   [ ] Parse 005 Numeric for modes and server support stuff, take action on it
+  [ ] Add u->IsOp()
 
 [ ] Add Ban Manager
 [ ] Add Database/User accounts type system for metadata
@@ -48,6 +49,7 @@ Navn 2.0.2
   [ ] Add information on those users (what chans are they op in? are they an IRCop? etc.)
 
 [ ] Add more event handlers (FOREACH_MOD)
+[ ] Add calculator
 [ ] Better config format
 [ ] Better startup switch management
 [ ] Add Oper Protocol modules

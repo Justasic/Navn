@@ -140,9 +140,9 @@ const int SocketIO::recv() const
 }
 const int SocketIO::send(const Flux::string &buf) const
 {
- Log(LOG_RAWIO) << "Sent: " << Flux::Sanitize(buf);
+ Log(LOG_RAWIO) << "Sent: " << buf;
  if(!protocoldebug)
-   Log(LOG_DEBUG) << Flux::Sanitize(buf);
+   Log(LOG_DEBUG) << buf;
  int i = write(this->GetFD(), buf.c_str(), buf.size());
  return i;
 }

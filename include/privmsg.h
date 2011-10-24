@@ -15,6 +15,5 @@ public:
   void notice(Flux::string where, Flux::string msg);
   void action(Flux::string where, const char *fmt, ...);
   void action(Flux::string where, Flux::string msg);
-  void raw(const char *fmt, ...);
 };
 #endif
