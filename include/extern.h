@@ -43,6 +43,7 @@ class ModuleHandler;
 class INIReader;
 class BotConfig;
 class Clock;
+class TextFile;
 struct CommandSource;
 
 /* Enumorations */
