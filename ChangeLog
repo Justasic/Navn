@@ -93,6 +93,8 @@ Flux::Sanitize now stirps IRC color codes and color code numbers from strings
 Added Clock class
 Added a PVP game
 Strip terminal colors from the logs, added --nocolor to command line args
+Added INIReader::GetBoolean()
+Added "Socket Timeout" into config, this sets the amount of time for the socket to process
  
 
 Navn 2.0.0

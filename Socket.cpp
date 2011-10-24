@@ -99,7 +99,7 @@ bool SocketIO::Connect()
 int SocketIO::Process()
 {
   timeval timeout;
-  timeout.tv_sec = 5;
+  timeout.tv_sec = Config->SockWait;
   timeout.tv_usec = 0; //this timeout keeps the bot from being a CPU hog for no reason :)
   fd_set read = ReadFD/*, write = WriteFD, except = ExceptFD*/;
   FD_ZERO(&read);

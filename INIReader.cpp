@@ -122,6 +122,18 @@ Flux::string INIReader::Get(const Flux::string &section, const Flux::string &nam
     return _values.count(key) ? _values[key] : default_value;
 }
 
+bool INIReader::GetBoolean(const Flux::string &section, const Flux::string &name, bool default_value){
+  Flux::string valstr = Get(section, name, "");
+  valstr.trim();
+  if(valstr.empty())
+    return default_value;
+  if(valstr.equals_ci("yes") || valstr.equals_ci("1") || valstr.equals_ci("y") || valstr.equals_ci("true"))
+    return true;
+  else if(valstr.equals_ci("false") || valstr.equals_ci("0") || valstr.equals_ci("n") || valstr.equals_ci("no"))
+    return false;
+  return default_value;
+}
+
 long INIReader::GetInteger(const Flux::string &section, const Flux::string &name, long default_value)
 {
     Flux::string valstr = Get(section, name, "");
@@ -183,7 +195,6 @@ void BotConfig::Read(){
   this->OperatorPass = this->Parser->Get("Oper","Oper_Password","");
   this->ModuleDir = Parser->Get("Modules", "ModuleDir", "");
   this->Modules = Parser->Get("Modules", "Modules", "");
-  this->SockWait = Parser->GetInteger("Bot","Socket Timeout","5");
-  Log(LOG_TERMINAL) << "\033[22;31mReading Config File\033[22;30m...\033[0m";
+  this->SockWait = Parser->GetInteger("Bot","Socket Timeout",5);
 }
 

@@ -30,7 +30,8 @@ public:
     // Get an integer (long) value from INI file, returning default_value if
     // not found.
     long GetInteger(const Flux::string&, const Flux::string&, long);
-    
+
+    bool GetBoolean(const Flux::string&, const Flux::string&, bool);
     ~INIReader();
 
 private:
