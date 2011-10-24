@@ -5,20 +5,7 @@
  *\file  command.cpp 
  *\brief Contains the command class.
  */
-Commands::Commands(){
-}
-/**
- * \fn void command::raw(const char *fmt, ...)
- * \brief Sends data straight to the socket engine
- */
-void Commands::raw(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  send_cmd(buffer);
-  va_end(args);
-}
+Commands::Commands(){}
 /**
  * \fn void command::kick(Flux::string Channel, Flux::string User, const char *fmt, ...)
  * \brief Handles kick requests
@@ -77,25 +64,25 @@ void Commands::part(const Flux::string &channel, const char *fmt, ...){
  * \overload void command::kick(Flux::string channel, Flux::string user, Flux::string reason)
  */
 void Commands::kick(const Flux::string &chan, const Flux::string &userstr, const Flux::string &msg){
-  this->raw("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), msg.c_str());
+  send_cmd("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), msg.c_str());
 }
 /**
  * \overload void Commands::quit(Flux::string message)
  */
 void Commands::quit(const Flux::string &message){
- this->raw("QUIT :%s\n", message.c_str());
+ send_cmd("QUIT :%s\n", message.c_str());
 }
 /**
  * \overload void Commands::part(Flux::string channel, Flux::string msg)
  */
 void Commands::part(const Flux::string &channel, const Flux::string &msg){
-  this->raw("PART %s :%s\n", channel.c_str(), msg.c_str());
+  send_cmd("PART %s :%s\n", channel.c_str(), msg.c_str());
 }
 /**
  * \overload void command::topic(Flux::string channel, Flux::string msg)
  */
 void Commands::topic(const Flux::string &chan, const Flux::string &msg){
-  this->raw("TOPIC %s :%s\n", chan.c_str(), msg.c_str());
+  send_cmd("TOPIC %s :%s\n", chan.c_str(), msg.c_str());
 }
 /** 
  * \fn void command::nick(Flux::string nick)
@@ -103,7 +90,7 @@ void Commands::topic(const Flux::string &chan, const Flux::string &msg){
  * \param nickname A Flux::string with the new nickname.
  */
 void Commands::nick(const Flux::string &bnick){
-  this->raw("NICK %s\n", bnick.c_str());
+  send_cmd("NICK %s\n", bnick.c_str());
 }
 void Commands::away(const Flux::string &message){
  send_cmd("AWAY :%s", message.c_str()); 
@@ -113,7 +100,7 @@ void Commands::away(const Flux::string &message){
  * \brief Sends IRC command /oper
  */
 void Commands::oper(const Flux::string &username, const Flux::string &password){
-  this->raw("OPER %s %s\n", username.c_str(), password.c_str());
+  send_cmd("OPER %s %s\n", username.c_str(), password.c_str());
 }
 /** 
  * \fn void command::join(Flux::string chan)
@@ -121,7 +108,7 @@ void Commands::oper(const Flux::string &username, const Flux::string &password){
  * \param stringy_chan A Flux::string with the channel you want to join.
  */
 void Commands::join(const Flux::string &dchan){
-  this->raw("JOIN %s\n", dchan.c_str());
+  send_cmd("JOIN %s\n", dchan.c_str());
 }
 /** 
  * \overload void command::part(Flux::string channel)
@@ -129,7 +116,7 @@ void Commands::join(const Flux::string &dchan){
  * \param channel Channel to part from.
  */
 void Commands::part(const Flux::string &fchan){
-  this->raw("PART %s\n", fchan.c_str()); 
+  send_cmd("PART %s\n", fchan.c_str());
 }
 /** 
  * \fn void Commands::who(Flux::string chan)
@@ -137,7 +124,7 @@ void Commands::part(const Flux::string &fchan){
  * \param chan A Flux::string with the channel you want to /who.
  */
 void Commands::who(const Flux::string &chan){
- this->raw("WHO %s\n", chan.c_str());
+ send_cmd("WHO %s\n", chan.c_str());
 }
 /** 
  * \fn void Commands::names(Flux::string &chan)
@@ -145,7 +132,7 @@ void Commands::who(const Flux::string &chan){
  * \param chan A Flux::string with the channel you want to /names.
  */
 void Commands::names(const Flux::string &chan){
- this->raw("NAMES %s\n", chan.c_str());
+ send_cmd("NAMES %s\n", chan.c_str());
 }
 /** 
  * \fn void command::whois(Flux::string Nick)
@@ -153,7 +140,7 @@ void Commands::names(const Flux::string &chan){
  * \param Nick Nick to query
  */
 void Commands::whois(const Flux::string &nickname){
-  this->raw("WHOIS %s\n", nickname.c_str());
+  send_cmd("WHOIS %s\n", nickname.c_str());
 }
 /** 
  * \fn void command::mode(Flux::string nickname, Flux::string mode, Flux::string user)
@@ -162,7 +149,7 @@ void Commands::whois(const Flux::string &nickname){
  * \param mode The mode to set.
  */
 void Commands::mode(const Flux::string &chan, const Flux::string &usermode, const Flux::string &usernick){
-  this->raw("MODE %s %s %s\n", chan.c_str(), usermode.c_str(), usernick.c_str());
+  send_cmd("MODE %s %s %s\n", chan.c_str(), usermode.c_str(), usernick.c_str());
 }
 /** 
  * \fn void Commands::user(Flux::string ident, Flux::string realname)
@@ -171,7 +158,7 @@ void Commands::mode(const Flux::string &chan, const Flux::string &usermode, cons
  * \param realname The real name gecos used in irc.
  */
 void Commands::user(const Flux::string &ident, const Flux::string &realname){
- this->raw("USER %s * * :%s\n", ident.c_str(), realname.c_str());
+ send_cmd("USER %s * * :%s\n", ident.c_str(), realname.c_str());
 }
 /**
  *\overload void command::mode(Flux:;string dest, Flux::string mode)
@@ -180,39 +167,30 @@ void Commands::user(const Flux::string &ident, const Flux::string &realname){
  * @param mode mode to set
  */
 void Commands::mode(const Flux::string &dest, const Flux::string &chanmode){
-  this->raw("MODE %s %s\n", dest.c_str(), chanmode.c_str()); 
+  send_cmd("MODE %s %s\n", dest.c_str(), chanmode.c_str());
 }
 /***************************************************************************************/
-Oper::Oper(){
-}
-void Oper::raw(const char *fmt, ...){
-  char buffer[4096] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  send_cmd(buffer+'\n');
-  va_end(args);
-}
+Oper::Oper(){}
 void Oper::samode(const Flux::string &target, const Flux::string &mode){
-  this->raw("SAMODE %s %s\n", target.c_str(), mode.c_str());
+  send_cmd("SAMODE %s %s\n", target.c_str(), mode.c_str());
 }
 void Oper::samode(const Flux::string &target, const Flux::string &mode, const Flux::string &params){
-  this->raw("SAMODE %s %s %s", target.c_str(), mode.c_str(), params.c_str());
+  send_cmd("SAMODE %s %s %s", target.c_str(), mode.c_str(), params.c_str());
 }
 void Oper::sajoin(const Flux::string &target, const Flux::string &channel){
-  this->raw("SAJOIN %s %s", target.c_str(), channel.c_str());
+  send_cmd("SAJOIN %s %s", target.c_str(), channel.c_str());
 }
 void Oper::sapart(const Flux::string &target, const Flux::string &channel){
-  this->raw("SAPART %s %s", target.c_str(), channel.c_str());
+  send_cmd("SAPART %s %s", target.c_str(), channel.c_str());
 }
 void Oper::sanick(const Flux::string &target, const Flux::string &nickname){
-  this->raw("SANICK %s %s", target.c_str(), nickname.c_str());
+  send_cmd("SANICK %s %s", target.c_str(), nickname.c_str());
 }
 void Oper::sakick(const Flux::string &channel, const Flux::string &target, const Flux::string &reason){
-  this->raw("SAKICK %s %s %s", channel.c_str(), target.c_str(), reason.c_str());
+  send_cmd("SAKICK %s %s %s", channel.c_str(), target.c_str(), reason.c_str());
 }
 void Oper::satopic(const Flux::string &target, const Flux::string &topic){
-  this->raw("SATOPIC %s %s", target.c_str(), topic.c_str());
+  send_cmd("SATOPIC %s %s", target.c_str(), topic.c_str());
 }
 void Oper::satopic(const Flux::string &target, const char *fmt, ...){
   char buffer[4096] = "";
@@ -223,16 +201,16 @@ void Oper::satopic(const Flux::string &target, const char *fmt, ...){
   va_end(args); 
 }
 void Oper::sahost(const Flux::string &target, const Flux::string &host){
-  this->raw("CHGHOST %s %s", target.c_str(), host.c_str());
+  send_cmd("CHGHOST %s %s", target.c_str(), host.c_str());
 }
 void Oper::saident(const Flux::string &target, const Flux::string &ident){
-  this->raw("CHGIDENT %s %s", target.c_str(), ident.c_str());
+  send_cmd("CHGIDENT %s %s", target.c_str(), ident.c_str());
 }
 void Oper::kill(const Flux::string &target, const Flux::string &reason){
-  this->raw("KILL %s %s", target.c_str(), reason.c_str());
+  send_cmd("KILL %s %s", target.c_str(), reason.c_str());
 }
 void Oper::saname(const Flux::string &target, const Flux::string &name){
-  this->raw("CHGNAME %s %s", target.c_str(), name.c_str());
+  send_cmd("CHGNAME %s %s", target.c_str(), name.c_str());
 }
 void Oper::saname(const Flux::string &target, const char *fmt, ...){
   char buffer[4096] = "";
@@ -243,7 +221,7 @@ void Oper::saname(const Flux::string &target, const char *fmt, ...){
   va_end(args); 
 }
 void Oper::wallops(const Flux::string &message){
-  this->raw("WALLOPS %s", message.c_str());
+  send_cmd("WALLOPS %s", message.c_str());
 }
 void Oper::wallops(const char *fmt, ...){
   char buffer[4096] = "";
@@ -254,7 +232,7 @@ void Oper::wallops(const char *fmt, ...){
   va_end(args); 
 }
 void Oper::globops(const Flux::string &message){
-  this->raw("GLOBOPS %s", message.c_str());
+  send_cmd("GLOBOPS %s", message.c_str());
 }
 void Oper::globops(const char *fmt, ...){
   char buffer[4096] = "";
@@ -265,16 +243,16 @@ void Oper::globops(const char *fmt, ...){
   va_end(args); 
 }
 void Oper::zline(const Flux::string &ipmask, const Flux::string &time, const Flux::string &reason){
-  this->raw("ZLINE %s %s %s", ipmask.c_str(), time.c_str(), reason.c_str());
+  send_cmd("ZLINE %s %s %s", ipmask.c_str(), time.c_str(), reason.c_str());
 }
 void Oper::qline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
-  this->raw("QLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
+  send_cmd("QLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
 void Oper::kline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
-  this->raw("KLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
+  send_cmd("KLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
 void Oper::gline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
-  this->raw("GLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
+  send_cmd("GLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
 }
 /*******************************************************************************************/
 void CommandSource::Reply(const char *fmt, ...){

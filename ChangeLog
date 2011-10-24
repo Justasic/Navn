@@ -95,6 +95,8 @@ Added a PVP game
 Strip terminal colors from the logs, added --nocolor to command line args
 Added INIReader::GetBoolean()
 Added "Socket Timeout" into config, this sets the amount of time for the socket to process
+Added FileIO class, this should allow for you to read and write various files
+Removed Send->raw() as it now uses send_cmd()
  
 
 Navn 2.0.0

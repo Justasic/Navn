@@ -1,8 +1,6 @@
 #include "textfile.h"
 
-TextFile::TextFile() {}
-
-TextFile::TextFile(Flux::string &FileName)
+TextFile::TextFile(const Flux::string &FileName)
 {
   std::ifstream in(FileName.c_str());
   while(std::getline(in,line.std_str()))
@@ -27,7 +25,7 @@ bool TextFile::Empty()
   return true;
 }
 
-bool TextFile::WriteToDisk(Flux::string &FileName)
+bool TextFile::WriteToDisk(const Flux::string &FileName)
 {
   std::ofstream f(FileName.c_str());
   if (f.is_open())
@@ -36,16 +34,14 @@ bool TextFile::WriteToDisk(Flux::string &FileName)
     {
       for (unsigned i = 0; i < Contents.size(); i++)
       {
-	Contents[i].strip();
-	f << Contents[i] << "\n";
+	f << Contents[i].strip() << "\n";
       }
     }
     else
     {
       for (unsigned i = 0; i < lines.size(); i++)
       {
-	lines[i].strip();
-	f << lines[i] << "\n";
+	f << lines[i].strip() << "\n";
       }
     }
     f.close();

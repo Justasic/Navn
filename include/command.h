@@ -24,7 +24,6 @@ class Commands
 {
 public:
   Commands();
-  void raw(const char *fmt, ...);
   void quit(const char *fmt, ...);
   void kick(const Flux::string&, const Flux::string&, const char *fmt, ...);
   void topic(const Flux::string&, const char *fmt, ...);
@@ -54,7 +53,6 @@ class Oper
 {
 public:
   Oper();
-  void raw(const char *fmt, ...);
   void samode(const Flux::string&, const Flux::string&);
   void samode(const Flux::string&, const Flux::string&, const Flux::string&);
   void sajoin(const Flux::string&, const Flux::string&);
