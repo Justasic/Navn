@@ -27,15 +27,14 @@ class InputThread : public Thread
 {
 public:
   bool exiting;
-  InputThread():Thread() {}
-  ~InputThread() { Log(LOG_TERMINAL) << "Input Thread Exiting."; exiting = true; }
+  InputThread():Thread() { Log() << "Input Thread Initializing."; exiting = false; }
+  ~InputThread() { Log() << "Input Thread Exiting."; exiting = true; }
   void ToRun()
   {
-    exiting = false;
     std::string buf;
     while(!exiting)
     {
-      printf("Top of Input Loop\n");
+      Log(LOG_RAWIO) << "Top of Input Loop";
       std::getline(std::cin, buf);
       if(!buf.empty())
 	ProcessInput(buf);

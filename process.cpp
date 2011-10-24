@@ -184,11 +184,11 @@ void process(const Flux::string &buffer){
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
     else{
-     if(!u->findchannel(c->name))
+     if(u && c && !u->findchannel(c->name))
        delete u;
-     else
-       static_cast<void>(0);
-       //u->DelChan(c);
+    else
+     if(u && c)
+       u->DelChan(c);
     }
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric((int)command)); }

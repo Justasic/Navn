@@ -74,21 +74,23 @@ void User::SetNewNick(const Flux::string &newnick)
 }
 void User::AddChan(Channel *c)
 {
-  ChannelList[c] = this;
+  if(!c)
+    ChannelList[c] = this;
 }
 void User::DelChan(Channel *c)
 {
-  CList::iterator it = this->ChannelList.find(c);
-  if(it != this->ChannelList.end())
+  CList::iterator it = ChannelList.find(c);
+  if(it != ChannelList.end())
     ChannelList.erase(it);
 }
 Channel *User::findchannel(const Flux::string &chan)
 {
+  printf("entered User::findchannel\n");
   Channel *c = findchannel(chan);
   if(!c)
     return NULL;
-  CList::iterator it = this->ChannelList.find(c);
-  if(it != this->ChannelList.end())
+  CList::iterator it = ChannelList.find(c);
+  if(it != ChannelList.end())
     return it->first;
   return NULL;
 }

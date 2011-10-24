@@ -32,7 +32,6 @@ public:
 	Send->command->join(chan);
 	Send->privmsg(chan, welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
       }
-      
     }
   }
 };

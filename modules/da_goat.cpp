@@ -212,73 +212,73 @@ class Da_Goat:public module
   CommandCSpam spam;
   CommandCVersion ver;
 public:
-    Da_Goat(const Flux::string &Name):module(Name)
-    {
-      this->SetAuthor("Justasic & Lordofsraam");
-      this->SetVersion(VERSION);
-      this->AddChanCommand(&info);
-      this->AddChanCommand(&rename);
-      this->AddChanCommand(&reg);
-      this->AddChanCommand(&sinfo);
-      this->AddChanCommand(&uptime);
-      this->AddChanCommand(&rules);
-      this->AddChanCommand(&spam);
-      this->AddChanCommand(&ver);
-      ModuleHandler::Attach(I_OnPrivmsg, this);
+  Da_Goat(const Flux::string &Name):module(Name)
+  {
+    this->SetAuthor("Justasic & Lordofsraam");
+    this->SetVersion(VERSION);
+    this->AddChanCommand(&info);
+    this->AddChanCommand(&rename);
+    this->AddChanCommand(&reg);
+    this->AddChanCommand(&sinfo);
+    this->AddChanCommand(&uptime);
+    this->AddChanCommand(&rules);
+    this->AddChanCommand(&spam);
+    this->AddChanCommand(&ver);
+    ModuleHandler::Attach(I_OnPrivmsg, this);
+  }
+  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+  {
+    Flux::string cmd = params.empty()?"":params[0], msg;
+    for(unsigned i=0; i < params.size(); ++i)
+      msg += params[i]+' ';
+    msg.trim();
+    /******************************Easter Eggs*********************************/
+    if(cmd.equals_ci("!poke"))
+    { //Easter egg ;P
+      Flux::string person = params.size() == 2?params[1]:"";
+      person.trim();
+      if(u->IsOwner())
+      {
+	c->SendMessage("why would I wanna kick my master!?");
+	return;
+      }
+      if(person.empty())
+      {
+	c->SendAction("is angry at %s", u->nick.c_str());
+	c->kick(u, "\002\00315Dont poke me!\017");
+	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
+      }else{
+	c->SendAction("Is angry at %s", person.c_str());
+	c->kick(person, "\002\00315Dont poke me!\017");
+	Log() << u->nick << " used Da_Goats !poke command in " << c->name << "to poke " << person;
+      } 
     }
-    void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+    if(msg.search("Dun kick me, asswipe. -_-"))
     {
-      Flux::string cmd = params.empty()?"":params[0], msg;
-      for(unsigned i=0; i < params.size(); ++i)
-	msg += params[i]+' ';
-      msg.trim();
-      /*******************************Easter Eggs*********************************/
-      if(cmd.equals_ci("!poke"))
-      { //Easter egg ;P
-	Flux::string person = params.size() == 2?params[1]:"";
-	person.trim();
-	if(u->IsOwner())
-	{
-	  c->SendMessage("why would I wanna kick my master!?");
-	  return;
-	}
-	if(person.empty())
-	{
-	  c->SendAction("is angry at %s", u->nick.c_str());
-	  c->kick(u, "\002\00315Dont poke me!\017");
-	  Log() << u->nick << " found Da_Goats !poke command in " << c->name;
-	}else{
-	  c->SendAction("Is angry at %s", person.c_str());
-	  c->kick(person, "\002\00315Dont poke me!\017");
-	  Log() << u->nick << " used Da_Goats !poke command in " << c->name << " to poke " << person;
-	}
-      }
-      if(msg.search("Dun kick me, asswipe. -_-"))
-      {
-	Send->command->mode(c->name, "+b m:"+u->fullhost);
-	c->SendMessage("Shut up!");
-      }
-      if(msg.search_ci("no u!") || msg.search_ci("no u"))
-      {
-	c->SendMessage("NO U!");
-      }
-      if(cmd.equals_ci("!everything"))
-      {
-	c->SendMessage("Yes, there is a script for everything...\007");
-      }
-      /***********************End Da_Goat Functions*******************************/
-      if(cmd.equals_ci("!bugs"))
-      {
-	c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
-      }
-      if(cmd.equals_ci("!git"))
-      {
-	u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
-      }
-      if(msg.search_ci("the game"))
-      {
-	c->SendMessage("YOU JUST LOST THE GAME.");
-      }
+      Send->command->mode(c->name, "+b m:"+u->fullhost);
+      c->SendMessage("Shut up!");
+    }
+    if(msg.search_ci("no u!") || msg.search_ci("no u"))
+    {
+      c->SendMessage("NO U!");
+    }
+    if(cmd.equals_ci("!everything"))
+    {
+      c->SendMessage("Yes, there is a script for everything...\007");
+    }
+    /***********************End Da_Goat Functions******************************/
+    if(cmd.equals_ci("!bugs"))
+    {
+      c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
+    }
+    if(cmd.equals_ci("!git"))
+    {
+      u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
+    }
+    if(msg.search_ci("the game"))
+    {
+      c->SendMessage("YOU JUST LOST THE GAME.");
+    }
   }
 };
 

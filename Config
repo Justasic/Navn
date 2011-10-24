@@ -1,23 +1,15 @@
 #!/bin/bash
 MAKEFILE="Makefile.am"
-# Make sure the folder exists
-if [ -d modules ] ; then
-  echo derp &>/dev/null
-else
-  echo "Module folder not found. Exiting..."
-  exit 1
-fi
-# Make sure there is at least one cpp file in there
-if [ -f modules/m_system.cpp ] ; then
-  echo derp &>/dev/null
-else
-  echo "No modules found. Exiting..."
-  exit 1
-fi
 if [ -f $MAKEFILE ] ; then
   rm -rf $MAKEFILE
 else
   echo "Making new makefile.."
+fi
+if [ -d runtime ] ; then
+  echo derp &>/dev/null
+else
+  echo "Making a new runtime directory.."
+  mkdir runtime
 fi
 # Write to file
 modulelist=""
@@ -34,7 +26,7 @@ echo "MODFLAGS = -fPIC -g \$(LIBS) -shared -Wl,-soname," >> $MAKEFILE
 echo "" >> $MAKEFILE
 echo "navn:
 	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
-	@echo \"Navn Version \$(VERSION)\$()\"
+	@echo \"Navn Version \$(VERSION)\"
 	@echo \" \"
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c main.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c misc.cpp
@@ -54,27 +46,40 @@ echo "navn:
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c log.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c clock.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
-echo "" >> $MAKEFILE
-for file in modules/*.cpp ; do #Loop cred to Lordofsraam
-  name=${file%\.*}
-  bsoname=$name.so #full filename path
-  name=${name##modules/}
-  modulelist=`echo $modulelist $name.so`
-  soname=$name.so #name only
-  #These will be the contents of the file
-  echo "$soname:" >> $MAKEFILE
-  echo "	@\$(PERL) \$(CXX) \$(CFLAGS) -c $file" >> $MAKEFILE
-  echo "	@\$(PERL) \$(CXX) \$(LIBS) \$(MODFLAGS)$file -o $bsoname $name.o" >> $MAKEFILE
-done
-echo "" >> $MAKEFILE
-echo "modules: "$modulelist >> $MAKEFILE
-echo "" >> $MAKEFILE
+# Make sure the folder exists
+if [ -d modules ] ; then
+  shopt -s nullglob
+  files=(modules/*.cpp)
+  # Make sure there is at least one cpp file in there
+  if [ ${#files[@]} -gt 0 ] ; then
+    for file in modules/*.cpp ; do #Loop cred to Lordofsraam
+    name=${file%\.*}
+    bsoname=$name.so #full filename path
+    name=${name##modules/}
+    modulelist=`echo $modulelist $name.so`
+    soname=$name.so #name only
+    #These will be the contents of the file
+    echo "$soname:" >> $MAKEFILE
+    echo "	@\$(PERL) \$(CXX) \$(CFLAGS) -c $file" >> $MAKEFILE
+    echo "	@\$(PERL) \$(CXX) \$(LIBS) \$(MODFLAGS)$file -o $bsoname $name.o" >> $MAKEFILE
+  done
+  echo "" >> $MAKEFILE
+  echo "modules: "$modulelist >> $MAKEFILE
+  echo "" >> $MAKEFILE
+  else
+    echo "No modules found."
+  fi
+else
+  echo "Module folder not found."
+fi
 echo "all-am: navn "$modulelist >> $MAKEFILE
 echo "	@echo \" \"
 	@echo \"Build complete. Run './\$(PACKAGE)' to execute the binary.\"" >> $MAKEFILE
 echo "clean:
+	rm -f *.o *.so \$(PACKAGE) modules/*.so" >> $MAKEFILE
+echo "dist-clean:
 	rm -f *.o *.so \$(PACKAGE) config.h config.status
-	rm -f *.o *.so \$(srcdir)/modules/*.so" >> $MAKEFILE
+	rm -f *.o *.so modules/*.so" >> $MAKEFILE
 if [ "$1" = "-nc" ] ; then
   echo "Generating Makefile complete!"
   echo "Skipping ./configure"

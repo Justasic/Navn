@@ -20,6 +20,10 @@
 #include <ostream>
 #include <queue>
 #include <arpa/inet.h>
+#ifdef HAVE_SYS_EPOLL_H
+#include <sys/epoll.h>
+#endif
+
 #include "extern.h"
 #include "log.h"
 const int MAXHOSTNAME = 200;

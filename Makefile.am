@@ -7,7 +7,7 @@ MODFLAGS = -fPIC -g $(LIBS) -shared -Wl,-soname,
 
 navn:
 	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
-	@echo "Navn Version $(VERSION)$()"
+	@echo "Navn Version $(VERSION)"
 	@echo " "
 	@$(PERL) $(CXX) $(CFLAGS) -c main.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c misc.cpp
@@ -27,7 +27,6 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c log.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c clock.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o -o $(PACKAGE) $(LIBS) -rdynamic
-
 about_me.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/about_me.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/about_me.cpp -o modules/about_me.so about_me.o
@@ -89,5 +88,7 @@ all-am: navn about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so he
 	@echo " "
 	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 clean:
+	rm -f *.o *.so $(PACKAGE) modules/*.so
+dist-clean:
 	rm -f *.o *.so $(PACKAGE) config.h config.status
-	rm -f *.o *.so $(srcdir)/modules/*.so
+	rm -f *.o *.so modules/*.so

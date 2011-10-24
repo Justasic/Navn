@@ -65,6 +65,7 @@ public:
   Flux::string OperatorPass;
   Flux::string ModuleDir;
   Flux::string Modules;
+  size_t SockWait;
 private:
   void Read();
 };

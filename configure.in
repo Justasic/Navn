@@ -45,7 +45,7 @@ AC_CHECK_LIB(socket, socket)
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_RESOLV
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdint.h stdlib.h string.h sys/socket.h unistd.h pthread.h time.h dlfcn.h execinfo.h setjmp.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdint.h stdlib.h string.h sys/epoll.h sys/socket.h unistd.h pthread.h time.h dlfcn.h execinfo.h setjmp.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

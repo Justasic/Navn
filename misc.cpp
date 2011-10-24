@@ -246,6 +246,11 @@ std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
    ret.push_back(token);
  return ret;
 }
-
+/** Check if a file exists
+ * \fn bool InTerm()
+ * \brief returns if the 
+ * \return true if the file exists, false if it doens't
+ */
+bool InTerm() { return isatty(fileno(stdout) && isatty(fileno(stdin)) && isatty(fileno(stderr))); }
 /* butt-plug?
  * http://www.albinoblacksheep.com/flash/plugs */

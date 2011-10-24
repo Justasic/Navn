@@ -183,6 +183,7 @@ void BotConfig::Read(){
   this->OperatorPass = this->Parser->Get("Oper","Oper_Password","");
   this->ModuleDir = Parser->Get("Modules", "ModuleDir", "");
   this->Modules = Parser->Get("Modules", "Modules", "");
+  this->SockWait = Parser->GetInteger("Bot","Socket Timeout","5");
   Log(LOG_TERMINAL) << "\033[22;31mReading Config File\033[22;30m...\033[0m";
 }
 
