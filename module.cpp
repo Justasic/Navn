@@ -179,10 +179,11 @@ static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
 {
   SET_SEGV_LOCATION();
   Flux::string input;
-  if(Config->ModuleDir.empty())
-    input = Config->Binary_Dir + "/" + name + ".so";
-  else
-    input = Config->Binary_Dir + "/" + Config->ModuleDir + "/" + name + ".so";
+  //if(Config->ModuleDir.empty())
+    input = Config->Binary_Dir + "/" + (Config->ModuleDir.empty()?name:Config->ModuleDir+"/"+name) + ".so";
+    //input = Config->Binary_Dir + "/" + name + ".so";
+ // else
+    //input = Config->Binary_Dir + "/" + Config->ModuleDir + "/" + name + ".so";
   
   struct stat s;
   if(stat(Flux::string(Config->Binary_Dir+"runtime/").c_str(), &s) == -1)

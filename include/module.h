@@ -18,10 +18,6 @@ enum Implementation{
 	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument, I_OnFork,
   I_END
 };
-enum ModuleReturn{
-  MOD_RUN,
-  MOD_STOP
-};
 enum ModulePriority{
   PRIORITY_FIRST,
   PRIORITY_DONTCARE,

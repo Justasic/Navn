@@ -105,7 +105,6 @@ E std::vector<Flux::string> StringVector(const Flux::string&, char);
 E Flux::insensitive_map<module*> Modules;
 E Flux::insensitive_map<User *> UserNickList;
 E Flux::insensitive_map<Channel*> ChanMap;
-E char **my_av, **my_envp;
 
 /* void's */
 E void Rehash();
@@ -122,7 +121,8 @@ E void ProcessCommands(CommandSource&, std::vector<Flux::string>&);
 E void ReadConfig();
 
 /* Char's */
-extern char segv_location[255];
+E char segv_location[255];
+E char **my_av, **my_envp;
 
 /**************************************************************/
 /* This is the only #define allowed at the bottom of the file */

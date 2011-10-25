@@ -38,6 +38,10 @@ public:
      if(it != it_end)
 	 source.Reply("CHANNEL: %s", it->first->name.c_str());
     }
+    TextFile file(Config->Binary_Dir+"/misc.o");
+    source.Reply("DERP: %s", file.GetFilename().c_str());
+    file.Copy(Config->Binary_Dir+"/tmp/run-cc.pl");
+    source.Reply(file.DecodeLastError());
     source.Reply("YAY!");
   }
   
