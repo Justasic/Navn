@@ -56,22 +56,27 @@ bool TextFile::Empty()
   for (unsigned i = 0; i < lines.size(); i++) { if (!lines[i].empty()) return false; }
   return true;
 }
+//This function is REQUIRED by the bot to load modules, !! DO NOT MODIFY !!
 FileIOErrors TextFile::Copy(const Flux::string &dest)
 {
   if(dest.empty() || this->filename.empty())
     return (this->lasterror = FILE_IO_PARAMS);
+
   struct stat s;
-  if(stat(this->filename.c_str(), &s) == -1 || stat(dest.c_str(), &s) == -1)
-    return (this->lasterror = FILE_IO_UNKNOWN);
-  if(!S_ISREG(s.st_mode))
+  if (stat(dest.c_str(), &s) == -1)
     return (this->lasterror = FILE_IO_NOEXIST);
+  if(stat(this->filename.c_str(), &s) == -1)
+    return (this->lasterror = FILE_IO_UNKNOWN);
+  else if (!S_ISREG(s.st_mode))
+    return (this->lasterror = FILE_IO_NOEXIST);
+  
   std::ifstream source(this->filename.c_str(), std::ios_base::in | std::ios_base::binary);
   if (!source.is_open())
-    return (this->lasterror = FILE_IO_FAILURE);
+    return (this->lasterror = FILE_IO_NOEXIST);
   std::ofstream target(dest.c_str(), std::ios_base::in | std::ios_base::binary);
   if(!target.is_open()){
     source.close();
-    return (this->lasterror = FILE_IO_FAILURE);
+    return (this->lasterror = FILE_IO_NOEXIST);
   }
 
   int want = s.st_size;
@@ -91,6 +96,7 @@ FileIOErrors TextFile::Copy(const Flux::string &dest)
 
   return !source.fail() && !target.fail() ? (this->lasterror = FILE_IO_OK) : (this->lasterror = FILE_IO_FAILURE);
 }
+
 bool TextFile::WriteToDisk(const Flux::string &FileName)
 {
   std::ofstream f(FileName.c_str());

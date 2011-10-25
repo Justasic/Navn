@@ -1,19 +1,18 @@
 #include "flux_net_irc.hpp"
 
-int pings = 0;
-bool timeout = false;
 class PingTimer:public Timer
 {
 public:
-  PingTimer():Timer(30, time(NULL), true) {}
+  int pings;
+  bool timeout;
+  PingTimer():Timer(30, time(NULL), true) { pings = 0; timeout = false; }
   void Tick(time_t){
     send_cmd("PING :%i\n", time(NULL));
     if(!timeout)
       timeout = true;
     if(timeout)
     {
-      ++pings;
-      if(pings >= 3)
+      if(++pings >= 3)
 	restart("Ping-Timeout: 121 seconds");
     }
   }
@@ -36,14 +35,14 @@ public:
     {
      Flux::string ts = params[0];
      int lag = time(NULL)-(int)ts;
-     timeout = false;
-     pings = 0;
+     pingtimer.timeout = false;
+     pingtimer.pings = 0;
      if(protocoldebug)
         Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL);
     }
     if(command == "PING")
     {
-      timeout = false;
+      pingtimer.timeout = false;
       send_cmd("PONG :%s\n", params[1].c_str());
     }
   }

@@ -175,56 +175,6 @@ Flux::string DecodeModErr(ModErr err){
      return "Unknown error code";
  }
 }
-static ModErr ModuleCopy(const Flux::string &name, Flux::string &output)
-{
-  SET_SEGV_LOCATION();
-  Flux::string input;
-  //if(Config->ModuleDir.empty())
-    input = Config->Binary_Dir + "/" + (Config->ModuleDir.empty()?name:Config->ModuleDir+"/"+name) + ".so";
-    //input = Config->Binary_Dir + "/" + name + ".so";
- // else
-    //input = Config->Binary_Dir + "/" + Config->ModuleDir + "/" + name + ".so";
-  
-  struct stat s;
-  if(stat(Flux::string(Config->Binary_Dir+"runtime/").c_str(), &s) == -1)
-    system(Flux::string("mkdir "+Config->Binary_Dir+"runtime/").c_str());
-  if (stat(input.c_str(), &s) == -1)
-	  return MOD_ERR_NOEXIST;
-  else if (!S_ISREG(s.st_mode))
-	  return MOD_ERR_NOEXIST;
-  
-  std::ifstream source(input.c_str(), std::ios_base::in | std::ios_base::binary);
-  if (!source.is_open())
-	  return MOD_ERR_NOEXIST;
-  
-  output = TempFile(output);
-  
-  Log(LOG_RAWIO) << "Runtime module location: " << output;
-  
-  std::ofstream target(output.c_str(), std::ios_base::in | std::ios_base::binary);
-  if (!target.is_open())
-  {
-	  source.close();
-	  return MOD_ERR_FILE_IO;
-  }
-
-  int want = s.st_size;
-  char *buffer = new char[s.st_size];
-  while (want > 0 && !source.fail() && !target.fail())
-  {
-	  source.read(buffer, want);
-	  int read_len = source.gcount();
-
-	  target.write(buffer, read_len);
-	  want -= read_len;
-  }
-  delete [] buffer;
-  
-  source.close();
-  target.close();
-
-  return !source.fail() && !target.fail() ? MOD_ERR_OK : MOD_ERR_FILE_IO;
-}
 /*  This code was found online at http://www.linuxjournal.com/article/3687#comment-26593 */
 template<class TYPE> TYPE class_cast(void *symbol)
 {
@@ -263,25 +213,26 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     return MOD_ERR_EXISTS;
   Log() << "Attempting to load module [" << modname << ']';
   
-  Flux::string mdir = Config->Binary_Dir + "/runtime/"+modname;
-  if(modname.search(".so"))
-    mdir += ".XXXXXX";
-  else
-    mdir += ".so.XXXXXX";
+  Flux::string mdir = Config->Binary_Dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX"),
+  input = Flux::string(Config->Binary_Dir + "/" + (Config->ModuleDir.empty()?modname:Config->ModuleDir+"/"+modname) + ".so").replace_all_cs("//","/");
   
-  ModErr er = ModuleCopy(modname, mdir);
-  if(er != MOD_ERR_OK){
-    Log(LOG_TERMINAL) << "Runtime copy error: " << DecodeModErr(er);
-    return er;
+  //ModErr er = ModuleCopy(modname, mdir);
+  TextFile mod(input);
+  Flux::string output = TempFile(mdir);
+  Log(LOG_RAWIO) << "Runtime module location: " << output;
+  mod.Copy(output);
+  if(mod.GetLastError() != FILE_IO_OK){
+    Log(LOG_RAWIO) << "Runtime Copy Error: " << mod.DecodeLastError();
+    return MOD_ERR_FILE_IO;
   }
+  
   dlerror();
   
-  void *handle = dlopen(mdir.c_str(), RTLD_LAZY);
+  void *handle = dlopen(output.c_str(), RTLD_LAZY);
   const char *err = dlerror();
   if(!handle && err && *err)
   {
     Log() << '[' << modname << "] " << err;
-    Delete(modname.c_str());
     return MOD_ERR_NOLOAD;
   }
   dlerror();
@@ -291,7 +242,6 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   if(!f && err && *err){
     Log() << "No module init function, moving on.";
     dlclose(handle);
-    Delete(modname.c_str());
     return MOD_ERR_NOLOAD;
   }
   if(!f)
@@ -307,8 +257,8 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     Log() << "Error while loading " << modname << ": " << e.GetReason();
     return MOD_ERR_EXCEPTION;
   }
-  m->filepath = mdir;
-  m->filename = modname+".so";
+  m->filepath = output;
+  m->filename = (modname.search(".so")?modname:modname+".so");
   m->handle = handle;
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
   return MOD_ERR_OK;

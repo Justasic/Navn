@@ -16,6 +16,7 @@ enum Implementation{
 	I_OnCTCP, I_OnQuit, I_OnJoin, I_OnKick, I_OnConnectionError,
 	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
 	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument, I_OnFork,
+	I_OnSocketError,
   I_END
 };
 enum ModulePriority{
@@ -53,6 +54,7 @@ public:
   virtual void OnArgument(int, const Flux::string&) {}
   virtual void OnModuleLoad(module*) {}
   virtual void OnFork(int) {}
+  virtual void OnSocketError(const Flux::string&) {}
   virtual void OnModuleUnload(module*){}
   virtual void OnRestart(const Flux::string&) {}
   virtual void OnShutdown() {}
