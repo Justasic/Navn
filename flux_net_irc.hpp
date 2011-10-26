@@ -309,10 +309,12 @@ void restart(const Flux::string &reason){
   FOREACH_MOD(I_OnRestart, OnRestart(reason));
   if(reason.empty()){
     Log() << "Restarting: No Reason";
-    Send->command->quit("Restarting: No Reason");
+    if(Send)
+      Send->command->quit("Restarting: No Reason");
   }else{
     Log() << "Restarting: " << reason;
-    Send->command->quit("Restarting: %s", reason.c_str());
+    if(Send)
+      Send->command->quit("Restarting: %s", reason.c_str());
   }
   chdir(CurrentPath);
   int execvpret = execvp(my_av[0], my_av);
@@ -323,7 +325,7 @@ void restart(const Flux::string &reason){
 }
 
 /**
- * \fn static void Rehash(Socket &sock)
+ * \fn void Rehash()
  * \brief Reload the bot config file
  * \param boolean this boolean tells rehash if we are starting from start or not
  */
@@ -356,8 +358,7 @@ static void WritePID(){
   //logging to a text file and making the PID file.
   if(Config->PidFile.empty())
     throw CoreException("Cannot write PID file, no PID file specified.");
-  FILE *pidfile;
-  pidfile = fopen(Config->PidFile.c_str(), "w");
+  FILE *pidfile = fopen(Config->PidFile.c_str(), "w");
   if(pidfile){
     #ifdef _WIN32
     fprintf(pidfile, "%d\n", static_cast<int>(GetCurrentProcessId()));

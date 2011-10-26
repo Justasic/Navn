@@ -216,7 +216,6 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   Flux::string mdir = Config->Binary_Dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX"),
   input = Flux::string(Config->Binary_Dir + "/" + (Config->ModuleDir.empty()?modname:Config->ModuleDir+"/"+modname) + ".so").replace_all_cs("//","/");
   
-  //ModErr er = ModuleCopy(modname, mdir);
   TextFile mod(input);
   Flux::string output = TempFile(mdir);
   Log(LOG_RAWIO) << "Runtime module location: " << output;

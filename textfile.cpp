@@ -127,7 +127,7 @@ Flux::string TextFile::SingleLine() { return SingleLineBuffer; }
 Flux::string TextFile::Extension()
 {
   Flux::string ext = "";
-  for (unsigned i = filename.length()-1; filename[i] != '.'; i--)
+  for (unsigned i = filename.length()-1; filename[i] != '.' && i < filename.size(); i--)
   {
     ext += filename[i];
   }
