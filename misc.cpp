@@ -3,22 +3,6 @@
 #include "INIReader.h"
 
 //General misc functions
-/** \fn Flux::string strip(const Flux::string &buf)
- * \brief Strips \r and \n from a Flux::string
- * Takes out the '\r' and '\n' from a Flux::string. Mostly used in messing with irc replies.
- * \param &buf String to be stripped
- * \return \a &buf without the '\r' and '\n'.
- */
-Flux::string strip(const Flux::string &buf)
-{
-	Flux::string newbuf = buf;
-	char c = newbuf[newbuf.size() - 1];
-	while (c == '\n' || c == '\r'){
-		newbuf.erase(newbuf.end() - 1);
-		c = newbuf[newbuf.size() - 1];
-	}
-	return newbuf;
-}
 /**Random Number Generator
  * This will generate a random number x is start number, y is the stop number.
  * @param randint(int x, int y)
@@ -127,59 +111,7 @@ Flux::string fsprintf(const char *fmt, ...)
   }else
     return fmt;
 }
-/**
- * \fn Anope::string duration(const time_t &t)
- * Expresses in a string the period of time represented by a given amount
- * of seconds (with days/hours/minutes).
- * \param seconds time in seconds
- * \return buffer
- */
-Flux::string duration(const time_t &t)
-{
-  /* We first calculate everything */
-  time_t days = (t / 86400);
-  time_t hours = (t / 3600) % 24;
-  time_t minutes = (t / 60) % 60;
-  time_t seconds = (t) % 60;
 
-  if (!days && !hours && !minutes)
-    return Flux::stringify(seconds) + " " + (seconds != 1 ? "seconds" : "second");
-  else
-  {
-    bool need_comma = false;
-    Flux::string buffer;
-    if (days)
-    {
-      buffer = Flux::stringify(days) + " " + (days != 1 ? "days" : "day");
-      need_comma = true;
-    }
-    if (hours)
-    {
-      buffer += need_comma ? ", " : "";
-      buffer += Flux::stringify(hours) + " " + (hours != 1 ? "hours" : "hour");
-      need_comma = true;
-    }
-    if (minutes)
-    {
-      buffer += need_comma ? ", " : "";
-      buffer += Flux::stringify(minutes) + " " + (minutes != 1 ? "minutes" : "minute");
-    }
-    return buffer;
-  }
-}
-
-Flux::string do_strftime(const time_t &t, bool short_output)
-{
-  tm tm = *localtime(&t);
-  char buf[4098];
-  strftime(buf, sizeof(buf), "%b %d %H:%M:%S %Y %Z", &tm);
-  if (short_output)
-    return buf;
-  if (t < time(NULL))
-    return Flux::string(buf) + " " + fsprintf("(%s ago)", duration(time(NULL) - t).c_str());
-  else
-    return Flux::string(buf) + " " + fsprintf("(%s from now)", duration(t - time(NULL)).c_str());
-}
 /**
   * \fn Flux::string isolate(char begin, char end, Flux::string msg)
   * \brief Isolates a Flux::string between two characters

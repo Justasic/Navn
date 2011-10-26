@@ -179,10 +179,10 @@ public:
 	    source.Reply("Unable to write topic temp file");
 	    Log(u, this) << " in an attempt to change the topic in " << tchan << " and failed to write to temp file 'topic.tmp'";
     }else{
-	    topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><topic> " << tchan << " Topic: " << strip(msg) << " </topic></channel></rss>" << std::endl;
+	    topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><topic> " << tchan << " Topic: " << msg.strip() << " </topic></channel></rss>" << std::endl;
 	    system("sh ftp.sh");
     }
-    Log(u, this) << "to change " << tchan << "'s topic to \"" << Flux::Sanitize(msg) << "\"";
+    Log(u, this) << "to change " << tchan << "'s topic to \"" << msg << "\"";
   }
 };
 
@@ -277,7 +277,7 @@ public:
     source.Reply("System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
     source.Reply("System Version: %s", uts.version);
 
-    source.Reply(strip(execute("grep 'model name' /proc/cpuinfo")));
+    source.Reply(execute("grep 'model name' /proc/cpuinfo").strip());
 #else
     source.Reply("This is currently not avalable on windows syetems, sorry.");
 #endif

@@ -57,15 +57,15 @@ enum LogType
 };
 enum ModErr
 {
-MOD_ERR_OK,
-MOD_ERR_MEMORY,
-MOD_ERR_PARAMS,
-MOD_ERR_EXISTS,
-MOD_ERR_NOEXIST,
-MOD_ERR_NOLOAD,
-MOD_ERR_UNKNOWN,
-MOD_ERR_FILE_IO,
-MOD_ERR_EXCEPTION
+  MOD_ERR_OK,
+  MOD_ERR_MEMORY,
+  MOD_ERR_PARAMS,
+  MOD_ERR_EXISTS,
+  MOD_ERR_NOEXIST,
+  MOD_ERR_NOLOAD,
+  MOD_ERR_UNKNOWN,
+  MOD_ERR_FILE_IO,
+  MOD_ERR_EXCEPTION
 };
 
 /* Typedef's */
@@ -87,7 +87,6 @@ E CommandMap ChanCommandMap;
 E time_t starttime;
 E Flux::string binary_path, bot_bin, binary_dir, server_name, quitmsg;
 E const Flux::string VERSION_LONG;
-E Flux::string strip(const Flux::string &buf);
 E Flux::string getprogdir(const Flux::string&);
 E Flux::string DecodeModErr(ModErr err);
 E Flux::string isolate(char begin, char end, const Flux::string &msg);
