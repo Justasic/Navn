@@ -31,7 +31,8 @@ public:
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
       msg += params[i] +' ';
-    if(msg.search("I am a very long command")){
+    if(msg.search("I am a very long command"))
+    {
       Log(LOG_TERMINAL) << "PRIVMSG: " << msg;
     }
   }
@@ -40,7 +41,8 @@ public:
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
       msg += params[i] +' ';
-    if(msg.search("I am a very long notice")){
+    if(msg.search("I am a very long notice"))
+    {
       Log(LOG_TERMINAL) << "NOTICE: " << msg;
     }
   }

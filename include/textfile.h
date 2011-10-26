@@ -25,10 +25,9 @@ public:
   TextFile(std::vector<Flux::string>);
   FileIOErrors Copy(const Flux::string&);
   FileIOErrors GetLastError();
-  Flux::string DecodeLastError(), GetFilename();
+  Flux::string DecodeLastError(), GetFilename(), Extension();
   int NumberOfLines();
-  void Edit(int,Flux::string);
-  void Clear();
+  void Edit(int,Flux::string), Clear();
   bool Empty();
   bool WriteToDisk(const Flux::string&);
   Flux::string SingleLine();

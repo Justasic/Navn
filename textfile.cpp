@@ -69,7 +69,7 @@ FileIOErrors TextFile::Copy(const Flux::string &dest)
     return (this->lasterror = FILE_IO_UNKNOWN);
   else if (!S_ISREG(s.st_mode))
     return (this->lasterror = FILE_IO_NOEXIST);
-  
+
   std::ifstream source(this->filename.c_str(), std::ios_base::in | std::ios_base::binary);
   if (!source.is_open())
     return (this->lasterror = FILE_IO_NOEXIST);
@@ -123,3 +123,13 @@ bool TextFile::WriteToDisk(const Flux::string &FileName)
 }
 
 Flux::string TextFile::SingleLine() { return SingleLineBuffer; }
+
+Flux::string TextFile::Extension()
+{
+  Flux::string ext = "";
+  for (unsigned i = filename.length()-1; filename[i] != '.'; i--)
+  {
+    ext += filename[i];
+  }
+  return ext;
+}
