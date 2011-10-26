@@ -126,10 +126,14 @@ Flux::string TextFile::SingleLine() { return SingleLineBuffer; }
 
 Flux::string TextFile::Extension()
 {
-  Flux::string ext = "";
-  for (unsigned i = filename.length()-1; filename[i] != '.' && i < filename.size(); i--)
+  if (filename.search('.'))
   {
+    Flux::string ext = "";
+    for (unsigned i = filename.length()-1; filename[i] != '.' && i < filename.size(); i--)
+    {
     ext += filename[i];
+    }
+    return ext;
   }
-  return ext;
+  else { return ""; }
 }
