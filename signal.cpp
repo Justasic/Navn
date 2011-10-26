@@ -46,7 +46,7 @@ void HandleSegfault(module *m)
  time_t now = time(NULL);
  
  size = backtrace(array, 10);
- if(IsFile("SEGFAULT.log"))
+ if(TextFile::IsFile("SEGFAULT.log"))
    Delete("SEGFAULT.log");
  std::stringstream slog;
  std::fstream sslog("SEGFAULT.log", std::ifstream::out | std::ifstream::app);

@@ -201,36 +201,6 @@ Flux::string isolate(char begin, char end, const Flux::string &msg){
   return to_find;
 }
 
-/** Check if a file exists
- * \param filename The file
- * \return true if the file exists, false if it doens't
- */
-bool IsFile(const Flux::string &filename)
-{
-	struct stat fileinfo;
-	if (!stat(filename.c_str(), &fileinfo))
-		return true;
-
-	return false;
-}
-/**
- * \fn Flux::string TempFile(const Flux::string &file)
- * \brief Creates a temporary file name for use in navn, can be quite useful.
- * \param Flux::string The Flux::string of the file location/name
- * NOTE: THIS _MUST_ HAVE 6 X's (XXXXXX) to work properly.
- */
-Flux::string TempFile(const Flux::string &file){
-  char *tmp_output = strdup(file.c_str());
-  int target_fd = mkstemp(tmp_output);
-  if (target_fd == -1 || close(target_fd) == -1)
-  {
-	  free(tmp_output);
-	  return "";
-  }
-  Flux::string filestring = tmp_output;
-  free(tmp_output);
-  return filestring;
-}
 /**
  * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
  * \brief creates a vector that breaks down a string word-by-word using the delim as the seperater

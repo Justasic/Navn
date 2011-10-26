@@ -97,6 +97,38 @@ FileIOErrors TextFile::Copy(const Flux::string &dest)
   return !source.fail() && !target.fail() ? (this->lasterror = FILE_IO_OK) : (this->lasterror = FILE_IO_FAILURE);
 }
 
+/**
+ * \fn Flux::string TempFile(const Flux::string &file)
+ * \brief Creates a temporary file name for use in navn, can be quite useful.
+ * \param Flux::string The Flux::string of the file location/name
+ * NOTE: THIS _MUST_ HAVE 6 X's (XXXXXX) to work properly.
+ */
+Flux::string TextFile::TempFile(const Flux::string &file){
+  char *tmp_output = strdup(file.c_str());
+  int target_fd = mkstemp(tmp_output);
+  if (target_fd == -1 || close(target_fd) == -1)
+  {
+    free(tmp_output);
+    return "";
+  }
+  Flux::string filestring = tmp_output;
+  free(tmp_output);
+  return filestring;
+}
+
+/** Check if a file exists
+ * \param filename The file
+ * \return true if the file exists, false if it doens't
+ */
+bool TextFile::IsFile(const Flux::string &filename)
+{
+  struct stat fileinfo;
+  if (!stat(filename.c_str(), &fileinfo))
+    return true;
+  
+  return false;
+}
+
 bool TextFile::WriteToDisk(const Flux::string &FileName)
 {
   std::ofstream f(FileName.c_str());
@@ -131,7 +163,7 @@ Flux::string TextFile::Extension()
     Flux::string ext = "";
     for (unsigned i = filename.length()-1; filename[i] != '.' && i < filename.size(); i--)
     {
-    ext += filename[i];
+      ext += filename[i];
     }
     return ext;
   }

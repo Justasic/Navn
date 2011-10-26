@@ -38,7 +38,7 @@ public:
   {
     User *u = source.u;
     Channel *c = source.c;
-    Flux::string area = params[params.size() - 1], tmpfile = TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
+    Flux::string area = params[params.size() - 1], tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
     if(tmpfile.empty()){
       Log() << "Failed to get temp file";
       return;

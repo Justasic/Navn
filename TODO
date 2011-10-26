@@ -47,6 +47,7 @@ Navn 2.0.2
   [ ] Add Greetings
   [ ] Add lists of networks, channels, etc.
   [ ] Add information on those users (what chans are they op in? are they an IRCop? etc.)
+  [ ] Add Personal command aliases
 
 [ ] Add more event handlers (FOREACH_MOD)
 [ ] Add calculator

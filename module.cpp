@@ -217,7 +217,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   input = Flux::string(Config->Binary_Dir + "/" + (Config->ModuleDir.empty()?modname:Config->ModuleDir+"/"+modname) + ".so").replace_all_cs("//","/");
   
   TextFile mod(input);
-  Flux::string output = TempFile(mdir);
+  Flux::string output = TextFile::TempFile(mdir);
   Log(LOG_RAWIO) << "Runtime module location: " << output;
   mod.Copy(output);
   if(mod.GetLastError() != FILE_IO_OK){
