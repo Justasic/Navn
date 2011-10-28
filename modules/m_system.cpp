@@ -338,7 +338,7 @@ public:
       Log() << "Successfully connected to the server \"" << Config->Server+":"+Config->Port << "\" Master Channel: " << Config->Channel;
     }
     if((i == 433)){
-      Config->BotNick.push_back('_');
+      Config->BotNick.push_back(Flux::RandomNickString(1));
       Send->command->nick(Config->BotNick);
     }
     if((i == 376))
@@ -377,12 +377,6 @@ public:
       }
     }
   }
-  void OnChannelOp(User *u, Channel *c, const Flux::string &modes, const Flux::string &modeex){
-      if(modes.search("-b") && c->name.equals_ci("#Computers") && !u->IsOwner() && !u->nick.equals_ci("DeathBlade")){
-	Send->command->mode("#Computers", "+b", modeex);
-	c->SendMessage("no u!");
-      }
-    }
   void OnNickChange(User *u, const Flux::string &newnick)
   {
    /*if(source.command == "NICK"){

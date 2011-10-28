@@ -97,6 +97,7 @@ Added INIReader::GetBoolean()
 Added "Socket Timeout" into config, this sets the amount of time for the socket to process
 Added FileIO class, this should allow for you to read and write various files
 Removed Send->raw() as it now uses send_cmd()
+Added Flux::RandomString and Flux::RandomNickString
  
 
 Navn 2.0.0

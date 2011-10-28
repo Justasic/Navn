@@ -1,4 +1,5 @@
-#include <flux.h>
+#include "flux.h"
+#include "extern.h"
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 /**
  *\file  Sepstream.cpp 
@@ -38,6 +39,31 @@ const Flux::string sepstream::GetRemaining()
 bool sepstream::StreamEnd()
 {
 		return n == tokens.end();
+}
+
+Flux::string Flux::RandomNickString(size_t length)
+{
+  Flux::string randomchars;
+  srand(time(NULL));
+  for(unsigned i=0; i < length; ++i)
+  {
+    top:
+    char c = (char) (rand() % ('z' - '0' + 1) + '0');
+    if(isvalidnick(c))
+      randomchars += c;
+    else
+      goto top;
+  }
+  return randomchars;
+}
+
+Flux::string Flux::RandomString(size_t length)
+{
+  Flux::string randomchars;
+  srand((unsigned)time(NULL));
+  for(unsigned i=0; i < length; ++i)
+    randomchars += (char) (rand() % ('z' - '0' + 1) + '0');
+  return randomchars;
 }
 /******************************************************************************/
 

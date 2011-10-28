@@ -599,6 +599,8 @@ namespace Flux{
     template<typename T> class map : public std::map<string, T> { };
     template<typename T> class insensitive_map : public std::map<string, T, std::less<ci::string> > { };
     extern Flux::string Sanitize(const Flux::string&);
+    extern Flux::string RandomString(size_t);
+    extern Flux::string RandomNickString(size_t);
     inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
     inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
     inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }

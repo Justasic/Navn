@@ -23,7 +23,7 @@ void ProcessInput(const Flux::string &str)
 /** \class InputThread
  * This thread allows for user input to be possible, this is activated when the nofork option is specified.
  */
-class InputThread : public Thread
+class InputThread : public Thread 
 {
 public:
   bool exiting;
@@ -56,8 +56,10 @@ public:
   ~ModTerminalInput() { if(t) delete t; }
   void OnStart(int, char**)
   {
-    t = new InputThread();
-    t->Start();
+    if(nofork && InTerm()){
+      t = new InputThread();
+      t->Start();
+    }
   }
 };
 
