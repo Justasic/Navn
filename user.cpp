@@ -1,7 +1,7 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #include <user.h>
 Flux::insensitive_map<User *> UserNickList;
-size_t usercnt = 0, maxusercnt = 0;
+size_t usercnt = 0, maxusercnt = 0, enter = 0;
 User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname, const Flux::string &sserver){
  SET_SEGV_LOCATION();
  /* check to see if a empty string was passed into the constructor */
@@ -85,7 +85,7 @@ void User::DelChan(Channel *c)
 }
 Channel *User::findchannel(const Flux::string &chan)
 {
-  printf("entered User::findchannel\n");
+  printf("entered User::findchannel %i\n", (int)++enter);
   Channel *c = findchannel(chan);
   if(!c)
     return NULL;

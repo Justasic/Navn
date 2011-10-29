@@ -332,34 +332,39 @@ public:
 	IsOper = true;
 	Send->o = new Oper();
       }
-      if(!Config->ServicesAccount.empty() || !Config->ServicesPass.empty()){
-	Send->privmsg("NickServ", "identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
-      }
       Log() << "Successfully connected to the server \"" << Config->Server+":"+Config->Port << "\" Master Channel: " << Config->Channel;
     }
     if((i == 433)){
-      Config->BotNick.push_back(Flux::RandomNickString(1));
+      Config->BotNick.push_back(Flux::RandomNickString(5));
       Send->command->nick(Config->BotNick);
+      istempnick = true;
     }
     if((i == 376))
     {
       Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m";
       Log(LOG_TERMINAL) << "\033[22;34mSession Password: \033[01;32m" << password << "\033[22;36m";
       Send->notice(Config->Owner, "The randomly generated password is: %s", password.c_str());
-      started = true; 
+      started = true;
+      /* Identify to the networks services */
+      if((!Config->ServicesAccount.empty() || !Config->ServicesPass.empty()) && Config->IdentOnConn){
+	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount);
+	Sendns = Sendns.replace_all_ci("%p", Config->ServicesPass);
+	Send->privmsg(Config->ServicesService, Sendns);
+	Log() << "Identified to " << Config->ServicesService << " with account \"" << Config->ServicesAccount << "\"";
+      }
     }
   }
   void OnJoin(User *u, Channel *c)
   {
     u->SendMessage("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(),
 		   c->name.c_str(), Config->BotNick.c_str());
-    Log() << u->nick << " joined " << c->name;
+    Log(u) << "joined " << c->name;
   }
   void OnKick(User *u, User *kickee, Channel *c, const Flux::string &reason)
   {
      if(kickee && kickee->nick.equals_ci(Config->BotNick))
      {
-       Log() << u->nick << " kicked me from " << c->name << '(' << reason << ')';
+       Log(u) << "kicked me from " << c->name << '(' << reason << ')';
 	c->SendJoin(); 
      }
   }
@@ -370,24 +375,23 @@ public:
       msg += params[i]+' ';
       
     msg.trim(); // Auto-Identify
-    if(msg.search("This nickname is registered and protected. If it is your")){
-      if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == "NickServ"){
-	u->SendPrivmsg("identify %s %s", Config->ServicesAccount.c_str(), Config->ServicesPass.c_str());
-	Log() << "Identified to NickServ with account \"" << Config->ServicesAccount << "\"";
+    if(msg.search(Config->AutoIdentString)){
+      if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == Config->ServicesService && Config->IdentOnConn){
+	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount);
+	Sendns = Sendns.replace_all_ci("%p", Config->ServicesPass);
+	u->SendPrivmsg(Sendns);
+	Log() << "Identified to " << u->nick << " with account \"" << Config->ServicesAccount << "\"";
       }
     }
   }
   void OnNickChange(User *u, const Flux::string &newnick)
   {
-   /*if(source.command == "NICK"){
     IsoHost *Host = new IsoHost(u->fullhost);
-    Flux::string newnick = Host->nick;
-    if (newnick == nick)
-      nick = newnick;
-    if(newnick == owner_nick)
-      owner_nick = newnick;
+    if(Host->nick == Config->BotNick)
+      Config->BotNick = Host->nick;
+    if(newnick == Config->Owner)
+      Config->Owner = Host->nick;
     delete Host;
-  }*/ 
    /*if(command == "NICK"){
    if(u && u->nick == Config->BotNick){
        nick = params[0];

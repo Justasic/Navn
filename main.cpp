@@ -69,7 +69,6 @@ int main (int argcx, char** argvx, char *envp[])
     Send->command->nick(Config->BotNick);
     FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
     
-    
     while(!quitting){
       Log(LOG_RAWIO) << "Top of main loop";
       

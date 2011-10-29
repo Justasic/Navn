@@ -20,7 +20,7 @@
 jmp_buf sigbuf;
 #endif
 char **my_av, **my_envp;
-bool nofork, dev, protocoldebug, IsOper, quitting, started, nocolor = false;
+bool nofork, dev, protocoldebug, IsOper, quitting, started, nocolor, istempnick = false;
 Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name;
 const Flux::string password = make_pass();
 char segv_location[255];

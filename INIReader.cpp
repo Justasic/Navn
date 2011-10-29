@@ -179,13 +179,12 @@ BotConfig::~BotConfig() { if(Parser) delete Parser; }
 void BotConfig::Read(){
   SET_SEGV_LOCATION();
   this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
-  this->ServicesAccount = this->Parser->Get("Bot","NickServ_Account","");
-  this->ServicesPass = this->Parser->Get("Bot","NickServ_Password","");
+
   this->Owner = this->Parser->Get("Bot","Owner","");
   this->Realname = this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+Flux::stringify(VERSION)));
   this->Ident = this->Parser->Get("Connect","Ident","Navn");
-  this->BotNick = this->Parser->Get("Bot","Nick","Navn");
-  this->Channel = this->Parser->Get("Bot","Channel","#Test");
+  this->BotNick = this->Parser->Get("Connect","Nick","Navn");
+  this->Channel = this->Parser->Get("Connect","Channel","#Test");
   this->Port = this->Parser->Get("Connect","Port","6667");
   this->Server = this->Parser->Get("Connect", "Server", "");
   this->LogChannel = this->Parser->Get("Modules", "LogChannel","");
@@ -196,5 +195,12 @@ void BotConfig::Read(){
   this->ModuleDir = Parser->Get("Modules", "ModuleDir", "");
   this->Modules = Parser->Get("Modules", "Modules", "");
   this->SockWait = Parser->GetInteger("Bot","Socket Timeout",5);
+  
+  this->ServicesAccount = this->Parser->Get("Services","Account","");
+  this->ServicesPass = this->Parser->Get("Services","Password","");
+  this->ServicesSendString = this->Parser->Get("Services","Send String","");
+  this->IdentOnConn = this->Parser->GetBoolean("Services","Identify on connect", true);
+  this->ServicesService = this->Parser->Get("Services", "Service", "");
+  this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
 }
 

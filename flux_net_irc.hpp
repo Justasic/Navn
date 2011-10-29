@@ -176,32 +176,6 @@ public:
     }else{return false;}
   }
 };
-
-
-/**
- * \class IsoHost
- * \brief Wrapper for an irc host
- * This was written by Justasic to break up the parts of a messages host for easier use.
- */
-class IsoHost:Flux::string
-{
-public:
-  Flux::string raw;
-  Flux::string nick;
-  Flux::string host;
-  Flux::string user;
-  /**
-   * \fn IsoHost(Flux::string fullhost)
-   * \param fullhost A Flux::string containing the full host of an irc message
-   */
-  IsoHost(const Flux::string &fullhost){
-    nick = isolate(':','!',fullhost);
-    raw = fullhost;
-    host = isolate('@',' ',fullhost);
-    user = isolate('!','@',fullhost);
-  }
-
-};
 /**
  * \fn Flux::string removeCommand(Flux::string command, Flux::string s)
  * \brief Removes a command from a Flux::string.
@@ -262,7 +236,6 @@ Flux::string urlify(const Flux::string &received){
       default:
 	string = string+received[i];
     }
-    //string = string.erase(0, received.size());
   }
   return string;
 }
@@ -408,7 +381,7 @@ void startup(int argc, char** argv) {
 	Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
 	Log(LOG_TERMINAL) << "-h, --help";
 	Log(LOG_TERMINAL) << "-d, --developer";
-	Log(LOG_TERMINAL) << "-f, --nofork";
+	Log(LOG_TERMINAL) << "-n, --nofork";
 	Log(LOG_TERMINAL) << "-p, --protocoldebug";
 	Log(LOG_TERMINAL) << "-c, --nocolor";
 	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
@@ -444,10 +417,10 @@ void startup(int argc, char** argv) {
   }
   if(!nocolor) Log(LOG_TERMINAL) << "\033[22;36m";
 	       ModuleHandler::SanitizeRuntime();
-  ReadConfig();
-  WritePID();
-  FOREACH_MOD(I_OnStart, OnStart(argc, argv));
-  Fork();
+  ReadConfig(); //load modules
+  WritePID(); //Write the pid file
+  FOREACH_MOD(I_OnStart, OnStart(argc, argv)); //announce we are starting the bot
+  Fork(); //Fork to background
 }
 /**
  * \fn Flux::string xmlToString(Flux::string fileName)

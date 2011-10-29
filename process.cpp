@@ -156,10 +156,8 @@ void process(const Flux::string &buffer){
   /* make local variables instead of global ones */
   const Flux::string &receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
-
-  Flux::string nickname = isolate(':','!',source),
-  uident = isolate('!','@',source),
-  uhost = isolate('@',' ',source), cmd;
+  IsoHost *h = new IsoHost(source);
+  Flux::string nickname = h->nick, uident = h->ident, uhost = h->host, cmd;
   
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
@@ -175,7 +173,7 @@ void process(const Flux::string &buffer){
     if(!nickname.search('.'))
       u = new User(nickname, uident, uhost);
   }
-  if(command == "QUIT" && u){
+  if(command == "QUIT"){
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     delete u;
   }

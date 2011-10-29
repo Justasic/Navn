@@ -51,8 +51,6 @@ public:
   INIReader *Parser;
   Flux::string LogFile;
   Flux::string Binary_Dir;
-  Flux::string ServicesAccount;
-  Flux::string ServicesPass;
   Flux::string Owner;
   Flux::string Realname;
   Flux::string Ident;
@@ -67,6 +65,12 @@ public:
   Flux::string OperatorPass;
   Flux::string ModuleDir;
   Flux::string Modules;
+  Flux::string ServicesAccount;
+  Flux::string ServicesPass;
+  Flux::string ServicesSendString;
+  Flux::string AutoIdentString;
+  Flux::string ServicesService;
+  bool IdentOnConn;
   size_t SockWait;
 private:
   void Read();

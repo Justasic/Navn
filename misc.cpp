@@ -13,6 +13,18 @@ int randint(int x, int y)
   return rand()%(y-x+1)+x;
 }
 
+/**
+ * \fn IsoHost(const Flux::string &fullhost)
+ * \param fullhost A Flux::string containing the full host of an irc message
+ */
+IsoHost::IsoHost(const Flux::string &fullhost)
+{
+  nick = isolate(':','!',fullhost);
+  raw = fullhost;
+  host = isolate('@',' ',fullhost);
+  ident = isolate('!','@',fullhost);
+}
+
 void Fork()
 {
   if (!nofork && InTerm()){

@@ -32,7 +32,7 @@ public:
     Flux::string host = params[1];
     IsoHost* Host = new IsoHost(host);
     c->SendMessage("Nick: %s", Host->nick.c_str());
-    c->SendMessage("User: %s", Host->user.c_str());
+    c->SendMessage("User: %s", Host->ident.c_str());
     c->SendMessage("Host: %s", Host->host.c_str());
     c->SendMessage("Raw: %s", Host->raw.c_str());
     delete Host;

@@ -75,6 +75,22 @@ public:
   void kline(const Flux::string&, const Flux::string&, const Flux::string&);
   void gline(const Flux::string&, const Flux::string&, const Flux::string&);
 };
+
+/**
+ * \class IsoHost
+ * \brief Wrapper for an irc host
+ * This was written by Justasic to break up the parts of a messages host for easier use.
+ */
+class IsoHost:Flux::string
+{
+public:
+  IsoHost(const Flux::string&);
+  Flux::string raw;
+  Flux::string nick;
+  Flux::string host;
+  Flux::string ident;
+};
+
 /**
  * \class Command
  * \brief A wrapper clas for Module commands
