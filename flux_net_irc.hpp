@@ -348,9 +348,14 @@ static void WritePID(){
 /**This is the startup sequence that starts at the top to the try loop
  * @param startup(int, char)
  */
-void startup(int argc, char** argv) {
+void startup(int argc, char** argv, char *envp[]) {
   SET_SEGV_LOCATION();
   InitSignals();
+  Config = NULL;
+  Send = NULL;
+  sock = NULL;
+  my_av = argv;
+  my_envp = envp;
   starttime = time(NULL); //for bot uptime
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')

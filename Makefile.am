@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS 	= foreign
 PERL = $(srcdir)/run-cc.pl
-LIBS = -pthread -ldl -lnsl -lrt -lstdc++
+LIBS = -pthread -ldl -lnsl -lrt
 INCLUDES = -I$(srcdir)/include -I$(srcdir)
 CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -DPIC  -L. -fno-leading-underscore -pedantic -g -Wl,--export-dynamic $(INCLUDES)
 MODFLAGS = -fPIC -g $(LIBS) -shared -Wl,-soname,

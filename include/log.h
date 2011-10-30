@@ -25,5 +25,4 @@ public:
    return *this;
   }
 };
-
 #endif

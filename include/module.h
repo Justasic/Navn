@@ -23,7 +23,8 @@ enum ModulePriority{
   PRIORITY_DONTCARE,
   PRIORITY_LAST
 };
-class module{
+class module : public Base
+{
   Flux::string author, version;
   time_t loadtime;
   ModulePriority Priority;

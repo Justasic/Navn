@@ -627,6 +627,7 @@ namespace Flux{
 	};
 
 }//end of namespace
+
 class sepstream {
  private:
 		Flux::string tokens;
@@ -638,5 +639,25 @@ class sepstream {
 		virtual bool GetToken(Flux::string &token);
 		virtual const Flux::string GetRemaining();
 		virtual bool StreamEnd();
+};
+class dynamic_reference_base;
+class Base
+{
+  std::set<dynamic_reference_base*> References;
+public:
+  Base();
+  virtual ~Base();
+  void AddReference(dynamic_reference_base*);
+  void DelReference(dynamic_reference_base*);
+};
+
+class dynamic_reference_base : public Base
+{
+protected:
+  bool invalid;
+public:
+  dynamic_reference_base() : invalid(false) {}
+  virtual ~dynamic_reference_base() {}
+  inline void Invalidate() { this->invalid = true; }
 };
 #endif

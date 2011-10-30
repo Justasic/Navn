@@ -59,16 +59,17 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	 params2.erase(params2.begin() + ccom->MaxParams);
 	}
 	if(params2.size() < ccom->MinParams) { ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
-/*#ifdef HAVE_SETJMP_H
+#ifdef HAVE_SETJMP_H
 	if(setjmp(sigbuf) == 0){
 #endif
+	LastRunModule = ccom->mod;
 	ccom->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
-	}else
-	  Log() << "Command " << ccom->name << " Failed to run.";
-#endif*/
-      LastRunModule = ccom->mod;
-      TestRun(ccom->Run(Source, params2));
+	}else{
+	  Log() << "Command " << ccom->name << " Failed to run. Stack Restored.";
+	  Source.Reply("An internal error has occured, please contact the bots administrator %s", Config->Owner.c_str());
+	}
+#endif
       }else{
 	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
       }
@@ -84,16 +85,17 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	 params2.erase(params2.begin() + com->MaxParams);
       }
       if(params2.size() < com->MinParams) { com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
-/*#ifdef HAVE_SETJMP_H
+#ifdef HAVE_SETJMP_H
 	if(setjmp(sigbuf) == 0){
 #endif
+	LastRunModule = com->mod;
 	com->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
-	}else
-	  Log() << "Command " << ccom->name << " Failed to run.";
-#endif*/
-    LastRunModule = com->mod;
-    TestRun(com->Run(Source, params2));
+	}else{
+	  Log() << "Command " << com->name << " Failed to run. Stack Restored.";
+	  Source.Reply("An internal error has occured, please contact the bots administrator: %s", Config->Owner.c_str());
+	}
+#endif
     }else{
       if(!protocoldebug)
 	Log(LOG_DEBUG) << Flux::Sanitize(Source.raw); //This receives ALL server commands sent to the bot..
@@ -160,7 +162,7 @@ void process(const Flux::string &buffer){
   Flux::string message = params.size() > 1? params[1] : "";
   IsoHost *h = new IsoHost(source);
   Flux::string nickname = h->nick, uident = h->ident, uhost = h->host, cmd;
-  
+  delete h;
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
   std::vector<Flux::string> params2 = StringVector(message, ' ');

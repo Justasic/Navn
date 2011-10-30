@@ -188,3 +188,12 @@ bool std::less<ci::string>::operator()(const Flux::string &s1, const Flux::strin
 {
 	return s1.ci_str().compare(s2.ci_str()) < 0;
 }
+
+Base::Base() {}
+Base::~Base()
+{
+  for(std::set<dynamic_reference_base*>::iterator it = this->References.begin(); it != this->References.end(); ++it)
+    (*it)->Invalidate();
+}
+void Base::AddReference(dynamic_reference_base *r) { this->References.insert(r); }
+void Base::DelReference(dynamic_reference_base *r) { this->References.erase(r); }

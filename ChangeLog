@@ -98,6 +98,9 @@ Added "Socket Timeout" into config, this sets the amount of time for the socket 
 Added FileIO class, this should allow for you to read and write various files
 Removed Send->raw() as it now uses send_cmd()
 Added Flux::RandomString and Flux::RandomNickString
+Services configuration is now network specific supported
+Module Segmentation Faults no longer cause the bot to exit if the system supports it
+Added Base class in an attempt to elimate the glibc crash
  
 
 Navn 2.0.0

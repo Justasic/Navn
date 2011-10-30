@@ -111,15 +111,7 @@ void sigact(int sig)
       Rehash();
       break;
     case SIGSEGV:
-      /*static int running = 0;
-      if((running = 1)){ //Stop segv bombs
-	HandleSegfault(NULL);
-	exit(EXIT_FAILURE);
-      }else{
-	running = 1;
-      }*/
       /* this is where the module stack needs to be */
-
       #ifdef HAVE_SETJMP_H
       if(LastRunModule){
 	HandleSegfault(LastRunModule);

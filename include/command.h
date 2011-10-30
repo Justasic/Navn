@@ -97,7 +97,7 @@ public:
  * Contains methods and properties for handling/getting information from module commands.
  * \note Not to be confused with the Commands class.
  */
-class Command
+class Command : public Base
 {
   Flux::string desc;
   std::vector<Flux::string> syntax;

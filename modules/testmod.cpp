@@ -38,8 +38,6 @@ public:
      if(it != it_end)
 	 source.Reply("CHANNEL: %s", it->first->name.c_str());
     }
-    char *s = "hellow world"; //Causes segmentation fault.. good for testing module handling
-    *s = 'H';
     source.Reply("YAY!");
   }
   

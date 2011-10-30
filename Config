@@ -19,7 +19,7 @@ rev=$(git describe ${githead} 2>/dev/null)
 /bin/sed 's/^\x23define VERSION_GIT ".*"/\x23define VERSION_GIT "'$rev'"/' config.in.tmpl 1> config.h.in
 echo "AUTOMAKE_OPTIONS 	= foreign" >> $MAKEFILE
 echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
-echo "LIBS = -pthread -ldl -lnsl -lrt -lstdc++" >> $MAKEFILE
+echo "LIBS = -pthread -ldl -lnsl -lrt" >> $MAKEFILE
 echo "INCLUDES = -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
 echo "CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -DPIC  -L. -fno-leading-underscore -pedantic -g -Wl,--export-dynamic \$(INCLUDES)" >> $MAKEFILE
 echo "MODFLAGS = -fPIC -g \$(LIBS) -shared -Wl,-soname," >> $MAKEFILE

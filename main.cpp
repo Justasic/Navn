@@ -29,33 +29,42 @@ bool SocketIO::Read(const Flux::string &buf) const
   return true;
 }
 
+int startcount;
+void Connect()
+{
+  ++startcount;
+  Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
+  FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+  if(Config->Server.empty())
+    throw SocketException("No Server Specified.");
+  if(Config->Port.empty())
+    throw SocketException("No Port Specified.");
+  if(sock){
+    SocketIO *s = sock;
+    delete s;
+  }
+  FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+  sock = new SocketIO(Config->Server, Config->Port);
+  sock->Connect();
+  if(Send){
+    Send->command->user(Config->Ident, Config->Realname);
+    Send->command->nick(Config->BotNick);
+  }
+  FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+}
+
 int main (int argcx, char** argvx, char *envp[])
 {
   SET_SEGV_LOCATION();
-  Config = NULL;
-  Send = NULL;
-  sock = NULL;
-  my_av = argvx;
-  my_envp = envp;
+  startcount = 0;
   try
   {
-    startup(argcx, argvx);
-    int startcount = 0;
+    startup(argcx, argvx, envp);
     SocketStart:
-    ++startcount;
-    try{
-      //Make the socket used to connect to the server
-      if(Config->Server.empty())
-	throw CoreException("No Server Specified.");
-      Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
-      FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
-      sock = new SocketIO(Config->Server, Config->Port);
-      sock->Connect();
-    }catch(SocketException &e){
+    try { Connect(); }
+    catch(SocketException &e){
       if(startcount >= 3)
 	throw CoreException(e.description().c_str());
-      if(sock)
-	delete sock;
       Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
       goto SocketStart;
     }
@@ -73,7 +82,16 @@ int main (int argcx, char** argvx, char *envp[])
       Log(LOG_RAWIO) << "Top of main loop";
       
       /* Process the socket engine */
-      sock->Process();
+      try { sock->Process(); }
+      catch(SocketException &exc)
+      {
+	Log() << "Socket Exception: " << exc.description();
+	try { Connect(); }
+	catch(SocketException &ex){
+	  Log() << "Socket Exception: " << ex.description();
+	  throw CoreException(ex.description());
+	}
+      }
       /* Process Timers */
       /***********************************/
       if(time(NULL) - last_check >= 3)
