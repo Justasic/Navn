@@ -130,8 +130,7 @@ void sigact(int sig)
       	break;
       }
       #endif
-      Log(LOG_TERMINAL) << LastRunModule << " | " << LastRunModule->name;
-      HandleSegfault(LastRunModule);
+      HandleSegfault(NULL);
       exit(sig);
       break;
     case SIGINT:
