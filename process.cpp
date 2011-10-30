@@ -67,6 +67,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	}else
 	  Log() << "Command " << ccom->name << " Failed to run.";
 #endif*/
+      LastRunModule = ccom->mod;
       TestRun(ccom->Run(Source, params2));
       }else{
 	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
@@ -91,6 +92,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	}else
 	  Log() << "Command " << ccom->name << " Failed to run.";
 #endif*/
+    LastRunModule = com->mod;
     TestRun(com->Run(Source, params2));
     }else{
       if(!protocoldebug)

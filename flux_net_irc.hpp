@@ -7,6 +7,7 @@
 SendMessage *Send;
 SocketIO *sock;
 BotConfig *Config;
+module *LastRunModule;
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
@@ -349,6 +350,7 @@ static void WritePID(){
  */
 void startup(int argc, char** argv) {
   SET_SEGV_LOCATION();
+  InitSignals();
   starttime = time(NULL); //for bot uptime
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
@@ -356,10 +358,6 @@ void startup(int argc, char** argv) {
   Config = new BotConfig();
   if(!Config)
     throw CoreException("Config Error.");
-  signal(SIGTERM, sigact);
-  signal(SIGINT, sigact);
-  signal(SIGHUP, sigact);
-  signal(SIGSEGV, sigact);
   Flux::string dir = argv[0];
   Flux::string::size_type n = dir.rfind('/');
   dir = "." + dir.substr(n);

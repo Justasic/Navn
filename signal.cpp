@@ -60,7 +60,7 @@ void HandleSegfault(module *m)
    slog << "====================== Segmentation Fault ======================" << std::endl;
    slog << "Please report this bug to " << PACKAGE_BUGREPORT << " and submit a bug report." << std::endl;
    slog << "Please note that the Flux-Net developers may ask you to re-run this under gdb!" << std::endl;
-   slog << '(' << tbuf << ')' << std::endl;
+   slog << "Time of crash: " << tbuf << std::endl;
    slog << "Navn version: " << VERSION_LONG << std::endl;
    slog << "System info: " << uts.sysname << " " << uts.nodename << " " <<  uts.release << " " << uts.machine << std::endl;
    slog << "System version: " << uts.version << std::endl;
@@ -82,7 +82,8 @@ void HandleSegfault(module *m)
    slog << "======================== END OF REPORT ==========================" << std::endl;
    sslog << slog.str() << std::endl; //Write to SEGFAULT.log
    sslog.close();
-   Log(LOG_TERMINAL) << slog.str(); //Write to terminal.
+   std::cout << slog.str(); //Write to terminal.
+   std::cout.flush();
    if(m)
       Log() << "Segmentation Fault in module " << m->name << " please review SEGFAULT.log";
    else
@@ -110,29 +111,28 @@ void sigact(int sig)
       Rehash();
       break;
     case SIGSEGV:
-      static int running = 0;
+      /*static int running = 0;
       if((running = 1)){ //Stop segv bombs
 	HandleSegfault(NULL);
 	exit(EXIT_FAILURE);
       }else{
 	running = 1;
+      }*/
+      /* this is where the module stack needs to be */
+
+      #ifdef HAVE_SETJMP_H
+      if(LastRunModule){
+	HandleSegfault(LastRunModule);
+	ModuleHandler::Unload(LastRunModule);
+      	Log() << "Attempting to restore Stack to before Crash";
+      	longjmp(sigbuf, -1);
+      	Log() << "Finished restoring Stack";
+      	break;
       }
-      /* this is where the module stack needs to be 
-      * 
-      * #ifdef HAVE_SETJMP_H
-      * if(somethingHappened){
-      * 	module *m = FindLastModule;
-      * 	HandleSegfault(m);
-      * 	ModuleHandler::Unload(m);
-      * 	Log() << "Attempting to restore Stack to before Crash";
-      * 	longjmp(segbuf, -1);
-      * 	Log() << "Finished restoring Stack";
-      * 	return;
-      *  }
-      * #endif
-      */
-      //HandleSegfault(NULL);
-      exit(EXIT_FAILURE);
+      #endif
+      Log(LOG_TERMINAL) << LastRunModule << " | " << LastRunModule->name;
+      HandleSegfault(LastRunModule);
+      exit(sig);
       break;
     case SIGINT:
     case SIGKILL:
@@ -148,4 +148,11 @@ void sigact(int sig)
     default:
       Log() << "Recieved weird signal from terminal. Sig Number: " << sig;
   }
+}
+void InitSignals()
+{
+  signal(SIGTERM, sigact);
+  signal(SIGINT, sigact);
+  signal(SIGHUP, sigact);
+  signal(SIGSEGV, sigact);
 }
