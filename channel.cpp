@@ -134,12 +134,12 @@ void Channel::SendAction(const char *fmt, ...){
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
-    this->SendMessage(Flux::string(buffer));
+    this->SendAction(Flux::string(buffer));
     va_end(args);
   }
 }
 void Channel::SendAction(const Flux::string &message){
- Send->action(this->name, message); 
+  Send->action(this->name, message);
 }
 void Channel::SendNotice(const char *fmt, ...){
   if(fmt){

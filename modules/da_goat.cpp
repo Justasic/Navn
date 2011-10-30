@@ -254,32 +254,17 @@ public:
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
       } 
     }
-    if(msg.search("Dun kick me, asswipe. -_-"))
-    {
-      Send->command->mode(c->name, "+b m:"+u->fullhost);
-      c->SendMessage("Shut up!");
-    }
     if(msg.search_ci("no u!") || msg.search_ci("no u"))
-    {
       c->SendMessage("NO U!");
-    }
     if(cmd.equals_ci("!everything"))
-    {
       c->SendMessage("Yes, there is a script for everything...\007");
-    }
     /***********************End Da_Goat Functions******************************/
     if(cmd.equals_ci("!bugs"))
-    {
       c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
-    }
     if(cmd.equals_ci("!git"))
-    {
       u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
-    }
     if(msg.search_ci("the game"))
-    {
       c->SendMessage("YOU JUST LOST THE GAME.");
-    }
   }
 };
 
