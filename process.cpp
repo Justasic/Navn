@@ -186,7 +186,7 @@ void process(const Flux::string &buffer){
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
     else{
-     if(u && c && !u->findchannel(c->name))
+     if(u && c && !u->findchannel(c))
        delete u;
     else
      if(u && c)
