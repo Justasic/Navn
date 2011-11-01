@@ -38,8 +38,6 @@ public:
      if(it != it_end)
 	 source.Reply("CHANNEL: %s", it->first->name.c_str());
     }
-    int *i = NULL;
-    *i = 1;
     source.Reply("YAY!");
   }
 };
