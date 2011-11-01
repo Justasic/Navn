@@ -74,7 +74,7 @@ void HandleSegfault(module *m)
    mbuf.trim();
    slog << "Modules Loaded: " << (mbuf.empty()?"None":mbuf) << std::endl;
    slog << "Location: " << segv_location << std::endl;
-   //slog << "recbuf: " << sock->getlastbuf() << std::endl; //Fucking C++ cant dereference a Flux::string, so this is broke till it can do that.
+   slog << "Socket Buffer: " << LastBuf << std::endl;
    strings = backtrace_symbols(array, size);
    for(unsigned i=1; i < size; i++)
      slog << "BackTrace(" << (i - 1) << "): " << strings[i] << std::endl;

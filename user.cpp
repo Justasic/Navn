@@ -86,6 +86,8 @@ void User::DelChan(Channel *c)
 Channel *User::findchannel(const Flux::string &chan)
 {
   printf("entered User::findchannel %i\n", (int)++enter);
+  if(enter > 5000)
+    raise(SIGSEGV);
   Channel *c = findchannel(chan);
   if(!c)
     return NULL;

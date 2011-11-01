@@ -82,8 +82,8 @@ public:
   {
     User *u = source.u;
     if(u->IsOwner()){
-      Flux::string kickchan = params.size() == 3 ?params[1]:"";
-      Flux::string kickee = params.size() == 3 ?params[2]:"";
+      Flux::string kickchan = params[1];
+      Flux::string kickee = params[2];
       if(kickee.empty() || kickchan.empty()){
 	this->SendSyntax(source);
 	return;
@@ -129,7 +129,7 @@ public:
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     User *u = source.u;
-    Flux::string pass = params.size() == 2 ? params[1] : "";
+    Flux::string pass = params[1];
     
     if(pass == password || pass == Config->UserPass){
       source.Reply("Quitting..");

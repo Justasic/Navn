@@ -248,11 +248,13 @@ namespace Flux{
     string(double d) : _string() { _string = strify(d); }
     string(int i) : _string() { _string = strify(i); }
     string(char chr) : _string() { _string = chr; }
+    string(char *_str) : _string() { _string = strify(_str); }
     string(size_type n, char chr) : _string(n, chr) { }
     string(const char *_str) : _string(_str) { }
     string(const std::string &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
     string(const string &_str, size_type pos = 0, size_type n = npos) : _string(_str._string, pos, n) { }
+    ~string() {}
     template <class InputIterator> string(InputIterator first, InputIterator last) : _string(first, last) { }
 
     inline string &operator=(char chr) { this->_string = chr; return *this; }

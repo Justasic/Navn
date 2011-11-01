@@ -29,9 +29,11 @@ bool SocketIO::Read(const Flux::string &buf) const
   return true;
 }
 
-int startcount;
+int startcount, loopcount;
 void Connect()
 {
+  if(quitting)
+    return;
   ++startcount;
   Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
   FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
@@ -80,6 +82,8 @@ int main (int argcx, char** argvx, char *envp[])
     
     while(!quitting){
       Log(LOG_RAWIO) << "Top of main loop";
+      if(++loopcount >= 5000)
+	raise(SIGSEGV); //prevent loop bombs, we raise a segfault because the segfault handler will handle it better
       
       /* Process the socket engine */
       try { sock->Process(); }
@@ -96,6 +100,7 @@ int main (int argcx, char** argvx, char *envp[])
       /***********************************/
       if(time(NULL) - last_check >= 3)
       {
+	loopcount = 0;
 	TimerManager::TickTimers(time(NULL));
 	last_check = time(NULL);
       }

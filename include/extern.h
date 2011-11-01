@@ -87,7 +87,7 @@ E module *LastRunModule;
 E CommandMap Commandsmap;
 E CommandMap ChanCommandMap;
 E time_t starttime;
-E Flux::string binary_path, bot_bin, binary_dir, server_name, quitmsg;
+E Flux::string binary_path, bot_bin, binary_dir, server_name, quitmsg, LastBuf;
 E const Flux::string VERSION_LONG;
 E Flux::string getprogdir(const Flux::string&);
 E Flux::string DecodeModErr(ModErr err);

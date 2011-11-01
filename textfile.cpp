@@ -49,10 +49,12 @@ Flux::string TextFile::GetFilename() { return filename; }
 
 void TextFile::Edit(int ln, Flux::string fs) { lines[ln] = fs; Contents[ln] = fs; }
 
-void TextFile::Clear() { std::vector<Flux::string> empty; lines = empty; Contents = empty; }
+void TextFile::Clear() { lines.clear(); Contents.clear(); }
 
 bool TextFile::Empty()
 {
+  if(lines.empty())
+    return true;
   for (unsigned i = 0; i < lines.size(); i++) { if (!lines[i].empty()) return false; }
   return true;
 }
@@ -66,7 +68,7 @@ FileIOErrors TextFile::Copy(const Flux::string &dest)
   if (stat(dest.c_str(), &s) == -1)
     return (this->lasterror = FILE_IO_NOEXIST);
   if(stat(this->filename.c_str(), &s) == -1)
-    return (this->lasterror = FILE_IO_UNKNOWN);
+    return (this->lasterror = FILE_IO_NOEXIST);
   else if (!S_ISREG(s.st_mode))
     return (this->lasterror = FILE_IO_NOEXIST);
 
@@ -125,7 +127,6 @@ bool TextFile::IsFile(const Flux::string &filename)
   struct stat fileinfo;
   if (!stat(filename.c_str(), &fileinfo))
     return true;
-  
   return false;
 }
 
@@ -149,9 +150,10 @@ bool TextFile::WriteToDisk(const Flux::string &FileName)
       }
     }
     f.close();
+    this->lasterror = FILE_IO_OK;
     return true;
   }
-  else { return false; }
+  else { this->lasterror = FILE_IO_NOEXIST; return false; }
 }
 
 Flux::string TextFile::SingleLine() { return SingleLineBuffer; }

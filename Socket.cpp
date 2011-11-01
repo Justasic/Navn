@@ -90,7 +90,7 @@ bool SocketIO::Connect()
     
   freeaddrinfo(servinfo); //Clear up used memory we dont need anymore
   
-  inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
+  inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, INET6_ADDRSTRLEN+1);
   this->SetNonBlocking();
   FD_SET(this->GetFD(), &ReadFD);
   Log(LOG_DEBUG) << "Connected to" << this->server << ":" << this->port;
@@ -122,7 +122,7 @@ int SocketIO::Process()
   }
   return sres;
 }
-const int SocketIO::recv() const
+int SocketIO::recv() const
 {
   char tbuf[NET_BUFSIZE + 1] = "";
   memset(tbuf, 0, NET_BUFSIZE + 1);
@@ -134,18 +134,25 @@ const int SocketIO::recv() const
   while(sep.GetToken(buf))
   {
     buf.trim();
+    LastBuf = buf;
     this->Read(buf);
   }
-  return 0;
+  return i;
 }
-const int SocketIO::send(const Flux::string &buf) const
+int SocketIO::send(const Flux::string &buf) const
 {
+ LastBuf = buf;
  Log(LOG_RAWIO) << "Sent: " << buf;
  if(!protocoldebug)
    Log(LOG_DEBUG) << buf;
  int i = write(this->GetFD(), buf.c_str(), buf.size());
  return i;
 }
+/** \fn void send_cmd(const char *fmt, ...)
+ * \brief Sends something directly out the socket after being processed by vsnprintf
+ * \param char* a string of what to send to the server including printf style format
+ * \param va_list all the variables to be replaced with the printf style variables
+ */
 void send_cmd(const char *fmt, ...)
 {
   char buffer[4096] = "";

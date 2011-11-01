@@ -66,7 +66,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	ccom->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
 	}else{
-	  Log() << "Command " << ccom->name << " Failed to run. Stack Restored.";
+	  Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occured, please contact the bots administrator %s", Config->Owner.c_str());
 	}
 #endif
@@ -92,7 +92,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	com->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
 	}else{
-	  Log() << "Command " << com->name << " Failed to run. Stack Restored.";
+	  Log() << "Command " << com->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occured, please contact the bots administrator: %s", Config->Owner.c_str());
 	}
 #endif

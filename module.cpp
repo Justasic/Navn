@@ -101,27 +101,6 @@ int module::DelChanCommand(Command *c){
 
 /*******************************************************************/
 /** 
- * \fn Command *FindCommand(const Flux::string &name)
- * \brief Find a command in the command map
- * \param name A string containing the command name you're looking for
- */
-Command *FindCommand(const Flux::string &name){
- if(name.empty())
-   return NULL;
- CommandMap::iterator it = Commandsmap.find(name);
- if(it != Commandsmap.end())
-   return it->second;
- return NULL;
-}
-Command *FindChanCommand(const Flux::string &name){
-  if(name.empty())
-   return NULL;
- CommandMap::iterator it = ChanCommandMap.find(name);
- if(it != ChanCommandMap.end())
-   return it->second;
- return NULL;
-}
-/** 
  * \fn module *FindModule(const Flux::string &name)
  * \brief Find a module in the module list
  * \param name A string containing the module name you're looking for

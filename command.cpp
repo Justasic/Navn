@@ -273,11 +273,32 @@ void CommandSource::Reply(const Flux::string &msg){
    this->u->SendMessage(tok);
  }
 }
+
+/**
+ * \fn Command *FindCommand(const Flux::string &name)
+ * \brief Find a command in the command map
+ * \param name A string containing the command name you're looking for
+ */
+Command *FindCommand(const Flux::string &name){
+  if(name.empty())
+    return NULL;
+  CommandMap::iterator it = Commandsmap.find(name);
+  if(it != Commandsmap.end())
+    return it->second;
+  return NULL;
+}
+Command *FindChanCommand(const Flux::string &name){
+  if(name.empty())
+    return NULL;
+  CommandMap::iterator it = ChanCommandMap.find(name);
+  if(it != ChanCommandMap.end())
+    return it->second;
+  return NULL;
+}
 /*******************************************************************************************/
 /* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
 Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
 {
-  SET_SEGV_LOCATION();
   for(unsigned i=0; i < sname.size(); ++i) //commands with spaces can screw up the command handler
     if(isspace(sname[i]))
       throw ModuleException("Commands cannot contain spaces!");

@@ -32,7 +32,6 @@ class SocketIO
 {
 private:
   Flux::string server, port;
-  Flux::string lastbuf;
   int sockn;
   size_t recvlen;
   struct addrinfo hints, *servinfo;
@@ -43,8 +42,8 @@ public:
   int GetFD() const;
   bool SetNonBlocking();
   bool SetBlocking();
-  const int recv() const;
-  const int send(const Flux::string &buf) const;
+  int recv() const;
+  int send(const Flux::string &buf) const;
   bool Connect();
   bool is_valid() const { return this->GetFD() != -1; }
   int Process();

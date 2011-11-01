@@ -110,6 +110,7 @@ bool IsValidChannel(const Flux::string &chan){
     return false;
  return true;
 }
+
 Flux::string fsprintf(const char *fmt, ...)
 {
   if(fmt)
