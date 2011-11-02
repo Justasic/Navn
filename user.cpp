@@ -74,8 +74,10 @@ void User::SetNewNick(const Flux::string &newnick)
 }
 void User::AddChan(Channel *c)
 {
-  if(!c)
+  if(c)
     ChannelList[c] = this;
+  for(CList::iterator it2 = ChannelList.begin(); it2 != ChannelList.end(); ++it2)
+    printf("CHANNEL: %s | %s\n", it2->first->name.c_str(), it2->second->nick.c_str());
 }
 void User::DelChan(Channel *c)
 {
@@ -83,11 +85,13 @@ void User::DelChan(Channel *c)
   if(it != ChannelList.end())
     ChannelList.erase(it);
 }
-Channel *User::findchannel(Channel *c)
+Channel *User::findchannel(const Flux::string &name)
 {
   printf("entered User::findchannel %i\n", (int)++enter);
   if(enter > 5000)
     raise(SIGSEGV);
+  Flux::insensitive_map<Channel*>::iterator it1 = ChanMap.find(name);
+  Channel *c = it1->second;
   if(!c)
     return NULL;
   CList::iterator it = ChannelList.find(c);

@@ -45,7 +45,7 @@ class irc_string:Flux::string{
    */
   private:
     std::vector<Flux::string> toks;
-public:
+  public:
   Flux::string raw_string;
   Flux::string usernick;
   Flux::string host;

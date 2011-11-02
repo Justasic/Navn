@@ -160,9 +160,8 @@ void process(const Flux::string &buffer){
   /* make local variables instead of global ones */
   const Flux::string &receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
-  IsoHost *h = new IsoHost(source);
-  Flux::string nickname = h->nick, uident = h->ident, uhost = h->host, cmd;
-  delete h;
+  IsoHost h(source);
+  Flux::string nickname = h.nick, uident = h.ident, uhost = h.host, cmd;
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
   std::vector<Flux::string> params2 = StringVector(message, ' ');
@@ -186,11 +185,10 @@ void process(const Flux::string &buffer){
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c;
     else{
-     if(u && c && !u->findchannel(c))
-       delete u;
-    else
      if(u && c)
        u->DelChan(c);
+     if(u && c && !u->findchannel(c->name))
+       delete u;
     }
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric((int)command)); }
@@ -213,6 +211,8 @@ void process(const Flux::string &buffer){
       c = new Channel(receiver);
     else if(u->nick == Config->BotNick)
       c->SendWho();
+    else if(!u->findchannel(c->name))
+      u->AddChan(c);
     else if(u->nick != Config->BotNick){
       FOREACH_MOD(I_OnJoin, OnJoin(u, c));
     }
