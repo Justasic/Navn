@@ -3,7 +3,6 @@
 Flux::insensitive_map<User *> UserNickList;
 size_t usercnt = 0, maxusercnt = 0, enter = 0;
 User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname, const Flux::string &sserver){
- SET_SEGV_LOCATION();
  /* check to see if a empty string was passed into the constructor */
  if(snick.empty() || sident.empty() || shost.empty())
    throw CoreException("Bad args sent to User constructor");
@@ -15,8 +14,7 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  this->server = sserver;
  this->fullhost = snick+"!"+sident+"@"+shost;
  UserNickList[snick] = this;
- if(protocoldebug)
-   Log(LOG_TERMINAL) << "New user! " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
+ Log(LOG_RAWIO) << "New user! " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
  ++usercnt;
  if(usercnt > maxusercnt){
   maxusercnt = usercnt;
@@ -24,7 +22,6 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
  }
 }
 User::~User(){
-  SET_SEGV_LOCATION();
   Log() << "Deleting user " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
   UserNickList.erase(this->nick);
 }
@@ -76,8 +73,6 @@ void User::AddChan(Channel *c)
 {
   if(c)
     ChannelList[c] = this;
-  for(CList::iterator it2 = ChannelList.begin(); it2 != ChannelList.end(); ++it2)
-    printf("CHANNEL: %s | %s\n", it2->first->name.c_str(), it2->second->nick.c_str());
 }
 void User::DelChan(Channel *c)
 {
@@ -87,9 +82,6 @@ void User::DelChan(Channel *c)
 }
 Channel *User::findchannel(const Flux::string &name)
 {
-  printf("entered User::findchannel %i\n", (int)++enter);
-  if(enter > 5000)
-    raise(SIGSEGV);
   Flux::insensitive_map<Channel*>::iterator it1 = ChanMap.find(name);
   Channel *c = it1->second;
   if(!c)

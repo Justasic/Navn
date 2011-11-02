@@ -12,6 +12,7 @@ Channel::Channel(const Flux::string &nname, time_t ts){
   this->name = nname;
   this->creation_time = ts;
   this->topic_time = 0;
+  this->SendWho();
   ChanMap[this->name] = this;
   Log(LOG_DEBUG) << "Created new channel: " << nname;
 }

@@ -13,7 +13,7 @@ public:
     if(timeout)
     {
       if(++pings >= 3)
-	restart("Ping-Timeout: 121 seconds");
+	restart("Ping-Timeout: 120 seconds");
     }
   }
 };
