@@ -584,7 +584,7 @@ namespace Flux{
     inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
     inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
     inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
-    
+
     struct hash
 	{
 		/* VS 2008 specific code */
