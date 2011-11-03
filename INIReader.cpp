@@ -181,7 +181,7 @@ void BotConfig::Read(){
   this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
 
   this->Owner = this->Parser->Get("Bot","Owner","");
-  this->Realname = this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+Flux::stringify(VERSION)));
+  this->Realname = this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+value_cast<Flux::string>(VERSION)));
   this->Ident = this->Parser->Get("Connect","Ident","Navn");
   this->BotNick = this->Parser->Get("Connect","Nick","Navn");
   this->Channel = this->Parser->Get("Connect","Channel","#Test");

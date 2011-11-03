@@ -1,6 +1,4 @@
 #include "flux_net_irc.hpp"
-#include <ios>
-#include <istream>
 
 void ProcessInput(const Flux::string &str)
 {

@@ -36,7 +36,7 @@ void Thread::Start()
 {
  if(pthread_create(&this->Handle, GetAttr(), EntryPoint, this))
  {
-  throw CoreException("Could not Create Thread: "+Flux::stringify(strerror(errno)));
+   throw CoreException("Could not Create Thread: "+value_cast<Flux::string>(strerror(errno)));
  }
 }
 void Thread::Join()

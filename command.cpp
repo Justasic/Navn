@@ -269,9 +269,7 @@ void CommandSource::Reply(const Flux::string &msg){
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
- {
    this->u->SendMessage(tok);
- }
 }
 
 /**
@@ -306,7 +304,6 @@ Command::Command(const Flux::string &sname, size_t min_params, size_t max_params
 }
 Command::~Command()
 {
-  SET_SEGV_LOCATION();
   if(this->mod){
     CommandMap::iterator it = ChanCommandMap.find(this->name);
    if(it->second != NULL)

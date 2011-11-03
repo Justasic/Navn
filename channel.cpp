@@ -3,7 +3,6 @@
 
 Flux::insensitive_map<Channel*> ChanMap;
 Channel::Channel(const Flux::string &nname, time_t ts){
-  SET_SEGV_LOCATION();
   if(nname.empty())
     throw CoreException("I don't like empty channel names in my channel constructor >:d");
   if(!IsValidChannel(nname))
@@ -18,7 +17,6 @@ Channel::Channel(const Flux::string &nname, time_t ts){
 }
 Channel::~Channel()
 {
-  SET_SEGV_LOCATION();
   this->SendPart();
   Log(LOG_DEBUG) << "Deleted channel " << this->name;
   ChanMap.erase(this->name);

@@ -26,6 +26,6 @@ const Flux::string password = make_pass();
 char segv_location[255];
 time_t starttime = 0;
 /**********************Version Variables*************************/
-const Flux::string VERSION_LONG = Flux::stringify(VERSION)+"-"+Flux::stringify(VERSION_GIT)+Flux::stringify(VERSION_EXTRA);
+const Flux::string VERSION_LONG = value_cast<Flux::string>(VERSION)+"-"+value_cast<Flux::string>(VERSION_GIT)+value_cast<Flux::string>(VERSION_EXTRA);
 #endif
 

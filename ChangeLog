@@ -101,6 +101,7 @@ Added Flux::RandomString and Flux::RandomNickString
 Services configuration is now network specific supported
 Module Segmentation Faults no longer cause the bot to exit if the system supports it
 Added Base class in an attempt to elimate the glibc crash
+removed Flux::stringify as its replaced by value_cast<>() which can cast any value into any return type as long as std::stringstream is ok with it.
  
 
 Navn 2.0.0

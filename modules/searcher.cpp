@@ -34,12 +34,9 @@
  * This is what generates the search links.
  */
 Flux::string search(const Flux::string &s, const Flux::string &command){
-  printf("Search! %s\n", s.c_str());
   Flux::string raw_searchstring = s, searchstring;
   raw_searchstring = raw_searchstring.erase(0, command.size()+1);
-  printf("SSTRING! %s\n", raw_searchstring.c_str());
   searchstring = urlify(raw_searchstring);
-  printf("URLSTRING! %s\n", searchstring.c_str());
   if (searchstring.empty())
     return "Empty searchstring.";
   else{

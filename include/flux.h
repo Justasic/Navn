@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <iomanip>
 #include <bitset>
+#include <ios>
 #include "config.h" /* we include the config header from ./configure */
 #ifdef __GNUC__
 #define DEPRECATED(func) func __attribute__ ((deprecated))
@@ -21,11 +22,15 @@
 #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 #define DEPRECATED(func) func
 #endif
-template<typename T> inline std::string strify(const T &x){
-    std::ostringstream stream;
-    if(!(stream << std::setprecision(400) << x))
-	    throw;
-    return stream.str();
+template<typename T, typename V> inline T value_cast(const V &y)
+{
+  std::stringstream stream;
+  T x;
+  if(!(stream << y))
+    throw;
+  stream >> x; /* we ignore the errors on this because if it doesnt work then it will return null or a
+	        * signal abort since std::string casting causes errors. */
+  return x;
 }
 namespace Flux{
  class string;
@@ -244,17 +249,15 @@ namespace Flux{
     static const size_type npos = static_cast<size_type>(-1);
 
     string() : _string("") { }
-    string(float f) : _string() { _string = strify(f); }
-    string(double d) : _string() { _string = strify(d); }
-    string(int i) : _string() { _string = strify(i); }
+    string(float f) : _string() { _string = value_cast<std::string>(f); }
+    string(double d) : _string() { _string = value_cast<std::string>(d); }
+    string(int i) : _string() { _string = value_cast<std::string>(i); }
     string(char chr) : _string() { _string = chr; }
-    string(char *_str) : _string() { _string = strify(_str); }
     string(size_type n, char chr) : _string(n, chr) { }
     string(const char *_str) : _string(_str) { }
     string(const std::string &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
     string(const string &_str, size_type pos = 0, size_type n = npos) : _string(_str._string, pos, n) { }
-    ~string() {}
     template <class InputIterator> string(InputIterator first, InputIterator last) : _string(first, last) { }
 
     inline string &operator=(char chr) { this->_string = chr; return *this; }
@@ -560,43 +563,16 @@ namespace Flux{
       return bin;
     }
     /* Cast into an integer */
-    inline operator int()
-    {
-      std::stringstream integer;
-      int i=0;
-      integer << this->_string;
-      integer >> i;
-      return i;
-    }
+    inline operator int() { return value_cast<int>(this->_string); }
     /* Cast into a float */
-    inline operator float()
-    {
-     std::stringstream integer;
-      float f=0;
-      integer << this->_string;
-      integer >> f;
-      return f;
-    }
+    inline operator float() { return value_cast<float>(this->_string); }
     /* Cast into a double */
-    inline operator double()
-    {
-      std::stringstream integer;
-      double d=0;
-      integer << this->_string;
-      integer >> d;
-      return d;
-    }
+    inline operator double() { return value_cast<double>(this->_string); }
     /* Cast into a long integer */
-    inline operator long()
-    {
-     std::stringstream integer;
-      long i=0;
-      integer << this->_string;
-      integer >> i;
-      return i;
-    }
+    inline operator long() { return value_cast<long>(this->_string); }
 
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
+    friend std::istream &operator>>(std::istream &os, string &_str);
     }; //end of string class
     template<typename T> class map : public std::map<string, T> { };
     template<typename T> class insensitive_map : public std::map<string, T, std::less<ci::string> > { };
@@ -604,16 +580,11 @@ namespace Flux{
     extern Flux::string RandomString(size_t);
     extern Flux::string RandomNickString(size_t);
     inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
+    inline std::istream &operator>>(std::istream &os, string &_str) { return os >> _str._string; }
     inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
     inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
     inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
-
-    template<typename T> inline Flux::string stringify(const T &x){
-	std::ostringstream stream;
-	if(!(stream << x))
-		throw;
-	return stream.str();
-    }
+    
     struct hash
 	{
 		/* VS 2008 specific code */

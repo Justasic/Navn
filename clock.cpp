@@ -101,26 +101,26 @@ Flux::string duration(const time_t &t)
   time_t seconds = (t) % 60;
   
   if (!days && !hours && !minutes)
-    return Flux::stringify(seconds) + " " + (seconds != 1 ? "seconds" : "second");
+    return value_cast<Flux::string>(seconds) + " " + (seconds != 1 ? "seconds" : "second");
   else
   {
     bool need_comma = false;
     Flux::string buffer;
     if (days)
     {
-      buffer = Flux::stringify(days) + " " + (days != 1 ? "days" : "day");
+      buffer = value_cast<Flux::string>(days) + " " + (days != 1 ? "days" : "day");
       need_comma = true;
     }
     if (hours)
     {
       buffer += need_comma ? ", " : "";
-      buffer += Flux::stringify(hours) + " " + (hours != 1 ? "hours" : "hour");
+      buffer += value_cast<Flux::string>(hours) + " " + (hours != 1 ? "hours" : "hour");
       need_comma = true;
     }
     if (minutes)
     {
       buffer += need_comma ? ", " : "";
-      buffer += Flux::stringify(minutes) + " " + (minutes != 1 ? "minutes" : "minute");
+      buffer += value_cast<Flux::string>(minutes) + " " + (minutes != 1 ? "minutes" : "minute");
     }
     return buffer;
   }

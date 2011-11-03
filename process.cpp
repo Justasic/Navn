@@ -8,7 +8,6 @@
  * \param chan The channel we're processing
  */
 void ProcessJoin(CommandSource &source, const Flux::string &chan){
-    SET_SEGV_LOCATION();
     std::vector<Flux::string> &params = source.params;
     if(params.size() < 7)
       return;
@@ -134,7 +133,7 @@ void process(const Flux::string &buffer){
   if(bufferseparator.GetToken(bufferseparator_token))
     command = bufferseparator_token;
   std::vector<Flux::string> params;
-  
+
   while(bufferseparator.GetToken(bufferseparator_token))
   {
     if(bufferseparator_token[0] == ':'){
@@ -215,8 +214,6 @@ void process(const Flux::string &buffer){
       u = new User(nickname, uident, uhost);
     else if(!c && IsValidChannel(receiver))
       c = new Channel(receiver);
-    else if(u->nick == Config->BotNick)
-      c->SendWho();
     else if(!u->findchannel(c->name))
       u->AddChan(c);
     else if(!c->finduser(u->nick))
@@ -232,7 +229,6 @@ void process(const Flux::string &buffer){
   Source.message = message;
   Source.params = params;
   Source.raw = buffer;
-  Source.raw_source = nickname;
   /**************************************/
   if(command == "352"){ ProcessJoin(Source, c->name); }
   if(source.empty() || message.empty() || params2.empty())

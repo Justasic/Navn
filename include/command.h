@@ -92,6 +92,24 @@ public:
 };
 
 /**
+ * \struct CommandSource "user.h" USER_H
+ * \brief A wrapper class for the source of the Command
+ * Contains information about where the command came from, as well as a Reply() function to quickly send a PrivMessage to the Command sender.
+ */
+struct CommandSource
+{
+  User *u;
+  Channel *c; /* Channel name, this will be replaced with channel class */
+  Flux::string command;
+  Flux::string message;
+  Flux::string raw;
+  std::vector<Flux::string> params;
+  
+  void Reply(const char *fmt, ...);
+  void Reply(const Flux::string&);
+};
+
+/**
  * \class Command
  * \brief A wrapper clas for Module commands
  * Contains methods and properties for handling/getting information from module commands.
