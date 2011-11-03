@@ -50,6 +50,8 @@ public:
   Flux::string topic_setter;
   time_t topic_time;
   time_t creation_time;
+  void AddUser(User*);
+  void DelUser(User*);
   void SendJoin();
   void SendPart();
   void SendPart(const Flux::string&);

@@ -25,15 +25,11 @@ User::~User(){
   Log() << "Deleting user " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
   UserNickList.erase(this->nick);
 }
-void User::kick(const Flux::string &channel, const Flux::string &reason){
-  Send->command->kick(channel, this->nick, reason);
-}
+void User::kick(const Flux::string &channel, const Flux::string &reason){ Send->command->kick(channel, this->nick, reason); }
 void User::kick(Channel *ch, const Flux::string &reason){
   Send->command->kick(ch->name, this->nick, reason);
 }
-void User::SendWho(){
- Send->command->who(this->nick); 
-}
+void User::SendWho(){ Send->command->who(this->nick); }
 void User::kill(const Flux::string &reason){
   if(Send->o)
    Send->o->kill(this->nick, reason);
@@ -69,11 +65,7 @@ void User::SetNewNick(const Flux::string &newnick)
   this->nick = newnick;
   UserNickList[this->nick] = this;
 }
-void User::AddChan(Channel *c)
-{
-  if(c)
-    ChannelList[c] = this;
-}
+void User::AddChan(Channel *c){ if(c) ChannelList[c] = this; }
 void User::DelChan(Channel *c)
 {
   CList::iterator it = ChannelList.find(c);
@@ -91,12 +83,8 @@ Channel *User::findchannel(const Flux::string &name)
     return it->first;
   return NULL;
 }
-void User::SendMessage(const Flux::string &message){
-  Send->notice(this->nick, message);
-}
-void User::SendPrivmsg(const Flux::string &message){
-  Send->privmsg(this->nick, message);
-}
+void User::SendMessage(const Flux::string &message){ Send->notice(this->nick, message); }
+void User::SendPrivmsg(const Flux::string &message){ Send->privmsg(this->nick, message); }
 User *finduser(const Flux::string &fnick){
   Flux::map<User *>::iterator it = UserNickList.find(fnick);
   if(it != UserNickList.end())

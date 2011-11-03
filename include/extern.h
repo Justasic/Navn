@@ -73,11 +73,11 @@ enum ModErr
 typedef std::map<Flux::string, Command *, std::less<ci::string> > CommandMap;
 
 /*  Class pointer finder definitions */
-Channel *findchannel(const Flux::string&);
-User *finduser(const Flux::string &nick);
-module *FindModule(const Flux::string &name);
-Command *FindCommand(const Flux::string &name);
-Command *FindChanCommand(const Flux::string &name);
+E Channel *findchannel(const Flux::string&);
+E User *finduser(const Flux::string &nick);
+E module *FindModule(const Flux::string &name);
+E Command *FindCommand(const Flux::string &name);
+E Command *FindChanCommand(const Flux::string &name);
 
 /* extern's */
 E SocketIO *sock;
@@ -102,11 +102,12 @@ E bool InTerm();
 E bool protocoldebug, IsOper, dev, nofork, quitting, started, nocolor, istempnick;
 E std::vector<Flux::string> StringVector(const Flux::string&, char);
 E Flux::insensitive_map<module*> Modules;
-E Flux::insensitive_map<User *> UserNickList;
+E Flux::insensitive_map<User*> UserNickList;
 E Flux::insensitive_map<Channel*> ChanMap;
 
 /* void's */
 E void Rehash();
+E void QuitUser(User*);
 E void Fork();
 E void sigact(int);
 E void InitSignals();

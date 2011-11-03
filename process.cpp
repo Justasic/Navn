@@ -32,6 +32,8 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
     }
     if(u)
       u->AddChan(c);
+    if(c)
+      c->AddUser(u);
 }
 /*********************************************************************************/
 void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
@@ -178,17 +180,21 @@ void process(const Flux::string &buffer){
   }
   if(command == "QUIT"){
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
-    delete u;
+    QuitUser(u);
   }
   if(command == "PART"){
     FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
-     delete c;
+     delete c; //This should remove the channel from all users if the bot is parting..
     else{
-     if(u && c)
+     if(u)
        u->DelChan(c);
-     if(u && c && !u->findchannel(c->name))
-       delete u;
+     if(c)
+       c->DelUser(u);
+     if(u && c && !u->findchannel(c->name)){
+       Log(LOG_TERMINAL) << "Deleted " << u->nick << '|' << c->name << '|' << u->findchannel(c->name);
+       delete u; 
+      }
     }
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric((int)command)); }
@@ -213,6 +219,8 @@ void process(const Flux::string &buffer){
       c->SendWho();
     else if(!u->findchannel(c->name))
       u->AddChan(c);
+    else if(!c->finduser(u->nick))
+      c->AddUser(u);
     else if(u->nick != Config->BotNick){
       FOREACH_MOD(I_OnJoin, OnJoin(u, c));
     }
