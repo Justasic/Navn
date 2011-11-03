@@ -220,7 +220,7 @@ public:
       Log(u, this) << "to request navn's quit password: " << password;
     }else{
       source.Reply(ACCESS_DENIED);
-      Log(u, this) << " and attempted to request navn's quit password.";
+      Log(u, this) << "to attempt to request navn's quit password.";
     }
   }
 };

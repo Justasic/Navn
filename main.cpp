@@ -21,7 +21,7 @@
 
 bool SocketIO::Read(const Flux::string &buf) const
 {
-  if(buf.search("ERROR :Closing link:")){
+  if(buf.search_ci("ERROR :Closing link:")){
     FOREACH_MOD(I_OnSocketError, OnSocketError(buf));
     throw SocketException(buf.c_str());
   }

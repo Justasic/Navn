@@ -51,6 +51,7 @@ Navn 2.0.2
 
 [ ] Add more event handlers (FOREACH_MOD)
 [ ] Add calculator
+[ ] Add buffer limiter (so freenode does not kill the bot)
 [ ] Better config format
 [ ] Better startup switch management
 [ ] Add Oper Protocol modules

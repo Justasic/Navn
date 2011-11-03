@@ -570,49 +570,53 @@ namespace Flux{
     inline operator double() { return value_cast<double>(this->_string); }
     /* Cast into a long integer */
     inline operator long() { return value_cast<long>(this->_string); }
+    /* Cast into a unsigned integer */
+    inline operator unsigned() { return value_cast<unsigned>(this->_string); }
 
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     friend std::istream &operator>>(std::istream &os, string &_str);
-    }; //end of string class
-    template<typename T> class map : public std::map<string, T> { };
-    template<typename T> class insensitive_map : public std::map<string, T, std::less<ci::string> > { };
-    extern Flux::string Sanitize(const Flux::string&);
-    extern Flux::string RandomString(size_t);
-    extern Flux::string RandomNickString(size_t);
-    inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
-    inline std::istream &operator>>(std::istream &os, string &_str) { return os >> _str._string; }
-    inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
-    inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
-    inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
+  }; //end of string class
+  template<typename T> class map : public std::map<string, T> { };
+  template<typename T> class insensitive_map : public std::map<string, T, std::less<ci::string> > { };
+  extern Flux::string Sanitize(const Flux::string&);
+  extern Flux::string RandomString(size_t);
+  extern Flux::string RandomNickString(size_t);
+  inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
+  inline std::istream &operator>>(std::istream &os, string &_str) { return os >> _str._string; }
+  inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
+  inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
+  inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
 
-    struct hash
-	{
-		/* VS 2008 specific code */
-		enum { bucket_size = 4, min_buckets = 8 };
-		bool operator()(const string &s1, const string &s2) const;
-		/* End of 2008 specific code */
+  struct hash
+  {
+    /* VS 2008 specific code */
+    enum { bucket_size = 4, min_buckets = 8 };
+    bool operator()(const string &s1, const string &s2) const;
+    /* End of 2008 specific code */
 
-		/** Hash an Anope::string for unordered_map
-		 * @param s The string
-		 * @return A hash value for the string
-		 */
-		bool operator()(const string &s) const;
-	};
+    /** Hash an Anope::string for unordered_map
+      * @param s The string
+      * @return A hash value for the string
+      */
+    bool operator()(const string &s) const;
+  };
 
 }//end of namespace
 
-class sepstream {
+class sepstream
+{
  private:
-		Flux::string tokens;
-		Flux::string::iterator last_starting_position;
-		Flux::string::iterator n;
-		char sep;
+  Flux::string tokens;
+  Flux::string::iterator last_starting_position;
+  Flux::string::iterator n;
+  char sep;
  public:
-		sepstream(const Flux::string &source, char seperator);
-		virtual bool GetToken(Flux::string &token);
-		virtual const Flux::string GetRemaining();
-		virtual bool StreamEnd();
+  sepstream(const Flux::string &source, char seperator);
+  virtual bool GetToken(Flux::string &token);
+  virtual const Flux::string GetRemaining();
+  virtual bool StreamEnd();
 };
+
 class dynamic_reference_base;
 class Base
 {

@@ -71,6 +71,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	  Source.Reply("An internal error has occured, please contact the bots administrator %s", Config->Owner.c_str());
 	}
 #endif
+	LastRunModule = NULL;
       }else{
 	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
       }
@@ -97,11 +98,12 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	  Source.Reply("An internal error has occured, please contact the bots administrator: %s", Config->Owner.c_str());
 	}
 #endif
+	LastRunModule = NULL;
     }else{
       if(!protocoldebug)
 	Log(LOG_DEBUG) << Flux::Sanitize(Source.raw); //This receives ALL server commands sent to the bot..
     }
-  } 
+  }
 }
 
 /*********************************************************************************/
@@ -197,6 +199,7 @@ void process(const Flux::string &buffer){
     }
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric((int)command)); }
+  if(command.equals_cs("PING")){ FOREACH_MOD(I_OnPing, OnPing(command, params)); }
   if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
   if(command.equals_cs("INVITE")) { FOREACH_MOD(I_OnInvite, OnInvite(u, params[1])); }

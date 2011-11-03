@@ -48,5 +48,6 @@ public:
   bool is_valid() const { return this->GetFD() != -1; }
   int Process();
   bool Read(const Flux::string&) const;
+  void ThrowException(const Flux::string&);
 };
 #endif

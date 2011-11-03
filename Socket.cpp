@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <iostream>
 #define NET_BUFSIZE 65535
+bool throwex;
+Flux::string throwmsg;
 fd_set ReadFD/*, WriteFD, ExceptFD*/;
 
 /* FIXME: please god, when will the hurting stop? This class is so
@@ -17,6 +19,7 @@ SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : soc
   SET_SEGV_LOCATION();
   this->server = cserver.std_str();
   this->port = cport.std_str();
+  throwex = false;
   
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_INET;
@@ -24,6 +27,7 @@ SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : soc
   /****************************/ 
 }
 int SocketIO::GetFD() const { return sockn; }
+void SocketIO::ThrowException(const Flux::string &msg) { throwex = true; throwmsg = msg; }
 bool SocketIO::SetNonBlocking()
 {
  int flags = fcntl(this->GetFD(), F_GETFL, 0);
@@ -109,6 +113,8 @@ int SocketIO::Process()
     Log(LOG_DEBUG) << "Select() error: " << strerror(errno);
     return errno;
   }
+  if(throwex) //throw a socket exception if we want to. mainly used for ping timeouts.
+    throw SocketException(throwmsg);
   if(FD_ISSET(this->GetFD(), &read) && sres)
   {
   if(this->recv() == -1 && !quitting)

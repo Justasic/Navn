@@ -13,7 +13,7 @@ public:
     if(timeout)
     {
       if(++pings >= 3)
-	restart("Ping-Timeout: 120 seconds");
+	sock->ThrowException("Ping timeout: 120 seconds");
     }
   }
 };
@@ -23,7 +23,7 @@ class Ping_pong:public module
 public:
   Ping_pong(const Flux::string &Name):module(Name)
   {
-    Implementation i[] = { I_OnNumeric, I_OnCommand };
+    Implementation i[] = { I_OnNumeric, I_OnCommand, I_OnPing };
     ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
@@ -31,20 +31,20 @@ public:
   }
   void OnCommand(const Flux::string &command, const std::vector<Flux::string> &params)
   {
-    if(command == "PONG")
+    if(command.equals_cs("PONG"))
     {
      Flux::string ts = params[0];
      int lag = time(NULL)-(int)ts;
      pingtimer.timeout = false;
      pingtimer.pings = 0;
      if(protocoldebug)
-        Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL);
+        Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
     }
-    if(command == "PING")
-    {
-      pingtimer.timeout = false;
-      send_cmd("PONG :%s\n", params[1].c_str());
-    }
+  }
+  void OnPing(const Flux::string&, const std::vector<Flux::string> &params)
+  {
+    pingtimer.timeout = false;
+    send_cmd("PONG :%s\n", params[0].c_str());
   }
   void OnConnectionError(const Flux::string &buffer)
   {
