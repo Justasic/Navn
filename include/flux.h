@@ -26,7 +26,7 @@ template<typename T, typename V> inline T value_cast(const V &y)
 {
   std::stringstream stream;
   T x;
-  if(!(stream << y))
+  if(!(stream << std::setprecision(400) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
   stream >> x; /* we ignore the errors on this because if it doesnt work then it will return null or a
 	        * signal abort since std::string casting causes errors. */
