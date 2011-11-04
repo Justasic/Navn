@@ -117,7 +117,6 @@ void TimerManager::TickTimers(time_t ctime)
 		Timer *t = Timers.front();
 
 		t->Tick(ctime);
-
 		if (t->GetRepeat())
 		{
 			t->SetTimer(ctime + t->GetSecs());

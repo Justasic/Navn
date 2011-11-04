@@ -145,7 +145,7 @@ int SocketIO::recv() const
   }
   return i;
 }
-int SocketIO::send(const Flux::string &buf) const
+int SocketIO::send(const Flux::string buf) const
 {
  LastBuf = buf;
  Log(LOG_RAWIO) << "Sent: " << buf;

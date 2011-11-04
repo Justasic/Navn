@@ -43,7 +43,7 @@ public:
   bool SetNonBlocking();
   bool SetBlocking();
   int recv() const;
-  int send(const Flux::string &buf) const;
+  int send(const Flux::string buf) const;
   bool Connect();
   bool is_valid() const { return this->GetFD() != -1; }
   int Process();

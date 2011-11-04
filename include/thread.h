@@ -3,7 +3,7 @@
 #define THREAD_H
 #include "includes.h"
 
-class Thread
+class Thread : public Base
 {
   pthread_t Handle;
   bool exit;
