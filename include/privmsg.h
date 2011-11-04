@@ -9,11 +9,11 @@ public:
   Commands *command;
   Oper *o;
   SendMessage();
-  void privmsg(Flux::string where, const char *fmt, ...);
-  void privmsg(Flux::string where, Flux::string msg);
-  void notice(Flux::string where, const char *fmt, ...);
-  void notice(Flux::string where, Flux::string msg);
-  void action(Flux::string where, const char *fmt, ...);
-  void action(Flux::string where, Flux::string msg);
+  void privmsg(const Flux::string &where, const char *fmt, ...);
+  void privmsg(const Flux::string &where, const Flux::string &msg);
+  void notice(const Flux::string &where, const char *fmt, ...);
+  void notice(const Flux::string &where, const Flux::string &msg);
+  void action(const Flux::string &where, const char *fmt, ...);
+  void action(const Flux::string &where, const Flux::string &msg);
 };
 #endif

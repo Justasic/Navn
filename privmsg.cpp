@@ -12,7 +12,7 @@ SendMessage::SendMessage(){
  * \param Destination Where the message will go
  * \param Message The message to send to Destination 
  */
-void SendMessage::privmsg(Flux::string where, const char *fmt, ...){
+void SendMessage::privmsg(const Flux::string &where, const char *fmt, ...){
   va_list args;
   char buffer[4096] = "";
   if(fmt)
@@ -27,7 +27,7 @@ void SendMessage::privmsg(Flux::string where, const char *fmt, ...){
  * \overload void SendMessage::privmsg(Flux::string where, Flux::string msg)
  * \brief Sends a IRC private message to the user or channel
  */
-void SendMessage::privmsg(Flux::string where, Flux::string msg){
+void SendMessage::privmsg(const Flux::string &where, const Flux::string &msg){
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
@@ -38,7 +38,7 @@ void SendMessage::privmsg(Flux::string where, Flux::string msg){
  * \param Destination Where the message will go
  * \param Message The message to send to Destination 
  */
-void SendMessage::notice(Flux::string where, const char *fmt, ...){
+void SendMessage::notice(const Flux::string &where, const char *fmt, ...){
   va_list args;
   char buffer[4096] = "";
   if(fmt)
@@ -53,7 +53,7 @@ void SendMessage::notice(Flux::string where, const char *fmt, ...){
  * \overload void SendMessage::notice(Flux::string where, Flux::string msg)
  * \brief Sends a IRC notice to the user or channel
  */
-void SendMessage::notice(Flux::string where, Flux::string msg){
+void SendMessage::notice(const Flux::string &where, const Flux::string &msg){
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
@@ -64,7 +64,7 @@ void SendMessage::notice(Flux::string where, Flux::string msg){
  * \param Destination Where the message will go
  * \param Message The message to send to Destination 
  */
-void SendMessage::action(Flux::string where, const char *fmt, ...){
+void SendMessage::action(const Flux::string &where, const char *fmt, ...){
   if(fmt)
   {
     va_list args;
@@ -79,7 +79,7 @@ void SendMessage::action(Flux::string where, const char *fmt, ...){
  * \overload void SendMessage::action(Flux::string where, Flux::string msg)
  * \brief Sends a IRC notice to the user or channel
  */
-void SendMessage::action(Flux::string where, Flux::string msg){
+void SendMessage::action(const Flux::string &where, const Flux::string &msg){
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))

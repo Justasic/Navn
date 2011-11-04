@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <bitset>
 #include <ios>
+#include <typeinfo>
 #include "config.h" /* we include the config header from ./configure */
 #ifdef __GNUC__
 #define DEPRECATED(func) func __attribute__ ((deprecated))
@@ -22,14 +23,16 @@
 #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 #define DEPRECATED(func) func
 #endif
+extern bool protocoldebug;
 template<typename T, typename V> inline T value_cast(const V &y)
 {
   std::stringstream stream;
   T x;
   if(!(stream << std::setprecision(400) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
-  stream >> x; /* we ignore the errors on this because if it doesnt work then it will return null or a
-	        * signal abort since std::string casting causes errors. */
+  if(!(stream >> x))
+    if(protocoldebug)
+      printf("Failed to convert %s to %s\n", typeid(V).name(), typeid(T).name());
   return x;
 }
 namespace Flux{
