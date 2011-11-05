@@ -116,7 +116,7 @@ Flux::string fsprintf(const char *fmt, ...)
   if(fmt)
   {
     va_list args;
-    char buf[1024];
+    char buf[BUFSIZE];
     va_start(args, fmt);
     vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);

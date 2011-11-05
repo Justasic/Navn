@@ -14,7 +14,7 @@ Commands::Commands(){}
  * \param reason Reason for the kick.
  */
 void Commands::kick(const Flux::string &Channel, const Flux::string &User, const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -26,7 +26,7 @@ void Commands::kick(const Flux::string &Channel, const Flux::string &User, const
  * \brief Sets channel topic.
  */
 void Commands::topic(const Flux::string &channel, const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -39,7 +39,7 @@ void Commands::topic(const Flux::string &channel, const char *fmt, ...){
  * \param message Quit message
  */
 void Commands::quit(const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -53,7 +53,7 @@ void Commands::quit(const char *fmt, ...){
  * \param reason Reason for parting.
  */
 void Commands::part(const Flux::string &channel, const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -193,7 +193,7 @@ void Oper::satopic(const Flux::string &target, const Flux::string &topic){
   send_cmd("SATOPIC %s %s", target.c_str(), topic.c_str());
 }
 void Oper::satopic(const Flux::string &target, const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -213,7 +213,7 @@ void Oper::saname(const Flux::string &target, const Flux::string &name){
   send_cmd("CHGNAME %s %s", target.c_str(), name.c_str());
 }
 void Oper::saname(const Flux::string &target, const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -224,7 +224,7 @@ void Oper::wallops(const Flux::string &message){
   send_cmd("WALLOPS %s", message.c_str());
 }
 void Oper::wallops(const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -235,7 +235,7 @@ void Oper::globops(const Flux::string &message){
   send_cmd("GLOBOPS %s", message.c_str());
 }
 void Oper::globops(const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -257,7 +257,7 @@ void Oper::gline(const Flux::string &target, const Flux::string &time, const Flu
 /*******************************************************************************************/
 void CommandSource::Reply(const char *fmt, ...){
   va_list args;
-  char buf[4096];
+  char buf[BUFSIZE];
   if(fmt){
     va_start(args, fmt);
     vsnprintf(buf, sizeof(buf), fmt, args);

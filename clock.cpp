@@ -129,7 +129,7 @@ Flux::string duration(const time_t &t)
 Flux::string do_strftime(const time_t &t, bool short_output)
 {
   tm tm = *localtime(&t);
-  char buf[4098];
+  char buf[BUFSIZE];
   strftime(buf, sizeof(buf), "%b %d %H:%M:%S %Y %Z", &tm);
   if (short_output)
     return buf;

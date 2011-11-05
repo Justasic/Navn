@@ -8,6 +8,7 @@
 /* #define's */
 #define Delete unlink
 #define E extern
+#define BUFSIZE 65535
 #define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')

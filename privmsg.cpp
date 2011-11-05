@@ -14,7 +14,7 @@ SendMessage::SendMessage(){
  */
 void SendMessage::privmsg(const Flux::string &where, const char *fmt, ...){
   va_list args;
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   if(fmt)
   {
     va_start(args, fmt);
@@ -40,7 +40,7 @@ void SendMessage::privmsg(const Flux::string &where, const Flux::string &msg){
  */
 void SendMessage::notice(const Flux::string &where, const char *fmt, ...){
   va_list args;
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   if(fmt)
   {
     va_start(args, fmt);
@@ -68,7 +68,7 @@ void SendMessage::action(const Flux::string &where, const char *fmt, ...){
   if(fmt)
   {
     va_list args;
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
     this->action(where, Flux::string(buffer));

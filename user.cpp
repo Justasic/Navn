@@ -36,7 +36,7 @@ void User::kill(const Flux::string &reason){
  //send_cmd("KILL %s :%s", this->nick.c_str(), reason.c_str());
 }
 void User::SendMessage(const char *fmt, ...){
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -44,7 +44,7 @@ void User::SendMessage(const char *fmt, ...){
   va_end(args);
 }
 void User::SendPrivmsg(const char *fmt, ...){
- char buffer[4096] = "";
+ char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);

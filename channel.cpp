@@ -43,7 +43,7 @@ void Channel::DelUser(User *u)
 }
 void Channel::SendPart(const char *fmt, ...){
   if(fmt){
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -55,7 +55,7 @@ void Channel::SendPart(const Flux::string &reason){ Send->command->part(this->na
 void Channel::kick(User *u, const Flux::string &reason){ u->kick(this->name, reason); }
 void Channel::kick(User *u, const char *fmt, ...){
   if(fmt){
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -65,7 +65,7 @@ void Channel::kick(User *u, const char *fmt, ...){
 }
 void Channel::kick(const Flux::string &u, const char *fmt, ...){
   if(fmt){
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -109,7 +109,7 @@ void Channel::RemoveMode(User *u, const Flux::string &mode){
 }
 void Channel::ChangeTopic(const char *fmt, ...){
   if(fmt){
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -120,7 +120,7 @@ void Channel::ChangeTopic(const char *fmt, ...){
 void Channel::ChangeTopic(const Flux::string &topicstr){ Send->command->topic(this->name, topicstr); }
 void Channel::SendMessage(const char *fmt, ...){
   if(fmt){
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -131,7 +131,7 @@ void Channel::SendMessage(const char *fmt, ...){
 void Channel::SendMessage(const Flux::string &message){ Send->privmsg(this->name, message); }
 void Channel::SendAction(const char *fmt, ...){
   if(fmt){
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);
@@ -142,7 +142,7 @@ void Channel::SendAction(const char *fmt, ...){
 void Channel::SendAction(const Flux::string &message) { Send->action(this->name, message); }
 void Channel::SendNotice(const char *fmt, ...){
   if(fmt){
-    char buffer[4096] = "";
+    char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
     vsnprintf(buffer, sizeof(buffer), fmt, args);

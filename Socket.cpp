@@ -8,7 +8,6 @@
 #include "Socket.h"
 #include <fcntl.h>
 #include <iostream>
-#define NET_BUFSIZE 65535
 bool throwex;
 Flux::string throwmsg;
 fd_set ReadFD/*, WriteFD, ExceptFD*/;
@@ -130,9 +129,9 @@ int SocketIO::Process()
 }
 int SocketIO::recv() const
 {
-  char tbuf[NET_BUFSIZE + 1] = "";
-  memset(tbuf, 0, NET_BUFSIZE + 1);
-  size_t i = read(this->GetFD(), tbuf, NET_BUFSIZE);
+  char tbuf[BUFSIZE + 1] = "";
+  memset(tbuf, 0, BUFSIZE + 1);
+  size_t i = read(this->GetFD(), tbuf, BUFSIZE);
   if(i <= 0)
     return i;
   sepstream sep(tbuf, '\n');
@@ -148,7 +147,7 @@ int SocketIO::recv() const
 int SocketIO::send(const Flux::string buf) const
 {
  LastBuf = buf;
- Log(LOG_RAWIO) << "Sent: " << buf;
+ Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();
  if(!protocoldebug)
    Log(LOG_DEBUG) << buf;
  int i = write(this->GetFD(), buf.c_str(), buf.size());
@@ -161,7 +160,7 @@ int SocketIO::send(const Flux::string buf) const
  */
 void send_cmd(const char *fmt, ...)
 {
-  char buffer[4096] = "";
+  char buffer[BUFSIZE] = "";
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);

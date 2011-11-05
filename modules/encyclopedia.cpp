@@ -49,7 +49,7 @@ private:
     information.trim();
     if (information.search_ci("For search options, see Help:Searching")) u->SendMessage(RandomOops());
     else if (information.search_ci("may refer to:") ||  information.search_ci("reasons this message may be displayed:") ) u->SendMessage(RandomAmb());
-    else u->SendMessage(information);
+    else u->SendMessage(information.strip());
   }
   void SetQuery(unsigned n, const std::vector<Flux::string> &params)
   {
@@ -73,7 +73,7 @@ public:
       msg += params[i]+' ';
 
     Flux::string cmd = params.empty()?"":params[0];
-
+    
     if(cmd.equals_ci("!encyclopedia"))
     {
       SetQuery(1, params);
