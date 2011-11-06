@@ -18,11 +18,32 @@ XMLFile::XMLFile(Flux::string fn):TextFile(fn)
 	contents += SingleLineBuffer.at(k);
       }
       Tag t(tag,contents);
+      for (unsigned l = 1; SingleLineBuffer.at(i+l) != '>'; l++)
+      {
+	char cc = SingleLineBuffer.at(i+l);
+	if (cc == '=' && SingleLineBuffer.at(i+l+1) == '"')
+	{
+	  std::string attribName = "";
+	  std::string attribVal = "";
+	  for (unsigned m = -1; SingleLineBuffer.at(i+l+m) != ' '; m--)
+	  {
+	    attribName.insert(0,1,SingleLineBuffer.at(i+l+m));
+	  }
+	  for (unsigned n = 2; SingleLineBuffer.at(i+l+n) != '"'; n++)
+	  {
+	    attribVal += SingleLineBuffer.at(i+l+n);
+	  }
+	  Tag::Attribute att(attribVal);
+	  t.Attributes[attribName] = att;
+	}
+      }
       Tags[tag] = t;
       i += contents.size();
     }
   }
 }
+
+XMLFile::Tag::Attribute::Attribute() {}
 
 XMLFile::Tag::Tag() {}
 
@@ -46,14 +67,32 @@ XMLFile::Tag::Tag(Flux::string n,Flux::string conts)
 	contents += conts.at(k);
       }
       Tag t(tag,contents);
+      for (unsigned l = 1; conts.at(i+l) != '>'; l++)
+      {
+	char cc = conts.at(i+l);
+	if (cc == '=' && conts.at(i+l+1) == '"')
+	{
+	  std::string attribName = "";
+	  std::string attribVal = "";
+	  for (unsigned m = -1; conts.at(i+l+m) != ' '; m--)
+	  {
+	    attribName.insert(0,1,conts.at(i+l+m));
+	  }
+	  for (unsigned nn = 2; conts.at(i+l+nn) != '"'; nn++)
+	  {
+	    attribVal += conts.at(i+l+nn);
+	  }
+	  Tag::Attribute att(attribVal);
+	  t.Attributes[attribName] = att;
+	}
+      }
       Tags[tag] = t;
       i += contents.size();
     }
   }
 }
 
-XMLFile::Tag::Attribute::Attribute(Flux::string n, Flux::string v)
+XMLFile::Tag::Attribute::Attribute(Flux::string v)
 {
-  Name = n;
   Value = v;
 }

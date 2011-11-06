@@ -7,16 +7,16 @@ class XMLFile : public TextFile
 private:
   class Tag
   {
-  private:
+  public:
     class Attribute
     {
     private:
     public:
-      Attribute(Flux::string,Flux::string);
+      Attribute();
+      Attribute(Flux::string);
       Flux::string Name;
       Flux::string Value;
     };
-  public:
     Tag();
     Tag(Flux::string,Flux::string);
     Flux::string Name;

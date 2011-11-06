@@ -1,23 +1,25 @@
 #include "flux_net_irc.hpp"
 
+XMLFile * xf = new XMLFile("myxml.xml");
+
 class CommandSimple : public Command
 {
 public:
-  CommandSimple():Command("HI")
+  CommandSimple():Command(xf->Tags["trigger"].Attributes["word"].Value)
   {
-    this->SetDesc("Says Hi");
+    this->SetDesc("Pulls from the XML file.");
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
-    source.Reply("HI!");
+    source.Reply(xf->Tags["trigger"].Content);
   }
 };
 
-class SimpleMod : public module
+class QuickReply : public module
 {
   CommandSimple s;
 public:
-  SimpleMod(const Flux::string &Name):module(Name)
+  QuickReply(const Flux::string &Name):module(Name)
   {
     this->SetVersion("1.0");
     this->SetAuthor("Lordofsraam");
@@ -31,9 +33,11 @@ public:
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
       msg += params[i] +' ';
-    if(msg.search("I am a very long command"))
+    if(msg.search_ci("!rehash"))
     {
-      Log(LOG_TERMINAL) << "PRIVMSG: " << msg;
+      u->SendMessage("Rehashing xml file...");
+      xf = new XMLFile("myxml.xml");
+      u->SendMessage("XML file has been rehashed.");
     }
   }
   void OnNotice(User *u, const std::vector<Flux::string> &params)
@@ -41,10 +45,6 @@ public:
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
       msg += params[i] +' ';
-    if(msg.search("I am a very long notice"))
-    {
-      Log(LOG_TERMINAL) << "NOTICE: " << msg;
-    }
   }
 };
-MODULE_HOOK(SimpleMod)
+MODULE_HOOK(QuickReply)
