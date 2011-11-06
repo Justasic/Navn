@@ -45,8 +45,6 @@ class INIReader;
 class BotConfig;
 class IsoHost;
 class Clock;
-class TextFile;
-class XMLFile;
 struct CommandSource;
 
 /* Enumorations */
@@ -57,6 +55,11 @@ enum LogType
   LOG_RAWIO,
   LOG_TERMINAL,
   LOG_SILENT
+};
+enum CommandType
+{
+  COMMAND_CHANNEL,
+  COMMAND_PRIVATE
 };
 enum ModErr
 {
@@ -78,8 +81,7 @@ typedef std::map<Flux::string, Command *, std::less<ci::string> > CommandMap;
 E Channel *findchannel(const Flux::string&);
 E User *finduser(const Flux::string &nick);
 E module *FindModule(const Flux::string &name);
-E Command *FindCommand(const Flux::string &name);
-E Command *FindChanCommand(const Flux::string &name);
+E Command *FindCommand(const Flux::string &name, CommandType);
 
 /* extern's */
 E SocketIO *sock;

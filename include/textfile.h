@@ -1,6 +1,7 @@
 #ifndef TEXTFILE_H
 #define TEXTFILE_H
 #include "module.h"
+
 enum FileIOErrors
 {
   FILE_IO_OK,
@@ -12,6 +13,7 @@ enum FileIOErrors
   FILE_IO_FAILURE,
   FILE_IO_EXCEPTION
 };
+
 class TextFile
 {
 private:

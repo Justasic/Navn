@@ -1,6 +1,5 @@
 #ifndef XMLFILE_H
 #define XMLFILE_H
-#include "module.h"
 
 class XMLFile : public TextFile
 {

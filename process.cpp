@@ -51,7 +51,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
     }
     else{
-      Command *ccom = FindChanCommand(params2[0]);
+      Command *ccom = FindCommand(params2[0], COMMAND_CHANNEL);
       if(ccom){
 	Source.command = ccom->name;
 	params2.erase(params2.begin());
@@ -78,7 +78,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
     }
   }
   else{
-    Command *com = FindCommand(params2[0]);
+    Command *com = FindCommand(params2[0], COMMAND_PRIVATE);
     if(com && !IsValidChannel(receiver) && command == "PRIVMSG"){
       Source.command = com->name;
       params2.erase(params2.begin());

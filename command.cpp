@@ -277,20 +277,21 @@ void CommandSource::Reply(const Flux::string &msg){
  * \brief Find a command in the command map
  * \param name A string containing the command name you're looking for
  */
-Command *FindCommand(const Flux::string &name){
+Command *FindCommand(const Flux::string &name, CommandType type){
   if(name.empty())
     return NULL;
-  CommandMap::iterator it = Commandsmap.find(name);
-  if(it != Commandsmap.end())
-    return it->second;
-  return NULL;
-}
-Command *FindChanCommand(const Flux::string &name){
-  if(name.empty())
-    return NULL;
-  CommandMap::iterator it = ChanCommandMap.find(name);
-  if(it != ChanCommandMap.end())
-    return it->second;
+  if((type = COMMAND_PRIVATE))
+  {
+    CommandMap::iterator it = Commandsmap.find(name);
+      if(it != Commandsmap.end())
+	return it->second;
+  }
+  if((type = COMMAND_CHANNEL))
+  {
+    CommandMap::iterator it = ChanCommandMap.find(name);
+    if(it != ChanCommandMap.end())
+      return it->second;
+  }
   return NULL;
 }
 /*******************************************************************************************/

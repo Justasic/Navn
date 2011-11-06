@@ -123,6 +123,7 @@ public:
   size_t MaxParams;
   size_t MinParams;
   Flux::string name;
+  CommandType type;
   module *mod;
   Command(const Flux::string &sname, size_t min_params=0, size_t max_params=0);
   virtual ~Command();

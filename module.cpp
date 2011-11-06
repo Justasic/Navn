@@ -54,6 +54,7 @@ int module::AddCommand(Command *c){
    return 2;
  }
  c->mod = this;
+ c->type = COMMAND_PRIVATE;
  return 0;
 }
 /** 
@@ -83,6 +84,7 @@ int module::AddChanCommand(Command *c){
    return 2;
  }
  c->mod = this;
+ c->type = COMMAND_CHANNEL;
  return 0;
 }
 /** 
