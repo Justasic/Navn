@@ -5,11 +5,11 @@ XMLFile::XMLFile(Flux::string fn):TextFile(fn)
   for (unsigned i = 0; i < SingleLineBuffer.size(); i++)
   {
     char c = SingleLineBuffer.at(i);
-    if (c == '<' && SingleLineBuffer.at(i+1) != '/' && SingleLineBuffer.at(i+1) != ' ')
+    if (c == '<' && SingleLineBuffer.at(i+1) != '/')
     {
       std::string tag = "";
       std::string contents = "";
-      for (unsigned j = 1;SingleLineBuffer.at(i+j) != '>'; j++)
+      for (unsigned j = 1;SingleLineBuffer.at(i+j) != '>' && SingleLineBuffer.at(i+j) != ' '; j++)
       {
 	tag += SingleLineBuffer.at(i+j);
       }
