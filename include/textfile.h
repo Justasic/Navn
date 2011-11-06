@@ -15,9 +15,11 @@ enum FileIOErrors
 class TextFile
 {
 private:
-  Flux::string SingleLineBuffer, line, filename;
+  Flux::string line, filename;
   FileIOErrors lasterror;
   std::vector<Flux::string> lines;
+protected:
+  Flux::string SingleLineBuffer;
 public:
   std::vector<Flux::string> Contents;
   ~TextFile();

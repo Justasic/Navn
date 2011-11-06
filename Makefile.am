@@ -27,7 +27,8 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c log.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c clock.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c textfile.cpp
-	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o -o $(PACKAGE) $(LIBS) -rdynamic
+	@$(PERL) $(CXX) $(CFLAGS) -c xmlfile.cpp
+	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o $(PACKAGE) $(LIBS) -rdynamic
 about_me.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/about_me.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/about_me.cpp -o modules/about_me.so about_me.o
@@ -67,6 +68,9 @@ m_terminal_input.so:
 PvP.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/PvP.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/PvP.cpp -o modules/PvP.so PvP.o
+QuickReply.so:
+	@$(PERL) $(CXX) $(CFLAGS) -c modules/QuickReply.cpp
+	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/QuickReply.cpp -o modules/QuickReply.so QuickReply.o
 searcher.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/searcher.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/searcher.cpp -o modules/searcher.so searcher.o
@@ -83,9 +87,9 @@ world_clock.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/world_clock.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/world_clock.cpp -o modules/world_clock.so world_clock.o
 
-modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
+modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so QuickReply.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 
-all-am: navn about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
+all-am: navn about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so QuickReply.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 	@echo " "
 	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 clean:
