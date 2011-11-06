@@ -11,7 +11,6 @@
 #include "flux.h"
 #include "extern.h"
 #include "textfile.h"
-#include "xmlfile.h"
 
 // Read an INI file into easy-to-access name/value pairs. (Note that I've gone
 // for simplicity here rather than speed, but it should be pretty decent.)
