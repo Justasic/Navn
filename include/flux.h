@@ -380,6 +380,15 @@ namespace Flux{
     inline string append(const char* s) { return this->_string.append(s); }
     inline string append(size_t n, char c) { return this->_string.append(n, c); }
 
+    inline string insert(size_t pos1, const string &_str) { return this->_string.insert(pos1, _str._string); }
+    inline string insert(size_t pos1, const string &_str, size_t pos2, size_t n) { return this->_string.insert(pos1, _str._string, pos2, n); }
+    inline string insert(size_t pos1, const char* s, size_t n) { return this->_string.insert(pos1, s, n); }
+    inline string insert(size_t pos1, const char* s) { return this->_string.insert(pos1, s); }
+    inline string insert(size_t pos1, size_t n, char c) { return this->_string.insert(pos1, n, c); }
+    inline iterator insert(iterator p, char c) { return this->_string.insert(p, c); }
+    inline void insert(iterator p, size_t n, char c) { return this->_string.insert(p, n, c); }
+    template<class InputIterator> inline void insert(iterator p, InputIterator first, InputIterator last) { return this->_string.insert(p, first, last); }
+    
     inline string assign(const string &str) { return this->_string.assign(str._string); }
     inline string assign(const string &str, size_t pos, size_t n) { return this->_string.assign(str._string, pos, n); }
     inline string assign(const char* s, size_t n) { return this->_string.assign(s, n); }
