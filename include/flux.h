@@ -319,6 +319,8 @@ namespace Flux{
     inline size_type length() const { return this->_string.length(); }
     inline size_type size() const { return this->_string.size(); }
     inline size_type capacity() const { return this->_string.capacity(); }
+    inline size_type max_size() const { return this->_string.max_size(); }
+    inline void swap(string &_str) { this->_string.swap(_str._string); }
     inline void push_back(char c) { return this->_string.push_back(c); }
     inline void push_back(const string &_str) { if (this != &_str) this->_string += _str._string; }
     inline void resize(size_type n) { return this->_string.resize(n); }
@@ -380,6 +382,13 @@ namespace Flux{
     inline string append(const char* s) { return this->_string.append(s); }
     inline string append(size_t n, char c) { return this->_string.append(n, c); }
 
+    inline int compare(const string &_str) const { return this->_string.compare(_str._string); }
+    inline int compare(const char *s) const { return this->_string.compare(s); }
+    inline int compare(size_t pos1, size_t n1, const string &_str) const { return this->_string.compare(pos1, n1, _str._string); }
+    inline int compare(size_t pos1, size_t n1, const char *s) const { return this->_string.compare(pos1, n1, s); }
+    inline int compare(size_t pos1, size_t n1, const string &_str, size_t pos2, size_t n2) const { return this->_string.compare(pos1, n1, _str._string, pos2, n2); }
+    inline int compare(size_t pos1, size_t n1, const char *s, size_t n2) const { return this->_string.compare(pos1, n1, s, n2); }
+
     inline string insert(size_t pos1, const string &_str) { return this->_string.insert(pos1, _str._string); }
     inline string insert(size_t pos1, const string &_str, size_t pos2, size_t n) { return this->_string.insert(pos1, _str._string, pos2, n); }
     inline string insert(size_t pos1, const char* s, size_t n) { return this->_string.insert(pos1, s, n); }
@@ -388,7 +397,7 @@ namespace Flux{
     inline iterator insert(iterator p, char c) { return this->_string.insert(p, c); }
     inline void insert(iterator p, size_t n, char c) { return this->_string.insert(p, n, c); }
     template<class InputIterator> inline void insert(iterator p, InputIterator first, InputIterator last) { return this->_string.insert(p, first, last); }
-    
+
     inline string assign(const string &str) { return this->_string.assign(str._string); }
     inline string assign(const string &str, size_t pos, size_t n) { return this->_string.assign(str._string, pos, n); }
     inline string assign(const char* s, size_t n) { return this->_string.assign(s, n); }
@@ -433,7 +442,7 @@ namespace Flux{
 
     inline const char &at(size_t pos) const { return this->_string.at(pos); }
     inline char &at(size_t pos) { return this->_string.at(pos); }
-
+    inline std::allocator<char> get_allocator() const { return this->_string.get_allocator(); }
     inline char &operator[](size_type n) { return this->_string[n]; }
     inline const char &operator[](size_type n) const { return this->_string[n]; }
     inline operator std::string() { return this->_string; }
