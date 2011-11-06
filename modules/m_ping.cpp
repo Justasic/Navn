@@ -5,7 +5,7 @@ class PingTimer:public Timer
 public:
   int pings;
   bool timeout;
-  PingTimer():Timer(30, time(NULL), true) { pings = 0; timeout = false; }
+  PingTimer():Timer(30, time(NULL), true), pings(0), timeout(false) { }
   void Tick(time_t){
     send_cmd("PING :%i\n", time(NULL));
     if(!timeout)
