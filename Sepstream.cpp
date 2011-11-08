@@ -82,25 +82,6 @@ Flux::string Flux::RandomString(size_t length)
  *
  */
  
-/* VS 2008 specific function */
-bool Flux::hash::operator()(const Flux::string &s1, const Flux::string &s2) const
-{
-	return s1.std_str().compare(s2.std_str()) < 0;
-}
-
-/** Hash an Flux::string for unordered_map
- * @param s The string
- * @return A hash value for the string
- */
-bool Flux::hash::operator()(const Flux::string &s) const
-{
-	register size_t t = 0;
-
-	for (Flux::string::const_iterator it = s.begin(), it_end = s.end(); it != it_end; ++it)
-		t = 5 * t + *it;
-
-	return t;
-}
 
 bool ci::ci_char_traits::eq(char c1st, char c2nd)
 {
@@ -143,48 +124,12 @@ const char *ci::ci_char_traits::find(const char *s1, int n, char c)
 	return n >= 0 ? s1 : NULL;
 }
 
-/* VS 2008 specific function */
-bool ci::hash::operator()(const Flux::string &s1, const Flux::string &s2) const
-{
-	return s1.ci_str().compare(s2.ci_str()) < 0;
-}
-
-/** Hash a ci::string for unordered_map
- * @param s The string
- * @return A hash value for the string
- */
-size_t ci::hash::operator()(const ci::string &s) const
-{
-	register size_t t = 0;
-
-	for (ci::string::const_iterator it = s.begin(), it_end = s.end(); it != it_end; ++it)
-		t = 5 * t + ascii_case_insensitive_map[static_cast<const unsigned char>(*it)];
-
-	return t;
-}
-
-size_t ci::hash::operator()(const Flux::string &s) const
-{
-	return operator()(s.ci_str());
-}
-
-/** Compare two Flux::strings as ci::strings
- * @param s1 The first string
- * @param s2 The second string
- * @return true if they are equal
- */
-bool std::equal_to<ci::string>::operator()(const Flux::string &s1, const Flux::string &s2) const
-{
-	return s1.ci_str() == s2.ci_str();
-}
-
-
 /** Compare two Flux::strings as ci::strings and find which one is less
  * @param s1 The first string
  * @param s2 The second string
  * @return true if s1 < s2, else false
  */
-bool std::less<ci::string>::operator()(const Flux::string &s1, const Flux::string &s2) const
+bool ci::less::operator()(const Flux::string &s1, const Flux::string &s2) const
 {
 	return s1.ci_str().compare(s2.ci_str()) < 0;
 }

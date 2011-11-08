@@ -77,7 +77,7 @@ enum ModErr
 };
 
 /* Typedef's */
-typedef std::map<Flux::string, Command *, std::less<ci::string> > CommandMap;
+typedef std::map<Flux::string, Command *, ci::less> CommandMap;
 
 /*  Class pointer finder definitions */
 E Channel *findchannel(const Flux::string&);

@@ -110,52 +110,14 @@ namespace ci
 	 */
 	typedef std::basic_string<char, ci_char_traits, std::allocator<char> > string;
 
-	/** Used to hash ci::strings for unordered_map
-	 */
-	struct hash
+	struct less
 	{
-		/* VS 2008 specific code */
-		enum { bucket_size = 4, min_buckets = 8 };
-		bool operator()(const Flux::string &s1, const Flux::string &s2) const;
-		/* End VS 2008 specific code */
-
-		/** Hash a ci::string for unordered_map
-		 * @param s The string
-		 * @return A hash value for the string
-		 */
-		size_t operator()(const ci::string &s) const;
-		size_t operator()(const Flux::string &s) const;
-	};
-}
-
-namespace std
-{
-	/** An overload for std::equal_to<ci::string> that uses Flux::string, passed for the fourth temmplate
-	 * argument for unordered_map
-	 */
-	template<> struct equal_to<ci::string>
-	{
-	 public:
-		/** Compare two Flux::strings as ci::strings
-		 * @paarm s1 The first string
-		 * @param s2 The second string
-		 * @return true if they are equal
-		 */
-		bool operator()(const Flux::string &s1, const Flux::string &s2) const;
-	};
-
-	/** An overload for std::less<ci::string> that uses Flux::string, passed for the third template argument
-	 * to std::map and std::multimap
-	 */
-	template<> struct less<ci::string>
-	{
-	 public:
-		/** Compare two Flux::strings as ci::strings and find which one is less
-		 * @param s1 The first string
-		 * @param s2 The second string
-		 * @return true if s1 < s2, else false
-		 */
-		bool operator()(const Flux::string &s1, const Flux::string &s2) const;
+	  /** Compare two Flux::strings as ci::strings and find which one is less
+	   * @param s1 The first string
+	   * @param s2 The second string
+	   * @return true if s1 < s2, else false
+	   */
+	  bool operator()(const Flux::string &s1, const Flux::string &s2) const;
 	};
 }
 
@@ -598,7 +560,7 @@ namespace Flux{
     friend std::istream &operator>>(std::istream &os, string &_str);
   }; //end of string class
   template<typename T> class map : public std::map<string, T> { };
-  template<typename T> class insensitive_map : public std::map<string, T, std::less<ci::string> > { };
+  template<typename T> class insensitive_map : public std::map<string, T, ci::less> { };
   extern Flux::string Sanitize(const Flux::string&);
   extern Flux::string RandomString(size_t);
   extern Flux::string RandomNickString(size_t);
@@ -607,20 +569,6 @@ namespace Flux{
   inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
   inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
   inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
-
-  struct hash
-  {
-    /* VS 2008 specific code */
-    enum { bucket_size = 4, min_buckets = 8 };
-    bool operator()(const string &s1, const string &s2) const;
-    /* End of 2008 specific code */
-
-    /** Hash an Anope::string for unordered_map
-      * @param s The string
-      * @return A hash value for the string
-      */
-    bool operator()(const string &s) const;
-  };
 
 }//end of namespace
 

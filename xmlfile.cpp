@@ -59,7 +59,7 @@ XMLFile::Tag::Attribute::Attribute() {}
 
 XMLFile::Tag::Tag() {}
 
-XMLFile::Tag::Tag(Flux::string n,Flux::string conts)
+XMLFile::Tag::Tag(const Flux::string n, Flux::string conts)
 {
   Name = n;
   Content = conts;

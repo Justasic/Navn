@@ -298,29 +298,27 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 }
 void ModuleHandler::SanitizeRuntime()
 {
-  SET_SEGV_LOCATION();
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
+  Flux::string dirbuf = Config->Binary_Dir+"runtime/";
   struct stat s;
-  if(stat(Flux::string(Config->Binary_Dir+"runtime/").c_str(), &s) == -1)
-    system(Flux::string("mkdir "+Config->Binary_Dir+"runtime/").c_str());
-  Flux::string dirbuf = Config->Binary_Dir + "/runtime";
+  if(stat(dirbuf.c_str(), &s) == -1)
+    mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
   DIR *dirp = opendir(dirbuf.c_str());
-	if (!dirp)
-	{
-		Log(LOG_DEBUG) << "Cannot open directory (" << dirbuf << ')';
-		return;
-	}
-	struct dirent *dp;
-	while ((dp = readdir(dirp)))
-	{
-		if (!dp->d_ino)
-			continue;
-		if (Flux::string(dp->d_name).equals_cs(".") || Flux::string(dp->d_name).equals_cs(".."))
-			continue;
-		Flux::string filebuf = dirbuf + "/" + dp->d_name;
-		Delete(filebuf.c_str());
-	}
-	closedir(dirp);
+  if (!dirp)
+  {
+	  Log(LOG_DEBUG) << "Cannot open directory (" << dirbuf << ')';
+	  return;
+  }
+  for(dirent *dp; (dp = readdir(dirp));)
+  {
+	  if (!dp->d_ino)
+		  continue;
+	  if (Flux::string(dp->d_name).equals_cs(".") || Flux::string(dp->d_name).equals_cs(".."))
+		  continue;
+	  Flux::string filebuf = dirbuf + "/" + dp->d_name;
+	  Delete(filebuf.c_str());
+  }
+  closedir(dirp);
 }
 /******************Configuration variables***********************/
 /**Rehash void
