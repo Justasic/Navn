@@ -45,6 +45,8 @@ class INIReader;
 class BotConfig;
 class IsoHost;
 class Clock;
+class TextFile;
+class XMLFile;
 struct CommandSource;
 
 /* Enumorations */

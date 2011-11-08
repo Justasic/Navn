@@ -2,6 +2,7 @@
 #ifndef MODULE_H
 #define MODULE_H
 #include "user.h"
+#include "command.h"
 #ifdef HAVE_FCNTL_H
 # include <dlfcn.h>
 #else

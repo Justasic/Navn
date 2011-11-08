@@ -1,8 +1,8 @@
 #ifndef XMLFILE_H
 #define XMLFILE_H
+#include "module.h"
 
-class XMLFile : public TextFile
-{
+class XMLFile : public TextFile {
 private:
   class Tag
   {

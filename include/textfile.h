@@ -1,7 +1,7 @@
 #ifndef TEXTFILE_H
 #define TEXTFILE_H
-#include "module.h"
-
+#include "flux.h"
+#include "includes.h"
 enum FileIOErrors
 {
   FILE_IO_OK,

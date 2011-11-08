@@ -42,7 +42,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
   User *u = Source.u;
   Channel *c = Source.c;
   if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
- if(!FindCommand(params2[0]) && command == "PRIVMSG")
+ if(!FindCommand(params2[0], COMMAND_PRIVATE) && command == "PRIVMSG")
   {
     if(!protocoldebug)
       Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];

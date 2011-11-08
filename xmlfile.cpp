@@ -1,21 +1,33 @@
 #include "xmlfile.h"
 
-XMLFile::XMLFile(Flux::string fn):TextFile(fn)
+XMLFile::XMLFile(const Flux::string fn):TextFile(fn)
 {
   for (unsigned i = 0; i < SingleLineBuffer.size(); i++)
   {
     char c = SingleLineBuffer.at(i);
     if (c == '<' && SingleLineBuffer.at(i+1) != '/')
     {
+      bool SelfContained = false;
       std::string tag = "";
       std::string contents = "";
       for (unsigned j = 1;SingleLineBuffer.at(i+j) != '>' && SingleLineBuffer.at(i+j) != ' '; j++)
       {
 	tag += SingleLineBuffer.at(i+j);
       }
-      for (unsigned k = SingleLineBuffer.find('>',i)+1; k < SingleLineBuffer.find("</"+tag); k++)
+      for (unsigned o = 1; SingleLineBuffer.at(i+o) != '>'; o++)
       {
-	contents += SingleLineBuffer.at(k);
+	if (SingleLineBuffer.at(i+o) == '/' && SingleLineBuffer.at(i+o+1) == '>')
+	{
+	  SelfContained = true;
+	  break;
+	}
+      }
+      if (!SelfContained)
+      {
+	for (unsigned k = SingleLineBuffer.find('>',i)+1; k < SingleLineBuffer.find("</"+tag); k++)
+	{
+	  contents += SingleLineBuffer.at(k);
+	}
       }
       Tag t(tag,contents);
       for (unsigned l = 1; SingleLineBuffer.at(i+l) != '>'; l++)
@@ -56,15 +68,27 @@ XMLFile::Tag::Tag(Flux::string n,Flux::string conts)
     char c = conts.at(i);
     if (c == '<' && conts.at(i+1) != '/' && conts.at(i+1) != ' ')
     {
+      bool SelfContained = false;
       std::string tag = "";
       std::string contents = "";
       for (unsigned j = 1;conts.at(i+j) != '>'; j++)
       {
 	tag += conts.at(i+j);
       }
-      for (unsigned k = conts.find('>',i)+1; k < conts.find("</"+tag); k++)
+      for (unsigned o = 1; conts.at(i+o) != '>'; o++)
       {
-	contents += conts.at(k);
+	if (conts.at(i+o) == '/' && conts.at(i+o+1) == '>')
+	{
+	  SelfContained = true;
+	  break;
+	}
+      }
+      if (!SelfContained)
+      {
+	for (unsigned k = conts.find('>',i)+1; k < conts.find("</"+tag); k++)
+	{
+	  contents += conts.at(k);
+	}
       }
       Tag t(tag,contents);
       for (unsigned l = 1; conts.at(i+l) != '>'; l++)
@@ -92,7 +116,7 @@ XMLFile::Tag::Tag(Flux::string n,Flux::string conts)
   }
 }
 
-XMLFile::Tag::Attribute::Attribute(Flux::string v)
+XMLFile::Tag::Attribute::Attribute(const Flux::string v)
 {
   Value = v;
 }
