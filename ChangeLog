@@ -112,6 +112,9 @@ Added Flux::string.insert()
 Added the following to Flux::string: compare(), max_size(), swap(), and get_allocator()
 Added an enum for commands to tell the difference between channel and private message commands
 Removed FindChanCommand()
+Corrected Oper class not having return characters
+Fixed FindCommand not using its types correctly
+
 
 Navn 2.0.0
 ==========

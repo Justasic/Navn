@@ -175,22 +175,22 @@ void Oper::samode(const Flux::string &target, const Flux::string &mode){
   send_cmd("SAMODE %s %s\n", target.c_str(), mode.c_str());
 }
 void Oper::samode(const Flux::string &target, const Flux::string &mode, const Flux::string &params){
-  send_cmd("SAMODE %s %s %s", target.c_str(), mode.c_str(), params.c_str());
+  send_cmd("SAMODE %s %s %s\n", target.c_str(), mode.c_str(), params.c_str());
 }
 void Oper::sajoin(const Flux::string &target, const Flux::string &channel){
-  send_cmd("SAJOIN %s %s", target.c_str(), channel.c_str());
+  send_cmd("SAJOIN %s %s\n", target.c_str(), channel.c_str());
 }
 void Oper::sapart(const Flux::string &target, const Flux::string &channel){
-  send_cmd("SAPART %s %s", target.c_str(), channel.c_str());
+  send_cmd("SAPART %s %s\n", target.c_str(), channel.c_str());
 }
 void Oper::sanick(const Flux::string &target, const Flux::string &nickname){
-  send_cmd("SANICK %s %s", target.c_str(), nickname.c_str());
+  send_cmd("SANICK %s %s\n", target.c_str(), nickname.c_str());
 }
 void Oper::sakick(const Flux::string &channel, const Flux::string &target, const Flux::string &reason){
-  send_cmd("SAKICK %s %s %s", channel.c_str(), target.c_str(), reason.c_str());
+  send_cmd("SAKICK %s %s %s\n", channel.c_str(), target.c_str(), reason.c_str());
 }
 void Oper::satopic(const Flux::string &target, const Flux::string &topic){
-  send_cmd("SATOPIC %s %s", target.c_str(), topic.c_str());
+  send_cmd("SATOPIC %s %s\n", target.c_str(), topic.c_str());
 }
 void Oper::satopic(const Flux::string &target, const char *fmt, ...){
   char buffer[BUFSIZE] = "";
@@ -201,16 +201,16 @@ void Oper::satopic(const Flux::string &target, const char *fmt, ...){
   va_end(args); 
 }
 void Oper::sahost(const Flux::string &target, const Flux::string &host){
-  send_cmd("CHGHOST %s %s", target.c_str(), host.c_str());
+  send_cmd("CHGHOST %s %s\n", target.c_str(), host.c_str());
 }
 void Oper::saident(const Flux::string &target, const Flux::string &ident){
-  send_cmd("CHGIDENT %s %s", target.c_str(), ident.c_str());
+  send_cmd("CHGIDENT %s %s\n", target.c_str(), ident.c_str());
 }
 void Oper::kill(const Flux::string &target, const Flux::string &reason){
-  send_cmd("KILL %s %s", target.c_str(), reason.c_str());
+  send_cmd("KILL %s %s\n", target.c_str(), reason.c_str());
 }
 void Oper::saname(const Flux::string &target, const Flux::string &name){
-  send_cmd("CHGNAME %s %s", target.c_str(), name.c_str());
+  send_cmd("CHGNAME %s %s\n", target.c_str(), name.c_str());
 }
 void Oper::saname(const Flux::string &target, const char *fmt, ...){
   char buffer[BUFSIZE] = "";
@@ -221,7 +221,7 @@ void Oper::saname(const Flux::string &target, const char *fmt, ...){
   va_end(args); 
 }
 void Oper::wallops(const Flux::string &message){
-  send_cmd("WALLOPS %s", message.c_str());
+  send_cmd("WALLOPS %s\n", message.c_str());
 }
 void Oper::wallops(const char *fmt, ...){
   char buffer[BUFSIZE] = "";
@@ -232,7 +232,7 @@ void Oper::wallops(const char *fmt, ...){
   va_end(args); 
 }
 void Oper::globops(const Flux::string &message){
-  send_cmd("GLOBOPS %s", message.c_str());
+  send_cmd("GLOBOPS %s\n", message.c_str());
 }
 void Oper::globops(const char *fmt, ...){
   char buffer[BUFSIZE] = "";
@@ -243,16 +243,16 @@ void Oper::globops(const char *fmt, ...){
   va_end(args); 
 }
 void Oper::zline(const Flux::string &ipmask, const Flux::string &time, const Flux::string &reason){
-  send_cmd("ZLINE %s %s %s", ipmask.c_str(), time.c_str(), reason.c_str());
+  send_cmd("ZLINE %s %s %s\n", ipmask.c_str(), time.c_str(), reason.c_str());
 }
 void Oper::qline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
-  send_cmd("QLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
+  send_cmd("QLINE %s %s %s\n", target.c_str(), time.c_str(), reason.c_str());
 }
 void Oper::kline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
-  send_cmd("KLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
+  send_cmd("KLINE %s %s %s\n", target.c_str(), time.c_str(), reason.c_str());
 }
 void Oper::gline(const Flux::string &target, const Flux::string &time, const Flux::string &reason){
-  send_cmd("GLINE %s %s %s", target.c_str(), time.c_str(), reason.c_str());
+  send_cmd("GLINE %s %s %s\n", target.c_str(), time.c_str(), reason.c_str());
 }
 /*******************************************************************************************/
 void CommandSource::Reply(const char *fmt, ...){
@@ -280,13 +280,13 @@ void CommandSource::Reply(const Flux::string &msg){
 Command *FindCommand(const Flux::string &name, CommandType type){
   if(name.empty())
     return NULL;
-  if((type = COMMAND_PRIVATE))
+  if((type == COMMAND_PRIVATE))
   {
     CommandMap::iterator it = Commandsmap.find(name);
       if(it != Commandsmap.end())
 	return it->second;
   }
-  if((type = COMMAND_CHANNEL))
+  else if((type == COMMAND_CHANNEL))
   {
     CommandMap::iterator it = ChanCommandMap.find(name);
     if(it != ChanCommandMap.end())

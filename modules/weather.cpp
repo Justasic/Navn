@@ -46,22 +46,18 @@ public:
     area.trim();
     wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(area.is_number_only()?area:urlify(removeCommand(ci::string(this->name.ci_str()),source.message)));
     system(wget.c_str());
+    XMLFile *xf = new XMLFile(tmpfile);
+
+    Flux::string city = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["city"].Attributes["data"].Value;
+    Flux::string condition = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["condition"].Attributes["data"].Value;
+    Flux::string temp_f = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["temp_f"].Attributes["data"].Value;
+    Flux::string temp_c = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["temp_c"].Attributes["data"].Value;
+    Flux::string humidity = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["humidity"].Attributes["data"].Value;
+    Flux::string windy = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["wind_condition"].Attributes["data"].Value;
     
-    if(!xmlToString(tmpfile).search("problem_cause")){
-      Flux::string ff = xmlToString(tmpfile);
-      ff.trim();
-      if(ff.empty()){
-	c->SendMessage("Could not download/read %s", tmpfile.c_str());
-	Log(u) << "failed to use " << this->name << " because of failure to download/read file '" << tmpfile << '\'';
-	return;
-      }
-      Flux::string loc = findInXML("city","data",ff), cond = findInXML("condition","data",ff), tempf = findInXML("temp_f","data",ff),
-      tempc = findInXML("temp_c","data",ff);
-      Delete(tmpfile.c_str());
-      loc.trim();
-      c->SendMessage("The current condition in %s is %s with a temperature of %s °F %s °C", loc.c_str(), cond.c_str(), tempf.c_str(), tempc.c_str());
-      Log(u, this) << "to get weather for area '" << area << "'";
-    }
+    delete xf;
+    c->SendMessage("%s current condition: %s, humidity: %s, Wind: %s, %s °F %s °C", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), temp_c.c_str());
+    Log(u, this) << "to get weather for area '" << area << "'";
   }
 };
 class weather:public module{
