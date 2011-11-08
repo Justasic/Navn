@@ -170,8 +170,8 @@ void process(const Flux::string &buffer){
   std::vector<Flux::string> params2 = StringVector(message, ' ');
   /***********************************************/
   if(command == "004" && source.search('.')) { server_name = source; }
-  if(message[0] == '\1' && message[message.length() -1] == '\1'){
-    FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, StringVector(message, ' ')));
+  if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION")){
+    FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));
     return; //Dont allow the rest of the system to process ctcp's as it will be caught by the command handler.
   }
   if(command.equals_cs("NICK") && u) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); u->SetNewNick(params[0]); }

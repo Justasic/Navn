@@ -78,7 +78,7 @@ public:
     }
   }
   void OnNotice(User *u, Channel *c, const std::vector<Flux::string> &params){
-    if(c->name != Config->LogChannel)
+    if(C && c->name != Config->LogChannel)
       return;
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
