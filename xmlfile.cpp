@@ -83,6 +83,7 @@ XMLFile::Tag::Tag(const Flux::string n, Flux::string conts)
 	  break;
 	}
       }
+      if (tag.at(0) == '?') SelfContained = true;
       if (!SelfContained)
       {
 	for (unsigned k = conts.find('>',i)+1; k < conts.find("</"+tag); k++)
