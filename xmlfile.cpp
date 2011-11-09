@@ -22,6 +22,7 @@ XMLFile::XMLFile(const Flux::string fn):TextFile(fn)
 	  break;
 	}
       }
+      if (tag.at(0) == '?') SelfContained = true;
       if (!SelfContained)
       {
 	for (unsigned k = SingleLineBuffer.find('>',i)+1; k < SingleLineBuffer.find("</"+tag); k++)
