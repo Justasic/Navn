@@ -125,6 +125,7 @@ public:
 	if((it->second->mod == mo)){ //For /msg commands
 	  cmds += it->second->name+" ";
 	}
+	cmds.trim();
       for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
 	if((it->second->mod == mo)){ //For Channel Commands
 	  cmds += it->second->name+" ";

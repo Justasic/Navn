@@ -106,22 +106,47 @@ int INIReader::Parse(const Flux::string &filename)
     return -1;
   return error;
 }
+/**
+ * \class INIReader The config parser class, this parses the INI file for config values
+ * \brief This class contains the actual parsing of values from the text file to a map containing all the config values
+ * \fn INIReader::INIReader(const Flux::string &filename)
+ * \param Flux::string The filename to parse for a config value.
+ */
 INIReader::INIReader(const Flux::string &filename)
 {
   _error = this->Parse(filename);
 }
 INIReader::~INIReader(){ }
+/**
+ * \brief returns a int of the last parse error
+ * \fn int INIReader::ParseError()
+ * \return integer of last parse error
+ */
 int INIReader::ParseError()
 {
     return _error;
 }
-
+/**
+ * \brief Returns a Flux::string from the config containing whatever value you requested
+ * \fn Flux::string INIReader::Get(const Flux::string &section, const Flux::string &name, const Flux::string &default_value)
+ * \return Flux::string with your value from the config
+ * \param Flux::string The section the value is in
+ * \param Flux::string the name of the variable in the config
+ * \param bool the default value if there is no value in the config
+ */
 Flux::string INIReader::Get(const Flux::string &section, const Flux::string &name, const Flux::string &default_value)
 {
     Flux::string key = MakeKey(section, name);
     return _values.count(key) ? _values[key] : default_value;
 }
-
+/**
+ * \brief Returns an boolean value from the config
+ * \fn bool INIReader::GetBoolean(const Flux::string &section, const Flux::string &name, bool default_value)
+ * \return boolean of the value
+ * \param Flux::string The section the value is in
+ * \param Flux::string the name of the variable in the config
+ * \param bool the default value if there is no value in the config
+ */
 bool INIReader::GetBoolean(const Flux::string &section, const Flux::string &name, bool default_value){
   Flux::string valstr = Get(section, name, "");
   valstr.trim();
@@ -133,7 +158,14 @@ bool INIReader::GetBoolean(const Flux::string &section, const Flux::string &name
     return false;
   return default_value;
 }
-
+/**
+ * \brief Returns an integer value from the config
+ * \fn long INIReader::GetInteger(const Flux::string &section, const Flux::string &name, long default_value)
+ * \return long integer of the value
+ * \param Flux::string The section the value is in
+ * \param Flux::string the name of the variable in the config
+ * \param long the default value if there is no value in the config
+ */
 long INIReader::GetInteger(const Flux::string &section, const Flux::string &name, long default_value)
 {
     Flux::string valstr = Get(section, name, "");

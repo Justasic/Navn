@@ -31,13 +31,6 @@ public:
   }
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
-    User *u = finduser(params[1]);
-    if(!u){source.Reply("No User"); return; }
-    for(CList::iterator it = u->ChannelList.begin(), it_end = u->ChannelList.end(); it != it_end; ++it)
-    {
-     if(it != it_end)
-	 source.Reply("CHANNEL: %s", it->first->name.c_str());
-    }
     source.Reply("YAY!");
   }
 };

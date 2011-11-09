@@ -11,6 +11,7 @@
 #include <sstream>
 #include <cstdio>
 #include <iomanip>
+#include <memory>
 #include <bitset>
 #include <ios>
 #include <typeinfo>
