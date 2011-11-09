@@ -255,6 +255,12 @@ void Oper::gline(const Flux::string &target, const Flux::string &time, const Flu
   send_cmd("GLINE %s %s %s\n", target.c_str(), time.c_str(), reason.c_str());
 }
 /*******************************************************************************************/
+/**
+ * \brief This allows us to reply in a simple way to the user from the CommandSource struct
+ * \fn void CommandSource::Reply(const char *fmt, ...)
+ * \param char* The message in a c string format
+ * \param va_list any other functions, vars to pass to va_list to form the string
+ */
 void CommandSource::Reply(const char *fmt, ...){
   va_list args;
   char buf[BUFSIZE];
@@ -265,6 +271,7 @@ void CommandSource::Reply(const char *fmt, ...){
     va_end(args);
   }
 }
+/** \overload void CommandSource::Reply(const Flux::string &msg) */
 void CommandSource::Reply(const Flux::string &msg){
  sepstream sep(msg, '\n');
  Flux::string tok;
@@ -273,8 +280,9 @@ void CommandSource::Reply(const Flux::string &msg){
 }
 
 /**
- * \fn Command *FindCommand(const Flux::string &name)
  * \brief Find a command in the command map
+ * \fn Command *FindCommand(const Flux::string &name)
+ * \return Command class you wanted to find
  * \param name A string containing the command name you're looking for
  */
 Command *FindCommand(const Flux::string &name, CommandType type){
@@ -296,6 +304,13 @@ Command *FindCommand(const Flux::string &name, CommandType type){
 }
 /*******************************************************************************************/
 /* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
+/**
+ * \class Command A class which most private message commands inside of modules work in.
+ * \fn Command::Command(const Flux::string &sname, size_t min_params, size_t max_params)
+ * \param Flux::string command name
+ * \param size_t the minimum size of the buffer the command vector gets
+ * \param size_t the maximum size the vector gets
+ */
 Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
 {
   for(unsigned i=0; i < sname.size(); ++i) //commands with spaces can screw up the command handler
@@ -313,29 +328,59 @@ Command::~Command()
      this->mod->DelCommand(this);
   }
 }
-void Command::SetDesc(const Flux::string &d){
- this->desc = d; 
-}
-void Command::SetSyntax(const Flux::string &s){
- this->syntax.push_back(s); 
-}
-void Command::SendSyntax(CommandSource &source){
+/**
+ * \brief Sets the command description
+ * \fn void Command::SetDesc(const Flux::string &d)
+ * \param Flux::string The description
+ */
+void Command::SetDesc(const Flux::string &d){ this->desc = d; }
+/**
+ * \brief Sets the syntax of the command
+ * \fn void Command::SetSyntax(const Flux::string &s)
+ * \param Flux::string The syntax
+ */
+void Command::SetSyntax(const Flux::string &s){ this->syntax.push_back(s); }
+/**
+ * \brief Sends the syntax ONLY from the module, cannot be executed from outside the module
+ * \fn void Command::SendSyntax(CommandSource &source)
+ * \param CommandSource The source for which the command was executed with.
+ */
+void Command::SendSyntax(CommandSource &source)
+{
  if(!this->syntax.empty()){
   source.Reply("Syntax: \2%s %s\2", source.command.c_str(), this->syntax[0].c_str());
   for(unsigned i=1, j = this->syntax.size(); i < j; ++i)
     source.Reply("        \002%s %s\002", source.command.c_str(), this->syntax[i].c_str());
  }
 }
+/** \overload void Command::SendSyntax(CommandSource &source, const Flux::string &syn) */
 void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
   source.Reply("Syntax: \2%s %s\2", source.command.c_str(), syn.c_str());
   source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
 }
+/**
+ * \brief Returns a flux::string with the commands description
+ * \fn const Flux::string &Command::GetDesc() const
+ * \return Flux::string with the description
+ */
 const Flux::string &Command::GetDesc() const{
  return this->desc; 
 }
 bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand) { return false; }
 void Command::OnList(User *u) { }
+/**
+ * \brief The Run function is used for when you run the command from IRC, it contains what the actual command does
+ * \fn void Command::Run(CommandSource&, const std::vector<Flux::string>&)
+ * \param CommandSource The user source who executed the command
+ * \param std::vector<Flux::string> A Flux::string vector of the command's buffer
+ */
 void Command::Run(CommandSource&, const std::vector<Flux::string>&) { }
+/**
+ * \brief Send the syntax when a syntax error happened, this is NOT like SendSyntax.
+ * \fn void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
+ * \param CommandSource Source from which the command was executed from
+ * \param Flux::string A string of any sub commands that the command may have.
+ */
 void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
 {
  this->SendSyntax(source);

@@ -23,6 +23,7 @@ TextFile::~TextFile() {}
 /** TextFile Error Decoder
  * \brief This is just a simple error code to string (like strerror) for TextFile
  * \fn Flux::string TextFile::DecodeLastError()
+ * \return the last set error code into a human readable message
  */
 Flux::string TextFile::DecodeLastError()
 {
@@ -52,16 +53,19 @@ Flux::string TextFile::DecodeLastError()
 /** Number of Lines
  * \brief return the number of lines that the file contains
  * \fn int TextFile::NumberOfLines()
+ * \return Number of lines
  */
 int TextFile::NumberOfLines() { return lines.size(); }
 /** Last Error Code
  * \brief Returns the last error code set
  * \fn FileIOErrors TextFile::GetLastError()
+ * \return last set error code
  */
 FileIOErrors TextFile::GetLastError() { return lasterror; }
 /** File Name
  * \brief Returns the filename of the file being parsed.
  * \fn Flux::string TextFile::GetFilename()
+ * \return filename
  */
 Flux::string TextFile::GetFilename() { return filename; }
 /** Edit File Lines
@@ -79,6 +83,7 @@ void TextFile::Clear() { lines.clear(); Contents.clear(); }
 /** Empty Check
  * \brief Check if the file is empty or not
  * \fn bool TextFile::Empty()
+ * \return if the class is empty
  */
 bool TextFile::Empty()
 {
@@ -90,6 +95,7 @@ bool TextFile::Empty()
 /** File Copy
  * \brief Copies a file, binary or text, to a new location
  * \fn FileIOErrors TextFile::Copy(const Flux::string &dest)
+ * \return error code (LastError will also be set)
  * \param Flux::string The destination
  */
 //This function is REQUIRED by the bot to load modules, !! DO NOT MODIFY !!
@@ -137,6 +143,7 @@ FileIOErrors TextFile::Copy(const Flux::string &dest)
  * \fn Flux::string TempFile(const Flux::string &file)
  * \brief Creates a temporary file name for use in navn, can be quite useful.
  * \param Flux::string The Flux::string of the file location/name
+ * \return the randomly generated string for the filename
  * NOTE: THIS _MUST_ HAVE 6 X's (XXXXXX) to work properly.
  */
 Flux::string TextFile::TempFile(const Flux::string &file){
@@ -155,6 +162,7 @@ Flux::string TextFile::TempFile(const Flux::string &file){
 /** Check if a file exists
  * \param filename The file
  * \return true if the file exists, false if it doens't
+ * \return true if file is a normal file, false if else
  */
 bool TextFile::IsFile(const Flux::string &filename)
 {
@@ -167,6 +175,7 @@ bool TextFile::IsFile(const Flux::string &filename)
  * \brief Write text to the file
  * \fn bool TextFile::WriteToDisk(const Flux::string &FileName)
  * \param Flux::string Filename to write
+ * \return whether it wrote or not
  */
 bool TextFile::WriteToDisk(const Flux::string &FileName)
 {
@@ -196,11 +205,13 @@ bool TextFile::WriteToDisk(const Flux::string &FileName)
 /** Single Line Buffer
  * \brief Returns the whole text file in one Flux::string
  * \fn Flux::string TextFile::SingleLine()
+ * \return File Buffer in one Flux::string
  */
 Flux::string TextFile::SingleLine() { return SingleLineBuffer; }
 /** File Extension
  * \brief Returns the file extention, if there is one
  * \fn Flux::string TextFile::Extension()
+ * \return File Extension
  */
 Flux::string TextFile::Extension()
 {
