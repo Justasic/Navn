@@ -35,6 +35,14 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan){
       c->AddUser(u);
 }
 /*********************************************************************************/
+/**
+ * \fn void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2, const Flux::string &receiver, const Flux::string &command)
+ * \brief Processes the Command class commands, this should only be used in Process() unless its for something special
+ * \param CommandSource CommandSource struct used to find all the information needed to make new users
+ * \param std::vector vector of the command string sent to the bot
+ * \param Flux::string receiver
+ * \param Flux::string Command sent to the bot in raw form
+ */
 void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 		    const Flux::string &receiver, const Flux::string &command)
 {

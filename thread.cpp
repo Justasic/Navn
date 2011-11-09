@@ -24,14 +24,8 @@ void Thread::SetExitState()
  this->Notify();
  exit = true;
 }
-bool Thread::GetExitState() const
-{
- return exit; 
-}
-void Thread::OnNotify()
-{
-  this->Join();
-}
+bool Thread::GetExitState() const { return exit; }
+void Thread::OnNotify() { this->Join(); }
 void Thread::Start()
 {
  if(pthread_create(&this->Handle, GetAttr(), EntryPoint, this))

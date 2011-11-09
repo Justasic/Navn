@@ -4,11 +4,13 @@
 #include <execinfo.h>
 #endif
 
-/**Random Quit message selector
- * This is where it will set the quit message if there was a terminal quit or signal interrupt (ctrl+c)
- * @param siginit(integer)
+/** Random Quit message selector
+ * \fn Flux::string siginit(int sigstring)
+ * \brief this selects a quit message out of 20, this should be used with a random number between 1 and 20.
+ * \param int the string number to return.
  */
-Flux::string siginit(int sigstring){
+Flux::string siginit(int sigstring)
+{
   Flux::string message;
   switch(sigstring){
     case 1: message = "Read on an empty pipe (ENOTOBACCO)"; break;
@@ -34,7 +36,11 @@ Flux::string siginit(int sigstring){
   }
   return message;
 }
-
+/** Segmentation Fault Handler
+ * \fn void HandleSegfault(module *m)
+ * \brief A segfault handler to report what happened and where it happened.
+ * \param module the module class in which the segfault happened include
+ */
 void HandleSegfault(module *m)
 {
 #ifdef HAVE_BACKTRACE
@@ -99,8 +105,9 @@ void HandleSegfault(module *m)
 #endif
 }
 /** Terminal Signal Handler
- * Come here for weird signals
- * @param sigact(integer)
+ * \fn void sigact(int sig)
+ * \brief A handler which handles what to do when we receive a signal.
+ * \param int the signal we received.
  */
 void sigact(int sig)
 {
@@ -140,6 +147,10 @@ void sigact(int sig)
       Log() << "Recieved weird signal from terminal. Sig Number: " << sig;
   }
 }
+/** Signal Initializer
+ * \fn void InitSignals()
+ * \brief Initialize the signals we catch in this void
+ */
 void InitSignals()
 {
   signal(SIGTERM, sigact);

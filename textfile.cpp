@@ -1,5 +1,11 @@
 #include "textfile.h"
 
+/** TextFile parser
+ * \class TextFile A File I/O wrapper for C++
+ * \brief This wrapper makes it easy to parse files and get lines from them. It first parses them, then keeps them in a vector for later use.
+ * \fn TextFile::TextFile(const Flux::string &FileName)
+ * \param Flux::string The filename you want to parse
+ */
 TextFile::TextFile(const Flux::string &FileName) : filename(FileName), lasterror(static_cast<FileIOErrors>(NULL))
 {
   std::ifstream in(FileName.c_str());
@@ -10,11 +16,14 @@ TextFile::TextFile(const Flux::string &FileName) : filename(FileName), lasterror
   }
   Contents = lines;
 }
-
+/** \overload TextFile::TextFile(std::vector<Flux::string> conts) */
 TextFile::TextFile(std::vector<Flux::string> conts) { lines = conts; Contents = conts; }
 
 TextFile::~TextFile() {}
-
+/** TextFile Error Decoder
+ * \brief This is just a simple error code to string (like strerror) for TextFile
+ * \fn Flux::string TextFile::DecodeLastError()
+ */
 Flux::string TextFile::DecodeLastError()
 {
   switch(this->lasterror)
@@ -40,17 +49,37 @@ Flux::string TextFile::DecodeLastError()
   }
   return "Unknown file error.";
 }
-
+/** Number of Lines
+ * \brief return the number of lines that the file contains
+ * \fn int TextFile::NumberOfLines()
+ */
 int TextFile::NumberOfLines() { return lines.size(); }
-
+/** Last Error Code
+ * \brief Returns the last error code set
+ * \fn FileIOErrors TextFile::GetLastError()
+ */
 FileIOErrors TextFile::GetLastError() { return lasterror; }
-
+/** File Name
+ * \brief Returns the filename of the file being parsed.
+ * \fn Flux::string TextFile::GetFilename()
+ */
 Flux::string TextFile::GetFilename() { return filename; }
-
+/** Edit File Lines
+ * \brief Edit a specific line in the file
+ * \fn void TextFile::Edit(int ln, Flux::string fs)
+ * \param int Line Number to edit
+ * \param Flux::string line to replace
+ */
 void TextFile::Edit(int ln, Flux::string fs) { lines[ln] = fs; Contents[ln] = fs; }
-
+/** Clear all data
+ * \brief Clears all the file lines and data for those lines, making the class empty
+ * \fn void TextFile::Clear()
+ */
 void TextFile::Clear() { lines.clear(); Contents.clear(); }
-
+/** Empty Check
+ * \brief Check if the file is empty or not
+ * \fn bool TextFile::Empty()
+ */
 bool TextFile::Empty()
 {
   if(lines.empty())
@@ -58,6 +87,11 @@ bool TextFile::Empty()
   for (unsigned i = 0; i < lines.size(); i++) { if (!lines[i].empty()) return false; }
   return true;
 }
+/** File Copy
+ * \brief Copies a file, binary or text, to a new location
+ * \fn FileIOErrors TextFile::Copy(const Flux::string &dest)
+ * \param Flux::string The destination
+ */
 //This function is REQUIRED by the bot to load modules, !! DO NOT MODIFY !!
 FileIOErrors TextFile::Copy(const Flux::string &dest)
 {
@@ -129,7 +163,11 @@ bool TextFile::IsFile(const Flux::string &filename)
     return true;
   return false;
 }
-
+/** Write to disk
+ * \brief Write text to the file
+ * \fn bool TextFile::WriteToDisk(const Flux::string &FileName)
+ * \param Flux::string Filename to write
+ */
 bool TextFile::WriteToDisk(const Flux::string &FileName)
 {
   std::ofstream f(FileName.c_str());
@@ -155,9 +193,15 @@ bool TextFile::WriteToDisk(const Flux::string &FileName)
   }
   else { this->lasterror = FILE_IO_NOEXIST; return false; }
 }
-
+/** Single Line Buffer
+ * \brief Returns the whole text file in one Flux::string
+ * \fn Flux::string TextFile::SingleLine()
+ */
 Flux::string TextFile::SingleLine() { return SingleLineBuffer; }
-
+/** File Extension
+ * \brief Returns the file extention, if there is one
+ * \fn Flux::string TextFile::Extension()
+ */
 Flux::string TextFile::Extension()
 {
   if (filename.search('.'))
