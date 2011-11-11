@@ -53,8 +53,8 @@ public:
   void OnNumeric(int i)
   {
    if((i == 451)){
-     Send->command->user(Config->Ident, Config->Realname);
-     Send->command->nick(Config->BotNick);
+     ircproto->user(Config->Ident, Config->Realname);
+     ircproto->nick(Config->BotNick);
    }
   }
 };

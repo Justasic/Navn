@@ -36,7 +36,7 @@ echo "navn:
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c Sepstream.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c process.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c thread.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c privmsg.cpp
+	@\$(PERL) \$(CXX) \$(CFLAGS) -c ircproto.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c thread.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c timers.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c user.cpp
@@ -47,7 +47,7 @@ echo "navn:
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c clock.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c textfile.cpp
 	@\$(PERL) \$(CXX) \$(CFLAGS) -c xmlfile.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
+	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
 # Make sure the folder exists
 if [ -d modules ] ; then
   shopt -s nullglob

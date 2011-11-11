@@ -39,7 +39,7 @@ class Command;
 class Oper;
 class Thread;
 class module;
-class SendMessage;
+class IRCProto;
 class ModuleHandler;
 class INIReader;
 class BotConfig;
@@ -87,7 +87,7 @@ E Command *FindCommand(const Flux::string &name, CommandType);
 
 /* extern's */
 E SocketIO *sock;
-E SendMessage *Send;
+E IRCProto *ircproto;
 E BotConfig *Config;
 E module *LastRunModule;
 E CommandMap Commandsmap;

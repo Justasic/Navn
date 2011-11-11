@@ -32,8 +32,8 @@ User *Channel::finduser(const Flux::string &usr)
     return it->first;
   return NULL;
 }
-void Channel::SendJoin(){ Send->command->join(this->name); }
-void Channel::SendPart(){ Send->command->part(this->name); }
+void Channel::SendJoin(){ ircproto->join(this->name); }
+void Channel::SendPart(){ ircproto->part(this->name); }
 void Channel::AddUser(User *u) { if(u) this->UserList[u] = this; }
 void Channel::DelUser(User *u)
 {
@@ -51,7 +51,7 @@ void Channel::SendPart(const char *fmt, ...){
     va_end(args);
   }
 }
-void Channel::SendPart(const Flux::string &reason){ Send->command->part(this->name, reason); }
+void Channel::SendPart(const Flux::string &reason){ ircproto->part(this->name, reason); }
 void Channel::kick(User *u, const Flux::string &reason){ u->kick(this->name, reason); }
 void Channel::kick(User *u, const char *fmt, ...){
   if(fmt){
@@ -73,38 +73,38 @@ void Channel::kick(const Flux::string &u, const char *fmt, ...){
     va_end(args);
   }
 }
-void Channel::kick(const Flux::string &u, const Flux::string &reason){ Send->command->kick(this->name, u, reason); }
+void Channel::kick(const Flux::string &u, const Flux::string &reason){ ircproto->kick(this->name, u, reason); }
 void Channel::SetMode(const Flux::string &mode){
  if(mode[0] == '+'){
-   Send->command->mode(this->name, mode);
+   ircproto->mode(this->name, mode);
  }else{
    mode == '+' + mode;
-   Send->command->mode(this->name, mode);
+   ircproto->mode(this->name, mode);
  }
 }
 void Channel::SetMode(User *u, const Flux::string &mode){
  if(mode[0] == '+'){
-   Send->command->mode(this->name, mode, u->nick);
+   ircproto->mode(this->name, mode, u->nick);
  }else{
    mode == '+' + mode;
-   Send->command->mode(this->name, mode, u->nick);
+   ircproto->mode(this->name, mode, u->nick);
  }
 }
 void Channel::RemoveMode(const Flux::string &mode){
   if(mode[0] == '-'){
-    Send->command->mode(this->name, mode);
+    ircproto->mode(this->name, mode);
   }else{
     
     mode == '-' + mode;
-    Send->command->mode(this->name, mode);
+    ircproto->mode(this->name, mode);
   }
 }
 void Channel::RemoveMode(User *u, const Flux::string &mode){
   if(mode[0] == '-'){
-    Send->command->mode(this->name, mode, u->nick);
+    ircproto->mode(this->name, mode, u->nick);
   }else{
     mode == '-' + mode;
-    Send->command->mode(this->name, mode, u->nick);
+    ircproto->mode(this->name, mode, u->nick);
   }
 }
 void Channel::ChangeTopic(const char *fmt, ...){
@@ -117,7 +117,7 @@ void Channel::ChangeTopic(const char *fmt, ...){
     va_end(args);
   }
 }
-void Channel::ChangeTopic(const Flux::string &topicstr){ Send->command->topic(this->name, topicstr); }
+void Channel::ChangeTopic(const Flux::string &topicstr){ ircproto->topic(this->name, topicstr); }
 void Channel::SendMessage(const char *fmt, ...){
   if(fmt){
     char buffer[BUFSIZE] = "";
@@ -128,7 +128,7 @@ void Channel::SendMessage(const char *fmt, ...){
     va_end(args);
   }
 }
-void Channel::SendMessage(const Flux::string &message){ Send->privmsg(this->name, message); }
+void Channel::SendMessage(const Flux::string &message){ ircproto->privmsg(this->name, message); }
 void Channel::SendAction(const char *fmt, ...){
   if(fmt){
     char buffer[BUFSIZE] = "";
@@ -139,7 +139,7 @@ void Channel::SendAction(const char *fmt, ...){
     va_end(args);
   }
 }
-void Channel::SendAction(const Flux::string &message) { Send->action(this->name, message); }
+void Channel::SendAction(const Flux::string &message) { ircproto->action(this->name, message); }
 void Channel::SendNotice(const char *fmt, ...){
   if(fmt){
     char buffer[BUFSIZE] = "";
@@ -150,8 +150,8 @@ void Channel::SendNotice(const char *fmt, ...){
     va_end(args);
   }
 }
-void Channel::SendNotice(const Flux::string &message){ Send->notice(this->name, message); }
-void Channel::SendWho(){ Send->command->who(this->name); }
+void Channel::SendNotice(const Flux::string &message){ ircproto->notice(this->name, message); }
+void Channel::SendWho(){ ircproto->who(this->name); }
 /****************************************************************/
 void QuitUser(User *u)
 {

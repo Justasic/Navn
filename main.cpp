@@ -48,9 +48,9 @@ void Connect()
   FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
   sock = new SocketIO(Config->Server, Config->Port);
   sock->Connect();
-  if(Send){
-    Send->command->user(Config->Ident, Config->Realname);
-    Send->command->nick(Config->BotNick);
+  if(ircproto){
+    ircproto->user(Config->Ident, Config->Realname);
+    ircproto->nick(Config->BotNick);
   }
   FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
 }
@@ -72,12 +72,12 @@ int main (int argcx, char** argvx, char *envp[])
     }
     if(!sock)
       goto SocketStart;
-    Send = new SendMessage();
+    ircproto = new IRCProto();
     time_t last_check = time(NULL);
     
     //Set the username and nick
-    Send->command->user(Config->Ident, Config->Realname);
-    Send->command->nick(Config->BotNick);
+    ircproto->user(Config->Ident, Config->Realname);
+    ircproto->nick(Config->BotNick);
     FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
     
     while(!quitting){

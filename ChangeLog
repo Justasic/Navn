@@ -114,6 +114,7 @@ Added an enum for commands to tell the difference between channel and private me
 Removed FindChanCommand()
 Corrected Oper class not having return characters
 Fixed FindCommand not using its types correctly
+Merged SendMessage and Commands classes into 1 IRCProto class
 
 
 Navn 2.0.0

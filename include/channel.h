@@ -2,9 +2,9 @@
 #ifndef CHANNEL_H
 #define CHANNEL_H
 /**
- * \include privmsg.h
+ * \include ircproto.h
  */
-#include "privmsg.h"
+#include "ircproto.h"
 /**
  * \file channel.h
  * \brief Contains the Channel class as well as all of it's contents as prototype declarations.

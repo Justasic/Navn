@@ -42,18 +42,18 @@ public:
       if(uname(&uts) < 0)
 	      throw CoreException("uname() Error");
 
-	Send->notice(source, "\001VERSION Navn-%s %s %s\001",VERSION_LONG.c_str(), uts.sysname, uts.machine);
+	ircproto->notice(source, "\001VERSION Navn-%s %s %s\001",VERSION_LONG.c_str(), uts.sysname, uts.machine);
     }
     if(cmd == "\001TIME\001"){ // for CTCP TIME reply
-	Send->notice(source,"\001TIME %s\001", do_strftime(time(NULL), true).c_str());
+	ircproto->notice(source,"\001TIME %s\001", do_strftime(time(NULL), true).c_str());
     }
     if(cmd == "\001SOURCE\001"){
-      Send->notice(source, "\001SOURCE https://gitorious.org/navn/navn\001");
-      Send->notice(source, "\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
-      Send->notice(source, "\1SOURCE git://gitorious.org/navn/navn.git\1");
+      ircproto->notice(source, "\001SOURCE https://gitorious.org/navn/navn\001");
+      ircproto->notice(source, "\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
+      ircproto->notice(source, "\1SOURCE git://gitorious.org/navn/navn.git\1");
     }
     if(cmd == "\001DCC")
-      Send->notice(source, "I do not accept or support DCC connections.");
+      ircproto->notice(source, "I do not accept or support DCC connections.");
   }
 };
 /**

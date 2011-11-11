@@ -5,7 +5,7 @@
 #include "defs.h"
 #include "xmlfile.h"
 #include "moduledefines.h"
-SendMessage *Send;
+IRCProto *ircproto;
 SocketIO *sock;
 BotConfig *Config;
 module *LastRunModule;
@@ -284,12 +284,12 @@ void restart(const Flux::string &reason){
   FOREACH_MOD(I_OnRestart, OnRestart(reason));
   if(reason.empty()){
     Log() << "Restarting: No Reason";
-    if(Send)
-      Send->command->quit("Restarting: No Reason");
+    if(ircproto)
+      ircproto->quit("Restarting: No Reason");
   }else{
     Log() << "Restarting: " << reason;
-    if(Send)
-      Send->command->quit("Restarting: %s", reason.c_str());
+    if(ircproto)
+      ircproto->quit("Restarting: %s", reason.c_str());
   }
   chdir(CurrentPath);
   int execvpret = execvp(my_av[0], my_av);
@@ -316,7 +316,7 @@ void Rehash(){
     ReadConfig();
   }catch(const ConfigException &ex){
     Log() << "Configuration Exception Caught: " << ex.GetReason();
-    Send->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
+    ircproto->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
   }
 }
 
@@ -353,7 +353,7 @@ void startup(int argc, char** argv, char *envp[]) {
   SET_SEGV_LOCATION();
   InitSignals();
   Config = NULL;
-  Send = NULL;
+  ircproto = NULL;
   sock = NULL;
   my_av = argv;
   my_envp = envp;

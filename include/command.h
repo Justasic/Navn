@@ -11,39 +11,9 @@
 #include "user.h"
 /**
  *\file  command.h
- *\brief Contains the classes Commands, Command, and Oper.
+ *\brief Contains the classes Command, and Oper.
  */
-/**
- * \class Commands
- * \brief A wrapper class for IRC Commands.
- * Contains functions used to send IRC protocol commands to the server.
- * \note The Commands class (which sends IRC Commands to the server), should
- * not be confused with the Command class (which is used to trigger module responses).
- */
-class Commands
-{
-public:
-  Commands();
-  void quit(const char *fmt, ...);
-  void kick(const Flux::string&, const Flux::string&, const char *fmt, ...);
-  void topic(const Flux::string&, const char *fmt, ...);
-  void part(const Flux::string&, const char *fmt, ...);
-  void kick(const Flux::string&, const Flux::string&, const Flux::string&);
-  void mode(const Flux::string&, const Flux::string&, const Flux::string&);
-  void topic(const Flux::string&, const Flux::string&);
-  void part(const Flux::string&, const Flux::string&);
-  void oper(const Flux::string&, const Flux::string&);
-  void mode(const Flux::string&, const Flux::string&);
-  void user(const Flux::string&, const Flux::string&);
-  void who(const Flux::string&);
-  void quit(const Flux::string&);
-  void nick(const Flux::string&);
-  void part(const Flux::string&);
-  void join(const Flux::string&);
-  void whois(const Flux::string&);
-  void names(const Flux::string&);
-  void away(const Flux::string&);
-};
+
 /**
  * \class Oper
  * \brief A wrapper class for IRC Oper commands.

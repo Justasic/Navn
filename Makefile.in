@@ -35,9 +35,10 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
-	TODO install-sh missing
+	TODO depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -489,7 +490,7 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c Sepstream.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c process.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c thread.cpp
-	@$(PERL) $(CXX) $(CFLAGS) -c privmsg.cpp
+	@$(PERL) $(CXX) $(CFLAGS) -c ircproto.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c thread.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c timers.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c user.cpp
@@ -500,7 +501,7 @@ navn:
 	@$(PERL) $(CXX) $(CFLAGS) -c clock.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c textfile.cpp
 	@$(PERL) $(CXX) $(CFLAGS) -c xmlfile.cpp
-	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o privmsg.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o $(PACKAGE) $(LIBS) -rdynamic
+	@$(PERL) $(CXX) $(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o $(PACKAGE) $(LIBS) -rdynamic
 about_me.so:
 	@$(PERL) $(CXX) $(CFLAGS) -c modules/about_me.cpp
 	@$(PERL) $(CXX) $(LIBS) $(MODFLAGS)modules/about_me.cpp -o modules/about_me.so about_me.o
