@@ -64,5 +64,5 @@ Future
 ------
 [ ] Move to CMake
 [ ] Add support for GETTEXT so it allows for the program to be translated
-[ ] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
+[+] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
 [ ] Add python support
