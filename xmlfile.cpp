@@ -16,16 +16,15 @@ XMLFile::XMLFile(const Flux::string fn):TextFile(fn)
       }
       for (unsigned o = 1; SingleLineBuffer.at(i+o) != '>'; o++)
       {
-	if (SingleLineBuffer.at(i+o) == '/' && SingleLineBuffer.at(i+o+1) == '>')
+	if ((SingleLineBuffer.at(i+o) == '/' || SingleLineBuffer.at(i+o) == '?') && SingleLineBuffer.at(i+o+1) == '>')
 	{
 	  SelfContained = true;
 	  break;
 	}
       }
-      if (tag.at(0) == '?') SelfContained = true;
       if (!SelfContained)
       {
-	for (unsigned k = SingleLineBuffer.find('>',i)+1; k < SingleLineBuffer.find("</"+tag); k++)
+	for (unsigned k = SingleLineBuffer.find('>',i)+1; k < SingleLineBuffer.find("</"+tag,i); k++)
 	{
 	  contents += SingleLineBuffer.at(k);
 	}
@@ -72,22 +71,21 @@ XMLFile::Tag::Tag(const Flux::string n, Flux::string conts)
       bool SelfContained = false;
       std::string tag = "";
       std::string contents = "";
-      for (unsigned j = 1;conts.at(i+j) != '>'; j++)
+      for (unsigned j = 1;conts.at(i+j) != '>' && conts.at(i+j) != ' '; j++)
       {
 	tag += conts.at(i+j);
       }
       for (unsigned o = 1; conts.at(i+o) != '>'; o++)
       {
-	if (conts.at(i+o) == '/' && conts.at(i+o+1) == '>')
+	if ((conts.at(i+o) == '/' || conts.at(i+o) == '?') && conts.at(i+o+1) == '>')
 	{
 	  SelfContained = true;
 	  break;
 	}
       }
-      if (tag.at(0) == '?') SelfContained = true;
       if (!SelfContained)
       {
-	for (unsigned k = conts.find('>',i)+1; k < conts.find("</"+tag); k++)
+	for (unsigned k = conts.find('>',i)+1; k < conts.find("</"+tag,i); k++)
 	{
 	  contents += conts.at(k);
 	}

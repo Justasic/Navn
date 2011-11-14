@@ -22,8 +22,8 @@
  * \fn weather(bool act):module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
  * \brief Says the weather.
  * This is a good example of how to use the xml pseudo-parser we have in the \a flux_net_irc namespace.
- * If \a !weather is said then it takes whatever follows that and uses wget to get an xml file from 
- * the google weather api. From there it pseudo-parses the file using functions from \a flux_net_irc 
+ * If \a !weather is said then it takes whatever follows that and uses wget to get an xml file from
+ * the google weather api. From there it pseudo-parses the file using functions from \a flux_net_irc
  * and throws the needed contents out of the main socket as a private message (using \a privmsg).
  */
 class CommandCWeather : public Command
@@ -54,16 +54,16 @@ public:
     Flux::string temp_c = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["temp_c"].Attributes["data"].Value;
     Flux::string humidity = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["humidity"].Attributes["data"].Value;
     Flux::string windy = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["wind_condition"].Attributes["data"].Value;
-    
+
     delete xf;
-    c->SendMessage("%s current condition: %s, humidity: %s, Wind: %s, %s °F %s °C", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), temp_c.c_str());
+    c->SendMessage("%s Current Condition: %s, %s, %s, %s °F %s °C", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), temp_c.c_str());
     Log(u, this) << "to get weather for area '" << area << "'";
   }
 };
 class weather:public module{
   CommandCWeather rainy;
 public:
-  weather(const Flux::string &Name):module(Name){ 
+  weather(const Flux::string &Name):module(Name){
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
     this->AddChanCommand(&rainy);
