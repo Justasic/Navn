@@ -16,8 +16,8 @@ fd_set ReadFD/*, WriteFD, ExceptFD*/;
    f*cking broken it's not even funny */
 SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1){
   SET_SEGV_LOCATION();
-  this->server = cserver.std_str();
-  this->port = cport.std_str();
+  this->server = cserver;
+  this->port = cport;
   throwex = false;
   
   memset(&hints, 0, sizeof(hints));

@@ -19,35 +19,32 @@ rev=$(git describe ${githead} 2>/dev/null)
 /bin/sed 's/^\x23define VERSION_GIT ".*"/\x23define VERSION_GIT "'$rev'"/' config.in.tmpl 1> config.h.in
 echo "AUTOMAKE_OPTIONS 	= foreign" >> $MAKEFILE
 echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
-echo "LIBS = -pthread -ldl -lnsl -lrt" >> $MAKEFILE
+echo "LIBS = -ldl -lnsl -pthread" >> $MAKEFILE
 echo "INCLUDES = -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
-echo "CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -DPIC  -L. -fno-leading-underscore -pedantic -g -Wl,--export-dynamic \$(INCLUDES)" >> $MAKEFILE
-echo "MODFLAGS = -fPIC -g \$(LIBS) -shared -Wl,-soname," >> $MAKEFILE
+echo "BUILDFLAGS = \$(INCLUDES) -Wall -Wshadow -ansi -pedantic -fno-leading-underscore -pipe -o" >> $MAKEFILE
+#echo "CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -fno-leading-underscore -pedantic -g -Wl,--export-dynamic \$(INCLUDES)" >> $MAKEFILE
+#echo "MODFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -g \$(LIBS) -shared -Wl,-soname," >> $MAKEFILE
 echo "" >> $MAKEFILE
 echo "navn:
-	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
-	@echo \"Navn Version \$(VERSION)\"
-	@echo \" \"
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c main.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c misc.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c module.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c signal.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c Socket.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c Sepstream.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c process.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c thread.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c ircproto.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c thread.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c timers.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c user.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c command.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c channel.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c INIReader.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c log.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c clock.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c textfile.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -c xmlfile.cpp
-	@\$(PERL) \$(CXX) \$(CFLAGS) -L. main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o \$(PACKAGE) \$(LIBS) -rdynamic" >> $MAKEFILE
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) main.o -c main.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) misc.o -c misc.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) module.o -c module.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) signal.o -c signal.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) Socket.o -c Socket.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) Sepstream.o -c Sepstream.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) process.o -c process.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) thread.o -c thread.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) ircproto.o -c ircproto.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) timers.o -c timers.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) user.o -c user.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) command.o -c command.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) channel.o -c channel.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) INIReader.o -c INIReader.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) log.o -c log.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) clock.o -c clock.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) textfile.o -c textfile.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) xmlfile.o -c xmlfile.cpp
+	@\$(PERL) \$(CXX) -g -Wl,--export-dynamic \$(LIBS) main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o \$(PACKAGE) -rdynamic" >> $MAKEFILE
 # Make sure the folder exists
 if [ -d modules ] ; then
   shopt -s nullglob
@@ -62,8 +59,8 @@ if [ -d modules ] ; then
     soname=$name.so #name only
     #These will be the contents of the file
     echo "$soname:" >> $MAKEFILE
-    echo "	@\$(PERL) \$(CXX) \$(CFLAGS) -c $file" >> $MAKEFILE
-    echo "	@\$(PERL) \$(CXX) \$(LIBS) \$(MODFLAGS)$file -o $bsoname $name.o" >> $MAKEFILE
+    echo "	@\$(PERL) \$(CXX) -D"$name"_EXPORTS \$(BUILDFLAGS) $name.o -c $file" >> $MAKEFILE #build
+    echo "	@\$(PERL) \$(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,$bsoname -o $bsoname $name.o" >> $MAKEFILE #Link
   done
   echo "" >> $MAKEFILE
   echo "modules: "$modulelist >> $MAKEFILE
@@ -74,7 +71,12 @@ if [ -d modules ] ; then
 else
   echo "Module folder not found."
 fi
-echo "all-am: navn "$modulelist >> $MAKEFILE
+echo "all-am: beginmsg navn "$modulelist" endmsg" >> $MAKEFILE
+echo "beginmsg:
+	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
+	@echo \"Navn Version \$(VERSION)\"
+	@echo \" \"" >> $MAKEFILE
+echo "endmsg: " >> $MAKEFILE
 echo "	@echo \" \"
 	@echo \"Build complete. Run './\$(PACKAGE)' to execute the binary.\"" >> $MAKEFILE
 echo "clean:
