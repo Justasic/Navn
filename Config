@@ -22,8 +22,13 @@ echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
 echo "LIBS = -ldl -lnsl -pthread" >> $MAKEFILE
 echo "INCLUDES = -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
 echo "BUILDFLAGS = \$(INCLUDES) -Wall -Wshadow -ansi -pedantic -fno-leading-underscore -pipe -o" >> $MAKEFILE
-#echo "CFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -fno-leading-underscore -pedantic -g -Wl,--export-dynamic \$(INCLUDES)" >> $MAKEFILE
-#echo "MODFLAGS = -Wall -ansi -pipe -Wshadow -fPIC -g \$(LIBS) -shared -Wl,-soname," >> $MAKEFILE
+echo "beginmsg:
+	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
+	@echo \"Navn Version \$(VERSION)\"
+	@echo \" \"" >> $MAKEFILE
+echo "endmsg: " >> $MAKEFILE
+echo "	@echo \" \"
+	@echo \"Build complete. Run './\$(PACKAGE)' to execute the binary.\"" >> $MAKEFILE
 echo "" >> $MAKEFILE
 echo "navn:
 	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) main.o -c main.cpp
@@ -72,13 +77,7 @@ else
   echo "Module folder not found."
 fi
 echo "all-am: beginmsg navn "$modulelist" endmsg" >> $MAKEFILE
-echo "beginmsg:
-	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
-	@echo \"Navn Version \$(VERSION)\"
-	@echo \" \"" >> $MAKEFILE
-echo "endmsg: " >> $MAKEFILE
-echo "	@echo \" \"
-	@echo \"Build complete. Run './\$(PACKAGE)' to execute the binary.\"" >> $MAKEFILE
+
 echo "clean:
 	rm -f *.o *.so \$(PACKAGE) modules/*.so" >> $MAKEFILE
 echo "dist-clean:

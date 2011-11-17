@@ -477,6 +477,13 @@ uninstall-am:
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
 	pdf-am ps ps-am uninstall uninstall-am
 
+beginmsg:
+	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
+	@echo "Navn Version $(VERSION)"
+	@echo " "
+endmsg: 
+	@echo " "
+	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 
 navn:
 	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) main.o -c main.cpp
@@ -559,13 +566,6 @@ world_clock.so:
 modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so QuickReply.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 
 all-am: beginmsg navn about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so QuickReply.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so endmsg
-beginmsg:
-	@echo "This bot was created in C++ by Lordofsraam and Justasic from Flux-Net"
-	@echo "Navn Version $(VERSION)"
-	@echo " "
-endmsg: 
-	@echo " "
-	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 clean:
 	rm -f *.o *.so $(PACKAGE) modules/*.so
 dist-clean:
