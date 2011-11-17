@@ -426,52 +426,6 @@ void startup(int argc, char** argv, char *envp[]) {
   FOREACH_MOD(I_OnStart, OnStart(argc, argv)); //announce we are starting the bot
   Fork(); //Fork to background
 }
-/**
- * \fn Flux::string xmlToString(Flux::string fileName)
- * \brief takes an xml file and converts it to a Flux::string
- * \param source The filename for conversion
- */
-
-Flux::string xmlToString(const Flux::string &fileName){
-  Flux::string buf, line;
-  std::ifstream in(fileName.c_str());
-  while(std::getline(in,line.std_str())){
-    buf += line;
-  }
-  return buf;
-}
-/**
- * \fn Flux::string findInXML(Flux::string node, Flux::string info, Flux::string fileString)
- * \brief xml Flux::string parser
- * \param node An XML node
- * \param info The info from that node
- * \param fileString Flux::string to parse
- */
-Flux::string findInXML(const Flux::string &node, const Flux::string &info, const Flux::string &fileString){
-  Flux::string findee = "<"+node;
-  size_t p = fileString.find(findee);
-  if(p > fileString.length()) /* Sanity check so we don't SIGABRT */
-    return "";
-  bool foundInfo = false;
-  int a = 0;
-  while(!foundInfo){
-    Flux::string infoFound = "";
-    for(unsigned m = 0; m < info.length(); m++){
-      infoFound += fileString.at(p+a+m);
-    }
-    if (infoFound == info){
-      foundInfo = true;
-    }else{a++;}
-  }
-  p += a+info.length()+2;
-  Flux::string output;
-  int i = 0;
-  while(!(fileString.at(p+i) == '"')){
-    output += fileString.at(p+i);
-    i++;
-  }
-  return output;
-}
 
 /***************************************************************************/
 #endif

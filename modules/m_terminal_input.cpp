@@ -57,7 +57,8 @@ public:
     if(nofork && InTerm()){
       t = new InputThread();
       t->Start();
-    }
+    }else
+      throw ModuleException("Cannot run m_terminal_input when fork'ed");
   }
 };
 

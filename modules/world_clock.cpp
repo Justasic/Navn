@@ -57,21 +57,14 @@ public:
       Flux::string wget, tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
       wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(location.is_number_only()?location:urlify(removeCommand(this->name.ci_str(), source.message.ci_str())));
       system(wget.c_str());
-
-      if(!xmlToString(tmpfile).search("problem_cause"))
-      {
-	Flux::string ff = xmlToString(tmpfile);
-	ff.trim();
-	if(ff.empty()){
-	  c->SendMessage("Could not download/read %s", tmpfile.c_str());
-	  Log(source.u) << "failed to use " << this->name << " because of failure to download/read file '" << tmpfile << '\'';
-	  return;
-	}
-	Flux::string loc = findInXML("city","data",ff), time = findInXML("current_date_time","data",ff);
-	c->SendMessage("The current time in %s is %s", loc.c_str(), time.c_str());
-	Delete(tmpfile.c_str());
-	Log(source.u, this) << "to get time for " << location;
-	}
+      XMLFile *xf = new XMLFile(tmpfile);
+      
+      Flux::string city = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["city"].Attributes["data"].Value;
+      Flux::string time = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["current_date_time"].Attributes["data"].Value;
+      delete xf;
+      c->SendMessage("The current time in %s is %s", city.c_str(), time.c_str());
+      Delete(tmpfile.c_str());
+      Log(source.u, this) << "to get time for " << location;
     }
   }
 };
