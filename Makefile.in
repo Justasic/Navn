@@ -486,82 +486,82 @@ endmsg:
 	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 
 navn:
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) main.o -c main.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) misc.o -c misc.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) module.o -c module.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) signal.o -c signal.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) Socket.o -c Socket.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) Sepstream.o -c Sepstream.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) process.o -c process.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) thread.o -c thread.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) ircproto.o -c ircproto.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) timers.o -c timers.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) user.o -c user.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) command.o -c command.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) channel.o -c channel.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) INIReader.o -c INIReader.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) log.o -c log.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) clock.o -c clock.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) textfile.o -c textfile.cpp
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) xmlfile.o -c xmlfile.cpp
-	@$(PERL) $(CXX) -g -Wl,--export-dynamic $(LIBS) main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o $(PACKAGE) -rdynamic
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) main.o -c src/main.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) misc.o -c src/misc.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) module.o -c src/module.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) signal.o -c src/signal.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) Socket.o -c src/Socket.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) Sepstream.o -c src/Sepstream.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) process.o -c src/process.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) thread.o -c src/thread.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) ircproto.o -c src/ircproto.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) timers.o -c src/timers.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) user.o -c src/user.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) command.o -c src/command.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) channel.o -c src/channel.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) INIReader.o -c src/INIReader.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) log.o -c src/log.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) clock.o -c src/clock.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) textfile.o -c src/textfile.cpp
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) xmlfile.o -c src/xmlfile.cpp
+	@$(PERL) $(CXX) -g -Wl,--export-dynamic main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o $(PACKAGE) -rdynamic -ldl -lnsl -pthread
 about_me.so:
-	@$(PERL) $(CXX) -Dabout_me_EXPORTS $(BUILDFLAGS) about_me.o -c modules/about_me.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/about_me.so -o modules/about_me.so about_me.o
+	@$(PERL) $(CXX) -Dabout_me_EXPORTS -fPIC $(BUILDFLAGS) about_me.o -c modules/about_me.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/about_me.so -o modules/about_me.so about_me.o
 channel_logger.so:
-	@$(PERL) $(CXX) -Dchannel_logger_EXPORTS $(BUILDFLAGS) channel_logger.o -c modules/channel_logger.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/channel_logger.so -o modules/channel_logger.so channel_logger.o
+	@$(PERL) $(CXX) -Dchannel_logger_EXPORTS -fPIC $(BUILDFLAGS) channel_logger.o -c modules/channel_logger.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/channel_logger.so -o modules/channel_logger.so channel_logger.o
 ctcp.so:
-	@$(PERL) $(CXX) -Dctcp_EXPORTS $(BUILDFLAGS) ctcp.o -c modules/ctcp.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/ctcp.so -o modules/ctcp.so ctcp.o
+	@$(PERL) $(CXX) -Dctcp_EXPORTS -fPIC $(BUILDFLAGS) ctcp.o -c modules/ctcp.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/ctcp.so -o modules/ctcp.so ctcp.o
 da_goat.so:
-	@$(PERL) $(CXX) -Dda_goat_EXPORTS $(BUILDFLAGS) da_goat.o -c modules/da_goat.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/da_goat.so -o modules/da_goat.so da_goat.o
+	@$(PERL) $(CXX) -Dda_goat_EXPORTS -fPIC $(BUILDFLAGS) da_goat.o -c modules/da_goat.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/da_goat.so -o modules/da_goat.so da_goat.o
 encyclopedia.so:
-	@$(PERL) $(CXX) -Dencyclopedia_EXPORTS $(BUILDFLAGS) encyclopedia.o -c modules/encyclopedia.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/encyclopedia.so -o modules/encyclopedia.so encyclopedia.o
+	@$(PERL) $(CXX) -Dencyclopedia_EXPORTS -fPIC $(BUILDFLAGS) encyclopedia.o -c modules/encyclopedia.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/encyclopedia.so -o modules/encyclopedia.so encyclopedia.o
 help.so:
-	@$(PERL) $(CXX) -Dhelp_EXPORTS $(BUILDFLAGS) help.o -c modules/help.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/help.so -o modules/help.so help.o
+	@$(PERL) $(CXX) -Dhelp_EXPORTS -fPIC $(BUILDFLAGS) help.o -c modules/help.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/help.so -o modules/help.so help.o
 m_dns.so:
-	@$(PERL) $(CXX) -Dm_dns_EXPORTS $(BUILDFLAGS) m_dns.o -c modules/m_dns.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_dns.so -o modules/m_dns.so m_dns.o
+	@$(PERL) $(CXX) -Dm_dns_EXPORTS -fPIC $(BUILDFLAGS) m_dns.o -c modules/m_dns.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_dns.so -o modules/m_dns.so m_dns.o
 m_join.so:
-	@$(PERL) $(CXX) -Dm_join_EXPORTS $(BUILDFLAGS) m_join.o -c modules/m_join.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_join.so -o modules/m_join.so m_join.o
+	@$(PERL) $(CXX) -Dm_join_EXPORTS -fPIC $(BUILDFLAGS) m_join.o -c modules/m_join.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_join.so -o modules/m_join.so m_join.o
 modulehandler.so:
-	@$(PERL) $(CXX) -Dmodulehandler_EXPORTS $(BUILDFLAGS) modulehandler.o -c modules/modulehandler.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/modulehandler.so -o modules/modulehandler.so modulehandler.o
+	@$(PERL) $(CXX) -Dmodulehandler_EXPORTS -fPIC $(BUILDFLAGS) modulehandler.o -c modules/modulehandler.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/modulehandler.so -o modules/modulehandler.so modulehandler.o
 m_ping.so:
-	@$(PERL) $(CXX) -Dm_ping_EXPORTS $(BUILDFLAGS) m_ping.o -c modules/m_ping.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_ping.so -o modules/m_ping.so m_ping.o
+	@$(PERL) $(CXX) -Dm_ping_EXPORTS -fPIC $(BUILDFLAGS) m_ping.o -c modules/m_ping.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_ping.so -o modules/m_ping.so m_ping.o
 m_system.so:
-	@$(PERL) $(CXX) -Dm_system_EXPORTS $(BUILDFLAGS) m_system.o -c modules/m_system.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_system.so -o modules/m_system.so m_system.o
+	@$(PERL) $(CXX) -Dm_system_EXPORTS -fPIC $(BUILDFLAGS) m_system.o -c modules/m_system.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_system.so -o modules/m_system.so m_system.o
 m_terminal_input.so:
-	@$(PERL) $(CXX) -Dm_terminal_input_EXPORTS $(BUILDFLAGS) m_terminal_input.o -c modules/m_terminal_input.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_terminal_input.so -o modules/m_terminal_input.so m_terminal_input.o
+	@$(PERL) $(CXX) -Dm_terminal_input_EXPORTS -fPIC $(BUILDFLAGS) m_terminal_input.o -c modules/m_terminal_input.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/m_terminal_input.so -o modules/m_terminal_input.so m_terminal_input.o
 PvP.so:
-	@$(PERL) $(CXX) -DPvP_EXPORTS $(BUILDFLAGS) PvP.o -c modules/PvP.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/PvP.so -o modules/PvP.so PvP.o
+	@$(PERL) $(CXX) -DPvP_EXPORTS -fPIC $(BUILDFLAGS) PvP.o -c modules/PvP.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/PvP.so -o modules/PvP.so PvP.o
 QuickReply.so:
-	@$(PERL) $(CXX) -DQuickReply_EXPORTS $(BUILDFLAGS) QuickReply.o -c modules/QuickReply.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/QuickReply.so -o modules/QuickReply.so QuickReply.o
+	@$(PERL) $(CXX) -DQuickReply_EXPORTS -fPIC $(BUILDFLAGS) QuickReply.o -c modules/QuickReply.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/QuickReply.so -o modules/QuickReply.so QuickReply.o
 searcher.so:
-	@$(PERL) $(CXX) -Dsearcher_EXPORTS $(BUILDFLAGS) searcher.o -c modules/searcher.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/searcher.so -o modules/searcher.so searcher.o
+	@$(PERL) $(CXX) -Dsearcher_EXPORTS -fPIC $(BUILDFLAGS) searcher.o -c modules/searcher.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/searcher.so -o modules/searcher.so searcher.o
 SimpleMod.so:
-	@$(PERL) $(CXX) -DSimpleMod_EXPORTS $(BUILDFLAGS) SimpleMod.o -c modules/SimpleMod.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/SimpleMod.so -o modules/SimpleMod.so SimpleMod.o
+	@$(PERL) $(CXX) -DSimpleMod_EXPORTS -fPIC $(BUILDFLAGS) SimpleMod.o -c modules/SimpleMod.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/SimpleMod.so -o modules/SimpleMod.so SimpleMod.o
 testmod.so:
-	@$(PERL) $(CXX) -Dtestmod_EXPORTS $(BUILDFLAGS) testmod.o -c modules/testmod.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/testmod.so -o modules/testmod.so testmod.o
+	@$(PERL) $(CXX) -Dtestmod_EXPORTS -fPIC $(BUILDFLAGS) testmod.o -c modules/testmod.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/testmod.so -o modules/testmod.so testmod.o
 weather.so:
-	@$(PERL) $(CXX) -Dweather_EXPORTS $(BUILDFLAGS) weather.o -c modules/weather.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/weather.so -o modules/weather.so weather.o
+	@$(PERL) $(CXX) -Dweather_EXPORTS -fPIC $(BUILDFLAGS) weather.o -c modules/weather.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/weather.so -o modules/weather.so weather.o
 world_clock.so:
-	@$(PERL) $(CXX) -Dworld_clock_EXPORTS $(BUILDFLAGS) world_clock.o -c modules/world_clock.cpp
-	@$(PERL) $(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/world_clock.so -o modules/world_clock.so world_clock.o
+	@$(PERL) $(CXX) -Dworld_clock_EXPORTS -fPIC $(BUILDFLAGS) world_clock.o -c modules/world_clock.cpp
+	@$(PERL) $(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,modules/world_clock.so -o modules/world_clock.so world_clock.o
 
 modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so QuickReply.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so
 

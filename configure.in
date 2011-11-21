@@ -4,7 +4,7 @@
 AC_PREREQ([2.6])
 AC_INIT([Navn], [2.0.1], [http://flux-net.net/bugs/])
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([main.cpp])
+AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 
 AC_DEFINE([VERSION_EXTRA], ["-with-netflix-and-chicken"], [Current version extra of the bot])

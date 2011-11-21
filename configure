@@ -565,7 +565,7 @@ PACKAGE_STRING='Navn 2.0.1'
 PACKAGE_BUGREPORT='http://flux-net.net/bugs/'
 PACKAGE_URL=''
 
-ac_unique_file="main.cpp"
+ac_unique_file="src/main.cpp"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>

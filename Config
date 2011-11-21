@@ -31,25 +31,25 @@ echo "	@echo \" \"
 	@echo \"Build complete. Run './\$(PACKAGE)' to execute the binary.\"" >> $MAKEFILE
 echo "" >> $MAKEFILE
 echo "navn:
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) main.o -c main.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) misc.o -c misc.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) module.o -c module.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) signal.o -c signal.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) Socket.o -c Socket.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) Sepstream.o -c Sepstream.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) process.o -c process.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) thread.o -c thread.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) ircproto.o -c ircproto.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) timers.o -c timers.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) user.o -c user.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) command.o -c command.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) channel.o -c channel.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) INIReader.o -c INIReader.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) log.o -c log.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) clock.o -c clock.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) textfile.o -c textfile.cpp
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) xmlfile.o -c xmlfile.cpp
-	@\$(PERL) \$(CXX) -g -Wl,--export-dynamic \$(LIBS) main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o \$(PACKAGE) -rdynamic" >> $MAKEFILE
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) main.o -c src/main.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) misc.o -c src/misc.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) module.o -c src/module.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) signal.o -c src/signal.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) Socket.o -c src/Socket.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) Sepstream.o -c src/Sepstream.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) process.o -c src/process.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) thread.o -c src/thread.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) ircproto.o -c src/ircproto.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) timers.o -c src/timers.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) user.o -c src/user.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) command.o -c src/command.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) channel.o -c src/channel.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) INIReader.o -c src/INIReader.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) log.o -c src/log.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) clock.o -c src/clock.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) textfile.o -c src/textfile.cpp
+	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(BUILDFLAGS) xmlfile.o -c src/xmlfile.cpp
+	@\$(PERL) \$(CXX) -g -Wl,--export-dynamic main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o \$(PACKAGE) -rdynamic -ldl -lnsl -pthread" >> $MAKEFILE
 # Make sure the folder exists
 if [ -d modules ] ; then
   shopt -s nullglob
@@ -64,8 +64,8 @@ if [ -d modules ] ; then
     soname=$name.so #name only
     #These will be the contents of the file
     echo "$soname:" >> $MAKEFILE
-    echo "	@\$(PERL) \$(CXX) -D"$name"_EXPORTS \$(BUILDFLAGS) $name.o -c $file" >> $MAKEFILE #build
-    echo "	@\$(PERL) \$(CXX) -fPIC -g -ldl -lnsl -pthread -shared -Wl,-soname,$bsoname -o $bsoname $name.o" >> $MAKEFILE #Link
+    echo "	@\$(PERL) \$(CXX) -D"$name"_EXPORTS -fPIC \$(BUILDFLAGS) $name.o -c $file" >> $MAKEFILE #build
+    echo "	@\$(PERL) \$(CXX) -g -ldl -lnsl -pthread -shared -Wl,-soname,$bsoname -o $bsoname $name.o" >> $MAKEFILE #Link
   done
   echo "" >> $MAKEFILE
   echo "modules: "$modulelist >> $MAKEFILE

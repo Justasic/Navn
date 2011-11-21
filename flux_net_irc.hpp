@@ -420,7 +420,7 @@ void startup(int argc, char** argv, char *envp[]) {
     }
   }
   if(!nocolor) Log(LOG_TERMINAL) << "\033[22;36m";
-	       ModuleHandler::SanitizeRuntime();
+  ModuleHandler::SanitizeRuntime();
   ReadConfig(); //load modules
   WritePID(); //Write the pid file
   FOREACH_MOD(I_OnStart, OnStart(argc, argv)); //announce we are starting the bot
