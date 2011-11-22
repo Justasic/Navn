@@ -20,11 +20,8 @@
 	#undef read
 	#undef write
 
-	/* stupid windows class crap for the modules */
-	#define CoreExport __declspec(dllimport)
-	#define DllExport __declspec(dllexport)
-
 	/* redefine some functions because microsoft has their own standards */
+	#define MARK_DEPRECATED
 	#define DEPRECATED x
 	#define RTLD_LAZY 0
 	#define F_GETFL 0
@@ -34,6 +31,7 @@
 	#define vsnprintf _vsnprintf
 	#define stat _stat
 	#define S_ISREG(x) ((x) & _S_IFREG)
+	#define GetCurrentDir(x, y) GetCurrentDirectory(y, x)
 
 	#ifdef strerror
 	# define strerror _strerror
@@ -83,8 +81,8 @@
 	BOOLEAN WINAPI DllMain(HINSTANCE, DWORD nReason, LPVOID) { return TRUE; } \
 	extern "C" void ModunInit(x *m) { if(m) delete m; }
 #else // *nix
-	#define CoreExport
-	#define DllExport
+	#define GetCurrentDir getcwd
+	#define Delete unlink
 	#define MODULE_HOOK(x) \
 	extern "C" module *ModInit(const Flux::string &name) { return new x(name); } \
 	extern "C" void ModunInit(x *m) { if(m) delete m; }

@@ -8,14 +8,12 @@
 #include "windows_navn.h" //Include windows crap
 
 /* #define's */
-#define Delete unlink
 #define E extern CoreExport
 #define BUFSIZE 65535
 #define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
 #define ACCESS_DENIED "Access is Denied."
-#define GetCurrentDir getcwd
 #define SET_SEGV_LOCATION() snprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 #define CLEAR_SEGV_LOCATION() segv_location[0]='\0';
 

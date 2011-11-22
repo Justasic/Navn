@@ -17,14 +17,22 @@
 #include <typeinfo>
 #include "config.h" /* we include the config header from ./configure */
 #ifdef __GNUC__
-#define DEPRECATED(func) func __attribute__ ((deprecated))
+# define DEPRECATED(func) func __attribute__ ((deprecated))
 #elif defined(_MSC_VER)
-#define DEPRECATED(func) __declspec(deprecated) func
+# define DEPRECATED(func) __declspec(deprecated) func
 #else
-#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
-#define DEPRECATED(func) func
+# pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+# define DEPRECATED(func) func
 #endif
-extern bool protocoldebug;
+/* stupid windows class crap for the modules */
+#ifdef _WIN32
+# define CoreExport __declspec(dllimport)
+# define DllExport __declspec(dllexport)
+#else
+# define CoreExport
+# define DllExport
+#endif
+extern CoreExport bool protocoldebug;
 template<typename T, typename V> inline T value_cast(const V &y)
 {
   std::stringstream stream;
