@@ -562,9 +562,9 @@ namespace Flux{
   }; //end of string class
   template<typename T> class map : public std::map<string, T> { };
   template<typename T> class insensitive_map : public std::map<string, T, ci::less> { };
-  extern Flux::string Sanitize(const Flux::string&);
-  extern Flux::string RandomString(size_t);
-  extern Flux::string RandomNickString(size_t);
+  extern CoreExport Flux::string Sanitize(const Flux::string&);
+  extern CoreExport Flux::string RandomString(size_t);
+  extern CoreExport Flux::string RandomNickString(size_t);
   inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
   inline std::istream &operator>>(std::istream &os, string &_str) { return os >> _str._string; }
   inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
@@ -574,7 +574,7 @@ namespace Flux{
 
 }//end of namespace
 
-class sepstream
+class CoreExport sepstream
 {
  private:
   Flux::string tokens;
@@ -589,7 +589,7 @@ class sepstream
 };
 
 class dynamic_reference_base;
-class Base
+class CoreExport Base
 {
   std::set<dynamic_reference_base*> References;
 public:
