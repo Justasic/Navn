@@ -224,6 +224,7 @@ namespace Flux{
     string(const std::string &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
     string(const string &_str, size_type pos = 0, size_type n = npos) : _string(_str._string, pos, n) { }
+//     ~string() { printf("~: %s\n", this->c_str()); }
     template <class InputIterator> string(InputIterator first, InputIterator last) : _string(first, last) { }
 
     inline string &operator=(char chr) { this->_string = chr; return *this; }
@@ -408,7 +409,6 @@ namespace Flux{
     inline std::allocator<char> get_allocator() const { return this->_string.get_allocator(); }
     inline char &operator[](size_type n) { return this->_string[n]; }
     inline const char &operator[](size_type n) const { return this->_string[n]; }
-    inline operator std::string() { return this->_string; }
 
     /* Strip Return chars */
     inline string strip()
@@ -569,6 +569,7 @@ namespace Flux{
   inline std::istream &operator>>(std::istream &os, string &_str) { return os >> _str._string; }
   inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
   inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
+  inline const string operator+(const std::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
   inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
 
 }//end of namespace

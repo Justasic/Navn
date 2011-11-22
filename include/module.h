@@ -77,6 +77,7 @@ public:
   virtual void OnConnectionError(const Flux::string&) {}
   virtual void OnInvite(User *u, const Flux::string&) {}
 };
+
 class ModuleHandler
 {
 public:

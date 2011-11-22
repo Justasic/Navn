@@ -98,6 +98,34 @@ public:
   }
 };
 
+class CommandMReload : public Command
+{
+public:
+  CommandMReload():Command("MODRELOAD", 1, 1)
+  {
+    this->SetDesc("Reloads a module");
+    this->SetSyntax("\37name\37");
+  }
+  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  {
+    const Flux::string module = params[1];
+    if(!source.u->IsOwner())
+      source.Reply(ACCESS_DENIED);
+    else{
+      bool err = ModuleHandler::Unload(FindModule(module));
+      ModErr err2 = ModuleHandler::LoadModule(module);
+      if(!err || err2 != MOD_ERR_OK)
+      {
+	source.Reply("Failed to reload module %s%s", module.c_str(), err2 != MOD_ERR_OK?Flux::string(": "+DecodeModErr(err2)).c_str():"");
+	Log(source.u, this) << "to reload " << module << " and failed";
+      }else{
+	source.Reply("Module \2%s\2 reloaded sucessfuly", module.c_str());
+	Log(source.u, this) << "to reload " << module;
+      }
+    }
+  }
+};
+
 class CommandMInfo : public Command
 {
 public:
@@ -146,6 +174,7 @@ class M_Handler : public module
   CommandMLoad load;
   CommandMUnload unload;
   CommandMInfo info;
+  CommandMReload reload;
 public:
   M_Handler(const Flux::string &Name):module(Name)
   {
@@ -154,6 +183,7 @@ public:
     this->SetPriority(PRIORITY_FIRST);
     this->AddCommand(&info);
     this->AddCommand(&list);
+    this->AddCommand(&reload);
     this->AddCommand(&load);
     this->AddCommand(&unload);
   }

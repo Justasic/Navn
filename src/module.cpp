@@ -253,7 +253,7 @@ bool ModuleHandler::DeleteModule(module *m)
   Flux::string filepath = m->filepath;
   
   dlerror();
-  void (*df)(module*) = class_cast<void (*)(module *)>(dlsym(m->handle, "ModunInit"));
+  void (*df)(module*) = class_cast<void (*)(module*)>(dlsym(m->handle, "ModunInit"));
   const char *err = dlerror();
   if (!df && err && *err)
   {
@@ -268,7 +268,6 @@ bool ModuleHandler::DeleteModule(module *m)
       Log() << "[" << m->name << ".so] " << dlerror();
   if (!filepath.empty())
     Delete(filepath.c_str());
-  
   return true;
 }
 bool ModuleHandler::Unload(module *m){
