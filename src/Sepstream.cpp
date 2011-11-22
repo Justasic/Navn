@@ -49,7 +49,7 @@ Flux::string Flux::RandomNickString(size_t length)
   {
     top:
     char c = (char) (rand() % ('z' - '0' + 1) + '0');
-    if(isvalidnick(c))
+    if(isalphibeticnum(c))
       randomchars += c;
     else
       goto top;

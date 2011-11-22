@@ -13,6 +13,8 @@
 #define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
 #define isvalidnick(c) (isalnum(c) || ((c) >= '\x5B' && (c) <= '\x60') || ((c) >= '\x7B' && (c) <= '\x7D') || (c) == '-')
+#define isalphibetic(c) (((c) >= '\x41' && (c) <= '\x5A') || ((c) >= '\x61' && (c) <= '\x7A'))
+#define isalphibeticnum(c) ( isalnum(c) || ((c) >= '\x41' && (c) <= '\x5A') || ((c) >= '\x61' && (c) <= '\x7A'))
 #define ACCESS_DENIED "Access is Denied."
 #define SET_SEGV_LOCATION() snprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 #define CLEAR_SEGV_LOCATION() segv_location[0]='\0';
