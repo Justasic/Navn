@@ -3,10 +3,12 @@
 #define MODULE_H
 #include "user.h"
 #include "command.h"
-#ifdef HAVE_FCNTL_H
-# include <dlfcn.h>
-#else
-# error dlfcn.h is required by navn to compile modules!
+#ifndef _WIN32
+# ifdef HAVE_FCNTL_H
+#  include <dlfcn.h>
+# else
+#  error dlfcn.h is required by navn to compile modules!
+# endif
 #endif
 enum Implementation{
   I_BEGIN,
@@ -24,7 +26,7 @@ enum ModulePriority{
   PRIORITY_DONTCARE,
   PRIORITY_LAST
 };
-class module : public Base
+class CoreExport module : public Base
 {
   Flux::string author, version;
   time_t loadtime;
@@ -78,7 +80,7 @@ public:
   virtual void OnInvite(User *u, const Flux::string&) {}
 };
 
-class ModuleHandler
+class CoreExport ModuleHandler
 {
 public:
   static std::vector<module*> EventHandlers[I_END];

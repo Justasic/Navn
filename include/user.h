@@ -9,7 +9,7 @@
  * This class wraps around IRC Users and includes several useful commands as well as User information.
  */
 typedef std::map<Channel*, User*> CList;
-class User : public Base
+class CoreExport User : public Base
 {
 public:
   User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "", const Flux::string &server ="");

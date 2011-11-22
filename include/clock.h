@@ -2,7 +2,7 @@
 #define CLOCK_H
 #include "module.h"
 
-class Clock
+class CoreExport Clock
 {
 private:
   time_t rawtime;

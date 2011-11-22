@@ -14,7 +14,7 @@ enum FileIOErrors
   FILE_IO_EXCEPTION
 };
 
-class TextFile
+class CoreExport TextFile
 {
 private:
   Flux::string line, filename;

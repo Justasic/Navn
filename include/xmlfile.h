@@ -2,7 +2,7 @@
 #define XMLFILE_H
 #include "module.h"
 
-class XMLFile : public TextFile {
+class CoreExport XMLFile : public TextFile {
 private:
   class Tag
   {

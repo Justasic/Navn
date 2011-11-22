@@ -28,7 +28,7 @@
 #include "log.h"
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;
-class SocketIO
+class CoreExport SocketIO
 {
 private:
   Flux::string server, port;

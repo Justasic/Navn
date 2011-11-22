@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-class Timer : public Base
+class CoreExport Timer : public Base
 {
  private:
 	/** The time this was created
@@ -101,7 +101,7 @@ class Timer : public Base
  * This will ensure timers are not missed, as well as removing timers that have
  * expired and allowing the addition of new ones.
  */
-class TimerManager : public Base
+class CoreExport TimerManager : public Base
 {
 	/** A list of timers
 	 */

@@ -36,7 +36,7 @@
  * \brief Time the IRC Channel was last created.
  */
 typedef std::map<User*, Channel*> UList;
-class Channel : public Base
+class CoreExport Channel : public Base
 {
 public:
   Channel(const Flux::string&, time_t ts = time(NULL));

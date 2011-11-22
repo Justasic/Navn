@@ -4,7 +4,7 @@
 #include "includes.h"
 #include "command.h"
 
-class IRCProto
+class CoreExport IRCProto
 {
 public:
   Oper *o;

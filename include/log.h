@@ -3,7 +3,7 @@
 #include "command.h"
 #include "user.h"
 
-class Log
+class CoreExport Log
 {
 protected:
   std::fstream log;

@@ -9,7 +9,7 @@
 
 /* #define's */
 #define Delete unlink
-#define E extern
+#define E extern CoreExport
 #define BUFSIZE 65535
 #define CHANNEL_X_INVALID "Channel \2%s\2 is not a valad channel"
 #define welcome_msg "%s has joined. Type '/msg %s help' to see a list of commands."
