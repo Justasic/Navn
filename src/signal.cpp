@@ -44,6 +44,10 @@ Flux::string siginit(int sigstring)
 void HandleSegfault(module *m)
 {
 #ifdef HAVE_BACKTRACE
+bool havecxx11 = false; //Check if we compiled with C++11
+#ifdef _CXX11
+havecxx11 = true;
+#endif
  void *array[10];
  char **strings;
  char tbuf[256];
@@ -70,6 +74,9 @@ void HandleSegfault(module *m)
    slog << "Navn version: " << VERSION_LONG << std::endl;
    slog << "System info: " << uts.sysname << " " << uts.nodename << " " <<  uts.release << " " << uts.machine << std::endl;
    slog << "System version: " << uts.version << std::endl;
+   slog << "C++ Version: " << __VERSION__ " C++11 support: " << (havecxx11?"true":"false") << std::endl;
+   slog << "Socket Buffer: " << LastBuf << std::endl;
+   slog << "Location: " << segv_location << std::endl;
    if(m){
      slog << "Module: " << m->name << std::endl;
      slog << "Module Version: " << m->GetVersion() << std::endl;
@@ -79,21 +86,19 @@ void HandleSegfault(module *m)
      mbuf += it->second->name+" ";
    mbuf.trim();
    slog << "Modules Loaded: " << (mbuf.empty()?"None":mbuf) << std::endl;
-   slog << "Location: " << segv_location << std::endl;
-   slog << "Socket Buffer: " << LastBuf << std::endl;
    strings = backtrace_symbols(array, size);
    for(unsigned i=1; i < size; i++)
      slog << "BackTrace(" << (i - 1) << "): " << strings[i] << std::endl;
    free(strings);
    slog << "======================== END OF REPORT ==========================" << std::endl;
    sslog << slog.str() << std::endl; //Write to SEGFAULT.log
-   sslog.close();
+   sslog.close(); //Close pointer to SEGFAULT.log
    std::cout << slog.str(); //Write to terminal.
-   std::cout.flush();
+   std::cout.flush(); //Clear output
    if(m)
-      Log() << "Segmentation Fault in module " << m->name << " please review SEGFAULT.log";
+     Log() << "Segmentation Fault in module " << m->name << ", please review SEGFAULT.log";
    else
-      Log(LOG_SILENT) << "\033[0mSegmentation Fault, Please read SEGFAULT.log";
+     Log(LOG_SILENT) << "\033[0mSegmentation Fault, Please read SEGFAULT.log";
  }else
    throw CoreException("Segmentation Fault, cannot write backtrace!");
 #else

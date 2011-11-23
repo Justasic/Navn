@@ -81,6 +81,11 @@
 	BOOLEAN WINAPI DllMain(HINSTANCE, DWORD nReason, LPVOID) { return TRUE; } \
 	extern "C" void ModunInit(x *m) { if(m) delete m; }
 #else // *nix
+	#ifdef __GXX_EXPERIMENTAL_CXX0X__
+	# define _CXX11
+	# include <atomic>
+	#endif
+	
 	#define GetCurrentDir getcwd
 	#define Delete unlink
 	#define MODULE_HOOK(x) \

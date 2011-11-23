@@ -36,10 +36,13 @@ esac
 
 AC_DEFINE_UNQUOTED(OS, "${host}", [cpu-machine-OS])
 
+# Why doesnt this shit work? fucking autoconf
+# AX_CHECK_COMPILE_FLAG([-std=gnu++0x], [POSTCOMPILEFLAGS="$POSTCOMPILEFLAGS -std=gnu++0x"])
+
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lpthread':
-AC_CHECK_LIB([pthread], [main])
-AC_CHECK_LIB(dl, dlopen)
+AC_CHECK_LIB([pthread], [main], [], [AC_MSG_WARN([Your system does not support multi-threading or does not have the pthread library, some modules require this library to be present])])
+AC_CHECK_LIB(dl, dlopen, [], [AC_MSG_ERROR([the dl library is required for compile!])])
 AC_CHECK_LIB(socket, socket)
 
 # Checks for header files.

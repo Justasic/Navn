@@ -4557,6 +4557,8 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+#AX_CHECK_COMPILE_FLAG([-std=gnu++0x], [POSTCOMPILEFLAGS="$POSTCOMPILEFLAGS -std=gnu++0x"])
+
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lpthread':
 
@@ -4597,6 +4599,9 @@ _ACEOF
 
   LIBS="-lpthread $LIBS"
 
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Your system does not support multi-threading or does not have the pthread library, some modules require this library to be present" >&5
+$as_echo "$as_me: WARNING: Your system does not support multi-threading or does not have the pthread library, some modules require this library to be present" >&2;}
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for dlopen in -ldl" >&5
@@ -4642,6 +4647,8 @@ _ACEOF
 
   LIBS="-ldl $LIBS"
 
+else
+  as_fn_error $? "the dl library is required for compile!" "$LINENO" 5
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for socket in -lsocket" >&5

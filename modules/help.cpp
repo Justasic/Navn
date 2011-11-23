@@ -53,6 +53,9 @@ public:
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     Flux::string cmds;
+#ifdef _CXX11
+    for(auto it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
+#endif
    for(CommandMap::iterator it = ChanCommandMap.begin(), it_end = ChanCommandMap.end(); it != it_end; ++it)
    {
      if(it->second != NULL)
