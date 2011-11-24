@@ -78,6 +78,7 @@ public:
   virtual void OnPostConnect(SocketIO*) {}
   virtual void OnConnectionError(const Flux::string&) {}
   virtual void OnInvite(User *u, const Flux::string&) {}
+  virtual void OnLoad() {} // This is NOT to be called by FOREACH_MOD!
 };
 
 class CoreExport ModuleHandler
