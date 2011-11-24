@@ -309,7 +309,7 @@ void Rehash(){
   try{
     BotConfig *configtmp = Config;
     Config = new BotConfig();
-    delete configtmp; 
+    delete configtmp;
     if(!Config)
       throw ConfigException("Could not read config.");
     FOREACH_MOD(I_OnReload, OnReload());
