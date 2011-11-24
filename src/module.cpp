@@ -303,10 +303,10 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 void ModuleHandler::SanitizeRuntime()
 {
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
-  Flux::string dirbuf = Config->Binary_Dir+"runtime/";
-  struct stat s;
-  if(stat(dirbuf.c_str(), &s) == -1)
-    mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  Flux::string dirbuf = Config->Binary_Dir+"/runtime/";
+  if(!TextFile::IsDirectory(dirbuf))
+    if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1)
+      Log() << "Error making new runtime directory: " << strerror(errno);
   DIR *dirp = opendir(dirbuf.c_str());
   if (!dirp)
   {

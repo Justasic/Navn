@@ -171,6 +171,15 @@ bool TextFile::IsFile(const Flux::string &filename)
     return true;
   return false;
 }
+
+bool TextFile::IsDirectory(const Flux::string &dirname)
+{
+  struct stat fileinfo;
+  if(stat(dirname.c_str(), &fileinfo) == 0)
+    return true;
+  return false;
+}
+
 /** Write to disk
  * \brief Write text to the file
  * \fn bool TextFile::WriteToDisk(const Flux::string &FileName)

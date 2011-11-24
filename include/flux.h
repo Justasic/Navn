@@ -41,7 +41,7 @@ template<typename T, typename V> inline T value_cast(const V &y)
 {
   std::stringstream stream;
   T x;
-  if(!(stream << std::setprecision(400) << y)) //we use setprecision so scientific notation does not get in the way.
+  if(!(stream << std::setprecision(800) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
   if(!(stream >> x))
     if(protocoldebug)

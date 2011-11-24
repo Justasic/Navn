@@ -43,7 +43,7 @@ public:
   ~Channel();
   UList UserList;
   User *finduser(const Flux::string&);
-  //some day we will hhave a mode manager here :P
+  //some day we will have a mode manager here :P
   //some day we will also have a user finder for a channel ;P
   Flux::string name;
   Flux::string topic;
