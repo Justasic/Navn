@@ -109,5 +109,4 @@ public:
   virtual void OnList(User *u);
   virtual void OnSyntaxError(CommandSource&, const Flux::string&);
 };
-Command *FindCommand(const Flux::string &name);
 #endif

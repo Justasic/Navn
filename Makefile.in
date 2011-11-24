@@ -37,8 +37,7 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure AUTHORS COPYING ChangeLog INSTALL NEWS \
 	TODO depcomp install-sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -75,7 +74,7 @@ CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = $(INCLUDES) -Wall -Wshadow -ansi -pedantic -fno-leading-underscore -pipe -o
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -156,7 +155,6 @@ unamepath = @unamepath@
 AUTOMAKE_OPTIONS = foreign
 PERL = $(srcdir)/run-cc.pl
 INCLUDES = -I$(srcdir)/include -I$(srcdir)
-BUILDFLAGS = $(INCLUDES) -std=gnu++0x -Wall -Wshadow -ansi -pedantic -fno-leading-underscore -pipe -o
 POSTCOMPILEFLAGS = -std=gnu++0x
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -487,81 +485,81 @@ endmsg:
 	@echo "Build complete. Run './$(PACKAGE)' to execute the binary."
 
 navn:
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) main.o -c src/main.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) misc.o -c src/misc.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) module.o -c src/module.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) signal.o -c src/signal.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) Socket.o -c src/Socket.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) Sepstream.o -c src/Sepstream.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) process.o -c src/process.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) thread.o -c src/thread.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) ircproto.o -c src/ircproto.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) timers.o -c src/timers.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) user.o -c src/user.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) command.o -c src/command.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) channel.o -c src/channel.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) INIReader.o -c src/INIReader.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) log.o -c src/log.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) clock.o -c src/clock.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) textfile.o -c src/textfile.cpp $(POSTCOMPILEFLAGS)
-	@$(PERL) $(CXX) -Dnavn_EXPORTS $(BUILDFLAGS) xmlfile.o -c src/xmlfile.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) main.o -c src/main.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) misc.o -c src/misc.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) module.o -c src/module.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) signal.o -c src/signal.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) Socket.o -c src/Socket.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) Sepstream.o -c src/Sepstream.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) process.o -c src/process.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) thread.o -c src/thread.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) ircproto.o -c src/ircproto.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) timers.o -c src/timers.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) user.o -c src/user.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) command.o -c src/command.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) channel.o -c src/channel.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) INIReader.o -c src/INIReader.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) log.o -c src/log.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) clock.o -c src/clock.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) textfile.o -c src/textfile.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dnavn_EXPORTS $(CXXFLAGS) xmlfile.o -c src/xmlfile.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g -Wl,--export-dynamic main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o $(PACKAGE) -rdynamic  $(POSTCOMPILEFLAGS) $(LIBS)
 about_me.so:
-	@$(PERL) $(CXX) -Dabout_me_EXPORTS -fPIC $(BUILDFLAGS) about_me.o -c modules/about_me.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dabout_me_EXPORTS -fPIC $(CXXFLAGS) about_me.o -c modules/about_me.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/about_me.so -o modules/about_me.so about_me.o $(POSTCOMPILEFLAGS)
 channel_logger.so:
-	@$(PERL) $(CXX) -Dchannel_logger_EXPORTS -fPIC $(BUILDFLAGS) channel_logger.o -c modules/channel_logger.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dchannel_logger_EXPORTS -fPIC $(CXXFLAGS) channel_logger.o -c modules/channel_logger.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/channel_logger.so -o modules/channel_logger.so channel_logger.o $(POSTCOMPILEFLAGS)
 ctcp.so:
-	@$(PERL) $(CXX) -Dctcp_EXPORTS -fPIC $(BUILDFLAGS) ctcp.o -c modules/ctcp.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dctcp_EXPORTS -fPIC $(CXXFLAGS) ctcp.o -c modules/ctcp.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/ctcp.so -o modules/ctcp.so ctcp.o $(POSTCOMPILEFLAGS)
 da_goat.so:
-	@$(PERL) $(CXX) -Dda_goat_EXPORTS -fPIC $(BUILDFLAGS) da_goat.o -c modules/da_goat.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dda_goat_EXPORTS -fPIC $(CXXFLAGS) da_goat.o -c modules/da_goat.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/da_goat.so -o modules/da_goat.so da_goat.o $(POSTCOMPILEFLAGS)
 encyclopedia.so:
-	@$(PERL) $(CXX) -Dencyclopedia_EXPORTS -fPIC $(BUILDFLAGS) encyclopedia.o -c modules/encyclopedia.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dencyclopedia_EXPORTS -fPIC $(CXXFLAGS) encyclopedia.o -c modules/encyclopedia.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/encyclopedia.so -o modules/encyclopedia.so encyclopedia.o $(POSTCOMPILEFLAGS)
 help.so:
-	@$(PERL) $(CXX) -Dhelp_EXPORTS -fPIC $(BUILDFLAGS) help.o -c modules/help.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dhelp_EXPORTS -fPIC $(CXXFLAGS) help.o -c modules/help.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/help.so -o modules/help.so help.o $(POSTCOMPILEFLAGS)
 m_dns.so:
-	@$(PERL) $(CXX) -Dm_dns_EXPORTS -fPIC $(BUILDFLAGS) m_dns.o -c modules/m_dns.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dm_dns_EXPORTS -fPIC $(CXXFLAGS) m_dns.o -c modules/m_dns.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/m_dns.so -o modules/m_dns.so m_dns.o $(POSTCOMPILEFLAGS)
 m_join.so:
-	@$(PERL) $(CXX) -Dm_join_EXPORTS -fPIC $(BUILDFLAGS) m_join.o -c modules/m_join.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dm_join_EXPORTS -fPIC $(CXXFLAGS) m_join.o -c modules/m_join.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/m_join.so -o modules/m_join.so m_join.o $(POSTCOMPILEFLAGS)
 modulehandler.so:
-	@$(PERL) $(CXX) -Dmodulehandler_EXPORTS -fPIC $(BUILDFLAGS) modulehandler.o -c modules/modulehandler.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dmodulehandler_EXPORTS -fPIC $(CXXFLAGS) modulehandler.o -c modules/modulehandler.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/modulehandler.so -o modules/modulehandler.so modulehandler.o $(POSTCOMPILEFLAGS)
 m_ping.so:
-	@$(PERL) $(CXX) -Dm_ping_EXPORTS -fPIC $(BUILDFLAGS) m_ping.o -c modules/m_ping.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dm_ping_EXPORTS -fPIC $(CXXFLAGS) m_ping.o -c modules/m_ping.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/m_ping.so -o modules/m_ping.so m_ping.o $(POSTCOMPILEFLAGS)
 m_system.so:
-	@$(PERL) $(CXX) -Dm_system_EXPORTS -fPIC $(BUILDFLAGS) m_system.o -c modules/m_system.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dm_system_EXPORTS -fPIC $(CXXFLAGS) m_system.o -c modules/m_system.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/m_system.so -o modules/m_system.so m_system.o $(POSTCOMPILEFLAGS)
 m_terminal_input.so:
-	@$(PERL) $(CXX) -Dm_terminal_input_EXPORTS -fPIC $(BUILDFLAGS) m_terminal_input.o -c modules/m_terminal_input.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dm_terminal_input_EXPORTS -fPIC $(CXXFLAGS) m_terminal_input.o -c modules/m_terminal_input.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/m_terminal_input.so -o modules/m_terminal_input.so m_terminal_input.o $(POSTCOMPILEFLAGS)
 PvP.so:
-	@$(PERL) $(CXX) -DPvP_EXPORTS -fPIC $(BUILDFLAGS) PvP.o -c modules/PvP.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -DPvP_EXPORTS -fPIC $(CXXFLAGS) PvP.o -c modules/PvP.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/PvP.so -o modules/PvP.so PvP.o $(POSTCOMPILEFLAGS)
 QuickReply.so:
-	@$(PERL) $(CXX) -DQuickReply_EXPORTS -fPIC $(BUILDFLAGS) QuickReply.o -c modules/QuickReply.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -DQuickReply_EXPORTS -fPIC $(CXXFLAGS) QuickReply.o -c modules/QuickReply.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/QuickReply.so -o modules/QuickReply.so QuickReply.o $(POSTCOMPILEFLAGS)
 searcher.so:
-	@$(PERL) $(CXX) -Dsearcher_EXPORTS -fPIC $(BUILDFLAGS) searcher.o -c modules/searcher.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dsearcher_EXPORTS -fPIC $(CXXFLAGS) searcher.o -c modules/searcher.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/searcher.so -o modules/searcher.so searcher.o $(POSTCOMPILEFLAGS)
 SimpleMod.so:
-	@$(PERL) $(CXX) -DSimpleMod_EXPORTS -fPIC $(BUILDFLAGS) SimpleMod.o -c modules/SimpleMod.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -DSimpleMod_EXPORTS -fPIC $(CXXFLAGS) SimpleMod.o -c modules/SimpleMod.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/SimpleMod.so -o modules/SimpleMod.so SimpleMod.o $(POSTCOMPILEFLAGS)
 testmod.so:
-	@$(PERL) $(CXX) -Dtestmod_EXPORTS -fPIC $(BUILDFLAGS) testmod.o -c modules/testmod.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dtestmod_EXPORTS -fPIC $(CXXFLAGS) testmod.o -c modules/testmod.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/testmod.so -o modules/testmod.so testmod.o $(POSTCOMPILEFLAGS)
 weather.so:
-	@$(PERL) $(CXX) -Dweather_EXPORTS -fPIC $(BUILDFLAGS) weather.o -c modules/weather.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dweather_EXPORTS -fPIC $(CXXFLAGS) weather.o -c modules/weather.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/weather.so -o modules/weather.so weather.o $(POSTCOMPILEFLAGS)
 world_clock.so:
-	@$(PERL) $(CXX) -Dworld_clock_EXPORTS -fPIC $(BUILDFLAGS) world_clock.o -c modules/world_clock.cpp $(POSTCOMPILEFLAGS)
+	@$(PERL) $(CXX) -Dworld_clock_EXPORTS -fPIC $(CXXFLAGS) world_clock.o -c modules/world_clock.cpp $(POSTCOMPILEFLAGS)
 	@$(PERL) $(CXX) -g $(LIBS) -shared -Wl,-soname,modules/world_clock.so -o modules/world_clock.so world_clock.o $(POSTCOMPILEFLAGS)
 
 modules: about_me.so channel_logger.so ctcp.so da_goat.so encyclopedia.so help.so m_dns.so m_join.so modulehandler.so m_ping.so m_system.so m_terminal_input.so PvP.so QuickReply.so searcher.so SimpleMod.so testmod.so weather.so world_clock.so

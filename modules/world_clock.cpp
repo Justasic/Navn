@@ -67,6 +67,17 @@ public:
       Log(source.u, this) << "to get time for " << location;
     }
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows various time in areas\n"
+		 "around the world, currently showing GMT, EST,\n"
+		 "PST, CCT, and Australian timezones.\n"
+		 "If a location identifying text is givin\n"
+		 "the bot will go to google for time in that area");
+    return true;
+  }
 };
 class world_clock:public module{
   CommandCWClock clock;

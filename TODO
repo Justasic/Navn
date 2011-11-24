@@ -18,6 +18,8 @@ Navn 2.0.1
   [+] Fix glibc crashes with this system
   [ ] Fix crash in timer system
 
+[ ] Fix CHOWN command
+[ ] Fix botnick not changeable
 [x] Make default channel's in the config
 [x] Make a server numeric catcher
 [x] Add timed pinging (should handle ping timeouts and connection issues)

@@ -74,7 +74,11 @@ void User::DelChan(Channel *c)
 }
 Channel *User::findchannel(const Flux::string &name)
 {
+#ifdef _CXX11
+  auto it1 = ChanMap.find(name);
+#else
   Flux::insensitive_map<Channel*>::iterator it1 = ChanMap.find(name);
+#endif
   Channel *c = it1->second;
   if(!c)
     return NULL;
@@ -86,16 +90,26 @@ Channel *User::findchannel(const Flux::string &name)
 void User::SendMessage(const Flux::string &message){ ircproto->notice(this->nick, message); }
 void User::SendPrivmsg(const Flux::string &message){ ircproto->privmsg(this->nick, message); }
 User *finduser(const Flux::string &fnick){
+#ifdef _CXX11
+  auto it = UserNickList.find(fnick);
+#else
   Flux::map<User *>::iterator it = UserNickList.find(fnick);
+#endif
   if(it != UserNickList.end())
     return it->second;
   return NULL;
 }
 void ListUsers(CommandSource &source){
   Flux::string users;
+#ifdef _CXX11
+  for(auto var : UserNickList)
+    users += var.second->nick+' ';
+#else
   for(Flux::map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end; ++it){
     User *u2 = it->second;
     users += u2->nick+' ';
   }
+#endif
+  users.trim();
   source.Reply("Users: %s\n", users.c_str());
 }

@@ -11,6 +11,14 @@ public:
   {
     source.Reply("HI!");
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This is the help for the simple module\n"
+		 "This is line 2 of the help in the simple module");
+    return true;
+  }
 };
 
 class SimpleMod : public module

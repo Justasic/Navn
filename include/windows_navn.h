@@ -84,6 +84,7 @@
 	#ifdef __GXX_EXPERIMENTAL_CXX0X__
 	# define _CXX11
 	# include <atomic>
+	# include <thread>
 	#endif
 	
 	#define GetCurrentDir getcwd

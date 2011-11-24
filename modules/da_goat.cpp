@@ -64,6 +64,15 @@ public:
     c->SendMessage("Navn is managed by \2%s\2", Config->Owner.c_str());
     Log(u, this) << "command in " << c->name;
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows %s's version information\n"
+		 "it also shows where to report bugs to, who the\n"
+		 "bots owner is, and the git repository.", Config->BotNick.c_str());
+    return true;
+  }
 };
 class CommandCSpam: public Command
 {
@@ -76,6 +85,14 @@ public:
   {
     Log(source.u, this) << "command in " << source.c->name;
     source.c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows the rules and policies\n"
+		 "Flux-Net has on channel spam");
+    return true;
   }
 };
 class CommandCRules: public Command
@@ -96,6 +113,15 @@ public:
     c->SendMessage("Do not spam the chatroom. This includes flooding by text, private messages, join/quit commands, External links, etc.");
     c->SendMessage("If you violate any of these rules you will be kicked and possably banned from %s.", c->name.c_str());
     Log(u, this) << "command in " << c->name;
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command simply shows the channel rules for\n"
+		 "Flux-Net's main channel #Computers, this command\n"
+		 "is pretty specific to Flux-Net");
+    return true;
   }
 };
 class CommandCUptime: public Command
@@ -125,6 +151,16 @@ public:
 #endif
       Log(u, this) << "command in " << c->name;
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows both the bots uptime\n"
+		 "and the Operating System's uptime. The\n"
+		 "command can be used to compare uptimes\n"
+		 "if there is more than one bot in the chanenl");
+    return true;
+  }
 };
 class CommandCSocialInfo: public Command
 {
@@ -138,8 +174,18 @@ public:
     Channel *c = source.c;
     User *u = source.u;
     c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.flux-net.net:6667");
+    c->SendMessage("Minecraft Server: \2 Minecraft.Flux-Net.net port: 25565 (default)");
     c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nGalaxy.Flux-Net.net:9987");
     Log(u, this) << "command in " << c->name;
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows Flux-Net's information\n"
+		 "used to tell people where to go for various\n"
+		 "other activities in the network");
+    return true;
   }
 };
 class CommandCRegister: public Command
@@ -165,6 +211,17 @@ public:
     c->SendMessage("Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
     Log(u, this) << "command in " << c->name;
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command is pretty simple. It shows\n"
+		 "users how to register their nickname(s) to\n"
+		 "the networks services\n"
+		 "Note: Registration information was based on Anope IRC services"
+    );
+    return true;
+  }
 };
 
 class CommandCRename: public Command
@@ -182,6 +239,16 @@ public:
     c->SendMessage("To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
     Log(u, this) << "command in " << c->name;
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows how to change your\n"
+		 "nickname in IRC for new users who may\n"
+		 "not understand how to use IRC"
+    );
+    return true;
+  }
 };
 class CommandCInfo : public Command
 {
@@ -198,6 +265,14 @@ public:
     c->SendMessage("Our Website is \002Flux-Net.net\017");
     c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows all of Flux-Net's\n"
+		 "information, such as the forums url");
+    return true;
   }
 };
 

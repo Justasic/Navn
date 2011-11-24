@@ -15,6 +15,7 @@
 #include "thread.h"
 #include "INIReader.h"
 #include <utility>
+#include <memory>
 #include <stdint.h> 
 #include <arpa/nameser.h>
 #include <resolv.h>

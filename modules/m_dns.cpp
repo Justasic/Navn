@@ -54,6 +54,16 @@ public:
     else
 	source.c->SendMessage("\0034[DNS]\017 %s", inet_ntoa(*(struct in_addr*)he->h_addr));
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command lets a user do a\n"
+		 "DNS resolution of a Domain Name which\n"
+		 "can be useful to find what a Domain name\n"
+		 "Resolves to or if it resolves at all");
+    return true;
+  }
 };
 /** Reverse DNS Lookup
 * Looks up an IP address to host
@@ -87,6 +97,15 @@ public:
 	source.c->SendMessage("\0034[rDNS]\017 %s", hostname);
       freeaddrinfo(result);
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command allows a user to do a\n"
+		 "Reverse DNS lookup on a Domain Name or\n"
+		 "IP address and only list one return");
+    return true;
   }
 };
 /** All hosts reverse DNS Lookup
@@ -127,6 +146,15 @@ public:
     source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostnames.", count);
     freeaddrinfo(result);
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command allows a user to do a\n"
+		 "Reverse DNS lookup on an IP address\n"
+		 "or a Domain Name and list ALL results");
+    return true;
   }
 };
 

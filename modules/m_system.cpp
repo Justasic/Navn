@@ -19,6 +19,17 @@ public:
      Rehash();
    }
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command rehashes the bots configuration\n"
+		 "which allows for various configuration changes\n"
+		 "to be made while the bot is running\n"
+		 "Note: you must be the bots owner and does not\n"
+		 "change all values in the config (such as IRC nicknames)");
+    return true;
+  }
 };
 
 class CommandNick : public Command
@@ -49,6 +60,16 @@ public:
       ircproto->nick(newnick);
     Log(u, this) << "to change the bots nickname to " << newnick;
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command changes the bots nickname\n"
+		 "in IRC to a valid IRC nickname that is\n"
+		 "checked before being set.\n"
+		 "Note: You must be the bots owner to use this command");
+    return true;
+  }
 };
 
 class CommandRestart : public Command
@@ -67,6 +88,17 @@ public:
       Log(source.u, this) << " to restart the bot.";
     }else
       source.Reply(ACCESS_DENIED);
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command restarts the bot. This will\n"
+		 "make the bot quit IRC, terminate its current\n"
+		 "process, and start a new one with the same\n"
+		 "settings as before\n"
+		 "Note: You must be the bots owner to use this command");
+    return true;
   }
 };
 
@@ -102,6 +134,16 @@ public:
       source.Reply(ACCESS_DENIED);
     }
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command kicks a user from the channel\n"
+		 "if the bot is an op higher than the user\n"
+		 "to be kicked\n"
+		 "Note: You must be a bot owner to use this command");
+    return true;
+  }
 };
 
 class CommandChown : public Command
@@ -115,6 +157,16 @@ public:
   void Run(CommandSource &source, const std::vector<Flux::string> &params)
   {
     source.Reply("This command is broken!");
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command changes the bots ownership to\n"
+		 "the one specified\n"
+		 "Note: You must know the user set password in\n"
+		 "the bots configuration");
+    return true;
   }
 };
 
@@ -140,6 +192,17 @@ public:
       source.Reply(ACCESS_DENIED);
       Log(u) << "Attempted to quit the bot";
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command instructs the bot to quit IRC\n"
+		 "with the quit message being the user who quit\n"
+		 "the bot and the randomly generated password\n"
+		 "Note: You must be the bots owner or know the\n"
+		 "configuration set password to use this command");
+    return true;
   }
 };
 
@@ -184,6 +247,16 @@ public:
     }
     Log(u, this) << "to change " << tchan << "'s topic to \"" << msg << "\"";
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command changes the channels topic\n"
+		 "and sends it to a web server for the changed\n"
+		 "topic in IRC. This uses the ftp.sh file"
+		 "Note: You must be a bot owner to use this command");
+    return true;
+  }
 };
 
 class CommandPID: public Command
@@ -202,6 +275,15 @@ public:
     }else{
       source.Reply(ACCESS_DENIED);
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command returns the bots current\n"
+		 "Process ID in linux or windows.\n"
+		 "Note: You must be a bot owner to use this command");
+    return true;
   }
 };
 
@@ -222,6 +304,17 @@ public:
       source.Reply(ACCESS_DENIED);
       Log(u, this) << "to attempt to request navn's quit password.";
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command displays the bots randomly\n"
+		 "generated password to the user so they may\n"
+		 "quit the bot or use a command which requires\n"
+		 "the random password\n"
+		 "Note: You must be the bots owner to use this command");
+    return true;
   }
 };
 
@@ -282,6 +375,16 @@ public:
     source.Reply("This is currently not avalable on windows syetems, sorry.");
 #endif
     Log(source.u, this) << "command";
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows the system statistics that\n"
+		 "the bot is running on. This can be useful to\n"
+		 "quickly see how much stress the system is under\n"
+		 "that may affect the bot or to see system information");
+    return true;
   }
 };
 class m_system : public module

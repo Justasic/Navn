@@ -157,20 +157,33 @@ void QuitUser(User *u)
 {
   if(!u)
     return;
+#ifdef _CXX11
+    for(auto var : ChanMap)
+      for(auto var1 : var.second->UserList)
+	if(var1.first == u)
+	  var1.second->DelUser(u);
+#else
   for(Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
     for(UList::iterator it1 = it->second->UserList.begin(), it1_end = it->second->UserList.end(); it1 != it1_end; ++it1)
     {
       if(it1->first == u)
 	it1->second->DelUser(u);
     }
+#endif
     delete u;
 }
 void ListChans(CommandSource &source){
   Flux::string channels;
+#ifdef _CXX11
+  for(auto var : ChanMap)
+    channels += var.second->name+' ';
+#else
   for(Flux::map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it){
     Channel *ch = it->second;
     channels += ch->name+' ';
   }
+#endif
+  channels.trim();
   source.Reply("Channels: %s\n", channels.c_str());
 }
 Channel *findchannel(const Flux::string &channel){

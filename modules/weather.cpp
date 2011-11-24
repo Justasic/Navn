@@ -59,6 +59,16 @@ public:
     c->SendMessage("%s Current Condition: %s, %s, %s, %s °F %s °C", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), temp_c.c_str());
     Log(u, this) << "to get weather for area '" << area << "'";
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command provides the weather for\n"
+		 "the requested location. Powered by google,\n"
+		 "You may use a city name or area code or any\n"
+		 "other location identifing text\n");
+    return true;
+  }
 };
 class weather:public module{
   CommandCWeather rainy;

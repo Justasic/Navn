@@ -183,15 +183,17 @@ void Command::SetSyntax(const Flux::string &s){ this->syntax.push_back(s); }
 void Command::SendSyntax(CommandSource &source)
 {
  if(!this->syntax.empty()){
-  source.Reply("Syntax: \2%s %s\2", source.command.c_str(), this->syntax[0].c_str());
+  source.Reply("Syntax: \2%s %s\2", this->name.c_str(), this->syntax[0].c_str());
   for(unsigned i=1, j = this->syntax.size(); i < j; ++i)
-    source.Reply("        \002%s %s\002", source.command.c_str(), this->syntax[i].c_str());
+    source.Reply("        \002%s %s\002", this->name.c_str(), this->syntax[i].c_str());
+ }else{
+   source.Reply("Syntax: \2%s\2", this->name.c_str()); //We dont have syntax's on some commands
  }
 }
 /** \overload void Command::SendSyntax(CommandSource &source, const Flux::string &syn) */
 void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
-  source.Reply("Syntax: \2%s %s\2", source.command.c_str(), syn.c_str());
-  source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
+  source.Reply("Syntax: \2%s %s\2", this->name.c_str(), syn.c_str());
+  source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), this->name.c_str());
 }
 /**
  * \brief Returns a flux::string with the commands description

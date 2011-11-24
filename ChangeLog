@@ -118,6 +118,9 @@ Merged SendMessage and Commands classes into 1 IRCProto class
 Removed old psudo-xmlparser and converted world_clock module
 Added support for C++11
 Added isalphibetic and isalphibeticnum, forks of isvalidnick
+Added OnHelp to command classes
+Fixed help module not using the OnHelp call
+Fixed Command->SendSyntax() sending the syntax incorrectly
 
 
 Navn 2.0.0

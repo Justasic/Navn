@@ -37,6 +37,14 @@ public:
     c->SendMessage("Raw: %s", Host->raw.c_str());
     delete Host;
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command simply shows you your\n"
+		  "hostname decoded into seperate strings");
+    return true;
+  }
 };
 
 /**

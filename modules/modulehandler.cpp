@@ -42,6 +42,15 @@ public:
     source.Reply("Total of \2%i\2 Modules", c);
     Log(source.u, this) << "to list all module" << (priority.empty()?"":" with priority "+priority);
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command displays a list of all modules\n"
+		 "or modules by priority and displays who created\n"
+		 "the modules and what priority it has in the bot");
+    return true;
+  }
 };
 
 class CommandMLoad : public Command
@@ -71,6 +80,17 @@ public:
       }
     }
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command loads a module into the bot.\n"
+		 "If the module fails to load, it will print\n"
+		 "an error message, if it crashes, the bot will\n"
+		 "automatically notify the owner and unload that module\n"
+		 "Note: You must be the bots owner to use this command");
+    return true;
+  }
 };
 class CommandMUnload : public Command
 {
@@ -95,6 +115,14 @@ public:
 	Log(source.u, this) << "to unload " << module;
       }
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command unloads a module from the bot\n"
+		 "Note: You must be the bots owner to use this command");
+    return true;
   }
 };
 
@@ -123,6 +151,15 @@ public:
 	Log(source.u, this) << "to reload " << module;
       }
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command reloads the module, it does\n"
+		 "the same as modunload and modload just in\n"
+		 "one command to be run which is much faster");
+    return true;
   }
 };
 
@@ -165,6 +202,16 @@ public:
 	source.Reply("Adds commands: \2%s\2", cmds.c_str());
 	source.Reply("******** End Info ********");
       Log(source.u, this) << "to show info on module " << mo->name;
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command displays module information\n"
+		 "based off the author of the module, its\n"
+		 "priority, how many commands it adds, the\n"
+		 "version of the module and when it was loaded");
+    return true;
   }
 };
 

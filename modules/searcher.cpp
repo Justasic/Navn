@@ -70,6 +70,14 @@ public:
     source.c->SendMessage(str);
     Log() << "Channel Google Search from " << source.u->nick << " \"" << str << "\"";
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a google search link\n"
+		 "for the requested text");
+    return true;
+  }
 };
 class CommandCYoutube : public Command
 {
@@ -84,6 +92,14 @@ public:
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
     Log() << "Channel youtube Search from " << source.u->nick << "\"" << str << "\"";
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a youtube search link\n"
+		 "for the requested text");
+    return true;
   }
 };
 class CommandCPirateBay : public Command
@@ -100,6 +116,14 @@ public:
     source.c->SendMessage(str);
     Log() << "Channel The Pirate Bay Search from " << source.u->nick << " \"" << str << "\"";
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a 'The Pirate Bay' search link\n"
+		 "for the requested text");
+    return true;
+  }
 };
 class CommandCDefine : public Command
 {
@@ -114,6 +138,14 @@ public:
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
     Log() << "Channel define Search from " << source.u->nick << " \"" << str << "\"";
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a Dictionary.com search link\n"
+		 "for the requested text");
+    return true;
   }
 };
 class CommandCUrban : public Command
@@ -130,6 +162,14 @@ public:
     source.c->SendMessage(str);
     Log() << "Channel urban dictionary Search from " << source.u->nick << " \"" << str << "\"";
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a Urban Dictionary search link\n"
+		 "for the requested text");
+    return true;
+  }
 };
 class CommandCMovie : public Command
 {
@@ -144,6 +184,14 @@ public:
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
     Log() << "Channel movie Search from " << source.u->nick << " \"" << str << "\"";
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a Internet Movie Database (imdb)\n"
+		 "search link for the requested text");
+    return true;
   }
 };
 class CommandCWiki : public Command
@@ -160,6 +208,14 @@ public:
     source.c->SendMessage(str);
     Log() << "Channel Wikipedia Search from " << source.u->nick << " \"" << str << "\"";
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a Wikipedia search link\n"
+		 "for the requested text");
+    return true;
+  }
 };
 class CommandCMusic : public Command
 {
@@ -174,6 +230,14 @@ public:
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
     Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a music search link\n"
+		 "for the requested text");
+    return true;
   }
 };
 /**

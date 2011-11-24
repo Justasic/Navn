@@ -277,8 +277,13 @@ bool ModuleHandler::Unload(module *m){
   return DeleteModule(m);
 }
 void ModuleHandler::UnloadAll(){
+#ifdef _CXX11
+  for(auto var : Modules)
+    Unload(var.second);
+#else
   for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
     Unload(it->second);
+#endif
 }
 Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 {

@@ -34,6 +34,14 @@ public:
       }
     }
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command makes the bot join a channel.\n"
+		 "You must be the bots owner to use this command.");
+    return true;
+  }
 };
 class CommandPart : public Command
 {
@@ -62,6 +70,14 @@ public:
 	source.Reply("I am not in channel \2%s\2", chan.c_str());
       Log(u) << "made the bot part " << chan;
     }
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command makes the bot part a channel.\n"
+		 "You must be the bots owner to use this command.");
+    return true;
   }
 };
 class Join : public module

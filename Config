@@ -21,8 +21,8 @@ echo "AUTOMAKE_OPTIONS 	= foreign" >> $MAKEFILE
 echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
 echo "LIBS = -ldl -lnsl -pthread" >> $MAKEFILE
 echo "INCLUDES = -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
-echo "CXXFLAGS = \$(INCLUDES) -std=gnu++0x -Wall -Wshadow -ansi -pedantic -fno-leading-underscore -pipe -o" >> $MAKEFILE
-echo "POSTCOMPILEFLAGS=" >> $MAKEFILE
+echo "CXXFLAGS = \$(INCLUDES) -Wall -Wshadow -ansi -pedantic -fno-leading-underscore -pipe -o" >> $MAKEFILE
+echo "POSTCOMPILEFLAGS= -std=gnu++0x" >> $MAKEFILE
 echo "beginmsg:
 	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
 	@echo \"Navn Version \$(VERSION)\"

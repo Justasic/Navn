@@ -33,6 +33,15 @@ public:
   {
     source.Reply("YAY!");
   }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command simply emmits 'YAY!' to the user.\n"
+		 "This command is mostly only used to test other core\n"
+		 "functions or modules in the bot");
+    return true;
+  }
 };
 class dummy : public module
 {
