@@ -72,7 +72,7 @@ public:
     
     msg.trim();
     if(msg.equals_ci("about me")){
-	  //u->SendMessage("Raw: %s", source.raw.c_str()); This is broke till Justasic can find a fix.
+	  u->SendMessage("Raw: %s", LastBuf.c_str());
 	  u->SendMessage("Message: %s", msg.c_str());
 	  u->SendMessage("Nickname: %s", u->nick.c_str());
 	  u->SendMessage("Ident: %s", u->ident.c_str());

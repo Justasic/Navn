@@ -56,6 +56,12 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
         check_functions(${SRC} HAS_FUNCTION)
         # Only continue if this module has all of the required functions
         if(HAS_FUNCTION)
+          # For Visual Studio only, include win32_memory static library, required to override Visual Studio's overrides of the new/delete operators
+          if(MSVC)
+            set(WIN32_MEMORY win32_memory)
+          else(MSVC)
+            set(WIN32_MEMORY)
+          endif(MSVC)
           # Generate the module and set it's linker flags, also set it to depend on the main Navn executable to be built beforehand
           add_library(${SO} MODULE ${SRC})
           # Windows requires this because it's weird
@@ -68,8 +74,8 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
           add_dependencies(${SO} ${PROGRAM_NAME})
           # For Windows only, have the module link to the export library of Navn as well as the wsock32 library (most of the modules probably don't need this, but this is to be on the safe side), also set it's version
           if(WIN32)
-            target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 ${WIN32_MEMORY} ${TEMP_DEPENDENCIES})
-            set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION}")
+            target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 ${TEMP_DEPENDENCIES})
+            set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION_SIMPLE}")
           endif(WIN32)
           # Set the module to be installed to the module directory under the data directory
           install(TARGETS ${SO}

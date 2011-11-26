@@ -53,6 +53,15 @@ if(WIN32)
   endif(MINGW)
 endif(WIN32)
 
+# If compiling with Visual Studio, create a static library out of win32/win32_memory.cpp to be included with everything else, needed to override its override of new/delete operators
+if(MSVC)
+  set_source_files_properties(win32_memory.cpp PROPERTIES LANGUAGE CXX COMPILE_FLAGS "${CXXFLAGS}")
+  add_library(win32_memory STATIC win32_memory.cpp)
+  set(WIN32_MEMORY win32_memory)
+else(MSVC)
+  set(WIN32_MEMORY)
+endif(MSVC)
+
 # Generate the Navn executable and set it's linker flags, also set it to export it's symbols even though it's not a module
 add_executable(${PROGRAM_NAME} ${SRC_SRCS})
 set_target_properties(${PROGRAM_NAME} PROPERTIES LINKER_LANGUAGE CXX LINK_FLAGS "${LDFLAGS}" ENABLE_EXPORTS ON)
