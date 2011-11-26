@@ -20,15 +20,7 @@
 #define CLEAR_SEGV_LOCATION() segv_location[0]='\0';
 
 #ifdef HAVE_SETJMP_H
-# include <setjmp.h>
 E jmp_buf sigbuf;
-# define TestRun(x) \
-if(setjmp(sigbuf) == 0){ \
-  x; \
-  }else \
-    Log() << "Failed to execute an internal function, restoring Stack prior to crash.";
-#else
-    # define TestRun(x) x;
 #endif
 
 /* Classes */

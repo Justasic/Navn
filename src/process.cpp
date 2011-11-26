@@ -77,6 +77,9 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	}else{
 	  Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occured, please contact the bots administrator %s", Config->Owner.c_str());
+	  User *ou = finduser(Config->Owner);
+	  if(ou)
+	    ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
 	}
 #endif
 	LastRunModule = NULL;
@@ -104,6 +107,9 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	}else{
 	  Log() << "Command " << com->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occured, please contact the bots administrator: %s", Config->Owner.c_str());
+	  User *ou = finduser(Config->Owner);
+	  if(ou)
+	    ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
 	}
 #endif
 	LastRunModule = NULL;

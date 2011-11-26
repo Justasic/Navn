@@ -81,7 +81,8 @@
 	BOOLEAN WINAPI DllMain(HINSTANCE, DWORD nReason, LPVOID) { return TRUE; } \
 	extern "C" void ModunInit(x *m) { if(m) delete m; }
 #else // *nix
-	#ifdef __GXX_EXPERIMENTAL_CXX0X__
+	//If we're compiling with C++ 11
+	#if defined(__GXX_EXPERIMENTAL_CXX0X__) && defined(HAVE_CXX_11)
 	# define _CXX11
 	# include <atomic>
 	# include <thread>

@@ -185,14 +185,14 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
     return key;
 }
 /**************************************************************************************/
-BotConfig::BotConfig()
+BotConfig::BotConfig(const Flux::string &dir)
 {
  SET_SEGV_LOCATION();
- Flux::string conffile = binary_dir + "/bot.conf";
+ Flux::string conffile = dir + "/bot.conf";
  try
  {
   this->Parser = new INIReader(conffile);
-  this->Binary_Dir = binary_dir;
+  this->Binary_Dir = dir;
   this->Read();
   if(this->Parser->ParseError() == -1)
     throw ConfigException("Cannot open '"+conffile+"'");

@@ -15,12 +15,10 @@
 #include "thread.h"
 #include "INIReader.h"
 #include <utility>
-#include <memory>
 #include <stdint.h> 
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <dirent.h>
-#include <pthread.h>
 #include <csignal>
 #include <unistd.h>
 #include <cstdlib>

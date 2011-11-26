@@ -2,6 +2,7 @@
 #ifndef THREAD_H
 #define THREAD_H
 #include "includes.h"
+#include <pthread.h>
 
 class CoreExport Thread : public Base
 {

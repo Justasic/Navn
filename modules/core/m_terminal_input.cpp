@@ -109,7 +109,7 @@ public:
   ~InputThread() { Log() << "Input Thread Exiting."; exiting = true; }
   void ToRun()
   {
-    std::string buf;
+    base_string buf;
     while(!exiting)
     {
       Log(LOG_RAWIO) << "Top of Input Loop";
@@ -140,7 +140,7 @@ public:
     }else
       throw ModuleException("Cannot run m_terminal_input when fork'ed");
   }
-  void OnLoad()
+  void OnLoad() //This virtual is called when the module is loaded.
   {
     if(!t)
     {

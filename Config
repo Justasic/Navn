@@ -1,93 +1,256 @@
-#!/bin/bash
-MAKEFILE="Makefile.am"
-if [ -f $MAKEFILE ] ; then
-  rm -rf $MAKEFILE
-else
-  echo "Making new makefile.."
-fi
-if [ -d runtime ] ; then
-  echo derp &>/dev/null
-else
-  echo "Making a new runtime directory.."
-  mkdir runtime
-fi
-# Write to file
-modulelist=""
-githead=$(git rev-parse HEAD)
-rev=$(git describe ${githead} 2>/dev/null)
-[[ -z ${rev} ]] && rev=${githead:0:7}
-/bin/sed 's/^\x23define VERSION_GIT ".*"/\x23define VERSION_GIT "'$rev'"/' config.in.tmpl 1> config.h.in
-echo "AUTOMAKE_OPTIONS 	= foreign" >> $MAKEFILE
-echo "PERL = \$(srcdir)/run-cc.pl" >> $MAKEFILE
-echo "LIBS = -ldl -lnsl -pthread" >> $MAKEFILE
-echo "INCLUDES = -I\$(srcdir)/include -I\$(srcdir)" >> $MAKEFILE
-echo "CXXFLAGS = \$(INCLUDES) -Wall -Wshadow -ansi -pedantic -fno-leading-underscore -pipe -o" >> $MAKEFILE
-echo "POSTCOMPILEFLAGS= -std=gnu++0x" >> $MAKEFILE
-echo "beginmsg:
-	@echo \"This bot was created in C++ by Lordofsraam and Justasic from Flux-Net\"
-	@echo \"Navn Version \$(VERSION)\"
-	@echo \" \"" >> $MAKEFILE
-echo "endmsg: " >> $MAKEFILE
-echo "	@echo \" \"
-	@echo \"Build complete. Run './\$(PACKAGE)' to execute the binary.\"" >> $MAKEFILE
-echo "" >> $MAKEFILE
-echo "navn:
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) main.o -c src/main.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) misc.o -c src/misc.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) module.o -c src/module.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) signal.o -c src/signal.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) Socket.o -c src/Socket.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) Sepstream.o -c src/Sepstream.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) process.o -c src/process.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) thread.o -c src/thread.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) ircproto.o -c src/ircproto.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) timers.o -c src/timers.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) user.o -c src/user.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) command.o -c src/command.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) channel.o -c src/channel.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) INIReader.o -c src/INIReader.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) log.o -c src/log.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) clock.o -c src/clock.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) textfile.o -c src/textfile.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -Dnavn_EXPORTS \$(CXXFLAGS) xmlfile.o -c src/xmlfile.cpp \$(POSTCOMPILEFLAGS)
-	@\$(PERL) \$(CXX) -g -Wl,--export-dynamic main.o misc.o log.o signal.o module.o Socket.o Sepstream.o ircproto.o command.o channel.o thread.o timers.o user.o INIReader.o process.o clock.o textfile.o xmlfile.o -o \$(PACKAGE) -rdynamic  \$(POSTCOMPILEFLAGS) \$(LIBS)" >> $MAKEFILE
-# Make sure the folder exists
-if [ -d modules ] ; then
-  shopt -s nullglob
-  files=(modules/*.cpp)
-  # Make sure there is at least one cpp file in there
-  if [ ${#files[@]} -gt 0 ] ; then
-    for file in modules/*.cpp ; do #Loop cred to Lordofsraam
-    name=${file%\.*}
-    bsoname=$name.so #full filename path
-    name=${name##modules/}
-    modulelist=`echo $modulelist $name.so`
-    soname=$name.so #name only
-    #These will be the contents of the file
-    echo "$soname:" >> $MAKEFILE
-    echo "	@\$(PERL) \$(CXX) -D"$name"_EXPORTS -fPIC \$(CXXFLAGS) $name.o -c $file \$(POSTCOMPILEFLAGS)" >> $MAKEFILE #build
-    echo "	@\$(PERL) \$(CXX) -g \$(LIBS) -shared -Wl,-soname,$bsoname -o $bsoname $name.o \$(POSTCOMPILEFLAGS)" >> $MAKEFILE #Link
-  done
-  echo "" >> $MAKEFILE
-  echo "modules: "$modulelist >> $MAKEFILE
-  echo "" >> $MAKEFILE
-  else
-    echo "No modules found."
-  fi
-else
-  echo "Module folder not found."
-fi
-echo "all-am: beginmsg navn "$modulelist" endmsg" >> $MAKEFILE
+#!/bin/sh
+echo2 () {
+	$ECHO2 "$*$ECHO2SUF" # these are defined later
+}
 
-echo "clean:
-	rm -f *.o *.so \$(PACKAGE) modules/*.so" >> $MAKEFILE
-echo "dist-clean:
-	rm -f *.o *.so \$(PACKAGE) config.h config.status
-	rm -f *.o *.so modules/*.so" >> $MAKEFILE
-if [ "$1" = "-nc" ] ; then
-  echo "Generating Makefile complete!"
-  echo "Skipping ./configure"
+exists () { # because some shells don't have test -e
+	if [ -f $1 -o -d $1 -o -p $1 -o -c $1 -o -b $1 ] ; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+Load_Cache () {
+	if [ -f $SOURCE_DIR/config.cache -a -r $SOURCE_DIR/config.cache -a ! "$IGNORE_CACHE" ] ; then
+		echo "Using defaults from config.cache. To ignore, $SOURCE_DIR/Config -nocache"
+		echo ""
+		. $SOURCE_DIR/config.cache
+		CAN_QUICK="yes"
+	else
+		CAN_QUICK="no"
+	fi
+}
+
+Run_Build_System () {
+	WITH_INST=""
+	RUN_CC_PL=""
+	WITH_CXX11=""
+	GEN_TYPE=""
+
+	if [ "$INSTDIR" != "" ] ; then
+		WITH_INST="-DINSTDIR:STRING=$INSTDIR"
+	fi
+
+	if [ "$USE_CXX_11" = "yes" ] ; then
+		WITH_CXX11="-DUSE_CXX_11:BOOLEAN=ON"
+	else
+		WITH_CXX11="-DUSE_CXX_11:BOOLEAN=OFF"
+	fi
+
+	if [ "$USE_RUN_CC_PL" = "yes" ] ; then
+		RUN_CC_PL="-DUSE_RUN_CC_PL:BOOLEAN=ON"
+	else
+		RUN_CC_PL="-DUSE_RUN_CC_PL:BOOLEAN=OFF"
+	fi
+
+	case `uname -s` in
+		MINGW*)
+			GEN_TYPE="-G\"MSYS Makefiles\""
+			;;
+	esac
+
+	if [ "$SOURCE_DIR" = "." ] ; then
+		pwdsave=`pwd`
+		test -d build || mkdir build
+		cd "build"
+		REAL_SOURCE_DIR=".."
+	else
+		REAL_SOURCE_DIR="$SOURCE_DIR"
+	fi
+
+	echo "cmake $GEN_TYPE $WITH_INST $RUN_CC_PL $WITH_CXX11 $EXTRA_CONFIG_ARGS $REAL_SOURCE_DIR"
+
+	cmake $GEN_TYPE $WITH_INST $RUN_CC_PL $WITH_CXX11 $EXTRA_CONFIG_ARGS $REAL_SOURCE_DIR
+
+	echo ""
+	echo "Now cd build and run make to build Navn."
+}
+
+ECHO2SUF=''
+if [ "`echo -n a ; echo -n b`" = "ab" ] ; then
+	ECHO2='echo -n'
+elif [ "`echo 'a\c' ; echo 'b\c'`" = "ab" ] ; then
+	ECHO2='echo' ; ECHO2SUF='\c'
+elif [ "`printf 'a' 2>&1 ; printf 'b' 2>&1`" = "ab" ] ; then
+	ECHO2='printf "%s"'
 else
-  echo "Generating Makefile complete!"
-  /bin/bash configure
+	# oh well...
+	ECHO2='echo'
 fi
+export ECHO2 ECHO2SUF
+
+###########################################################################
+# Init values
+###########################################################################
+
+INSTDIR=$HOME/navn
+USE_RUN_CC_PL="no"
+USE_CXX_11="no"
+EXTRA_CONFIG_ARGS=
+CAN_QUICK="no"
+SOURCE_DIR=`dirname $0`
+
+###########################################################################
+# Check out the options
+###########################################################################
+
+while [ $# -ge 1 ] ; do
+	if [ $1 = "--help" ] ; then
+		echo "Config utility for Navn"
+		echo "------------------------"
+		echo "Syntax: ./Config [options]"
+		echo "-nocache     Ignore settings saved in config.cache"
+		echo "-quick       Skip questions, go straight to cmake"
+		exit 0
+	elif [ $1 = "-nocache" ] ; then
+		IGNORE_CACHE="1"
+	elif [ $1 = "-nointro" ] ; then
+		NO_INTRO="1"
+	elif [ $1 = "-quick" -o $1 = "-q" ] ; then
+		Load_Cache
+		if [ "$CAN_QUICK" = "yes" ] ; then
+			Run_Build_System
+		else
+			echo ""
+			echo "Can't find cache file (config.cache), aborting..."
+		fi
+		exit 0
+	fi
+	shift 1
+done
+
+echo "Beginning Navn compile configuration."
+echo ""
+
+###########################################################################
+# Load the cache
+###########################################################################
+
+if [ ! "$IGNORE_CACHE" ] ; then
+	Load_Cache
+fi
+
+# Ask the user anything we need to know ahead of time.
+
+export ok INPUT
+
+####
+
+ok=0
+echo "In what directory do you want the binaries to be installed?"
+while [ $ok -eq 0 ] ; do
+	echo2 "[$INSTDIR] "
+	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+	if [ ! "$INPUT" ] ; then
+		INPUT=$INSTDIR
+	fi
+	if [ ! -d "$INPUT" ] ; then
+		if exists "$INPUT" ; then
+			echo "$INPUT exists, but is not a directory!"
+		else
+			echo "$INPUT does not exist.  Create it?"
+			echo2 "[y] "
+			read YN
+			if [ "$YN" != "n" ] ; then
+				if mkdir -p $INPUT ; then
+					ok=1
+				fi
+			fi
+		fi
+	elif exists "$INPUT/include/module.h" ; then
+		echo "You cannot use Navn's source directory as a target directory."
+	else
+		ok=1
+	fi
+done
+INSTDIR=$INPUT
+echo ""
+
+####
+
+TEMP_YN="n"
+if [ "$USE_RUN_CC_PL" = "yes" ] ; then
+	TEMP_YN="y"
+fi
+echo "You can optionally have the build run through run-cc.pl, which will"
+echo "cause warnings and errors (if any) to be colored yellow and red,"
+echo "respectively. This relies on Perl being installed, so if you say yes"
+echo "to this without Perl, the option will be ignored."
+echo "NOTE: If you are using MinGW, it is NOT recommended to say yes to"
+echo "this, it may fail."
+echo "Would you like to utilize run-cc.pl?"
+echo2 "[$TEMP_YN] "
+read YN
+if [ "$YN" ] ; then
+	if [ "$YN" = "y" ] ; then
+		USE_RUN_CC_PL="yes"
+	else
+		USE_RUN_CC_PL="no"
+	fi
+fi
+echo ""
+
+####
+
+TEMP_NY="n"
+if [ "$USE_CXX_11" = "yes" ] ; then
+	TEMP_NY="y"
+fi
+echo "You can optionally build using C++ 11, this is very experimental"
+echo "at this point and should only be enabled for advanced users."
+echo "Some compilers may not fully support C++ 11 but will accept"
+echo "the code, this may cause compiles to fail. There will be no"
+echo "support for build related errors if this option is enabled!"
+echo "Do you want to compile with C++ 11?"
+echo2 "[$TEMP_NY] "
+read YN
+if [ "$YN" ] ; then
+	if [ "$YN" = "y" ] ; then
+		USE_CXX_11="yes"
+	else
+		USE_CXX_11="no"
+	fi
+fi
+echo ""
+
+####
+
+echo "Are there any extra arguments you wish to pass to cmake?"
+echo "You may only need to do this if cmake is unable to locate"
+echo "missing dependencies without hints."
+echo "You can do this by: -DEXTRA_INCLUDE:STRING=/path/to/files;/path/to/more/files"
+echo2 "[$EXTRA_CONFIG_ARGS] "
+if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+if [ "$INPUT" ] ; then
+  EXTRA_CONFIG_ARGS=$INPUT
+fi
+echo ""
+
+####
+
+################################################################################
+# Store values
+################################################################################
+
+echo2 "Saving configuration results in config.cache... "
+
+cat <<EOT >$SOURCE_DIR/config.cache
+INSTDIR="$INSTDIR"
+USE_RUN_CC_PL="$USE_RUN_CC_PL"
+EXTRA_CONFIG_ARGS="$EXTRA_CONFIG_ARGS"
+EOT
+echo "done."
+
+
+################################################################################
+# Build the build system string
+################################################################################
+
+Run_Build_System
+
+# Code from the old build system, this should be in cmake and fixed..
+#githead=$(git rev-parse HEAD)
+#rev=$(git describe ${githead} 2>/dev/null)
+#[[ -z ${rev} ]] && rev=${githead:0:7}
+#/bin/sed 's/^\x23define VERSION_GIT ".*"/\x23define VERSION_GIT "'$rev'"/' config.in.tmpl 1> config.h.in

@@ -123,7 +123,7 @@ Fixed help module not using the OnHelp call
 Fixed Command->SendSyntax() sending the syntax incorrectly
 Added TextFile::IsDirectory
 Fixed not making a new runtime directory if there isn't one on start
-
+Moved to CMake
 
 Navn 2.0.0
 ==========

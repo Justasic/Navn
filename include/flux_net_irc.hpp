@@ -4,7 +4,6 @@
 #include "module.h"
 #include "defs.h"
 #include "xmlfile.h"
-#include "moduledefines.h"
 IRCProto *ircproto;
 SocketIO *sock;
 BotConfig *Config;
@@ -307,8 +306,9 @@ void restart(const Flux::string &reason){
 void Rehash(){
   Log() << "Rehashing Configuration File";
   try{
+    const Flux::string bi_dir = Config->Binary_Dir;
     BotConfig *configtmp = Config;
-    Config = new BotConfig();
+    Config = new BotConfig(bi_dir);
     delete configtmp;
     if(!Config)
       throw ConfigException("Could not read config.");
@@ -361,7 +361,7 @@ void startup(int argc, char** argv, char *envp[]) {
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
-  Config = new BotConfig();
+  Config = new BotConfig(binary_dir);
   if(!Config)
     throw CoreException("Config Error.");
   Flux::string dir = argv[0];

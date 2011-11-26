@@ -1,7 +1,6 @@
 /* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 #ifndef FLUX_H
 #define FLUX_H
-#include <string>
 #include <cstring>
 #include <vector>
 #include <set>
@@ -32,6 +31,7 @@
 # define CoreExport
 # define DllExport
 #endif
+typedef std::basic_string<char, std::char_traits<char>, std::allocator<char> > base_string;
 extern CoreExport bool protocoldebug;
 #ifdef _CXX11
 template<typename T, typename V> inline auto value_cast(const V &y)
@@ -141,62 +141,62 @@ namespace ci
  */
 inline std::istream &operator>>(std::istream &is, ci::string &str)
 {
-	std::string tmp;
+	base_string tmp;
 	is >> tmp;
 	str = tmp.c_str();
 	return is;
 }
 
-/** Define operators for + and == with ci::string to std::string for easy assignment
+/** Define operators for + and == with ci::string to base_string for easy assignment
  * and comparison
  *
  * Operator +
  */
-inline std::string operator+(std::string &leftval, ci::string &rightval)
+inline base_string operator+(base_string &leftval, ci::string &rightval)
 {
-	return leftval + std::string(rightval.c_str());
+  return leftval + base_string(rightval.c_str());
 }
 
-/** Define operators for + and == with ci::string to std::string for easy assignment
+/** Define operators for + and == with ci::string to base_string for easy assignment
  * and comparison
  *
  * Operator +
  */
-inline ci::string operator+(ci::string &leftval, std::string &rightval)
+inline ci::string operator+(ci::string &leftval, base_string &rightval)
 {
 	return leftval + ci::string(rightval.c_str());
 }
 
-/** Define operators for + and == with ci::string to std::string for easy assignment
+/** Define operators for + and == with ci::string to base_string for easy assignment
  * and comparison
  *
  * Operator ==
  */
-inline bool operator==(const std::string &leftval, const ci::string &rightval)
+inline bool operator==(const base_string &leftval, const ci::string &rightval)
 {
 	return leftval.c_str() == rightval;
 }
 
-/** Define operators for + and == with ci::string to std::string for easy assignment
+/** Define operators for + and == with ci::string to base_string for easy assignment
  * and comparison
  *
  * Operator ==
  */
-inline bool operator==(const ci::string &leftval, const std::string &rightval)
+inline bool operator==(const ci::string &leftval, const base_string &rightval)
 {
 	return leftval == rightval.c_str();
 }
 
-/** Define operators != for ci::string to std::string for easy comparison
+/** Define operators != for ci::string to base_string for easy comparison
  */
-inline bool operator!=(const ci::string &leftval, const std::string &rightval)
+inline bool operator!=(const ci::string &leftval, const base_string &rightval)
 {
 	return !(leftval == rightval.c_str());
 }
 
 /** Define operators != for ci::string to irc::string for easy comparison
  */
-inline bool operator!=(const std::string &leftval, const ci::string &rightval)
+inline bool operator!=(const base_string &leftval, const ci::string &rightval)
 {
 	return !(leftval.c_str() == rightval);
 }
@@ -220,23 +220,23 @@ namespace Flux{
   class string
   {
   private:
-    std::string _string;
+    base_string _string;
   public:
-    typedef std::string::iterator iterator;
-    typedef std::string::const_iterator const_iterator;
-    typedef std::string::reverse_iterator reverse_iterator;
-    typedef std::string::const_reverse_iterator const_reverse_iterator;
-    typedef std::string::size_type size_type;
+    typedef base_string::iterator iterator;
+    typedef base_string::const_iterator const_iterator;
+    typedef base_string::reverse_iterator reverse_iterator;
+    typedef base_string::const_reverse_iterator const_reverse_iterator;
+    typedef base_string::size_type size_type;
     static const size_type npos = static_cast<size_type>(-1);
 
     string() : _string("") { }
-    string(float f) : _string() { _string = value_cast<std::string>(f); }
-    string(double d) : _string() { _string = value_cast<std::string>(d); }
-    string(int i) : _string() { _string = value_cast<std::string>(i); }
+    string(float f) : _string() { _string = value_cast<base_string>(f); }
+    string(double d) : _string() { _string = value_cast<base_string>(d); }
+    string(int i) : _string() { _string = value_cast<base_string>(i); }
     string(char chr) : _string() { _string = chr; }
     string(size_type n, char chr) : _string(n, chr) { }
     string(const char *_str) : _string(_str) { }
-    string(const std::string &_str) : _string(_str) { }
+    string(const base_string &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
     string(const string &_str, size_type pos = 0, size_type n = npos) : _string(_str._string, pos, n) { }
 //     ~string() { printf("~: %s\n", this->c_str()); }
@@ -244,55 +244,55 @@ namespace Flux{
 
     inline string &operator=(char chr) { this->_string = chr; return *this; }
     inline string &operator=(const char *_str) { this->_string = _str; return *this; }
-    inline string &operator=(const std::string &_str) { this->_string = _str; return *this; }
+    inline string &operator=(const base_string &_str) { this->_string = _str; return *this; }
     inline string &operator=(const ci::string &_str) { this->_string = _str.c_str(); return *this; }
     inline string &operator=(const string &_str) { if (this != &_str) this->_string = _str._string; return *this; }
 
     inline bool operator==(const char *_str) const { return this->_string == _str; }
-    inline bool operator==(const std::string &_str) const { return this->_string == _str; }
+    inline bool operator==(const base_string &_str) const { return this->_string == _str; }
     inline bool operator==(const ci::string &_str) const { return ci::string(this->_string.c_str()) == _str; }
     inline bool operator==(const string &_str) const { return this->_string == _str._string; }
 
     inline bool equals_cs(const char *_str) const { return this->_string == _str; }
-    inline bool equals_cs(const std::string &_str) const { return this->_string == _str; }
+    inline bool equals_cs(const base_string &_str) const { return this->_string == _str; }
     inline bool equals_cs(const ci::string &_str) const { return this->_string == _str.c_str(); }
     inline bool equals_cs(const string &_str) const { return this->_string == _str._string; }
 
     inline bool equals_ci(const char *_str) const { return ci::string(this->_string.c_str()) == _str; }
-    inline bool equals_ci(const std::string &_str) const { return ci::string(this->_string.c_str()) == _str.c_str(); }
+    inline bool equals_ci(const base_string &_str) const { return ci::string(this->_string.c_str()) == _str.c_str(); }
     inline bool equals_ci(const ci::string &_str) const { return _str == this->_string.c_str(); }
     inline bool equals_ci(const string &_str) const { return ci::string(this->_string.c_str()) == _str._string.c_str(); }
 
     inline bool operator!=(const char *_str) const { return !operator==(_str); }
-    inline bool operator!=(const std::string &_str) const { return !operator==(_str); }
+    inline bool operator!=(const base_string &_str) const { return !operator==(_str); }
     inline bool operator!=(const ci::string &_str) const { return !operator==(_str); }
     inline bool operator!=(const string &_str) const { return !operator==(_str); }
 
     inline string &operator+=(char chr) { this->_string += chr; return *this; }
     inline string &operator+=(const char *_str) { this->_string += _str; return *this; }
-    inline string &operator+=(const std::string &_str) { this->_string += _str; return *this; }
+    inline string &operator+=(const base_string &_str) { this->_string += _str; return *this; }
     inline string &operator+=(const ci::string &_str) { this->_string += _str.c_str(); return *this; }
     inline string &operator+=(const string &_str) { if (this != &_str) this->_string += _str._string; return *this; }
 
     inline const string operator+(char chr) const { return string(*this) += chr; }
     inline const string operator+(const char *_str) const { return string(*this) += _str; }
-    inline const string operator+(const std::string &_str) const { return string(*this) += _str; }
+    inline const string operator+(const base_string &_str) const { return string(*this) += _str; }
     inline const string operator+(const ci::string &_str) const { return string(*this) += _str; }
     inline const string operator+(const string &_str) const { return string(*this) += _str; }
 
     friend const string operator+(char chr, const string &str);
     friend const string operator+(const char *_str, const string &str);
-    friend const string operator+(const std::string &_str, const string &str);
+    friend const string operator+(const base_string &_str, const string &str);
     friend const string operator+(const ci::string &_str, const string &str);
-    friend const string operator+(const string &str, const std::string &_str);
+    friend const string operator+(const string &str, const base_string &_str);
 
     inline bool operator<(const string &_str) const { return this->_string < _str._string; }
 
     inline const char *c_str() const { return this->_string.c_str(); }
     inline const char *data() const { return this->_string.data(); }
     inline ci::string ci_str() const { return ci::string(this->_string.c_str()); }
-    inline const std::string &std_str() const { return this->_string; }
-    inline std::string &std_str() { return this->_string; }
+    inline const base_string &std_str() const { return this->_string; }
+    inline base_string &std_str() { return this->_string; }
 
     inline bool empty() const { return this->_string.empty(); }
     inline size_type length() const { return this->_string.length(); }
@@ -304,10 +304,10 @@ namespace Flux{
     inline void push_back(const string &_str) { if (this != &_str) this->_string += _str._string; }
     inline void resize(size_type n) { return this->_string.resize(n); }
 
-    inline string erase(size_t pos = 0, size_t n = std::string::npos) { return this->_string.erase(pos, n); }
+    inline string erase(size_t pos = 0, size_t n = base_string::npos) { return this->_string.erase(pos, n); }
     inline iterator erase(const iterator &i) { return this->_string.erase(i); }
     inline iterator erase(const iterator &first, const iterator &last) { return this->_string.erase(first, last); }
-    //inline void erase(size_type pos = 0, size_type n = std::string::npos) { this->_string.erase(pos, n); }
+    //inline void erase(size_type pos = 0, size_type n = base_string::npos) { this->_string.erase(pos, n); }
 
     inline void trim()
     {
@@ -320,8 +320,8 @@ namespace Flux{
     inline void tolower() { std::transform(_string.begin(), _string.end(), _string.begin(), ::tolower); }
     inline void toupper() { std::transform(_string.begin(), _string.end(), _string.begin(), ::toupper); }
     inline void clear() { this->_string.clear(); }
-    inline bool search(const string &_str) { if(_string.find(_str._string) != std::string::npos) return true; return false; }
-    inline bool search(const string &_str) const { if(_string.find(_str._string) != std::string::npos) return true; return false; }
+    inline bool search(const string &_str) { if(_string.find(_str._string) != base_string::npos) return true; return false; }
+    inline bool search(const string &_str) const { if(_string.find(_str._string) != base_string::npos) return true; return false; }
     inline bool search_ci(const string &_str) { if(ci::string(this->_string.c_str()).find(ci::string(_str.c_str())) != ci::string::npos) return true; return false; }
     inline bool search_ci(const string &_str) const { if(ci::string(this->_string.c_str()).find(ci::string(_str.c_str())) != ci::string::npos) return true; return false; }
     
@@ -428,7 +428,7 @@ namespace Flux{
     /* Strip Return chars */
     inline string strip()
     {
-	Flux::string new_buf = *this;
+	string new_buf = *this;
 	new_buf = new_buf.replace_all_cs("\n", "");
 	new_buf = new_buf.replace_all_cs("\r", "");
 	return new_buf;
@@ -436,7 +436,7 @@ namespace Flux{
     /* Strip specific chars */
     inline string strip(const char &_delim)
     {
-	Flux::string new_buf = *this;
+	string new_buf = *this;
 	new_buf = new_buf.replace_all_cs(_delim, "");
 	return new_buf;
     }
@@ -584,7 +584,7 @@ namespace Flux{
   inline std::istream &operator>>(std::istream &os, string &_str) { return os >> _str._string; }
   inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
   inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
-  inline const string operator+(const std::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
+  inline const string operator+(const base_string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
   inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
 
 }//end of namespace

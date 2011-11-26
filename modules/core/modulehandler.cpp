@@ -222,6 +222,7 @@ class M_Handler : public module
   CommandMUnload unload;
   CommandMInfo info;
   CommandMReload reload;
+  std::vector<Flux::string> CurrentModuleList;
 public:
   M_Handler(const Flux::string &Name):module(Name)
   {
@@ -233,6 +234,36 @@ public:
     this->AddCommand(&reload);
     this->AddCommand(&load);
     this->AddCommand(&unload);
+    Implementation i[] = { I_OnStart, I_OnReload };
+    ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
+  }
+  void OnStart(int, char**)
+  {
+    CurrentModuleList = StringVector(Config->Modules, ',');
+    for(unsigned i=0; i < CurrentModuleList.size(); ++i){
+      CurrentModuleList[i].trim();
+      printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
+    }
+  }
+  void OnReload()
+  {
+    std::vector<Flux::string> updatedmodlist = StringVector(Config->Modules, ',');
+    for(std::vector<Flux::string>::iterator it; it != updatedmodlist.end(); ++it)
+    {
+      (*it).trim();
+      for(std::vector<Flux::string>::iterator it2; it2 != CurrentModuleList.end(); ++it2)
+      {
+	if((*it) != (*it2)){
+	  Log(LOG_TERMINAL) << "(*it) != (*it2)";
+	  ModuleHandler::Unload(FindModule(*it2));
+	  CurrentModuleList.erase(it2);
+	}else if((*it2) != (*it)){
+	  Log(LOG_TERMINAL) << "(*it2) != (*it)";
+	  ModuleHandler::LoadModule(*it);
+	  CurrentModuleList.push_back(*it);
+	}
+      }
+    }
   }
 };
 MODULE_HOOK(M_Handler)
