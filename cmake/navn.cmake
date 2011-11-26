@@ -208,7 +208,7 @@ macro(read_from_file FILE REGEX STRINGS)
     endif(REGEX STREQUAL "")
   else(CMAKE26_OR_BETTER)
     # For CMake 2.4.x, we need to do this manually, firstly we read the file in
-    execute_process(COMMAND ${CMAKE_COMMAND} -DFILE:STRING=${FILE} -P ${Anope_SOURCE_DIR}/ReadFile.cmake ERROR_VARIABLE ALL_STRINGS)
+    execute_process(COMMAND ${CMAKE_COMMAND} -DFILE:STRING=${FILE} -P ${navn_SOURCE_DIR}/ReadFile.cmake ERROR_VARIABLE ALL_STRINGS)
     # Next we replace all newlines with semicolons
     string(REGEX REPLACE "\n" ";" ALL_STRINGS ${ALL_STRINGS})
     if(REGEX STREQUAL "")
@@ -515,26 +515,3 @@ macro(check_functions SRC SUCCESS)
     endforeach(FUNCTION)
   endforeach(REQUIRED_FUNCTION)
 endmacro(check_functions)
-
-###############################################################################
-# add_to_cpack_ignored_files(<item> [TRUE])
-#
-# A macro to update the environment variable CPACK_IGNORED_FILES which
-#   contains a list of files for CPack to ignore. If the optional 2nd argument
-#   of TRUE is given, periods will be converted to \\. for CPack.
-###############################################################################
-macro(add_to_cpack_ignored_files ITEM)
-  # Temporary copy of the orignal item
-  set(REAL_ITEM "${ITEM}")
-  # If we have 2+ arguments, assume that the second one was something like TRUE (doesn't matter really) and convert periods so they will be \\. for CPack
-  if(${ARGC} GREATER 1)
-    string(REPLACE "." "\\\\." REAL_ITEM ${REAL_ITEM})
-  endif(${ARGC} GREATER 1)
-  # If the environment variable is already defined, just tack the item to the end
-  if(DEFINED ENV{CPACK_IGNORED_FILES})
-    set(ENV{CPACK_IGNORED_FILES} "$ENV{CPACK_IGNORED_FILES};${REAL_ITEM}")
-  # Otherwise set the environment variable to the item
-  else(DEFINED ENV{CPACK_IGNORED_FILES})
-    set(ENV{CPACK_IGNORED_FILES} "${REAL_ITEM}")
-  endif(DEFINED ENV{CPACK_IGNORED_FILES})
-endmacro(add_to_cpack_ignored_files)

@@ -26,9 +26,11 @@ How to start in Protocol Debug mode
 2. Start the bot with ./navn -n -p
 
 Dependencies:
+  Building:
+    CMake
   Encyclopedia module:
     python-pip
     [Then run "pip install requests"]
   Segmentation fault traces:
     for backtrace dumps: C++ include '<execinfo.h>'
-    for attempts to restore program before crash 'libunwind-setjmp0-dev' and 'libunwind-setjmp0'
+    for attempts to restore program before crash 'libunwind-setjmp0-dev' and 'libunwind-setjmp0' or include '<setjmp.h>'

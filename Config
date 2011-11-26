@@ -238,6 +238,7 @@ echo2 "Saving configuration results in config.cache... "
 cat <<EOT >$SOURCE_DIR/config.cache
 INSTDIR="$INSTDIR"
 USE_RUN_CC_PL="$USE_RUN_CC_PL"
+USE_CXX_11="$USE_CXX_11"
 EXTRA_CONFIG_ARGS="$EXTRA_CONFIG_ARGS"
 EOT
 echo "done."

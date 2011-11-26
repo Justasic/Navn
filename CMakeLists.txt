@@ -6,6 +6,12 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
+
+# If the Source dir and the Binary dir are the same, we are building in-source, which we will disallow due to Autotools being there (but only on non-Windows)
+if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR} AND NOT WIN32)
+  message(FATAL_ERROR "You can not use CMake to build Navn from the root of it's source tree! Remove the CMakeCache.txt file from this directory, then create a separate directory (either below this directory or elsewhere), and then re-run CMake from there.")
+endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR} AND NOT WIN32)
+
 #
 # Project name
 #
@@ -17,7 +23,8 @@ enable_language(C)
 SET(${PROJECT_NAME}_MAJOR_VERSION 2)
 SET(${PROJECT_NAME}_MINOR_VERSION 0)
 SET(${PROJECT_NAME}_PATCH_LEVEL 1)
-SET(${PROJECT_NAME}_EXTRA -with-netflix-and-chicken)
+SET(${PROJECT_NAME}_VERSION_EXTRA -with-netflix-and-chicken)
+SET(${PROGRAM_NAME}_VERSION_FULL ${PROGRAM_NAME}_MAJOR_VERSION.${PROGRAM_NAME}_MINOR_VERSION.${PROGRAM_NAME}_PATCH_LEVEL${PROGRAM_NAME}_VERSION_EXTRA)
 # because some of this is copypasta we set this var here
 SET(PROGRAM_NAME ${PROJECT_NAME})
 
@@ -282,7 +289,7 @@ if(PERL AND USE_RUN_CC_PL)
   set(CMAKE_CXX_CREATE_SHARED_MODULE "${PERL} ${navn_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_CREATE_SHARED_MODULE}")
 endif(PERL AND USE_RUN_CC_PL)
 
-# If a INSTDIR was passed in to CMake, use it as the install prefix, otherwise set the default install prefix to the services directory under the user's home directory
+# If a INSTDIR was passed in to CMake, use it as the install prefix, otherwise set the default install prefix to the bots directory under the user's home directory
 if(INSTDIR)
   set(CMAKE_INSTALL_PREFIX "${INSTDIR}")
 else(INSTDIR)
@@ -292,7 +299,7 @@ endif(INSTDIR)
 ADD_SUBDIRECTORY(modules)
 ADD_SUBDIRECTORY(src)
 
-set(CONFIG_INSTALL bot.example.conf)
+set(CONFIG_INSTALL bot.example.conf ftp.sh brain.py README)
 install(FILES ${CONFIG_INSTALL}
   DESTINATION bin
 )

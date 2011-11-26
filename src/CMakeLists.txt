@@ -63,15 +63,13 @@ if(WIN32)
 else(WIN32)
   target_link_libraries(${PROGRAM_NAME} ${LINK_LIBS})
 endif(WIN32)
-# Building the Navn executable requires the language files to be compiled first as well as the version.h header to be generated
-add_dependencies(${PROGRAM_NAME} language headers)
 
 # Get the filename of the Navn executable as it is in on this system
 get_target_property(BOT_BINARY ${PROGRAM_NAME} LOCATION)
 get_filename_component(BOT_BINARY ${BOT_BINARY} NAME)
 
-# Generate sysconf.h from the earlier configuration
-configure_file(${navn_SOURCE_DIR}/include/config.h.cmake ${navn_BINARY_DIR}/include/config.h)
+# Generate conf.h from the earlier configuration
+configure_file(${navn_SOURCE_DIR}/include/config.h.cmake ${navn_SOURCE_DIR}/include/config.h)
 
 # Set Navn to be installed to the bin directory
 install(TARGETS ${PROGRAM_NAME}

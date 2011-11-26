@@ -18,8 +18,8 @@
 #cmakedefine HAVE_SYS_SELECT_H 1
 #cmakedefine HAVE_UMASK 1
 #cmakedefine HAVE_EVENTFD 1
-#define VERSION "@navn_VERSION_MAJOR@.@navn_VERSION_MINOR@.@navn_VERSION_PATCH@"
-#define VERSION_EXTRA "@navn_VERSION_EXTRA@"
+#define VERSION "@navn_VERSION_FULL@"
+#define VERSION_EXTRA "@navn_EXTRA@"
 #define VERSION_GIT ""
 #define LIBINTL "@LIBINTL_INCLUDE@"
 
