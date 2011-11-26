@@ -1,8 +1,19 @@
 #include "flux_net_irc.hpp"
 
+class cooldowntimer : public Timer
+{
+public:
+  int requested;
+  cooldowntimer():Timer(300, time(NULL), true){ }
+  void Tick(time_t){
+    Log(LOG_TERMINAL) << "Requests reset";
+    requested = 0;
+  }
+};
+
 class encyclopedia : public module
 {
-
+  cooldowntimer cdt; //Make a cool down timer so we dont request too many too fast and get us banned from wikipedia!
 private:
   Flux::string query;
   void Sanitize(Flux::string &victim)
@@ -22,6 +33,17 @@ private:
     victim = victim.replace_all_cs("\'","");
     victim = victim.replace_all_cs(".","");
     victim = victim.replace_all_cs("?","");
+  }
+  Flux::string TooManyRequests()
+  {
+    Flux::string Errors[] = { //These errors must be generic for any user, whether its their 1st time asking or their 30'th
+      "I am sorry but it seems you've requested too many times, please try again later",
+      "It seems I have been asked too many questions, I cannot answer them all!",
+      "The answer to life the universe and everything is 42, so please stop asking!",
+      "Why are humans so curious? Some of these questions are hard, I need a break",
+      "You have simply asked too many questions for me to answer"
+    };
+    return Errors[randint(0,4)];
   }
   Flux::string RandomOops()
   {
@@ -43,13 +65,19 @@ private:
   }
   void Brain(User *u, Flux::string q)
   {
-    Sanitize(q);
-    Flux::string str = "python brain.py "+q;
-    Flux::string information = execute(str.c_str());
-    information.trim();
-    if (information.search_ci("For search options, see Help:Searching")) u->SendMessage(RandomOops());
-    else if (information.search_ci("may refer to:") ||  information.search_ci("reasons this message may be displayed:") ) u->SendMessage(RandomAmb());
-    else u->SendMessage(information.strip());
+    if(!(cdt.requested >= 30))
+    {
+      cdt.requested++;
+      Log(LOG_TERMINAL) << "Requests: " << cdt.requested;
+      Sanitize(q);
+      Flux::string str = "python brain.py "+q;
+      Flux::string information = execute(str.c_str());
+      information.trim();
+      if (information.search_ci("For search options, see Help:Searching")) u->SendMessage(RandomOops());
+      else if (information.search_ci("may refer to:") ||  information.search_ci("reasons this message may be displayed:") ) u->SendMessage(RandomAmb());
+      else u->SendMessage(information.strip());
+    }else
+      u->SendMessage(TooManyRequests());
   }
   void SetQuery(unsigned n, const std::vector<Flux::string> &params)
   {
