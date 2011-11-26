@@ -68,7 +68,7 @@ havecxx11 = true;
    slog << "Please report this bug to http://flux-net.net/bugs/ and submit a bug report." << std::endl;
    slog << "Please note that the Flux-Net developers may ask you to re-run this under gdb!" << std::endl;
    slog << "Time of crash: " << tbuf << std::endl;
-   slog << "Navn version: " << VERSION_LONG << std::endl;
+   slog << "Navn version: " << VERSION_FULL << std::endl;
    slog << "System info: " << uts.sysname << " " << uts.nodename << " " <<  uts.release << " " << uts.machine << std::endl;
    slog << "System version: " << uts.version << std::endl;
    slog << "C++ Version: " << __VERSION__ " C++11 support: " << (havecxx11?"true":"false") << std::endl;

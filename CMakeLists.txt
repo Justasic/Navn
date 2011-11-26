@@ -17,21 +17,43 @@ endif(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR} AND NOT W
 #
 PROJECT(navn CXX)
 enable_language(C)
-#
-# Project version
-#
-SET(${PROJECT_NAME}_MAJOR_VERSION 2)
-SET(${PROJECT_NAME}_MINOR_VERSION 0)
-SET(${PROJECT_NAME}_PATCH_LEVEL 1)
-SET(${PROJECT_NAME}_VERSION_EXTRA -with-netflix-and-chicken)
-SET(${PROGRAM_NAME}_VERSION_FULL ${PROGRAM_NAME}_MAJOR_VERSION.${PROGRAM_NAME}_MINOR_VERSION.${PROGRAM_NAME}_PATCH_LEVEL${PROGRAM_NAME}_VERSION_EXTRA)
-# because some of this is copypasta we set this var here
-SET(PROGRAM_NAME ${PROJECT_NAME})
 
 # Include our navn.cmake here
 SET(CMAKE_MODULE_PATH ${navn_SOURCE_DIR}/cmake)
 include(navn)
-include(ReadFile)
+
+# Project version
+SET(${PROJECT_NAME}_MAJOR_VERSION 2)
+SET(${PROJECT_NAME}_MINOR_VERSION 0)
+SET(${PROJECT_NAME}_PATCH_LEVEL 1)
+SET(${PROJECT_NAME}_VERSION_EXTRA -with-netflix-and-chicken)
+
+# Get the git revision location for the branch we're on
+if(EXISTS "${navn_SOURCE_DIR}/.git/HEAD")
+  read_from_file(${navn_SOURCE_DIR}/.git/HEAD ".*" GIT_HEAD_LOC)
+  string(LENGTH ${GIT_HEAD_LOC} HEAD_LEN)
+  math(EXPR LEN "${HEAD_LEN} - 5")
+  string(SUBSTRING ${GIT_HEAD_LOC} 5 ${LEN} GIT_HEAD)
+endif(EXISTS "${navn_SOURCE_DIR}/.git/HEAD")
+
+# Get the git revision we're on for the version string
+if(EXISTS "${navn_SOURCE_DIR}/.git/${GIT_HEAD}")
+  read_from_file(${navn_SOURCE_DIR}/.git/${GIT_HEAD} ".*" VERSION_STR)
+  # Get the length of the string
+  string(LENGTH ${VERSION_STR} VERSION_LEN)
+  # Subtract 7 from the string's length
+  math(EXPR VERSION_NUM_LEN "${VERSION_LEN} - ${VERSION_LEN} + 7")
+  # Extract the value from the string
+  string(SUBSTRING ${VERSION_STR} 0 ${VERSION_NUM_LEN} VERSION_GIT)
+  set(VERSION_BUILD ${VERSION})
+endif(EXISTS "${navn_SOURCE_DIR}/.git/${GIT_HEAD}")
+
+# Set our version strings
+SET(VERSION_SIMPLE "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_LEVEL}")
+SET(VERSION_FULL "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${navn_PATCH_LEVEL}-${VERSION_GIT}${${PROJECT_NAME}_VERSION_EXTRA}")
+
+# because some of this is copypasta we set this var here
+SET(PROGRAM_NAME ${PROJECT_NAME})
 
 #
 # Configure paths

@@ -18,10 +18,15 @@
 #cmakedefine HAVE_SYS_SELECT_H 1
 #cmakedefine HAVE_UMASK 1
 #cmakedefine HAVE_EVENTFD 1
-#define VERSION "@navn_VERSION_FULL@"
-#define VERSION_EXTRA "@navn_EXTRA@"
-#define VERSION_GIT ""
 #define LIBINTL "@LIBINTL_INCLUDE@"
+
+#define VERSION_MAJOR @navn_MAJOR_VERSION@
+#define VERSION_MINOR @navn_MINOR_VERSION@
+#define VERSION_PATCH @navn_PATCH_LEVEL@
+#define VERSION "@VERSION_SIMPLE@"
+#define VERSION_GIT "@VERSION_GIT@"
+#define VERSION_EXTRA "@navn_VERSION_EXTRA@"
+#define VERSION_FULL "@VERSION_FULL@"
 
 #cmakedefine HAVE_UINT8_T 1
 #cmakedefine HAVE_U_INT8_T 1

@@ -392,7 +392,7 @@ void startup(int argc, char** argv, char *envp[]) {
 	exit(0);
       }
       else if ((arg.equals_ci("--version")) ^ (arg == "-v")){
-	Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_LONG;
+	Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_FULL;
 	Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
 	Log(LOG_TERMINAL) << "";
 	Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
