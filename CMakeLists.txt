@@ -134,15 +134,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   endif(DEFAULT_INCLUDE_DIRS)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
-#
-# Set compiler specific build flags
-#
-
-# g++
-#IF(CMAKE_COMPILER_IS_GNUCXX)
-#  SET(CMAKE_CXX_FLAGS "-Wall -Wshadow -ansi -pedantic -fno-leading-underscore")
-#ENDIF()
-
 # Add an optional variable for using run-cc.pl for building, Perl will be checked later regardless of this setting
 option(USE_RUN_CC_PL "Use run-cc.pl for building" OFF)
 
@@ -151,10 +142,10 @@ option(USE_CXX_11 "Use C++ 11 during compile" OFF)
 
 INCLUDE_DIRECTORIES(${navn_SOURCE_DIR}/src ${navn_SOURCE_DIR}/include)
 # msvc++
-IF(MSVC_IDE)
-  SET(CMAKE_CXX_FLAGS "/DWIN32 /D_CONSOLE /DZLIB_WINAPI /fp:fast /EHsc")
-  SET(CMAKE_CXX_FLAGS_DEBUG "/DDEBUG /D_DEBUG /MTd /Zi")
-ENDIF(MSVC_IDE)
+## IF(MSVC_IDE)
+##  SET(CMAKE_CXX_FLAGS "/DWIN32 /D_CONSOLE /DZLIB_WINAPI /fp:fast /EHsc")
+##  SET(CMAKE_CXX_FLAGS_DEBUG "/DDEBUG /D_DEBUG /MTd /Zi")
+## ENDIF(MSVC_IDE)
 
 set(ENV{LC_ALL} C)
 SOURCE_GROUP(${PROJECT_NAME} FILES ${navn_source})

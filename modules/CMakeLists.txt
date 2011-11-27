@@ -74,7 +74,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
           add_dependencies(${SO} ${PROGRAM_NAME})
           # For Windows only, have the module link to the export library of Navn as well as the wsock32 library (most of the modules probably don't need this, but this is to be on the safe side), also set it's version
           if(WIN32)
-            target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 ${TEMP_DEPENDENCIES})
+            target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 ${WIN32_MEMORY} ${TEMP_DEPENDENCIES})
             set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION_SIMPLE}")
           endif(WIN32)
           # Set the module to be installed to the module directory under the data directory
