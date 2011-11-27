@@ -2,7 +2,7 @@
 #
 # CMake config
 #
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4 FATAL_ERROR)
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
@@ -45,7 +45,6 @@ if(EXISTS "${navn_SOURCE_DIR}/.git/${GIT_HEAD}")
   math(EXPR VERSION_NUM_LEN "${VERSION_LEN} - ${VERSION_LEN} + 7")
   # Extract the value from the string
   string(SUBSTRING ${VERSION_STR} 0 ${VERSION_NUM_LEN} VERSION_GIT)
-  set(VERSION_BUILD ${VERSION})
 endif(EXISTS "${navn_SOURCE_DIR}/.git/${GIT_HEAD}")
 
 # Set our version strings
