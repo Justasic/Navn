@@ -6,7 +6,7 @@ public:
   int requested;
   cooldowntimer():Timer(300, time(NULL), true){ }
   void Tick(time_t){
-    Log(LOG_TERMINAL) << "Requests reset";
+    Log(LOG_TERMINAL) << Log::TimeStamp() << " Requests reset";
     requested = 0;
   }
 };

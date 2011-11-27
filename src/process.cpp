@@ -213,7 +213,8 @@ void process(const Flux::string &buffer){
     }
   }
   if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric((int)command)); }
-  if(command.equals_cs("PING")){ FOREACH_MOD(I_OnPing, OnPing(command, params)); }
+  if(command.equals_cs("PING")){ FOREACH_MOD(I_OnPing, OnPing(params)); }
+  if(command.equals_cs("PONG")){ FOREACH_MOD(I_OnPong, OnPong(params)); }
   if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
   if(command.equals_cs("INVITE")) { FOREACH_MOD(I_OnInvite, OnInvite(u, params[1])); }

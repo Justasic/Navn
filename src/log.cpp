@@ -20,7 +20,7 @@ Flux::string NoTermColor(const Flux::string &ret){
   return str;
 }
 
-Flux::string TimeStamp()
+Flux::string Log::TimeStamp()
 {
  char tbuf[256];
   time_t t;
@@ -74,7 +74,7 @@ Log::~Log()
   else if(type == LOG_TERMINAL && InTerm()){
     std::cout << (nocolor?NoTermColor(raw):raw) << std::endl;
     return;
-  }else if(type == LOG_SILENT){}
+  }else if(type == LOG_SILENT){} // ignore the terminal if its log silent
   
   try
     {

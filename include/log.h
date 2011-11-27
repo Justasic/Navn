@@ -12,6 +12,7 @@ public:
   User *u;
   Command *c;
   std::stringstream buffer;
+  static Flux::string TimeStamp();
   Log(LogType type = LOG_NORMAL);
   Log(LogType, User*);
   Log(User*);
