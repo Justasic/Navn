@@ -253,7 +253,7 @@ public:
     source.Reply(" ");
     source.Reply("This command changes the channels topic\n"
 		 "and sends it to a web server for the changed\n"
-		 "topic in IRC. This uses the ftp.sh file"
+		 "topic in IRC. This uses the ftp.sh file\n"
 		 "Note: You must be a bot owner to use this command");
     return true;
   }
