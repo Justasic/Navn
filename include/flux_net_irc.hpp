@@ -253,11 +253,7 @@ Flux::string execute(const char *cmd) {
    * I read StackOverflow
    * And so do you!
    */
-  #ifdef _WIN32
-  FILE* pipe = _popen
-  #else
   FILE* pipe = popen(cmd, "r");
-  #endif
   if (!pipe) return "";
 		     char buffer[128];
   Flux::string result = "";
@@ -265,11 +261,7 @@ Flux::string execute(const char *cmd) {
     if(fgets(buffer, 128, pipe) != NULL)
       result += buffer;
   }
-  #ifdef _WIN32
-  _pclose(pipe);
-  #else
   pclose(pipe);
-  #endif
   return result;
 }
 /**
