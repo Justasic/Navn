@@ -24,12 +24,13 @@ bool SocketIO::Read(const Flux::string &buf) const
   if(buf.search_ci("ERROR :Closing link:")){
     FOREACH_MOD(I_OnSocketError, OnSocketError(buf));
     throw SocketException(buf.c_str());
+    return false;
   }
   process(buf); /* Process the buffer for navn */
   return true;
 }
 
-int startcount, loopcount;
+uint32_t startcount, loopcount;
 void Connect()
 {
   if(quitting)

@@ -23,7 +23,7 @@
  * Replies to CTCP requests in IRC
  */
 
-class ctcp:public module
+class ctcp : public module
 {
 public:
   ctcp(const Flux::string &Name):module(Name){
@@ -32,7 +32,7 @@ public:
     this->SetPriority(PRIORITY_FIRST);
     ModuleHandler::Attach(I_OnCTCP, this);
   }
-  void OnCTCP(const Flux::string &source, const std::vector<Flux::string> &params)
+  void OnCTCP(const Flux::string &source, const Flux::vector &params)
   {
     Flux::string cmd = params.empty()?"":params[0];
     Log() << "\033[22;31mRecieved CTCP " << Flux::Sanitize(cmd) << " from " << source << "\033[22;36m";

@@ -31,7 +31,7 @@ public:
      if(protocoldebug)
         Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
   }
-  void OnPing(const std::vector<Flux::string> &params)
+  void OnPing(const Flux::vector &params)
   {
     pingtimer.pings = 0;
     send_cmd("PONG :%s\n", params[0].c_str());

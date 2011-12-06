@@ -79,7 +79,7 @@ private:
     }else
       u->SendMessage(TooManyRequests());
   }
-  void SetQuery(unsigned n, const std::vector<Flux::string> &params)
+  void SetQuery(unsigned n, const Flux::vector &params)
   {
     query.clear();
     if (n < params.size()) for(unsigned i=n; i < params.size(); ++i) query += params[i]+' ';
@@ -93,9 +93,9 @@ public:
     this->SetPriority(PRIORITY_LAST);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
   {
-    //std::vector<Flux::string> MessageParams = StringVector(params, ' ');
+    //Flux::vector MessageParams = StringVector(params, ' ');
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
       msg += params[i]+' ';

@@ -13,7 +13,7 @@ public:
     Implementation i[] = { I_OnPrivmsg, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
@@ -29,7 +29,7 @@ public:
       c->SendMessage(xf->Tags["trigger"].Content);
     }
   }
-  void OnNotice(User *u, const std::vector<Flux::string> &params)
+  void OnNotice(User *u, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)

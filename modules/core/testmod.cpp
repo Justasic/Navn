@@ -29,7 +29,7 @@ public:
    this->SetDesc("Test for the modules");
    this->SetSyntax("\37TEST\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     source.Reply("YAY!");
   }
@@ -60,7 +60,7 @@ public:
      * ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
      */
   }
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string s;
     for(unsigned i=0; i < params.size(); ++i)

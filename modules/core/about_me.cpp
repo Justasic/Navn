@@ -26,7 +26,7 @@ public:
    this->SetDesc("Decodes a hostname");
    this->SetSyntax("\37fullhost\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     Flux::string host = params[1];
@@ -64,7 +64,7 @@ public:
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
   
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)

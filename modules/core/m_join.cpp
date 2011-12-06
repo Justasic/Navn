@@ -11,7 +11,7 @@ public:
    this->SetDesc("Joins a channel");
    this->SetSyntax("\37channel\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     Flux::string chan = params[1];
@@ -51,7 +51,7 @@ public:
     this->SetDesc("Part a channel");
     this->SetSyntax("\37channel\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string chan = params[1];
     User *u = source.u;

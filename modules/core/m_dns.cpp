@@ -45,7 +45,7 @@ public:
     this->SetDesc("Displays a resolved hostname/domain");
     this->SetSyntax("hostname"); 
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     struct hostent *he;
     he = gethostbyname(params[1].c_str());
@@ -78,7 +78,7 @@ public:
     this->SetDesc("Displays a reversely resolved DNS IP Address");
     this->SetSyntax("ipaddress"); 
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     struct addrinfo *result;
     struct addrinfo *res;
@@ -120,7 +120,7 @@ public:
     this->SetDesc("Displays ALL reverse DNS ip addresses");
     this->SetSyntax("ipaddress"); 
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     struct addrinfo *result;
     struct addrinfo *res;

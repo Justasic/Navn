@@ -27,7 +27,7 @@ public:
   {
    this->SetDesc("Displays help messages");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     int c=0;
     if(!params.empty()){
@@ -64,7 +64,7 @@ public:
   {
    this->SetDesc("Displays Channel help messages");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string cmds;
     if(!params.empty()){

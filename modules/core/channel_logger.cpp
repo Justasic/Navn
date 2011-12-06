@@ -59,7 +59,7 @@ public:
     Implementation i[] = { I_OnPart, I_OnPrivmsg, I_OnNotice, I_OnJoin, I_OnQuit, I_OnJoin, I_OnChannelMode, I_OnChannelOp };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params){
+  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params){
     Flux::string nolog = params.size() == 2?params[1]:"";
     if(c->name != Config->LogChannel)
       return;
@@ -77,7 +77,7 @@ public:
       }
     }
   }
-  void OnNotice(User *u, Channel *c, const std::vector<Flux::string> &params){
+  void OnNotice(User *u, Channel *c, const Flux::vector &params){
     if(c && c->name != Config->LogChannel)
       return;
     Flux::string msg;

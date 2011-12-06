@@ -35,8 +35,6 @@
  * Say \a !version to get Navn's verion.
  * \subsection everything !everything
  * Say \a !everything
- * \subsection cum cum
- * Say \a cum
  * @{
  */
 
@@ -54,7 +52,7 @@ public:
   {
     this->SetDesc("Displays the bots version info into the channel");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     Channel *c = source.c;
@@ -81,7 +79,7 @@ public:
   {
     this->SetDesc("Displays the spam warning");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Log(source.u, this) << "command in " << source.c->name;
     source.c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
@@ -102,7 +100,7 @@ public:
   {
     this->SetDesc("Displays the rules of the chatroom");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     User *u = source.u;
@@ -131,7 +129,7 @@ public:
   {
     this->SetDesc("Prints Syatem Uptime in the channel");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     User *u = source.u;
@@ -169,7 +167,7 @@ public:
   {
     this->SetDesc("Displays Flux-Net's Social Information");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     User *u = source.u;
@@ -195,7 +193,7 @@ public:
   {
     this->SetDesc("Displays how to register your nickname");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     User *u = source.u;
@@ -231,7 +229,7 @@ public:
   {
     this->SetDesc("Displays how to rename");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     User *u = source.u;
@@ -257,7 +255,7 @@ public:
   {
     this->SetDesc("General Da_Goat info");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     User *u = source.u;
@@ -301,7 +299,7 @@ public:
     this->AddChanCommand(&ver);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
-  void OnPrivmsg(User *u, Channel *c, const std::vector<Flux::string> &params)
+  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string cmd = params.empty()?"":params[0], msg;
     for(unsigned i=0; i < params.size(); ++i)

@@ -8,7 +8,7 @@ public:
     this->SetDesc("Lists all loaded modules");
     this->SetSyntax("\37priority\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string priority = params.size() == 2?params[1]:"";
     int c=0;
@@ -61,7 +61,7 @@ public:
     this->SetDesc("Load a module");
     this->SetSyntax("\37name\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string module = params[1];
     if(module.empty())
@@ -100,7 +100,7 @@ public:
     this->SetDesc("Unloads a module");
     this->SetSyntax("\37name\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string module = params[1];
     if(!source.u->IsOwner())
@@ -134,7 +134,7 @@ public:
     this->SetDesc("Reloads a module");
     this->SetSyntax("\37name\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string module = params[1];
     if(!source.u->IsOwner())
@@ -171,7 +171,7 @@ public:
    this->SetDesc("Provides info on a module");
    this->SetSyntax("\37name\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string modd = params[1];
     if(modd.empty()){
@@ -222,7 +222,7 @@ class M_Handler : public module
   CommandMUnload unload;
   CommandMInfo info;
   CommandMReload reload;
-  std::vector<Flux::string> CurrentModuleList;
+  Flux::vector CurrentModuleList;
 public:
   M_Handler(const Flux::string &Name):module(Name)
   {
@@ -247,11 +247,11 @@ public:
   }
   void OnReload()
   {
-    std::vector<Flux::string> updatedmodlist = StringVector(Config->Modules, ',');
-    for(std::vector<Flux::string>::iterator it; it != updatedmodlist.end(); ++it)
+    Flux::vector updatedmodlist = StringVector(Config->Modules, ',');
+    for(Flux::vector::iterator it; it != updatedmodlist.end(); ++it)
     {
       (*it).trim();
-      for(std::vector<Flux::string>::iterator it2; it2 != CurrentModuleList.end(); ++it2)
+      for(Flux::vector::iterator it2; it2 != CurrentModuleList.end(); ++it2)
       {
 	if((*it) != (*it2)){
 	  Log(LOG_TERMINAL) << "(*it) != (*it2)";

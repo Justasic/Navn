@@ -8,7 +8,7 @@ public:
   {
     this->SetDesc("Rehashes the config file");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
    if(!u->IsOwner())
@@ -40,7 +40,7 @@ public:
     this->SetDesc("Change the bots nickname");
     this->SetSyntax("\37nickname\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     Flux::string newnick = params[1];
@@ -80,7 +80,7 @@ public:
    this->SetDesc("Restarts the bot");
    this->SetSyntax("\37reason\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     if(source.u->IsOwner()){
       ircproto->quit("Restarting..");
@@ -110,7 +110,7 @@ public:
     this->SetDesc("Kick a user from the channel");
     this->SetSyntax("channel \37nick\15");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     if(u->IsOwner()){
@@ -154,7 +154,7 @@ public:
     this->SetDesc("Change ownership over the bot");
     this->SetSyntax("\37owner\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     source.Reply("This command is broken!");
   }
@@ -178,7 +178,7 @@ public:
     this->SetDesc("Quits the bot from IRC");
     this->SetSyntax("\37randompass\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     Flux::string pass = params[1];
@@ -214,7 +214,7 @@ public:
     this->SetDesc("Set the topic on a channel");
     this->SetSyntax("\37channel\37 [\37topic\37]");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     if(!u->IsOwner()){
@@ -266,7 +266,7 @@ public:
   {
     this->SetDesc("Gets the bots Process ID");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     if(u->IsOwner()){
@@ -294,7 +294,7 @@ public:
   {
     this->SetDesc("Gets the bots Random Password");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     if (u->IsOwner()){
@@ -325,7 +325,7 @@ public:
   {
     this->SetDesc("Shows system stats");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     int days, hours, mins;
 #ifndef _WIN32
@@ -471,7 +471,7 @@ public:
 	c->SendJoin(); 
      }
   }
-  void OnNotice(User *u, const std::vector<Flux::string> &params)
+  void OnNotice(User *u, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)

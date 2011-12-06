@@ -30,7 +30,7 @@ public:
    this->SetDesc("Shows the time in the channel");
    this->SetSyntax("\37location\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     Flux::string location = params.empty()?"":params[1];
@@ -67,7 +67,7 @@ public:
       Log(source.u, this) << "to get time for " << location;
     }
   }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  bool OnHelp(CommandSource &source, const Flux::string&)
   {
     this->SendSyntax(source);
     source.Reply(" ");

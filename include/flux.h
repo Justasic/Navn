@@ -577,6 +577,7 @@ namespace Flux{
   }; //end of string class
   template<typename T> class map : public std::map<string, T> { };
   template<typename T> class insensitive_map : public std::map<string, T, ci::less> { };
+  typedef std::vector<string> vector;
   extern CoreExport Flux::string Sanitize(const Flux::string&);
   extern CoreExport Flux::string RandomString(size_t);
   extern CoreExport Flux::string RandomNickString(size_t);

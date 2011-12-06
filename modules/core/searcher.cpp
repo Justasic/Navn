@@ -64,7 +64,7 @@ public:
     this->SetDesc("Generate a Google search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
@@ -87,7 +87,7 @@ public:
     this->SetDesc("Generate a youtube search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
@@ -110,7 +110,7 @@ public:
     this->SetDesc("Generate a Pirate Bay search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
@@ -133,7 +133,7 @@ public:
     this->SetDesc("Generate a Dictionary search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
@@ -156,7 +156,7 @@ public:
     this->SetDesc("Generate a Urban Dictionary search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
@@ -179,7 +179,7 @@ public:
     this->SetDesc("Generate a movie search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
@@ -202,7 +202,7 @@ public:
     this->SetDesc("Generate a wikipedia search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);
@@ -225,7 +225,7 @@ public:
     this->SetDesc("Generate a music search url");
     this->SetSyntax("\37message\37");
   }
-  void Run(CommandSource &source, const std::vector<Flux::string> &params)
+  void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
     source.c->SendMessage(str);

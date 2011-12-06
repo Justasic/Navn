@@ -2,7 +2,7 @@
 
 void ProcessInput(const Flux::string &str)
 {
-  std::vector<Flux::string> params = StringVector(str, ' ');
+  Flux::vector params = StringVector(str, ' ');
   if(params.empty())
     return;
 
