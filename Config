@@ -25,6 +25,7 @@ Load_Cache () {
 Run_Build_System () {
 	WITH_INST=""
 	RUN_CC_PL=""
+	BUILD_TYPE=""
 	WITH_CXX11=""
 	GEN_TYPE=""
 
@@ -36,6 +37,12 @@ Run_Build_System () {
 		WITH_CXX11="-DUSE_CXX_11:BOOLEAN=ON"
 	else
 		WITH_CXX11="-DUSE_CXX_11:BOOLEAN=OFF"
+	fi
+
+	if [ "$DEBUG" = "yes" ] ; then
+		BUILD_TYPE="-DCMAKE_BUILD_TYPE:STRING=DEBUG"
+	else
+		BUILD_TYPE="-DCMAKE_BUILD_TYPE:STRING=RELEASE"
 	fi
 
 	if [ "$USE_RUN_CC_PL" = "yes" ] ; then
@@ -59,9 +66,9 @@ Run_Build_System () {
 		REAL_SOURCE_DIR="$SOURCE_DIR"
 	fi
 
-	echo "cmake $GEN_TYPE $WITH_INST $RUN_CC_PL $WITH_CXX11 $EXTRA_CONFIG_ARGS $REAL_SOURCE_DIR"
+	echo "cmake $GEN_TYPE $WITH_INST $RUN_CC_PL $BUILD_TYPE $WITH_CXX11 $EXTRA_CONFIG_ARGS $REAL_SOURCE_DIR"
 
-	cmake $GEN_TYPE $WITH_INST $RUN_CC_PL $WITH_CXX11 $EXTRA_CONFIG_ARGS $REAL_SOURCE_DIR
+	cmake $GEN_TYPE $WITH_INST $RUN_CC_PL $WITH_CXX11 $BUILD_TYPE $EXTRA_CONFIG_ARGS $REAL_SOURCE_DIR
 
 	echo ""
 	echo "Now cd build and run make to build Navn."
@@ -87,6 +94,7 @@ export ECHO2 ECHO2SUF
 INSTDIR=$HOME/navn
 USE_RUN_CC_PL="no"
 USE_CXX_11="no"
+DEBUG="yes"
 EXTRA_CONFIG_ARGS=
 CAN_QUICK="no"
 SOURCE_DIR=`dirname $0`
@@ -193,9 +201,28 @@ echo ""
 
 ####
 
-TEMP_NY="n"
+
+TEMP_YN="n"
+if [ "$DEBUG" = "yes" ] ; then
+	TEMP_YN="y"
+fi
+echo "Would you like to build a debug version of Navn?"
+echo2 "[$TEMP_YN] "
+read YN
+if [ "$YN" ] ; then
+	if [ "$YN" = "y" ] ; then
+		DEBUG="yes"
+	else
+		DEBUG="no"
+	fi
+fi
+echo ""
+
+####
+
+TEMP_YN="n"
 if [ "$USE_CXX_11" = "yes" ] ; then
-	TEMP_NY="y"
+	TEMP_YN="y"
 fi
 echo "You can optionally build using C++ 11, this is very experimental"
 echo "at this point and should only be enabled for advanced users."
@@ -203,7 +230,7 @@ echo "Some compilers may not fully support C++ 11 but will accept"
 echo "the code, this may cause compiles to fail. There will be no"
 echo "support for build related errors if this option is enabled!"
 echo "Do you want to compile with C++ 11?"
-echo2 "[$TEMP_NY] "
+echo2 "[$TEMP_YN] "
 read YN
 if [ "$YN" ] ; then
 	if [ "$YN" = "y" ] ; then
@@ -237,6 +264,7 @@ echo2 "Saving configuration results in config.cache... "
 
 cat <<EOT >$SOURCE_DIR/config.cache
 INSTDIR="$INSTDIR"
+DEBUG="$DEBUG"
 USE_RUN_CC_PL="$USE_RUN_CC_PL"
 USE_CXX_11="$USE_CXX_11"
 EXTRA_CONFIG_ARGS="$EXTRA_CONFIG_ARGS"

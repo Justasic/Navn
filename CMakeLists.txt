@@ -54,14 +54,6 @@ SET(VERSION_FULL "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSI
 # because some of this is copypasta we set this var here
 SET(PROGRAM_NAME ${PROJECT_NAME})
 
-#
-# Configure paths
-#
-SET(CONFIG_DIR_BIN bin/)
-
-SET(EXECUTABLE_OUTPUT_PATH bin)
-SET(LIBRARY_OUTPUT_PATH bin)
-
 # Start with empty defaults for library and include directories, to be used by GNU compilers only
 set(DEFAULT_LIBRARY_DIRS)
 set(DEFAULT_INCLUDE_DIRS)
@@ -133,6 +125,18 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   endif(DEFAULT_INCLUDE_DIRS)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
+# If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their definition
+# and dump it in the cache along with proper documentation, otherwise set CMAKE_BUILD_TYPE
+# to Debug
+# Only do this if not using Visual Studio
+if(NOT MSVC)
+  if(CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+  else(CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE DEBUG CACHE STRING "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+  endif(CMAKE_BUILD_TYPE)
+endif(NOT MSVC)
+
 # Add an optional variable for using run-cc.pl for building, Perl will be checked later regardless of this setting
 option(USE_RUN_CC_PL "Use run-cc.pl for building" OFF)
 
@@ -140,11 +144,6 @@ option(USE_RUN_CC_PL "Use run-cc.pl for building" OFF)
 option(USE_CXX_11 "Use C++ 11 during compile" OFF)
 
 INCLUDE_DIRECTORIES(${navn_SOURCE_DIR}/src ${navn_SOURCE_DIR}/include)
-# msvc++
-## IF(MSVC_IDE)
-##  SET(CMAKE_CXX_FLAGS "/DWIN32 /D_CONSOLE /DZLIB_WINAPI /fp:fast /EHsc")
-##  SET(CMAKE_CXX_FLAGS_DEBUG "/DDEBUG /D_DEBUG /MTd /Zi")
-## ENDIF(MSVC_IDE)
 
 set(ENV{LC_ALL} C)
 SOURCE_GROUP(${PROJECT_NAME} FILES ${navn_source})
@@ -246,6 +245,11 @@ if(NOT MSVC)
     endif(HAVE_PTHREAD)
   endif(NOT WIN32)
 endif(NOT MSVC)
+
+# Set the DEBUG_BUILD for sysconf.h
+if(CMAKE_BUILD_TYPE STREQUAL "DEBUG" OR CMAKE_BUILD_TYPE STREQUAL "RELWITHDEBINFO")
+  set(DEBUG_BUILD TRUE)
+endif(CMAKE_BUILD_TYPE STREQUAL "DEBUG" OR CMAKE_BUILD_TYPE STREQUAL "RELWITHDEBINFO")
 
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
 check_include_file(strings.h HAVE_STRINGS_H)
