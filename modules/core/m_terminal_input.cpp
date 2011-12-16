@@ -105,7 +105,11 @@ class InputThread : public Thread
 {
 public:
   bool exiting;
-  InputThread():Thread() { Log() << "Input Thread Initializing."; exiting = false; }
+  InputThread(Thread *t):Thread(), exiting(false) {
+    Log() << "Input Thread Initializing.";
+    t = this;
+    this->Start();
+  }
   ~InputThread() { Log() << "Input Thread Exiting."; exiting = true; }
   void ToRun()
   {
@@ -129,28 +133,12 @@ public:
   {
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");
-    ModuleHandler::Attach(I_OnStart, this);
-  }
-  ~ModTerminalInput() { if(t) delete t; }
-  void OnStart(int, char**)
-  {
     if(nofork && InTerm()){
-      t = new InputThread();
-      t->Start();
+      new InputThread(t);
     }else
       throw ModuleException("Cannot run m_terminal_input when fork'ed");
   }
-  void OnLoad() //This virtual is called when the module is loaded.
-  {
-    if(!t)
-    {
-      if(nofork && InTerm()){
-	t = new InputThread();
-	t->Start();
-      }else
-	throw ModuleException("Cannot run m_terminal_input when fork'ed");
-    }
-  }
+  ~ModTerminalInput() { if(t) delete t; }
 };
 
 MODULE_HOOK(ModTerminalInput)
