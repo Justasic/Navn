@@ -83,6 +83,7 @@ public:
       return;
     }
     Flux::string ret = hostname, laststr;
+    int c = 0;
     for(res = result; res != NULL; res = res->ai_next)
     {
       struct sockaddr *haddr = res->ai_addr;
@@ -110,8 +111,10 @@ public:
       if(!laststr.equals_cs(ret)){
 	source.c->SendMessage("\0034[ADNS]\017 %s", ret.c_str());
 	laststr = ret;
+	c++; //LOL!
       }
     }
+    source.c->SendMessage("\0034[ADNS]\017 Total of %i IP address%s", c, c > 1?"es":"");
     freeaddrinfo(result);
   }
   bool OnHelp(CommandSource &source, const Flux::string&)
@@ -191,6 +194,7 @@ public:
     if (error != 0){ 
       source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error)); 
     }else{
+      Flux::string laststr, ret;
     for (res = result; res != NULL; res = res->ai_next){
       char hostname[NI_MAXHOST] = "";
       error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
@@ -198,12 +202,14 @@ public:
 	source.c->SendMessage("\0034[All rDNS]\017 error in getnameinfo: %s", gai_strerror(error)); 
 	continue; 
       }
-      if(*hostname != '\0'){
+      ret = hostname;
+      if(!laststr.equals_cs(ret)){
 	source.c->SendMessage("\0034[All rDNS]\017 %s", hostname);
+	laststr = ret;
 	count++;
       }
     }
-    source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostnames.", count);
+    source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostname%s.", count, count > 1?"s":"");
     freeaddrinfo(result);
     }
   }
