@@ -83,7 +83,7 @@ int main (int argcx, char** argvx, char *envp[])
     
     while(!quitting){
       Log(LOG_RAWIO) << "Top of main loop";
-      if(++loopcount >= 5000)
+      if(++loopcount >= 50)
 	raise(SIGSEGV); //prevent loop bombs, we raise a segfault because the segfault handler will handle it better
       
       /* Process the socket engine */
