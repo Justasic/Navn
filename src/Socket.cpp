@@ -12,69 +12,110 @@ bool throwex;
 Flux::string throwmsg;
 fd_set ReadFD/*, WriteFD, ExceptFD*/;
 
+Flux::string ForwardResolution(const Flux::string &hostname)
+{
+  struct addrinfo *result, *res;
+  int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
+  if(err != 0)
+  {
+    Log(LOG_TERMINAL) << "Failed to resolve " << hostname << ": " << gai_strerror(err);
+    return "";
+  }
+  bool gothost = false;
+  Flux::string ret = hostname;
+  for(res = result; res != NULL && !gothost; res = res->ai_next)
+  {
+    struct sockaddr *haddr;
+    haddr = res->ai_addr;
+    char address[INET6_ADDRSTRLEN + 1] = "";
+    switch(haddr->sa_family)
+    {
+      case AF_INET:
+	struct sockaddr_in *v4;
+	v4 = reinterpret_cast<struct sockaddr_in*>(haddr);
+	if (!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address))){
+	  Log(LOG_DEBUG) << "DNS: " << strerror(errno);
+	  return "";
+	}
+	break;
+      case AF_INET6:
+	struct sockaddr_in6 *v6;
+	v6 = reinterpret_cast<struct sockaddr_in6*>(haddr);
+	if (!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address))){
+	  Log(LOG_DEBUG) << "DNS: " << strerror(errno);
+	  return "";
+	}
+	break;
+    }
+    ret = address;
+    gothost = true;
+  }
+  freeaddrinfo(result);
+  return ret;
+}
+
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
 SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1){
   SET_SEGV_LOCATION();
   this->server = cserver;
+  this->ip = ForwardResolution(cserver);
   this->port = cport;
   throwex = false;
-  
-  memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_INET;
-  hints.ai_socktype = SOCK_STREAM;
+
+  if(this->ip.find_first_not_of("1234567890.:/") != Flux::string::npos)
+    throw SocketException("Unable to resolve IP address from hostname: "+cserver);
+  if(this->ip.search(':'))
+    this->ipv6 = true;
   /****************************/ 
 }
+
 int SocketIO::GetFD() const { return sockn; }
 void SocketIO::ThrowException(const Flux::string &msg) { throwex = true; throwmsg = msg; }
+
 bool SocketIO::SetNonBlocking()
 {
  int flags = fcntl(this->GetFD(), F_GETFL, 0);
  return !fcntl(this->GetFD(), F_SETFL, flags | O_NONBLOCK);
 }
+
 bool SocketIO::SetBlocking()
 {
   int flags = fcntl(this->GetFD(), F_GETFL, 0);
   return !fcntl(this->GetFD(), F_SETFL, flags & ~O_NONBLOCK);
 }
+
 SocketIO::~SocketIO(){
-  SET_SEGV_LOCATION();
  if(is_valid()) 
    close(sockn);
  FD_CLR(this->GetFD(), &ReadFD);
- //FD_CLR(this->GetFD(), &WriteFD);
-}
-void SocketIO::get_address()
-{
-  SET_SEGV_LOCATION();
-  int rv = 1;
-  rv = getaddrinfo(this->server.c_str(), this->port.c_str(), &hints, &servinfo);
-  if (rv != 0)
-  {
-    throw SocketException(fsprintf("Could not resolve server: %s:%i %s",this->server.c_str(), 
-				   (int)this->port, gai_strerror(rv)).c_str());
-  }
 }
 
-void *get_in_addr(struct sockaddr *sa)
-{
-  SET_SEGV_LOCATION();
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
+bool SocketIO::IsIPv6() const { return ipv6; }
+
+// void *get_in_addr(void *address)
+// {
+//   struct sockaddr *sa = reinterpret_cast<struct sockaddr*>(address);
+//   switch(sa->sa_family)
+//   {
+//     case AF_INET:
+//       return &(reinterpret_cast<struct sockaddr_in*>(sa)->sin_addr);
+//     case AF_INET6:
+//       return &(reinterpret_cast<struct sockaddr_in6*>(sa)->sin6_addr);
+//   }
+//   return NULL;
+// }
 
 bool SocketIO::Connect()
 {
   SET_SEGV_LOCATION();
-  struct addrinfo *p;
-  int connected = 0;
-  char s[INET6_ADDRSTRLEN];
+  struct addrinfo *servinfo;
+  int connected, rv = 0;
+  if((rv = getaddrinfo(this->ip.c_str(), this->port.c_str(), NULL, &servinfo)) != 0)
+    throw SocketException(fsprintf("Could not resolve server (%s:%i): %s",this->ip.c_str(),
+				   (int)this->port, gai_strerror(rv)).c_str());
   
-  this->get_address(); // catch any resolution issues before we even attempt to connect..
-  
-  for(p = servinfo; p != NULL; p = p->ai_next)
+  for(struct addrinfo *p = servinfo; p != NULL; p = p->ai_next)
   {
     sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
     if (this->GetFD() < 0) 
@@ -93,20 +134,22 @@ bool SocketIO::Connect()
     
   freeaddrinfo(servinfo); //Clear up used memory we dont need anymore
   
-  inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, INET6_ADDRSTRLEN+1);
   this->SetNonBlocking();
   FD_SET(this->GetFD(), &ReadFD);
-  Log(LOG_DEBUG) << "Connected to" << this->server << ":" << this->port;
+  Log(LOG_DEBUG) << "Connected to " << this->server << ":" << this->port << ' ' << '(' << this->ip << ')';
   return true;
 }
+
 int SocketIO::Process()
 {
   timeval timeout;
   timeout.tv_sec = Config->SockWait;
   timeout.tv_usec = 0; //this timeout keeps the bot from being a CPU hog for no reason :)
   fd_set read = ReadFD/*, write = WriteFD, except = ExceptFD*/;
+  
   FD_ZERO(&read);
   FD_SET(this->GetFD(), &read);
+  
   int sres = select(this->GetFD() + 1, &read, NULL, NULL, &timeout);
   if(sres == -1 && errno != EINTR){
     Log(LOG_DEBUG) << "Select() error: " << strerror(errno);
@@ -127,6 +170,7 @@ int SocketIO::Process()
   }
   return sres;
 }
+
 int SocketIO::recv() const
 {
   char tbuf[BUFSIZE + 1] = "";
@@ -144,6 +188,7 @@ int SocketIO::recv() const
   }
   return i;
 }
+
 int SocketIO::send(const Flux::string buf) const
 {
  LastBuf = buf;

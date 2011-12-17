@@ -28,15 +28,15 @@ const int MAXCONNECTIONS = 5;
 class CoreExport SocketIO
 {
 private:
-  Flux::string server, port;
+  Flux::string server, port, ip;
   int sockn;
+  bool ipv6;
   size_t recvlen;
-  struct addrinfo hints, *servinfo;
 public:
   SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
-  void get_address();
   int GetFD() const;
+  bool IsIPv6() const;
   bool SetNonBlocking();
   bool SetBlocking();
   int recv() const;
