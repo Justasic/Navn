@@ -42,17 +42,16 @@ class CommandCDNS : public Command
 public:
   CommandCDNS():Command("!DNS", 1, 1)
   {
-    this->SetDesc("Displays a resolved hostname/domain");
+    this->SetDesc("Displays a resolved hostname");
     this->SetSyntax("hostname"); 
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    struct hostent *he;
-    he = gethostbyname(params[1].c_str());
-    if (he <= 0)
-	source.c->SendMessage("\0034[DNS]\017 Error: %i", he);
+    Flux::string ip = ForwardResolution(params[1]);
+    if (ip.empty())
+	source.c->SendMessage("\0034[DNS]\017 Error");
     else
-	source.c->SendMessage("\0034[DNS]\017 %s", inet_ntoa(*(struct in_addr*)he->h_addr));
+	source.c->SendMessage("\0034[DNS]\017 %s", ip.c_str());
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
@@ -65,6 +64,67 @@ public:
     return true;
   }
 };
+class CommandCADNS : public Command
+{
+public:
+  CommandCADNS():Command("!ADNS", 1, 1)
+  {
+    this->SetDesc("Displays ALL resolved ip addresses from hostnames");
+    this->SetSyntax("hostname");
+  }
+  void Run(CommandSource &source, const Flux::vector &params)
+  {
+    Flux::string hostname = params[1];
+    struct addrinfo *result, *res;
+    int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
+    if(err != 0)
+    {
+      source.c->SendMessage("Failed to resolve %s: %s", hostname.c_str(), gai_strerror(err));
+      return;
+    }
+    Flux::string ret = hostname, laststr;
+    for(res = result; res != NULL; res = res->ai_next)
+    {
+      struct sockaddr *haddr = res->ai_addr;
+      char address[INET6_ADDRSTRLEN + 1] = "";
+      switch(haddr->sa_family)
+      {
+	case AF_INET:
+	  struct sockaddr_in *v4;
+	  v4 = reinterpret_cast<struct sockaddr_in*>(haddr);
+	  if (!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address))){
+	    source.c->SendMessage("DNS: %s", strerror(errno));
+	    return;
+	  }
+	  break;
+	case AF_INET6:
+	  struct sockaddr_in6 *v6;
+	  v6 = reinterpret_cast<struct sockaddr_in6*>(haddr);
+	  if (!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address))){
+	    source.c->SendMessage("DNS: %s", strerror(errno));
+	    return;
+	  }
+	  break;
+      }
+      ret = address;
+      if(!laststr.equals_cs(ret)){
+	source.c->SendMessage("\0034[ADNS]\017 %s", ret.c_str());
+	laststr = ret;
+      }
+    }
+    freeaddrinfo(result);
+  }
+  bool OnHelp(CommandSource &source, const Flux::string&)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command lets a user resolve\n"
+		 "all IP addresses associated with a\n"
+		 "given hostname.");
+    return true;
+  }
+};
+
 /** Reverse DNS Lookup
 * Looks up an IP address to host
 * @Param rdns(Socket, rawircFlux::string, Destination, ipaddress)
@@ -163,10 +223,12 @@ class dns_m:public module
   CommandCARDNS ardns;
   CommandCRDNS rdns;
   CommandCDNS dns;
+  CommandCADNS adns;
 public:
   dns_m(const Flux::string &Name):module(Name){ 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    this->AddChanCommand(&adns);
     this->AddChanCommand(&ardns);
     this->AddChanCommand(&rdns);
     this->AddChanCommand(&dns);
