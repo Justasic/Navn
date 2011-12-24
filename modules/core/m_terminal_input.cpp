@@ -2,7 +2,7 @@
 
 void ProcessInput(const Flux::string &str)
 {
-  Flux::vector params = StringVector(str, ' ');
+  Flux::vector params = SerializeString(str, ' ');
   if(params.empty())
     return;
 

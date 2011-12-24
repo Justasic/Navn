@@ -181,7 +181,7 @@ void process(const Flux::string &buffer){
   Flux::string nickname = h.nick, uident = h.ident, uhost = h.host, cmd;
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
-  std::vector<Flux::string> params2 = StringVector(message, ' ');
+  std::vector<Flux::string> params2 = SerializeString(message, ' ');
   /***********************************************/
   if(command == "004" && source.search('.')) { server_name = source; }
   if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION")){

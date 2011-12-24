@@ -239,7 +239,7 @@ public:
   }
   void OnStart(int, char**)
   {
-    CurrentModuleList = StringVector(Config->Modules, ',');
+    CurrentModuleList = SerializeString(Config->Modules, ',');
     for(unsigned i=0; i < CurrentModuleList.size(); ++i){
       CurrentModuleList[i].trim();
       printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
@@ -247,7 +247,7 @@ public:
   }
   void OnReload()
   {
-    Flux::vector updatedmodlist = StringVector(Config->Modules, ',');
+    Flux::vector updatedmodlist = SerializeString(Config->Modules, ',');
     for(Flux::vector::iterator it; it != updatedmodlist.end(); ++it)
     {
       (*it).trim();

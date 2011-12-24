@@ -147,12 +147,27 @@ Flux::string isolate(char begin, char end, const Flux::string &msg){
 }
 
 /**
+ * \fn Flux::string VectorString(const Flux::vector &params)
+ * \brief Returns a condensed string of a Flux::vector
+ * \param Flux::vector a vector containing a string that needs condensing
+ */
+Flux::string CondenseString(const Flux::vector &p)
+{
+  Flux::vector params = *const_cast<Flux::vector*>(&(p)); //Why is this so complex?
+  Flux::string ret;
+  for(Flux::vector::iterator it = params.begin(); it != params.end(); ++it)
+    ret += *it + " ";
+  ret.trim();
+  return ret;
+}
+
+/**
  * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
  * \brief creates a vector that breaks down a string word-by-word using the delim as the seperater
  * \param src The source string for it to break down
  * \param delim The char used to seperate the words in the source string
  */
-std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
+Flux::vector SerializeString(const Flux::string &src, char delim)
 {
  sepstream tok(src, delim);
  Flux::string token;

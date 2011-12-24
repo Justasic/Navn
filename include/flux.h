@@ -33,24 +33,27 @@
 #endif
 typedef std::basic_string<char, std::char_traits<char>, std::allocator<char> > base_string;
 extern CoreExport bool protocoldebug;
-#ifdef _CXX11
-template<typename T, typename V> inline auto value_cast(const V &y)
-#else
+/**
+ * \fn template<typename T, typename V> inline T value_cast(const V &y)
+ * \brief A casting function which will attempt to safely cast a value into another, then force it if it fails. this cast is different from other casting operators in that it doesnt accept a pointer.
+ * \param value The value to cast
+ * \param castvalue The expected return value
+ * \return the casted value
+ */
 template<typename T, typename V> inline T value_cast(const V &y)
-#endif
 {
-  std::stringstream stream;
+  std::stringstream stream; //Try safe casting with a stringstream.
   T x;
   if(!(stream << std::setprecision(800) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
-  if(!(stream >> x))
+  if(!(stream >> x)){ //If stringstream fails, force the cast.
     if(protocoldebug)
-      printf("Failed to convert %s to %s\n", typeid(V).name(), typeid(T).name());
+      printf("Failed to cast \"%s\" to \"%s\", attempting to force with reinterpret_cast\n", typeid(V).name(), typeid(T).name());
+    x = *reinterpret_cast<T*>(const_cast<V*>(&(y)));
+  }
   return x;
 }
-#ifdef _CXX11
-template<typename... param> void printf(const Flux::string &format, param... params) { printf(format.c_str(), params...); }
-#endif
+
 namespace Flux{
  class string;
 }

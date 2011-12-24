@@ -124,6 +124,9 @@ Fixed Command->SendSyntax() sending the syntax incorrectly
 Added TextFile::IsDirectory
 Fixed not making a new runtime directory if there isn't one on start
 Moved to CMake
+Added VectorString to convert a Flux::vector to a string
+Renamed StringVector to SerializeString to better describe what it does
+value_cast now forces the cast if casting with stringstreams fails
 
 Navn 2.0.0
 ==========
