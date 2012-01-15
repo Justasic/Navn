@@ -227,7 +227,7 @@ void BotConfig::Read(){
   this->ModuleDir = Parser->Get("Modules", "ModuleDir", "");
   this->Modules = Parser->Get("Modules", "Modules", "");
   this->SockWait = Parser->GetInteger("Bot","Socket Timeout",5);
-  
+  this->LogTime = Parser->GetInteger("Log", "Log Time", 0);
   this->ServicesAccount = this->Parser->Get("Services","Account","");
   this->ServicesPass = this->Parser->Get("Services","Password","");
   this->ServicesSendString = this->Parser->Get("Services","Send String","");

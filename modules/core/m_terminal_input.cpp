@@ -114,8 +114,16 @@ public:
   void ToRun()
   {
     base_string buf;
+    int nobomb = 0;
+    time_t last_run = time(NULL);
     while(!exiting)
     {
+      if(nobomb++ >= 50)
+	raise(SIGSEGV);
+      if(last_run - time(NULL) > 5){
+	nobomb = 0;
+	last_run = time(NULL);
+      }
       Log(LOG_RAWIO) << "Top of Input Loop";
       std::getline(std::cin, buf);
       if(!buf.empty())

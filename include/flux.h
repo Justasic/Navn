@@ -36,8 +36,8 @@ extern CoreExport bool protocoldebug;
 /**
  * \fn template<typename T, typename V> inline T value_cast(const V &y)
  * \brief A casting function which will attempt to safely cast a value into another, then force it if it fails. this cast is different from other casting operators in that it doesnt accept a pointer.
- * \param value The value to cast
- * \param castvalue The expected return value
+ * \param type-name What it should be casted as
+ * \param expression What's to be casted
  * \return the casted value
  */
 template<typename T, typename V> inline T value_cast(const V &y)

@@ -71,6 +71,7 @@ public:
   Flux::string AutoIdentString;
   Flux::string ServicesService;
   bool IdentOnConn;
+  size_t LogTime;
   size_t SockWait;
 private:
   void Read();
