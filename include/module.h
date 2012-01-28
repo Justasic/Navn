@@ -68,7 +68,7 @@ public:
   virtual void OnQuit(User*, const Flux::string&) {}
   virtual void OnJoin(User*, Channel*) {}
   virtual void OnKick(User*, User*, Channel*, const Flux::string&) {}
-  virtual void OnNumeric(int) {}
+  virtual void OnNumeric(int, const std::vector<Flux::string>&) {}
   virtual void OnReload() {}
   virtual void OnCommand(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnStart(int, char**) {}

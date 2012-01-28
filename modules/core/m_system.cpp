@@ -260,7 +260,7 @@ public:
 class CommandPID: public Command
 {
 public:
-  CommandPID():Command("PID", 0,0)
+  CommandPID():Command("PID")
   {
     this->SetDesc("Gets the bots Process ID");
   }
@@ -288,7 +288,7 @@ public:
 class CommandPass: public Command
 {
 public:
-  CommandPass():Command("PASS", 0,0)
+  CommandPass():Command("PASS")
   {
     this->SetDesc("Gets the bots Random Password");
   }
@@ -319,7 +319,7 @@ public:
 class CommandStats: public Command
 {
 public:
-  CommandStats():Command("STATS", 0, 0)
+  CommandStats():Command("STATS")
   {
     this->SetDesc("Shows system stats");
   }
@@ -397,6 +397,8 @@ class m_system : public module
   CommandNick nick;
   CommandPID pid;
   CommandPass pass;
+private:
+  Flux::string orig;
 public:
   m_system(const Flux::string &Name):module(Name)
   {
@@ -414,11 +416,13 @@ public:
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    orig = Config->BotNick;
   }
-  void OnNumeric(int i)
+  void OnNumeric(int i, const std::vector<Flux::string> &params)
   {
     if((i == 4)){
-      ircproto->mode(Config->BotNick, "+B");
+      if(params[3].search('B')) //Set bot mode if the network has it.
+	ircproto->mode(Config->BotNick, "+B");
       sepstream cs(Config->Channel, ',');
       Flux::string tok;
       while(cs.GetToken(tok))
@@ -448,10 +452,16 @@ public:
       started = true;
       /* Identify to the networks services */
       if((!Config->ServicesAccount.empty() || !Config->ServicesPass.empty()) && Config->IdentOnConn){
-	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount);
-	Sendns = Sendns.replace_all_ci("%p", Config->ServicesPass);
+	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount).replace_all_ci("%p", Config->ServicesPass);
 	ircproto->privmsg(Config->ServicesService, Sendns);
 	Log() << "Identified to " << Config->ServicesService << " with account \"" << Config->ServicesAccount << "\"";
+      }
+      //Try and regain our nickname
+      if(istempnick)
+      {
+	Config->BotNick = orig+"_";
+	ircproto->nick(Config->BotNick);
+	istempnick = false;
       }
     }
   }
@@ -478,8 +488,7 @@ public:
     msg.trim(); // Auto-Identify
     if(msg.search(Config->AutoIdentString)){
       if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == Config->ServicesService && Config->IdentOnConn){
-	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount);
-	Sendns = Sendns.replace_all_ci("%p", Config->ServicesPass);
+	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount).replace_all_ci("%p", Config->ServicesPass);
 	u->SendPrivmsg(Sendns);
 	Log() << "Identified to " << u->nick << " with account \"" << Config->ServicesAccount << "\"";
       }

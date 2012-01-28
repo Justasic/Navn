@@ -255,7 +255,7 @@ Flux::string execute(const char *cmd) {
    */
   FILE* pipe = popen(cmd, "r");
   if (!pipe) return "";
-		     char buffer[128];
+  char buffer[128];
   Flux::string result = "";
   while(!feof(pipe)) {
     if(fgets(buffer, 128, pipe) != NULL)
