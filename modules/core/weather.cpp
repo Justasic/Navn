@@ -44,7 +44,7 @@ public:
       return;
     }
     area.trim();
-    wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(area.is_number_only()?area:urlify(removeCommand(ci::string(this->name.ci_str()),source.message)));
+    wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(area.is_number_only()?area:urlify(removeCommand(ci::string(this->name.ci_str()),params[0])));
     system(wget.c_str());
     XMLFile *xf = new XMLFile(tmpfile);
 

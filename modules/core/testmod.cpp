@@ -24,7 +24,7 @@
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("TEST", 0,1) //The 0's are how many params the command gets, they're not required and can be removed.
+  commanddummy() : Command("TEST", 2,2) //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\37TEST\37");

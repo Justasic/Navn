@@ -52,11 +52,19 @@ enum LogType
   LOG_TERMINAL,
   LOG_SILENT
 };
+
+enum EventResult
+{
+  EVENT_CONTINUE,
+  EVENT_STOP
+};
+
 enum CommandType
 {
   COMMAND_CHANNEL,
   COMMAND_PRIVATE
 };
+
 enum ModErr
 {
   MOD_ERR_OK,
@@ -152,4 +160,32 @@ if(true) \
 else \
       static_cast<void>(0)
 
+#define FOREACH_RESULT(y, x, v) \
+if (true) \
+{ \
+  std::vector<module*>::iterator safei; \
+  v = EVENT_CONTINUE; \
+  for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
+  { \
+    safei = _i; \
+    ++safei; \
+    try \
+    { \
+      EventResult res = (*_i)->x ; \
+      if (res != EVENT_CONTINUE) { \
+	v = res; \
+	break; \
+      } \
+    } \
+    catch (const ModuleException &modexcept) \
+    { \
+      Log() << "Exception caught: " << modexcept.GetReason(); \
+    } \
+    _i = safei; \
+  } \
+} \
+else \
+  static_cast<void>(0)
+
+      
 #endif

@@ -127,7 +127,9 @@ Moved to CMake
 Added VectorString to convert a Flux::vector to a string
 Renamed StringVector to SerializeString to better describe what it does
 value_cast now forces the cast if casting with stringstreams fails
-renamed fsprintf to printfify to better describe what it does
+Renamed fsprintf to printfify to better describe what it does
+Added FOREACH_RESULT() and EventResult.
+Removed CommandSource::message in favor of the last param in a module params list.
 
 Navn 2.0.0
 ==========

@@ -54,66 +54,94 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
   {
     if(!protocoldebug)
       Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
+    
     if(!IsValidChannel(receiver)){
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
     }
     else{
       Command *ccom = FindCommand(params2[0], COMMAND_CHANNEL);
-      if(ccom){
+      if(ccom)
+      {
 	Source.command = ccom->name;
 	params2.erase(params2.begin());
-	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams){
-	 params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
-	 params2.erase(params2.begin() + ccom->MaxParams);
+	
+	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
+	{
+	  params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
+	  params2.erase(params2.begin() + ccom->MaxParams);
 	}
-	if(params2.size() < ccom->MinParams) { ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
+	
+	if(params2.size() < ccom->MinParams)
+	{
+	  ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+	  return;
+	}
 #ifdef HAVE_SETJMP_H
 	if(setjmp(sigbuf) == 0){
 #endif
 	LastRunModule = ccom->mod;
 	ccom->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
-	}else{
+	}
+	else
+	{
 	  Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occured, please contact the bots administrator %s", Config->Owner.c_str());
 	  User *ou = finduser(Config->Owner);
+	  
 	  if(ou)
 	    ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
 	}
 #endif
 	LastRunModule = NULL;
-      }else{
+      }
+      else
+      {
 	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
       }
     }
   }
-  else{
+  else
+  {
     Command *com = FindCommand(params2[0], COMMAND_PRIVATE);
-    if(com && !IsValidChannel(receiver) && command == "PRIVMSG"){
+    if(com && !IsValidChannel(receiver) && command == "PRIVMSG")
+    {
       Source.command = com->name;
-      params2.erase(params2.begin());
-      while(com->MaxParams > 0 && params2.size() > com->MaxParams){
+      params2.erase(params2.begin()); //Remove the command from the params
+      
+      while(com->MaxParams > 0 && params2.size() > com->MaxParams)
+      { // Trim the command separation, then paste the rest unmodified as the last param.
 	 params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
 	 params2.erase(params2.begin() + com->MaxParams);
       }
-      if(params2.size() < com->MinParams) { com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : ""); return; }
-#ifdef HAVE_SETJMP_H
+      
+      if(params2.size() < com->MinParams)
+      { // Insufficent params
+	com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+	return;
+      }
+#ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
 	if(setjmp(sigbuf) == 0){
 #endif
 	LastRunModule = com->mod;
 	com->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
-	}else{
+	}
+	else
+	{ //Module segfaulted.
 	  Log() << "Command " << com->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occured, please contact the bots administrator: %s", Config->Owner.c_str());
 	  User *ou = finduser(Config->Owner);
-	  if(ou)
+	  
+	  if(ou) //notify the owner if possible.
 	    ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
 	}
 #endif
 	LastRunModule = NULL;
-    }else{
+    }
+    else
+    {
       if(!protocoldebug)
 	Log(LOG_DEBUG) << Flux::Sanitize(Source.raw); //This receives ALL server commands sent to the bot..
     }
@@ -128,6 +156,12 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
  * \param buffer The raw socket buffer
  */
 void process(const Flux::string &buffer){
+
+  EventResult e;
+  FOREACH_RESULT(I_OnPreReceiveMessage, OnPreReceiveMessage(buffer), e);
+  if(e != EVENT_CONTINUE)
+    return;
+  
   SET_SEGV_LOCATION();
   Flux::string buf = buffer;
   buf = buf.replace_all_cs("  ", " ");
@@ -244,7 +278,6 @@ void process(const Flux::string &buffer){
   CommandSource Source;
   Source.u = u; //User class
   Source.c = c; //Channel class
-  Source.message = message;
   Source.params = params;
   Source.raw = buffer;
   /**************************************/

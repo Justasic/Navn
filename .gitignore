@@ -1,0 +1,9 @@
+# Ignore Kate's temp files
+*~
+
+# Ignore build directory
+build/
+
+# Ignore cache crap from building
+include/config.h
+config.cache

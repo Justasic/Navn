@@ -71,7 +71,6 @@ struct CoreExport CommandSource
   User *u;
   Channel *c; /* Channel name, this will be replaced with channel class */
   Flux::string command;
-  Flux::string message;
   Flux::string raw;
   std::vector<Flux::string> params;
   

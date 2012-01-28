@@ -34,9 +34,7 @@
  * This is what generates the search links.
  */
 Flux::string search(const Flux::string &s, const Flux::string &command){
-  Flux::string raw_searchstring = s, searchstring;
-  raw_searchstring = raw_searchstring.erase(0, command.size()+1);
-  searchstring = urlify(raw_searchstring);
+  Flux::string searchstring = urlify(s);
   if (searchstring.empty())
     return "Empty searchstring.";
   else{
@@ -66,7 +64,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel Google Search from " << source.u->nick << " \"" << str << "\"";
   }
@@ -89,7 +87,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel youtube Search from " << source.u->nick << "\"" << str << "\"";
   }
@@ -112,7 +110,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel The Pirate Bay Search from " << source.u->nick << " \"" << str << "\"";
   }
@@ -135,7 +133,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel define Search from " << source.u->nick << " \"" << str << "\"";
   }
@@ -158,7 +156,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel urban dictionary Search from " << source.u->nick << " \"" << str << "\"";
   }
@@ -181,7 +179,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel movie Search from " << source.u->nick << " \"" << str << "\"";
   }
@@ -204,7 +202,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel Wikipedia Search from " << source.u->nick << " \"" << str << "\"";
   }
@@ -227,7 +225,7 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    Flux::string str = search(source.message, this->name).replace_all_cs("%", "%%");
+    Flux::string str = search(params[0], this->name);
     source.c->SendMessage(str);
     Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
   }

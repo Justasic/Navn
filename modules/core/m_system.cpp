@@ -221,7 +221,7 @@ public:
       source.Reply(ACCESS_DENIED);
       return;
     }
-    Flux::string tchan = params[1];
+    Flux::string tchan = params[0];
     if(!IsValidChannel(tchan)){
       source.Reply(CHANNEL_X_INVALID, tchan.c_str());
       return;
@@ -231,9 +231,7 @@ public:
       source.Reply("I am not in channel \2%s\2", tchan.c_str());
       return;
     }
-    Flux::string msg = source.message;
-    msg = msg.erase(0,6);
-    msg = msg.erase(msg.find_first_of(tchan), tchan.size());
+    Flux::string msg = params[1];
     msg.trim();
     ch->ChangeTopic(msg);
     std::fstream topic;
