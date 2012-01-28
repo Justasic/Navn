@@ -111,7 +111,7 @@ bool IsValidChannel(const Flux::string &chan){
  return true;
 }
 
-Flux::string fsprintf(const char *fmt, ...)
+Flux::string printfify(const char *fmt, ...)
 {
   if(fmt)
   {

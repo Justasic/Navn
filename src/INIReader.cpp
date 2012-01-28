@@ -197,10 +197,10 @@ BotConfig::BotConfig(const Flux::string &dir)
   if(this->Parser->ParseError() == -1)
     throw ConfigException("Cannot open '"+conffile+"'");
   if(this->Parser->ParseError() != 0)
-    throw ConfigException(fsprintf("Error on line %i", this->Parser->ParseError()));
+    throw ConfigException(printfify("Error on line %i", this->Parser->ParseError()));
  }catch(const ConfigException &e){
    if (starttime == time(NULL))
-     throw CoreException(fsprintf("Config: %s", e.GetReason()));
+     throw CoreException(printfify("Config: %s", e.GetReason()));
    else
       Log(LOG_TERMINAL) << "Config Exception: " << e.GetReason();
    return;

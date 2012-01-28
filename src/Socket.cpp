@@ -112,7 +112,7 @@ bool SocketIO::Connect()
   struct addrinfo *servinfo;
   int connected, rv = 0;
   if((rv = getaddrinfo(this->ip.c_str(), this->port.c_str(), NULL, &servinfo)) != 0)
-    throw SocketException(fsprintf("Could not resolve server (%s:%i): %s",this->ip.c_str(),
+    throw SocketException(printfify("Could not resolve server (%s:%i): %s",this->ip.c_str(),
 				   (int)this->port, gai_strerror(rv)).c_str());
   
   for(struct addrinfo *p = servinfo; p != NULL; p = p->ai_next)
