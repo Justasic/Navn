@@ -130,6 +130,7 @@ value_cast now forces the cast if casting with stringstreams fails
 Renamed fsprintf to printfify to better describe what it does
 Added FOREACH_RESULT() and EventResult.
 Removed CommandSource::message in favor of the last param in a module params list.
+Rewrote m_ping to use a timer for when to ping-timeout, also added a user variable for when that should happen.
 
 Navn 2.0.0
 ==========

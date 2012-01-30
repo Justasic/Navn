@@ -1,16 +1,33 @@
 #include "flux_net_irc.hpp"
 
-class PingTimer:public Timer
+class PingTimeoutTimer;
+class PingTimer : public Timer
 {
 public:
-  int pings;
-  PingTimer():Timer(30, time(NULL), true), pings(0) { }
-  void Tick(time_t){
-    send_cmd("PING :%i\n", time(NULL));
-    if(++pings >= 3)
-      sock->ThrowException("Ping timeout: 120 seconds");
+  PingTimeoutTimer *ptt;
+  PingTimer():Timer(30, time(NULL), true) { }
+  void Tick(time_t);
+};
+
+class PingTimeoutTimer : public Timer
+{
+  PingTimer *pt;
+  time_t wait;
+public:
+  PingTimeoutTimer(time_t w, PingTimer *pt2):Timer(w, time(NULL), false), wait(w) { this->pt = pt2; }
+  ~PingTimeoutTimer() { this->pt->ptt = NULL; }
+  void Tick(time_t)
+  {
+    sock->ThrowException(printfify("Ping Timeout: %i seconds", (int)this->wait));
   }
 };
+
+void PingTimer::Tick(time_t)
+{
+  send_cmd("PING :%i\n", time(NULL));
+  this->ptt = new PingTimeoutTimer(Config->PingTimeoutTime, this);
+}
+
 class Ping_pong:public module
 {
   PingTimer pingtimer;
@@ -27,18 +44,20 @@ public:
   {
      Flux::string ts = params[1];
      int lag = time(NULL)-(int)ts;
-     pingtimer.pings = 0;
+     if(pingtimer.ptt)
+	delete pingtimer.ptt;
      if(protocoldebug)
         Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
   }
   void OnPing(const Flux::vector &params)
   {
-    pingtimer.pings = 0;
+    if(pingtimer.ptt)
+      delete pingtimer.ptt;
     send_cmd("PONG :%s\n", params[0].c_str());
   }
   void OnConnectionError(const Flux::string &buffer)
   {
-   throw CoreException(buffer.c_str());
+    throw CoreException(buffer.c_str());
   }
   void OnNumeric(int i)
   {

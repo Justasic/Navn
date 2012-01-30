@@ -113,9 +113,7 @@ public:
   ~InputThread() { Log() << "Input Thread Exiting."; exiting = true; }
   void ToRun()
   {
-    base_string buf;
-    int nobomb = 0;
-    time_t last_run = time(NULL);
+    int nobomb = 0, last_run = time(NULL);
     while(!exiting)
     {
       if(nobomb++ >= 50)
@@ -125,7 +123,9 @@ public:
 	last_run = time(NULL);
       }
       Log(LOG_RAWIO) << "Top of Input Loop";
-      std::getline(std::cin, buf);
+      Flux::string buf;
+      std::getline(std::cin, buf.std_str());
+      buf.trim();
       if(!buf.empty())
 	ProcessInput(buf);
     }

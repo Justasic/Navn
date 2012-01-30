@@ -71,6 +71,7 @@ public:
   Flux::string AutoIdentString;
   Flux::string ServicesService;
   bool IdentOnConn;
+  time_t PingTimeoutTime;
   size_t LogTime;
   size_t SockWait;
 private:
