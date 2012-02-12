@@ -24,7 +24,7 @@
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("TEST", 2,2) //The 0's are how many params the command gets, they're not required and can be removed.
+  commanddummy() : Command("TEST", 0, 0) //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\37TEST\37");
@@ -32,6 +32,8 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     source.Reply("YAY!");
+    Flux::string blah = "blah9857 !@#$%^&*()_-=+`~\"'.,<>?/[]{}\\|:;";
+    source.Reply(blah.url_str());
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
