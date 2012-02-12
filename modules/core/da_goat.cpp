@@ -173,7 +173,7 @@ public:
     User *u = source.u;
     c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.flux-net.net:6667");
     c->SendMessage("Minecraft Server: \2 Minecraft.Flux-Net.net port: 25565 (default)");
-    c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nGalaxy.Flux-Net.net:9987");
+    c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nPulsar.Flux-Net.net:9987");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -259,7 +259,7 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("Our forum is at \037http://flux-net.net/forum2/\017");
+    c->SendMessage("Our forum is at \037http://forum.flux-net.net/\017");
     c->SendMessage("Our Website is \002Flux-Net.net\017");
     c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
@@ -327,13 +327,13 @@ public:
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
       } 
     }
-    if(msg.search_ci("no u!") || msg.search_ci("no u"))
+    if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
       c->SendMessage("NO U!");
     if(cmd.equals_ci("!everything"))
       c->SendMessage("Yes, there is a script for everything...\007");
     /***********************End Da_Goat Functions******************************/
     if(cmd.equals_ci("!bugs"))
-      c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
+      c->SendMessage("Report Bugs at: http://bugs.flux-net.net/");
     if(cmd.equals_ci("!git"))
       u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
     if(msg.search_ci("the game"))
