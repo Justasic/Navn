@@ -338,6 +338,8 @@ public:
 	  c->SendMessage("U SHUT UP!");
 	if(msg.search_ci("shut the fuck up"))
 	  c->SendMessage("U SHUT THE FUCK UP!");
+	if(msg.search_ci("why")) 
+	  c->SendMessage("Because you touch yourself at night!");
   }
 };
 
