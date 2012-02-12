@@ -131,6 +131,9 @@ Renamed fsprintf to printfify to better describe what it does
 Added FOREACH_RESULT() and EventResult.
 Removed CommandSource::message in favor of the last param in a module params list.
 Rewrote m_ping to use a timer for when to ping-timeout, also added a user variable for when that should happen.
+Rewrote character stripper for Flux::Sanitize, it now correctly strips all mIRC color codes
+Deprecated urlify() in favor of Flux::string::url_str()
+Depracated removeCommand() in favor of the module parameters system.
 
 Navn 2.0.0
 ==========

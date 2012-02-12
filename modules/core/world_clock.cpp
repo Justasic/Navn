@@ -25,7 +25,7 @@
 class CommandCWClock: public Command
 {
 public:
-  CommandCWClock():Command("!TIME", 0, 2)
+  CommandCWClock():Command("!TIME", 0, 1)
   {
    this->SetDesc("Shows the time in the channel");
    this->SetSyntax("\37location\37");
@@ -33,7 +33,7 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
-    Flux::string location = params.empty()?"":params[1];
+    Flux::string location = params.empty()?"":params[0];
     location.trim();
     if(location.empty())
     {
@@ -55,7 +55,7 @@ public:
       return;
     }else{
       Flux::string wget, tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
-      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(location.is_number_only()?location:urlify(removeCommand(this->name.ci_str(), params[0].ci_str())));
+      wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(location.is_number_only()?location:location.url_str());
       system(wget.c_str());
       XMLFile *xf = new XMLFile(tmpfile);
       

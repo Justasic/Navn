@@ -32,8 +32,6 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     source.Reply("YAY!");
-    Flux::string blah = "blah9857 !@#$%^&*()_-=+`~\"'.,<>?/[]{}\\|:;";
-    source.Reply(blah.url_str());
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {

@@ -38,13 +38,13 @@ public:
   {
     User *u = source.u;
     Channel *c = source.c;
-    Flux::string area = params[params.size() - 1], tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
+    Flux::string area = params[0], tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
     if(tmpfile.empty()){
       Log() << "Failed to get temp file";
       return;
     }
     area.trim();
-    wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(area.is_number_only()?area:urlify(removeCommand(ci::string(this->name.ci_str()),params[0])));
+    wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(area.is_number_only()?area:area.url_str());
     system(wget.c_str());
     XMLFile *xf = new XMLFile(tmpfile);
 

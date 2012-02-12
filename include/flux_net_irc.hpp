@@ -54,7 +54,7 @@ class irc_string:Flux::string{
   Flux::string message;
   /**
    * \fn irc_string(Flux::string reply)
-   * \deprecated
+   * \deprecated This class is deprecated, find another way of using your strings
    *Constructor for \a irc_string class
    * This is where the magic happens. The constructor takes the Flux::string
    * and breaks it down into its component parts to find the
@@ -91,7 +91,7 @@ class irc_string:Flux::string{
   /**
    * \fn Flux::string params(int i)
    * \brief Returns individual words from the message of a reply
-   * \deprecated
+   * \deprecated use module parameter vectors instead
    * Because \a toks is private, this is its "get" function.
    * We made this so someone writing a module doesn't try to go out
    * of bounds while accessing an array.
@@ -130,6 +130,7 @@ class irc_string:Flux::string{
   /**
    * \fn static Flux::string isolate(char begin, char end, Flux::string msg)
    * \brief Isolates a Flux::string between two characters
+   * \deprecated use the plain isolate function instead
    * Finds the first character, then begins to add every consecutive character from there to a Flux::string
    *  until it reaches the end character.
    * \param begin The character saying where the cut should begin.
@@ -151,7 +152,7 @@ class irc_string:Flux::string{
   /**
    * \fn bool said(Flux::string findee)
    * \brief Check if something was said.
-   * \deprecated
+   * \deprecated use Flux::string::search() and Flux::string::search_ci() instead
    * \param findee The Flux::string you want to check if was said.
    * \return True if \a findee was found, false otherwise.
    */
@@ -164,6 +165,7 @@ class irc_string:Flux::string{
   /**
    * \overload static bool said(Flux::string source, Flux::string findee)
    * \brief Static overload of said() function.
+   * \deprecated
    * \param source A Flux::string that is to be searched through.
    * \param findee The Flux::string that is to be found.
    * We overloaded the said function and made it static because we thought it would be
@@ -182,11 +184,14 @@ class irc_string:Flux::string{
  * \brief Removes a command from a Flux::string.
  * \param command String to be taken out.
  * \param s Original Flux::string.
+ * \deprecated use module parameters system instead
  * This takes out \a command from \a s and returns \a s without \a command It's very useful when you want
  * to use the rest of a Flux::string as an argument for a command.
  * \return A Flux::string \a s without \a command.
  */
-Flux::string removeCommand(Flux::string command, Flux::string s){
+DEPRECATED(Flux::string removeCommand(Flux::string command, Flux::string s));
+Flux::string removeCommand(Flux::string command, Flux::string s)
+{
   size_t pos = s.find(command);
   return s.substr(pos+(command.size())+1);
 }
@@ -195,10 +200,12 @@ Flux::string removeCommand(Flux::string command, Flux::string s){
  * \fn Flux::string urlify(Flux::string raw_searchstring)
  * \brief Replaces special chars in a Flux::string with url compliant codes.
  * \param raw_searchstring
+ * \deprecated use Flux::string::url_str() instead
  * Goes through each character in a Flux::string and if it finds a special character,
  * it replaces it with what would be in a url for that character.
  * \return A Flux::string without any special characters other than %
  */
+DEPRECATED(Flux::string urlify(const Flux::string &received));
 Flux::string urlify(const Flux::string &received){
   Flux::string string;
   for(unsigned i=0; i < received.size(); ++i){

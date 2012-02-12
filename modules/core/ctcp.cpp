@@ -35,7 +35,8 @@ public:
   void OnCTCP(const Flux::string &source, const Flux::vector &params)
   {
     Flux::string cmd = params.empty()?"":params[0];
-    Log() << "\033[22;31mRecieved CTCP " << Flux::Sanitize(cmd) << " from " << source << "\033[22;36m";
+    Log(LOG_SILENT) << "Received CTCP " << Flux::Sanitize(cmd) << " from " << source;
+    Log(LOG_TERMINAL) << "\033[22;31mRecieved CTCP " << Flux::Sanitize(cmd) << " from " << source << "\033[22;36m";
       
     if(cmd == "\001VERSION\001"){ // for CTCP VERSION reply
       struct utsname uts;

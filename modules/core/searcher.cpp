@@ -33,8 +33,8 @@
  * \brief generates search links for url's
  * This is what generates the search links.
  */
-Flux::string search(const Flux::string &s, const Flux::string &command){
-  Flux::string searchstring = urlify(s);
+Flux::string search(const Flux::string &text, const Flux::string &command){
+  Flux::string searchstring = text.url_str();
   if (searchstring.empty())
     return "Empty searchstring.";
   else{
