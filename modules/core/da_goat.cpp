@@ -336,7 +336,7 @@ public:
 	if(msg.search_ci("won the game"))
       c->SendMessage("YOU JUST LOST THE GAME.");
 	if(msg.search_ci("!navn"))
-      c->SendMessage("That's my name dont waer it out!");
+      c->SendMessage("That's my name don't wear it out!");
   }
 };
 
