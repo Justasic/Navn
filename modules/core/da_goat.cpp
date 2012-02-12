@@ -58,7 +58,7 @@ public:
     Channel *c = source.c;
     c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION);
     c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
-    c->SendMessage("Report all bugs at: \2http://flux-net.net/bugs/\2");
+    c->SendMessage("Report all bugs at: \2http://bugs.flux-net.net\2");
     c->SendMessage("Navn is managed by \2%s\2", Config->Owner.c_str());
     Log(u, this) << "command in " << c->name;
   }
@@ -197,16 +197,8 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("To Register your nickname type:");
-    c->SendMessage("\0034If this is the nick you want then skip step 1.\017");
-    c->SendMessage("\0034Do not include brackets when registering, this will cause errors\017");
-    c->SendMessage("Step 1: change your nick \00312/nick [nickname here]\017");
-    c->SendMessage("Step 2: now to begin registration type:");
-    c->SendMessage("\00312/ns register [\037YourPasswordHere\017] [\002YouremailHere\015]");
-    c->SendMessage("Step 3: Then to identify so you can have op status type:");
-    c->SendMessage("\00312/identify [passwordhere]\017");
-    c->SendMessage("\0034You will need to indetify everytime you join into the chatroom\017");
-    c->SendMessage("Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
+    c->SendMessage("To Register your nickname type:/register <Your password>");
+	c->SendMessage("REMEMBER THIS PASSWORD! YOUR WILL USE IT EVERYTIME U JOIN!");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -260,7 +252,7 @@ public:
     Channel *c = source.c;
     User *u = source.u;
     c->SendMessage("Our forum is at \037http://forum.flux-net.net/\017");
-    c->SendMessage("Our Website is \002Flux-Net.net\017");
+    c->SendMessage("Our Website is \002www.Flux-Net.net\017");
     c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
   }
@@ -337,6 +329,10 @@ public:
     if(cmd.equals_ci("!git"))
       u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
     if(msg.search_ci("the game"))
+      c->SendMessage("YOU JUST LOST THE GAME.");
+	if(msg.search_ci("i win"))
+	  c->SendMessage("YOU LOSE!");
+	if(msg.search_ci("won the game"))
       c->SendMessage("YOU JUST LOST THE GAME.");
   }
 };
