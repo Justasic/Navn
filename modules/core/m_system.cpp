@@ -114,8 +114,9 @@ public:
   {
     User *u = source.u;
     if(u->IsOwner()){
-      Flux::string kickchan = params[1];
-      Flux::string kickee = params[2];
+      Flux::string kickchan = params[0];
+      Flux::string kickee = params[1];
+      Flux::string msg = params[2];
       if(kickee.empty() || kickchan.empty()){
 	this->SendSyntax(source);
 	return;
@@ -129,7 +130,7 @@ public:
 	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
 	return;
       }
-      c->kick(kickee, "Kick from %s", u->nick.c_str());
+      c->kick(kickee, "%s(%s)", u->nick.c_str(), msg.c_str());
     }else{
       source.Reply(ACCESS_DENIED);
     }

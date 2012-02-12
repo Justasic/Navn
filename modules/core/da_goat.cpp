@@ -4,6 +4,7 @@
 /**
  * \file da_goat.h Header file holding the \a Da_Goat function.
  * \author Lordofsraam & Justasic
+ * maintained by \a DeathBlade
  */
 
 /**
