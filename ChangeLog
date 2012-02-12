@@ -134,6 +134,8 @@ Rewrote m_ping to use a timer for when to ping-timeout, also added a user variab
 Rewrote character stripper for Flux::Sanitize, it now correctly strips all mIRC color codes
 Deprecated urlify() in favor of Flux::string::url_str()
 Depracated removeCommand() in favor of the module parameters system.
+Rewrote the commands system, removed module::AddChanCommand, module::AddCommand, module::DelCommand, and module::DelChanCommand. Commands now have their types in the constructor, constructors now require module variable
+Renamed COMMAND_CHANNEL to C_CHANNEL and COMMAND_PRIVATE to C_PRIVATE; added C_NULL for comparing if the commands have not been set a type.
 
 Navn 2.0.0
 ==========

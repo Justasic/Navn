@@ -26,7 +26,8 @@
 class ctcp : public module
 {
 public:
-  ctcp(const Flux::string &Name):module(Name){
+  ctcp(const Flux::string &Name):module(Name)
+  {
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_FIRST);

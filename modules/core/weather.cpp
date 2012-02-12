@@ -29,7 +29,7 @@
 class CommandCWeather : public Command
 {
 public:
-  CommandCWeather():Command("!WEATHER", 1, 1)
+  CommandCWeather(module *m):Command(m, "!WEATHER", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays the weather");
     this->SetSyntax("\2location\2");
@@ -73,10 +73,10 @@ public:
 class weather:public module{
   CommandCWeather rainy;
 public:
-  weather(const Flux::string &Name):module(Name){
+  weather(const Flux::string &Name):module(Name), rainy(this)
+  {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
-    this->AddChanCommand(&rainy);
   }
 };
 

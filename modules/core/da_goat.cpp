@@ -49,7 +49,7 @@ struct sysinfo sys_info;
 class CommandCVersion: public Command
 {
 public:
-  CommandCVersion():Command("!VERSION")
+  CommandCVersion(module *m):Command(m, "!VERSION", C_CHANNEL)
   {
     this->SetDesc("Displays the bots version info into the channel");
   }
@@ -76,7 +76,7 @@ public:
 class CommandCSpam: public Command
 {
 public:
-  CommandCSpam():Command("!SPAM")
+  CommandCSpam(module *m):Command(m, "!SPAM", C_CHANNEL)
   {
     this->SetDesc("Displays the spam warning");
   }
@@ -97,7 +97,7 @@ public:
 class CommandCRules: public Command
 {
 public:
-  CommandCRules():Command("!RULES")
+  CommandCRules(module *m):Command(m, "!RULES", C_CHANNEL)
   {
     this->SetDesc("Displays the rules of the chatroom");
   }
@@ -126,7 +126,7 @@ public:
 class CommandCUptime: public Command
 {
 public:
-  CommandCUptime():Command("!UPTIME")
+  CommandCUptime(module *m):Command(m, "!UPTIME", C_CHANNEL)
   {
     this->SetDesc("Prints Syatem Uptime in the channel");
   }
@@ -164,7 +164,7 @@ public:
 class CommandCSocialInfo: public Command
 {
 public:
-  CommandCSocialInfo():Command("!SOCIALINFO")
+  CommandCSocialInfo(module *m):Command(m, "!SOCIALINFO", C_CHANNEL)
   {
     this->SetDesc("Displays Flux-Net's Social Information");
   }
@@ -187,10 +187,11 @@ public:
     return true;
   }
 };
+
 class CommandCRegister: public Command
 {
 public:
-  CommandCRegister():Command("!REGISTER")
+  CommandCRegister(module *m):Command(m, "!REGISTER", C_CHANNEL)
   {
     this->SetDesc("Displays how to register your nickname");
   }
@@ -218,7 +219,7 @@ public:
 class CommandCRename: public Command
 {
 public:
-  CommandCRename():Command("!RENAME")
+  CommandCRename(module *m):Command(m, "!RENAME", C_CHANNEL)
   {
     this->SetDesc("Displays how to rename");
   }
@@ -241,10 +242,11 @@ public:
     return true;
   }
 };
+
 class CommandCInfo : public Command
 {
 public:
-  CommandCInfo():Command("!INFO")
+  CommandCInfo(module *m):Command(m, "!INFO", C_CHANNEL)
   {
     this->SetDesc("General Da_Goat info");
   }
@@ -278,18 +280,11 @@ class Da_Goat:public module
   CommandCSpam spam;
   CommandCVersion ver;
 public:
-  Da_Goat(const Flux::string &Name):module(Name)
+  Da_Goat(const Flux::string &Name):module(Name), info(this), rename(this), reg(this), sinfo(this), uptime(this), rules(this),
+  spam(this), ver(this)
   {
     this->SetAuthor("Justasic & Lordofsraam");
     this->SetVersion(VERSION);
-    this->AddChanCommand(&info);
-    this->AddChanCommand(&rename);
-    this->AddChanCommand(&reg);
-    this->AddChanCommand(&sinfo);
-    this->AddChanCommand(&uptime);
-    this->AddChanCommand(&rules);
-    this->AddChanCommand(&spam);
-    this->AddChanCommand(&ver);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
   void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)

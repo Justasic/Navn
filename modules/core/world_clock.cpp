@@ -25,7 +25,7 @@
 class CommandCWClock: public Command
 {
 public:
-  CommandCWClock():Command("!TIME", 0, 1)
+  CommandCWClock(module *m):Command(m, "!TIME", C_CHANNEL, 0, 1)
   {
    this->SetDesc("Shows the time in the channel");
    this->SetSyntax("\37location\37");
@@ -82,10 +82,10 @@ public:
 class world_clock:public module{
   CommandCWClock clock;
 public:
-  world_clock(const Flux::string &Name):module(Name){
+  world_clock(const Flux::string &Name):module(Name), clock(this)
+  {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
-    this->AddChanCommand(&clock);
   }
 };
 MODULE_HOOK(world_clock)

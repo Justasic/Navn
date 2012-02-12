@@ -21,7 +21,7 @@
 class CommandDecodeHost : public Command
 {
 public:
-  CommandDecodeHost():Command("!DECODEHOST", 1, 1)
+  CommandDecodeHost(module *m):Command(m, "!DECODEHOST", C_CHANNEL, 1, 1)
   {
    this->SetDesc("Decodes a hostname");
    this->SetSyntax("\37fullhost\37");
@@ -56,11 +56,11 @@ class about_me : public module
 {
   CommandDecodeHost host;
 public:
-  about_me(const Flux::string &Name):module(Name){ 
+  about_me(const Flux::string &Name):module(Name), host(this)
+  { 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
-    this->AddChanCommand(&host);
     ModuleHandler::Attach(I_OnPrivmsg, this);
   }
   

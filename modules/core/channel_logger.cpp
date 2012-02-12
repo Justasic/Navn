@@ -50,9 +50,12 @@ void CLog(const char *fmt, ...){
   va_end(args);
   clog.close();
 }
-class Chanlog:public module{
+
+class Chanlog : public module
+{
 public:
-  Chanlog(const Flux::string &Name):module(Name){ 
+  Chanlog(const Flux::string &Name):module(Name)
+  { 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);

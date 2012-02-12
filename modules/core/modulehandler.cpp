@@ -3,7 +3,7 @@
 class CommandMList : public Command
 {
 public:
-  CommandMList():Command("MODLIST", 0, 1)
+  CommandMList(module *m):Command(m, "MODLIST", C_PRIVATE, 0, 1)
   {
     this->SetDesc("Lists all loaded modules");
     this->SetSyntax("\37priority\37");
@@ -56,7 +56,7 @@ public:
 class CommandMLoad : public Command
 {
 public:
-  CommandMLoad():Command("MODLOAD", 1, 1)
+  CommandMLoad(module *m):Command(m, "MODLOAD", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Load a module");
     this->SetSyntax("\37name\37");
@@ -95,7 +95,7 @@ public:
 class CommandMUnload : public Command
 {
 public:
-  CommandMUnload():Command("MODUNLOAD", 1, 1)
+  CommandMUnload(module *m):Command(m, "MODUNLOAD", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Unloads a module");
     this->SetSyntax("\37name\37");
@@ -129,7 +129,7 @@ public:
 class CommandMReload : public Command
 {
 public:
-  CommandMReload():Command("MODRELOAD", 1, 1)
+  CommandMReload(module *m):Command(m, "MODRELOAD", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Reloads a module");
     this->SetSyntax("\37name\37");
@@ -166,7 +166,7 @@ public:
 class CommandMInfo : public Command
 {
 public:
-  CommandMInfo():Command("MODINFO", 1, 1)
+  CommandMInfo(module *m):Command(m, "MODINFO", C_PRIVATE, 1, 1)
   {
    this->SetDesc("Provides info on a module");
    this->SetSyntax("\37name\37");
@@ -219,21 +219,16 @@ class M_Handler : public module
 {
   CommandMList list;
   CommandMLoad load;
+  CommandMReload reload;
   CommandMUnload unload;
   CommandMInfo info;
-  CommandMReload reload;
   Flux::vector CurrentModuleList;
 public:
-  M_Handler(const Flux::string &Name):module(Name)
+  M_Handler(const Flux::string &Name):module(Name), list(this), load(this), reload(this), unload(this), info(this)
   {
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_FIRST);
-    this->AddCommand(&info);
-    this->AddCommand(&list);
-    this->AddCommand(&reload);
-    this->AddCommand(&load);
-    this->AddCommand(&unload);
     Implementation i[] = { I_OnStart, I_OnReload };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }

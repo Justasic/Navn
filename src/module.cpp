@@ -4,8 +4,6 @@
 //Move on and call me an idiot later.
 Flux::insensitive_map<module*> Modules;
 std::vector<module *> ModuleHandler::EventHandlers[I_END];
-CommandMap Commandsmap;
-CommandMap ChanCommandMap;
 /** 
  * \fn module::module(Flux::string n)
  * \brief Module Constructor
@@ -39,67 +37,6 @@ Flux::string module::GetVersion() { return this->version; }
 time_t module::GetLoadTime() { return this->loadtime; }
 Flux::string module::GetAuthor() { return this->author; }
 ModulePriority module::GetPriority() { return this->Priority; }
-/* commands stuff */
-/** 
- * \fn int module::AddCommand(Command *c)
- * \brief Adds commands from modules into the bot
- * \param command The command to add
- */
-int module::AddCommand(Command *c){
- if(!c)
-   return 1;
- std::pair<CommandMap::iterator, bool> it = Commandsmap.insert(std::make_pair(c->name, c));
- if(it.second != true){
-   Log() << "Command " << c->name << " already loaded!";
-   return 2;
- }
- c->mod = this;
- c->type = COMMAND_PRIVATE;
- return 0;
-}
-/** 
- * \fn int module::DelCommand(Command *c)
- * \brief delete commands from modules in the bot
- * \param command The command to add
- */
-int module::DelCommand(Command *c){
-  if(!c)
-    return 1;
-  if(!Commandsmap.erase(c->name))
-    return 2;
-  c->mod = NULL;
-  return 0;
-}
-/** 
- * \fn int module::AddCommand(Command *c)
- * \brief Adds commands from modules into the bot
- * \param command The command to add
- */
-int module::AddChanCommand(Command *c){
- if(!c)
-   return 1;
- std::pair<CommandMap::iterator, bool> it = ChanCommandMap.insert(std::make_pair(c->name, c));
- if(it.second != true){
-   Log() << "Command " << c->name << " already loaded!";
-   return 2;
- }
- c->mod = this;
- c->type = COMMAND_CHANNEL;
- return 0;
-}
-/** 
- * \fn int module::DelCommand(Command *c)
- * \brief delete commands from modules in the bot
- * \param command The command to add
- */
-int module::DelChanCommand(Command *c){
-  if(!c)
-    return 1;
-  if(!ChanCommandMap.erase(c->name))
-    return 2;
-  c->mod = NULL;
-  return 0;
-}
 
 /*******************************************************************/
 /** 

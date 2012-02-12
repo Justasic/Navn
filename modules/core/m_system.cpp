@@ -5,7 +5,7 @@ struct sysinfo sys_info;
 class CommandRehash : public Command
 {
 public:
-  CommandRehash():Command("REHASH", 0, 0)
+  CommandRehash(module *m):Command(m, "REHASH", C_PRIVATE, 0, 0)
   {
     this->SetDesc("Rehashes the config file");
   }
@@ -22,6 +22,7 @@ public:
      Rehash();
    }
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -38,7 +39,7 @@ public:
 class CommandNick : public Command
 {
 public:
-  CommandNick():Command("NICK", 1, 1)
+  CommandNick(module *m):Command(m, "NICK", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Change the bots nickname");
     this->SetSyntax("\37nickname\37");
@@ -81,7 +82,7 @@ public:
 class CommandRestart : public Command
 {
 public:
-  CommandRestart():Command("RESTART", 0, 1)
+  CommandRestart(module *m):Command(m, "RESTART", C_PRIVATE, 0, 1)
   {
    this->SetDesc("Restarts the bot");
    this->SetSyntax("\37reason\37");
@@ -112,7 +113,7 @@ public:
 class CommandKick : public Command
 {
 public:
-  CommandKick():Command("KICK", 2, 3)
+  CommandKick(module *m):Command(m, "KICK", C_PRIVATE, 2, 3)
   {
     this->SetDesc("Kick a user from the channel");
     this->SetSyntax("channel \37nick\15");
@@ -164,7 +165,7 @@ public:
 class CommandChown : public Command
 {
 public:
-  CommandChown():Command("CHOWN", 1, 1)
+  CommandChown(module *m):Command(m, "CHOWN", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Change ownership over the bot");
     this->SetSyntax("\37owner\37");
@@ -188,7 +189,7 @@ public:
 class CommandQuit : public Command
 {
 public:
-  CommandQuit():Command("QUIT", 1, 1)
+  CommandQuit(module *m):Command(m, "QUIT", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Quits the bot from IRC");
     this->SetSyntax("\37randompass\37");
@@ -226,7 +227,7 @@ public:
 class CommandTopic: public Command
 {
 public:
-  CommandTopic():Command("TOPIC", 2, 2)
+  CommandTopic(module *m):Command(m, "TOPIC", C_PRIVATE, 2, 2)
   {
     this->SetDesc("Set the topic on a channel");
     this->SetSyntax("\37channel\37 [\37topic\37]");
@@ -243,13 +244,11 @@ public:
       source.Reply(ACCESS_DENIED);
       return;
     }
-    
     if(!IsValidChannel(tchan))
     {
       source.Reply(CHANNEL_X_INVALID, tchan.c_str());
       return;
     }
-    
     if(!ch)
     {
       source.Reply("I am not in channel \2%s\2", tchan.c_str());
@@ -286,7 +285,7 @@ public:
 class CommandPID: public Command
 {
 public:
-  CommandPID():Command("PID")
+  CommandPID(module *m):Command(m, "PID", C_PRIVATE)
   {
     this->SetDesc("Gets the bots Process ID");
   }
@@ -317,7 +316,7 @@ public:
 class CommandPass: public Command
 {
 public:
-  CommandPass():Command("PASS")
+  CommandPass(module *m):Command(m, "PASS", C_PRIVATE)
   {
     this->SetDesc("Gets the bots Random Password");
   }
@@ -351,7 +350,7 @@ public:
 class CommandStats: public Command
 {
 public:
-  CommandStats():Command("STATS")
+  CommandStats(module *m):Command(m, "STATS", C_PRIVATE)
   {
     this->SetDesc("Shows system stats");
   }
@@ -418,7 +417,7 @@ public:
 };
 class m_system : public module
 {
-  CommandChown cmdchown;
+  CommandChown cmdchown;//So many commands! .-.
   CommandKick cmdkick;
   CommandRehash cmdrehash;
   CommandQuit cmdquit;
@@ -431,18 +430,9 @@ class m_system : public module
 private:
   Flux::string orig;
 public:
-  m_system(const Flux::string &Name):module(Name)
+  m_system(const Flux::string &Name):module(Name), cmdchown(this), cmdkick(this), cmdrehash(this), cmdquit(this), cmdrestart(this),
+  topic(this), stats(this), nick(this), pid(this), pass(this)
   {
-    this->AddCommand(&cmdrehash);//So many commands! .-.
-    this->AddCommand(&cmdkick);
-    this->AddCommand(&cmdchown);
-    this->AddCommand(&cmdquit);
-    this->AddCommand(&cmdrestart);
-    this->AddCommand(&nick);
-    this->AddCommand(&stats);
-    this->AddCommand(&topic);
-    this->AddCommand(&pid);
-    this->AddCommand(&pass);
     Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick, I_OnNotice, I_OnChannelOp };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");

@@ -24,7 +24,7 @@
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("TEST", 0, 0) //The 0's are how many params the command gets, they're not required and can be removed.
+  commanddummy(module *m) : Command(m, "TEST", C_PRIVATE, 0, 0) //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\37TEST\37");
@@ -47,9 +47,8 @@ class dummy : public module
 {
   commanddummy cmddmy; //Declare our command
 public:
-  dummy(const Flux::string &Name):module(Name)
+  dummy(const Flux::string &Name):module(Name), cmddmy(this) //Add our command to teh bot
   { 
-    this->AddCommand(&cmddmy); //Add our command to teh bot
     this->SetAuthor("Lordofsraam"); //Set the author
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
