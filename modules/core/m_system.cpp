@@ -105,7 +105,7 @@ public:
 class CommandKick : public Command
 {
 public:
-  CommandKick():Command("KICK", 1, 3)
+  CommandKick():Command("KICK", 2, 3)
   {
     this->SetDesc("Kick a user from the channel");
     this->SetSyntax("channel \37nick\15");
@@ -130,7 +130,7 @@ public:
 	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
 	return;
       }
-      c->kick(kickee, "%s(%s)", u->nick.c_str(), msg.c_str());
+      c->kick(kickee, "%s(%s)", u->nick.c_str(), msg.empty()?msg.c_str():"No message");
     }else{
       source.Reply(ACCESS_DENIED);
     }
