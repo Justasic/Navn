@@ -1,6 +1,7 @@
 #include "flux_net_irc.hpp"
 
 struct sysinfo sys_info;
+
 class CommandRehash : public Command
 {
 public:
@@ -11,9 +12,11 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
+    
    if(!u->IsOwner())
       source.Reply(ACCESS_DENIED);
-   else{
+   else
+   {
      source.Reply("Rehashing Configuration file");
      Log(u, this) << "to rehash the configuration";
      Rehash();
@@ -44,7 +47,9 @@ public:
   {
     User *u = source.u;
     Flux::string newnick = params[1];
-    if(newnick.empty()){
+    
+    if(newnick.empty())
+    {
      this->SendSyntax(source);
      return;
     }
@@ -53,7 +58,8 @@ public:
      return;
     }
     for(unsigned i = 0, end = newnick.length(); i < end; i++)
-      if(!isvalidnick(newnick[i])){
+      if(!isvalidnick(newnick[i]))
+      {
 	source.Reply("\2%s\2 is an invalid nickname.");
 	Config->BotNick = newnick;
       }
@@ -82,7 +88,8 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    if(source.u->IsOwner()){
+    if(source.u->IsOwner())
+    {
       ircproto->quit("Restarting..");
       restart("Restarting..");
       Log(source.u, this) << " to restart the bot.";
@@ -113,27 +120,34 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    if(u->IsOwner()){
+    if(u->IsOwner())
+    {
       Flux::string kickchan = params[0];
       Flux::string kickee = params[1];
       Flux::string msg = params[2];
-      if(kickee.empty() || kickchan.empty()){
+      
+      if(kickee.empty() || kickchan.empty())
+      {
 	this->SendSyntax(source);
 	return;
       }
-      if(!IsValidChannel(kickchan)){
+      
+      if(!IsValidChannel(kickchan))
+      {
 	source.Reply(CHANNEL_X_INVALID, kickchan.c_str()); 
 	return;
       }
+      
       Channel *c = findchannel(kickchan);
-      if(!c){
+      if(!c)
+      {
 	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
 	return;
       }
+      
       c->kick(kickee, "%s(%s)", u->nick.c_str(), msg.empty()?msg.c_str():"No message");
-    }else{
+    }else
       source.Reply(ACCESS_DENIED);
-    }
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
@@ -184,12 +198,14 @@ public:
     User *u = source.u;
     Flux::string pass = params[1];
     
-    if(pass == password || pass == Config->UserPass){
+    if(pass == password || pass == Config->UserPass)
+    {
       source.Reply("Quitting..");
       Log(u) << "quit the bot with password: \"" << password << "\"";
       ircproto->quit("Requested From \2%s\17. Pass: \00320%s\017", u->nick.c_str(), password.c_str());
       quitting = true;
-    }else{
+    }else
+    {
       source.Reply(ACCESS_DENIED);
       Log(u) << "Attempted to quit the bot";
     }
@@ -217,30 +233,39 @@ public:
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
+    Flux::string tchan = params[0];
+    Flux::string msg = params[1];
     User *u = source.u;
-    if(!u->IsOwner()){
+    Channel *ch = findchannel(tchan);
+    
+    if(!u->IsOwner())
+    {
       source.Reply(ACCESS_DENIED);
       return;
     }
-    Flux::string tchan = params[0];
-    if(!IsValidChannel(tchan)){
+    
+    if(!IsValidChannel(tchan))
+    {
       source.Reply(CHANNEL_X_INVALID, tchan.c_str());
       return;
     }
-    Channel *ch = findchannel(tchan);
-    if(!ch){
+    
+    if(!ch)
+    {
       source.Reply("I am not in channel \2%s\2", tchan.c_str());
       return;
     }
-    Flux::string msg = params[1];
-    msg.trim();
+    
     ch->ChangeTopic(msg);
     std::fstream topic;
     topic.open("topic.tmp", std::fstream::in | std::fstream::out | std::fstream::app);
-    if(!topic.is_open()){
+    
+    if(!topic.is_open())
+    {
 	    source.Reply("Unable to write topic temp file");
 	    Log(u, this) << " in an attempt to change the topic in " << tchan << " and failed to write to temp file 'topic.tmp'";
-    }else{
+    }else
+    {
 	    topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><topic> " << tchan << " Topic: " << msg.strip() << " </topic></channel></rss>" << std::endl;
 	    system("sh ftp.sh");
     }
@@ -268,10 +293,13 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    if(u->IsOwner()){
+    
+    if(u->IsOwner())
+    {
       source.Reply("My PID is: \2%i\2", (int)getpid());
       Log(u, this) << "command to get navn's PID " << getpid();
-    }else{
+    }else
+    {
       source.Reply(ACCESS_DENIED);
     }
   }
@@ -296,10 +324,13 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    if (u->IsOwner()){
+    
+    if (u->IsOwner())
+    {
       source.Reply("The password is:\2 %s", password.c_str());
       Log(u, this) << "to request navn's quit password: " << password;
-    }else{
+    }else
+    {
       source.Reply(ACCESS_DENIED);
       Log(u, this) << "to attempt to request navn's quit password.";
     }
@@ -360,18 +391,17 @@ public:
     source.Reply("Buffered Ram: %ldk", sys_info.bufferram / 1024);
 
     // Swap space
-    source.Reply("Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
-				sys_info.freeswap / 1024);
+    source.Reply("Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024, sys_info.freeswap / 1024);
 
     // Number of processes currently running.
     source.Reply("Number of processes: %d", sys_info.procs);
-    source.Reply(" ");
+    source.Reply("");
     source.Reply("System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
     source.Reply("System Version: %s", uts.version);
 
     source.Reply(execute("grep 'model name' /proc/cpuinfo").strip());
 #else
-    source.Reply("This is currently not avalable on windows syetems, sorry.");
+    source.Reply("This is currently not available on windows syetems, sorry.");
 #endif
     Log(source.u, this) << "command";
   }

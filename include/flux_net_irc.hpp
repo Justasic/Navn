@@ -8,6 +8,7 @@ IRCProto *ircproto;
 SocketIO *sock;
 BotConfig *Config;
 module *LastRunModule;
+
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
