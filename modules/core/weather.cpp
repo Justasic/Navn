@@ -38,14 +38,20 @@ public:
   {
     User *u = source.u;
     Channel *c = source.c;
-    Flux::string area = params[0], tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX"), wget;
-    if(tmpfile.empty()){
+    Flux::string area = params[0], tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
+    
+    if(tmpfile.empty())
+    {
       Log() << "Failed to get temp file";
       return;
     }
     area.trim();
-    wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(area.is_number_only()?area:area.url_str());
-    system(wget.c_str());
+
+    Flux::string url = Config->Parser->Get("Modules", "WeatherURL", "http://www.google.com/ig/api?weather=%l");
+    url = url.replace_all_cs("%l", area.is_number_only()?area:area.url_str());
+
+    Log(LOG_DEBUG) << "wget weather url \"" << url << "\" for !weather command used";
+    system(Flux::string("wget -q -O "+tmpfile+" - "+url).c_str());
     XMLFile *xf = new XMLFile(tmpfile);
 
     Flux::string city = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["city"].Attributes["data"].Value;
@@ -56,7 +62,15 @@ public:
     Flux::string windy = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["wind_condition"].Attributes["data"].Value;
 
     delete xf;
-    c->SendMessage("%s Current Condition: %s, %s, %s, %s °F %s °C", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), temp_c.c_str());
+    
+    if(city.strip().empty())
+    {
+      source.Reply("Weather information for \2%s\2 not found.", area.c_str());
+      return;
+    }
+    float temp_k = (int)temp_c + 273.15; // Calculate degrees kelvin from degrees celsius
+    c->SendMessage("%s Current Condition: %s, %s, %s, %s °F %s °C %f °K", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), temp_c.c_str(), temp_k);
+    
     Log(u, this) << "to get weather for area '" << area << "'";
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
