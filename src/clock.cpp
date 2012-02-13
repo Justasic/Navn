@@ -1,5 +1,6 @@
 #include "clock.h"
 
+
 Clock::Clock(){}
 
 void Clock::CorrectHour(int &h)
@@ -99,7 +100,7 @@ Flux::string duration(const time_t &t)
   time_t hours = (t / 3600) % 24;
   time_t minutes = (t / 60) % 60;
   time_t seconds = (t) % 60;
-  
+
   if (!days && !hours && !minutes)
     return value_cast<Flux::string>(seconds) + " " + (seconds != 1 ? "seconds" : "second");
   else
