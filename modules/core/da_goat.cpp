@@ -199,7 +199,7 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("To Register your nickname type:/register <Your password>");
+    c->SendMessage("To Register your nickname type: /register <Your password>");
 	c->SendMessage("REMEMBER THIS PASSWORD! YOUR WILL USE IT EVERYTIME U JOIN!");
     Log(u, this) << "command in " << c->name;
   }
@@ -332,6 +332,14 @@ public:
       c->SendMessage("YOU JUST LOST THE GAME.");
 	if(msg.search_ci("!navn"))
       c->SendMessage("That's my name don't wear it out!");
+	if(msg.search_ci("!login"))
+	  c->SendMessage("Type: /login <yourpassword>");
+    if(msg.search_ci("shut up"))
+	  c->SendMessage("U SHUT UP!");
+	if(msg.search_ci("shut the fuck up"))
+	  c->SendMessage("U SHUT THE FUCK UP!");
+	if(msg.search_ci("why")) 
+	  c->SendMessage("Because you touch yourself at night!");
   }
 };
 
