@@ -19,6 +19,7 @@ enum Implementation{
 	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
 	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument, I_OnFork,
 	I_OnSocketError, I_OnPing, I_OnPong, I_OnPreReceiveMessage,
+	I_OnPrivmsgChannel, I_OnNoticeChannel,
   I_END
 };
 enum ModulePriority{
@@ -48,9 +49,9 @@ public:
   virtual ~module();
   virtual EventResult OnPreReceiveMessage(const Flux::string&) { return EVENT_CONTINUE; }
   virtual void OnPrivmsg(User*, const std::vector<Flux::string>&) {}
-  virtual void OnPrivmsg(User*, Channel*, const std::vector<Flux::string>&) {}
+  virtual void OnPrivmsgChannel(User*, Channel*, const std::vector<Flux::string>&) {}
   virtual void OnNotice(User*, const std::vector<Flux::string>&) {}
-  virtual void OnNotice(User*, Channel*, const std::vector<Flux::string>&) {}
+  virtual void OnNoticeChannel(User*, Channel*, const std::vector<Flux::string>&) {}
   virtual void OnCTCP(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnPing(const std::vector<Flux::string>&) {}
   virtual void OnPong(const std::vector<Flux::string>&) {}

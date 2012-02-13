@@ -49,13 +49,16 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
   SET_SEGV_LOCATION();
   User *u = Source.u;
   Channel *c = Source.c;
+  
   if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
+  
  if(!FindCommand(params2[0], C_PRIVATE) && command == "PRIVMSG")
   {
     if(!protocoldebug)
       Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
     
-    if(!IsValidChannel(receiver)){
+    if(!IsValidChannel(receiver))
+    {
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
     }
@@ -98,7 +101,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       }
       else
       {
-	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
+	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(u, c, params2)); //This will one day be a actual function for channel only messages..
       }
     }
   }
@@ -254,7 +257,7 @@ void process(const Flux::string &buffer){
   if(command.equals_cs("INVITE")) { FOREACH_MOD(I_OnInvite, OnInvite(u, params[1])); }
   if(command.equals_cs("NOTICE") && !source.find('.')){
     if(!IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); } 
-    else { FOREACH_MOD(I_OnNotice, OnNotice(u, c, params2)); }
+    else { FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2)); }
   }
   if(command.equals_cs("MODE")) {
     if(IsValidChannel(params[0]) && params.size() == 2) { FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1])); }

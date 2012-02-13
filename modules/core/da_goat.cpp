@@ -285,9 +285,10 @@ public:
   {
     this->SetAuthor("Justasic & Lordofsraam");
     this->SetVersion(VERSION);
-    ModuleHandler::Attach(I_OnPrivmsg, this);
+    ModuleHandler::Attach(I_OnPrivmsgChannel, this);
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  
+  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string cmd = params.empty()?"":params[0], msg;
     for(unsigned i=0; i < params.size(); ++i)

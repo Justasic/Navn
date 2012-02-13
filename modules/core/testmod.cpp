@@ -54,12 +54,12 @@ public:
     this->SetPriority(PRIORITY_LAST);
     
     //Implementation i[] = {  }; //Add that we have a module hook, this can be done in 2 ways
-    ModuleHandler::Attach(I_OnPrivmsg, this);
+    ModuleHandler::Attach(I_OnPrivmsgChannel, this);
     /*or you can do the easy way
      * ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
      */
   }
-  virtual void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  virtual void OnPrivmsgChanenl(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string s;
     for(unsigned i=0; i < params.size(); ++i)

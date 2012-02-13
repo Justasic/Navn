@@ -59,7 +59,7 @@ public:
   {
     throw CoreException(buffer.c_str());
   }
-  void OnNumeric(int i)
+  void OnNumeric(int i, const std::vector<Flux::string> &params)
   {
    if((i == 451)){
      ircproto->user(Config->Ident, Config->Realname);

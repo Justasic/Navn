@@ -10,10 +10,10 @@ public:
     this->SetVersion("1.0");
     this->SetAuthor("Lordofsraam");
     this->SetPriority(PRIORITY_LAST);
-    Implementation i[] = { I_OnPrivmsg, I_OnNotice };
+    Implementation i[] = { I_OnPrivmsgChannel, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
