@@ -80,7 +80,7 @@ class irc_string:Flux::string{
     }
 
     Flux::string fmessage = message;
-    char * cmessage = (char *)fmessage.c_str();
+    char * cmessage = const_cast<char*>(fmessage.c_str());
     char * pch;
     pch = strtok(cmessage," ");
     while (pch != NULL)

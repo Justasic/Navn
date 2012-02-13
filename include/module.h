@@ -26,6 +26,7 @@ enum ModulePriority{
   PRIORITY_DONTCARE,
   PRIORITY_LAST
 };
+
 class CoreExport module : public Base
 {
   Flux::string author, version;
@@ -35,11 +36,7 @@ protected:
   void SetAuthor(const Flux::string&);
   void SetVersion(const Flux::string&);
   void SetPriority(ModulePriority);
-  int AddCommand(Command*);
-  int AddChanCommand(Command*);
 public:
-  int DelChanCommand(Command*);
-  int DelCommand(Command*);
   void *handle;
   Flux::string name, filename, filepath;
   Flux::string GetAuthor();

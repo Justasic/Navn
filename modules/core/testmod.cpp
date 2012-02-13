@@ -59,7 +59,7 @@ public:
      * ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
      */
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  virtual void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string s;
     for(unsigned i=0; i < params.size(); ++i)

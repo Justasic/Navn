@@ -48,7 +48,7 @@ Flux::string Flux::RandomNickString(size_t length)
   for(unsigned i=0; i < length; ++i)
   {
     top:
-    char c = (char) (rand() % ('z' - '0' + 1) + '0');
+    char c = static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
     if(isalphibeticnum(c))
       randomchars += c;
     else
@@ -60,9 +60,9 @@ Flux::string Flux::RandomNickString(size_t length)
 Flux::string Flux::RandomString(size_t length)
 {
   Flux::string randomchars;
-  srand((unsigned)time(NULL));
+  srand(static_cast<unsigned>(time(NULL)));
   for(unsigned i=0; i < length; ++i)
-    randomchars += (char) (rand() % ('z' - '0' + 1) + '0');
+    randomchars += static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
   return randomchars;
 }
 /******************************************************************************/

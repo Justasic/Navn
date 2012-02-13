@@ -11,16 +11,26 @@ std::vector<module *> ModuleHandler::EventHandlers[I_END];
  * \param activated Wether the module is activated or not
  * \param priority The module priority
  */
-module::module(const Flux::string &n){
+
+/* Flux::string author, version;
+ * time_t loadtime;
+ * ModulePriority Priority;
+ * void *handle;
+ * Flux::string name, filename, filepath;
+ */
+module::module(const Flux::string &n) : name(n)
+{
   SET_SEGV_LOCATION();
-  this->name = n;
+  
   this->handle = NULL;
   this->Priority = PRIORITY_DONTCARE;
+  this->loadtime = time(NULL);
+  this->filename = this->filepath = this->author = this->version = "";
+  
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
   
   Modules[this->name] = this;
-  this->loadtime = time(NULL);
   if(!nofork)
     Log() << "Loaded module " << n;
 }
@@ -94,7 +104,7 @@ Flux::string DecodeModErr(ModErr err){
  }
 }
 /*  This code was found online at http://www.linuxjournal.com/article/3687#comment-26593 */
-template<class TYPE> TYPE class_cast(void *symbol)
+template<class TYPE> TYPE function_cast(void *symbol)
 {
     union
     {
@@ -125,10 +135,12 @@ void ModuleHandler::DetachAll(module *m)
 ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
   SET_SEGV_LOCATION();
+  
   if(modname.empty())
     return MOD_ERR_PARAMS;
   if(FindModule(modname))
     return MOD_ERR_EXISTS;
+  
   Log() << "Attempting to load module [" << modname << ']';
   
   Flux::string mdir = Config->Binary_Dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX"),
@@ -138,6 +150,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   Flux::string output = TextFile::TempFile(mdir);
   Log(LOG_RAWIO) << "Runtime module location: " << output;
   mod.Copy(output);
+  
   if(mod.GetLastError() != FILE_IO_OK){
     Log(LOG_RAWIO) << "Runtime Copy Error: " << mod.DecodeLastError();
     return MOD_ERR_FILE_IO;
@@ -145,17 +158,18 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   
   dlerror();
   
-  void *handle = dlopen(output.c_str(), RTLD_LAZY);
+  void *handle = dlopen(output.c_str(), RTLD_NOW);
   const char *err = dlerror();
   if(!handle && err && *err)
   {
     Log() << '[' << modname << "] " << err;
     return MOD_ERR_NOLOAD;
   }
-  dlerror();
   
-  module *(*f)(const Flux::string&) = class_cast<module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
+  dlerror();
+  module *(*f)(const Flux::string&) = function_cast<module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
   err = dlerror();
+  
   if(!f && err && *err){
     Log() << "No module init function, moving on.";
     dlclose(handle);
@@ -174,13 +188,17 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     Log() << "Error while loading " << modname << ": " << e.GetReason();
     return MOD_ERR_EXCEPTION;
   }
+  
   m->filepath = output;
   m->filename = (modname.search(".so")?modname:modname+".so");
   m->handle = handle;
   m->OnLoad();
+  
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
+  
   return MOD_ERR_OK;
 }
+
 bool ModuleHandler::DeleteModule(module *m)
 {
   SET_SEGV_LOCATION();
@@ -191,7 +209,7 @@ bool ModuleHandler::DeleteModule(module *m)
   Flux::string filepath = m->filepath;
   
   dlerror();
-  void (*df)(module*) = class_cast<void (*)(module*)>(dlsym(m->handle, "ModunInit"));
+  void (*df)(module*) = function_cast<void (*)(module*)>(dlsym(m->handle, "ModunInit"));
   const char *err = dlerror();
   if (!df && err && *err)
   {
@@ -204,10 +222,13 @@ bool ModuleHandler::DeleteModule(module *m)
   if(handle)
     if(dlclose(handle))
       Log() << "[" << m->name << ".so] " << dlerror();
+    
   if (!filepath.empty())
     Delete(filepath.c_str());
+  
   return true;
 }
+
 bool ModuleHandler::Unload(module *m){
   if(!m)
     return false;
@@ -223,6 +244,7 @@ void ModuleHandler::UnloadAll(){
     Unload(it->second);
 #endif
 }
+
 Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 {
  switch(p)
@@ -242,15 +264,18 @@ void ModuleHandler::SanitizeRuntime()
 {
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
   Flux::string dirbuf = Config->Binary_Dir+"/runtime/";
+  
   if(!TextFile::IsDirectory(dirbuf))
     if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1)
       Log() << "Error making new runtime directory: " << strerror(errno);
+    
   DIR *dirp = opendir(dirbuf.c_str());
   if (!dirp)
   {
 	  Log(LOG_DEBUG) << "Cannot open directory (" << dirbuf << ')';
 	  return;
   }
+  
   for(dirent *dp; (dp = readdir(dirp));)
   {
 	  if (!dp->d_ino)
@@ -260,6 +285,7 @@ void ModuleHandler::SanitizeRuntime()
 	  Flux::string filebuf = dirbuf + "/" + dp->d_name;
 	  Delete(filebuf.c_str());
   }
+  
   closedir(dirp);
 }
 /******************Configuration variables***********************/

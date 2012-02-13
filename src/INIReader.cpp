@@ -71,7 +71,7 @@ int INIReader::Parse(const Flux::string &filename)
     else if(!line.empty() && line.find_first_of('=')){
       name = line;
       int d = line.find_first_of('=');
-      if(line.find_first_of(';') < (unsigned)d)
+      if(line.find_first_of(';') < static_cast<unsigned>(d))
 	error = linenum;
       else if(d > 0){
 	name = name.erase(d, name.size()-d);

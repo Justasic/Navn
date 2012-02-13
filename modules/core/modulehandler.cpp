@@ -106,7 +106,8 @@ public:
     if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
     else{
-      if(!ModuleHandler::Unload(FindModule(module)))
+      bool e = ModuleHandler::Unload(FindModule(module));
+      if(!e)
       {
 	source.Reply("Failed to unload module %s", module.c_str());
 	Log(source.u, this) << "to unload " << module << " and failed";

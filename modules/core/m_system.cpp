@@ -295,7 +295,7 @@ public:
     
     if(u->IsOwner())
     {
-      source.Reply("My PID is: \2%i\2", (int)getpid());
+      source.Reply("My PID is: \2%i\2", static_cast<int>(getpid()));
       Log(u, this) << "command to get navn's PID " << getpid();
     }else
     {

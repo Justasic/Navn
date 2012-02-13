@@ -22,7 +22,6 @@
  * \brief Replies to CTCPs
  * Replies to CTCP requests in IRC
  */
-
 class ctcp : public module
 {
 public:

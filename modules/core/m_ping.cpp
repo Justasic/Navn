@@ -18,7 +18,7 @@ public:
   ~PingTimeoutTimer() { this->pt->ptt = NULL; }
   void Tick(time_t)
   {
-    sock->ThrowException(printfify("Ping Timeout: %i seconds", (int)this->wait));
+    sock->ThrowException(printfify("Ping Timeout: %i seconds", static_cast<int>(this->wait)));
   }
 };
 
@@ -43,7 +43,7 @@ public:
   void OnPong(const std::vector<Flux::string> &params)
   {
      Flux::string ts = params[1];
-     int lag = time(NULL)-(int)ts;
+     int lag = time(NULL)-static_cast<int>(ts);
      if(pingtimer.ptt)
 	delete pingtimer.ptt;
      if(protocoldebug)

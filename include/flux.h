@@ -270,7 +270,6 @@ namespace Flux{
     string(const base_string &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
     string(const string &_str, size_type pos = 0, size_type n = npos) : _string(_str._string, pos, n) { }
-//     ~string() { printf("~: %s\n", this->c_str()); }
     template <class InputIterator> string(InputIterator first, InputIterator last) : _string(first, last) { }
 
     inline string &operator=(char chr) { this->_string = chr; return *this; }
