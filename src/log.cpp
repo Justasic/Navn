@@ -63,10 +63,12 @@ Log::Log(User *user, Command *command):type(LOG_NORMAL), u(user), c(command) {
   if(!u) throw CoreException("No user argument in Log()");
   if(!c) throw CoreException("No command argument in Log()");
 }
+
 Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command) { 
   if(!u) throw CoreException("No user argument in Log()"); 
   if(!c) throw CoreException("No command argument in Log()");
 }
+
 Log::~Log()
 {
   Flux::string message = Flux::Sanitize(this->buffer.str()), raw = this->buffer.str();
@@ -85,7 +87,12 @@ Log::~Log()
     std::cout << (nocolor?NoTermColor(raw):raw) << std::endl;
     return;
   }else if(type == LOG_SILENT){} // ignore the terminal if its log silent
-  
+
+  EventResult result;
+  FOREACH_RESULT(I_OnLog, OnLog(this), result);
+  if(result != EVENT_CONTINUE)
+    return;
+
   try
     {
       log.open(Config->LogFile.c_str(), std::fstream::out | std::fstream::app);
