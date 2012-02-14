@@ -1,6 +1,17 @@
+/* Navn IRC bot -- Separation Stream Functions
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ *
+ * Code in this file was imported from Anope IRC Services
+ */
+
 #include "flux.h"
 #include "extern.h"
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 /**
  *\file  Sepstream.cpp 
  *\brief Contains the Seperator Stream class.

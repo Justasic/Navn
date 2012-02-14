@@ -1,3 +1,13 @@
+/* Navn IRC bot -- INI Parser header
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 // Read an INI file into easy-to-access name/value pairs.
 
 // inih and INIReader are released under the New BSD license (see LICENSE.txt).
