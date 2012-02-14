@@ -1,3 +1,12 @@
+/* Navn IRC bot -- Join-part management for the bot
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 
 /*This module setup needs serious work!

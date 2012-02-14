@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Clock module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 
 #include "flux_net_irc.hpp"
 
@@ -62,6 +70,7 @@ public:
       Flux::string city = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["city"].Attributes["data"].Value;
       Flux::string time = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["current_date_time"].Attributes["data"].Value;
       delete xf;
+      
       c->SendMessage("The current time in %s is %s", city.c_str(), time.c_str());
       Delete(tmpfile.c_str());
       Log(source.u, this) << "to get time for " << location;
