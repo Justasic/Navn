@@ -11,13 +11,25 @@
 #include "user.h"
 #include "module.h"
 
+/**
+ * \file  process.cpp
+ * \brief Contains IRC buffer processing functions
+ * This file has functions which process the raw buffer from the
+ * socket engine and then continues to process module events
+ * and commands which depend on this processing system.
+ * This system also implements the "Parameters system" which
+ * allows for strings to be split by spaces and placed into a
+ * vector which makes for easy processing
+ */
+
 /** 
  * \fn void ProcessJoin(CommandSource &source, const Flux::string &chan)
  * \brief Processes the /who numeric (352), this should only be used in Process() unless its for something special
  * \param source CommandSource struct used to find all the information needed to make new users
  * \param chan The channel we're processing
  */
-void ProcessJoin(CommandSource &source, const Flux::string &chan){
+void ProcessJoin(CommandSource &source, const Flux::string &chan)
+{
     std::vector<Flux::string> &params = source.params;
     if(params.size() < 7)
       return;
@@ -165,7 +177,12 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 
 /** 
  * \fn void process(const Flux::string &buffer)
- * \brief Main Processing function
+ * \brief Main Processing function.
+ * This function takes the raw socket buffer and processes it down to
+ * the basic IRC protocol so Navn can interpret it and process its
+ * commands and events. This void function is rather large and
+ * has a lot of complex functions in it, it may be modified to become
+ * simpler to understand in later releases
  * \param buffer The raw socket buffer
  */
 void process(const Flux::string &buffer){

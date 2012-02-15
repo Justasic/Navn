@@ -11,9 +11,9 @@
 #include "INIReader.h"
 
 //General misc functions
-/**Random Number Generator
- * This will generate a random number x is start number, y is the stop number.
- * @param randint(int x, int y)
+/** Random Number Generator
+ *  This will generate a random number x is start number, y is the stop number.
+ *  \param randint(int x, int y)
  */
 int randint(int x, int y)
 {
@@ -23,6 +23,7 @@ int randint(int x, int y)
 
 /**
  * \fn IsoHost(const Flux::string &fullhost)
+ * \brief Basic class for isolating and decoding a basic IRC hostname
  * \param fullhost A Flux::string containing the full host of an irc message
  */
 IsoHost::IsoHost(const Flux::string &fullhost)
@@ -33,6 +34,10 @@ IsoHost::IsoHost(const Flux::string &fullhost)
   ident = fullhost.isolate('!','@');
 }
 
+/**
+ * \fn void Fork()
+ * \brief This is a simple start-up function which justifies whether we fork to background or not.
+ */
 void Fork()
 {
   if (!nofork && InTerm()){
@@ -57,7 +62,48 @@ void Fork()
     Log() << Config->BotNick << " Started, PID: " << getpid() << "\033[22;36m";
 }
 
-// Based on Eggdrops mirc stripper
+/**
+ * \fn Flux::string Flux::RandomNickString(size_t length)
+ * \brief Generates a completely random, valid IRC nickname string, Good for temp nicknames.
+ * \param length the size type of how long you want the string.
+ */
+Flux::string Flux::RandomNickString(size_t length)
+{
+  Flux::string randomchars;
+  srand(time(NULL));
+  for(unsigned i=0; i < length; ++i)
+  {
+    top:
+    char c = static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
+    if(isalphibeticnum(c))
+      randomchars += c;
+    else
+      goto top;
+  }
+  return randomchars;
+}
+
+/**
+ * \fn Flux::string Flux::RandomString(size_t length)
+ * \brief Similar to the Flux::RandomNickString, it generates a random string of valid ASCII characters.
+ * \param length the size type of how long you want the string.
+ */
+Flux::string Flux::RandomString(size_t length)
+{
+  Flux::string randomchars;
+  srand(static_cast<unsigned>(time(NULL)));
+  for(unsigned i=0; i < length; ++i)
+    randomchars += static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
+  return randomchars;
+}
+
+/**
+ * \fn Flux::string strip_mirc_codes(const Flux::string &str)
+ * \brief Attempts to remove all mIRC color codes from an IRC message
+ * \param buffer A Flux::string containing mIRC color codes
+ * This function was an import of eggdrops mirc stripper and was
+ * rewritten into C++ for compatability with Flux::strings
+ */
 // FIXME: This has buffer overflow written all over it! BOUNDS CHECKING!
 Flux::string strip_mirc_codes(const Flux::string &str)
 {
@@ -105,6 +151,13 @@ Flux::string strip_mirc_codes(const Flux::string &str)
   return txt;
 }
 
+/**
+ * \fn Flux::string Flux::Sanitize(const Flux::string &string)
+ * \brief Strips ALL color codes and anything of the like from a string, including \001 chars and even terminal colors.
+ * \param buffer A Flux::string containing mIRC color codes
+ * This function was an import of eggdrops mirc stripper and was
+ * rewritten into C++ for compatability with Flux::strings
+ */
 Flux::string Flux::Sanitize(const Flux::string &string)
 {
  static struct special_chars{
@@ -128,6 +181,7 @@ Flux::string Flux::Sanitize(const Flux::string &string)
     ret = ret.replace_all_cs(special[i].character, special[i].replace);
   return ret.c_str();
 }
+
 /**
  * \fn Flux::string make_pass()
  * \brief Makes a random password
@@ -135,7 +189,8 @@ Flux::string Flux::Sanitize(const Flux::string &string)
  * quit and other password protected commands.
  * \return A Flux::string containing the 5 digit password.
  */
-Flux::string make_pass(){
+Flux::string make_pass()
+{
   int p1,p2,p3,p4,p5;
   srand(time(NULL));
   p1 = rand()%10;
@@ -147,18 +202,27 @@ Flux::string make_pass(){
   pass_ss << p1 << p2 << p3 << p4 << p5;
   return pass_ss.str();
 }
+
 /**
- * \fn bool IsValadChannel(const Flux::string nerp)
+ * \fn bool IsValidChannel(const Flux::string &chan)
  * This function returns if the channel is valid or not.
- * \param nerp Channel sring to be tested.
+ * \param channel Channel sring to be tested.
  * \return True if the Flux::string is a valid channel, false otherwise.
  */
-bool IsValidChannel(const Flux::string &chan){
+bool IsValidChannel(const Flux::string &chan)
+{
  if (chan[0] != '#')
     return false;
  return true;
 }
 
+/**
+ * \fn Flux::string printfify(const char *fmt, ...)
+ * \brief Returns a formatted string similar to printf() just in a Flux::string
+ * \param Text The text to format
+ * \param Format The format, in printf() form, to be formatted
+ * \return a formatted Flux::string
+ */
 Flux::string printfify(const char *fmt, ...)
 {
   if(fmt)
@@ -176,7 +240,7 @@ Flux::string printfify(const char *fmt, ...)
 /**
  * \fn Flux::string VectorString(const Flux::vector &params)
  * \brief Returns a condensed string of a Flux::vector
- * \param Flux::vector a vector containing a string that needs condensing
+ * \param Flux::string A string of a Flux::vector condensed
  */
 Flux::string CondenseString(const Flux::vector &p)
 {
@@ -189,8 +253,8 @@ Flux::string CondenseString(const Flux::vector &p)
 }
 
 /**
- * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
- * \brief creates a vector that breaks down a string word-by-word using the delim as the seperater
+ * \fn Flux::vector SerializeString(const Flux::string &src, char delim)
+ * \brief creates a vector that breaks down a string word-by-word using the delim as the separater
  * \param src The source string for it to break down
  * \param delim The char used to seperate the words in the source string
  */
@@ -205,8 +269,8 @@ Flux::vector SerializeString(const Flux::string &src, char delim)
 }
 /** Check if a file exists
  * \fn bool InTerm()
- * \brief returns if the 
- * \return true if the file exists, false if it doens't
+ * \brief returns if the bot is started in terminal
+ * \return true if in terminal, false otherwise
  */
 bool InTerm() { return isatty(fileno(stdout) && isatty(fileno(stdin)) && isatty(fileno(stderr))); }
 /* butt-plug?
