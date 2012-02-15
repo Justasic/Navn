@@ -293,8 +293,9 @@ void ModuleHandler::SanitizeRuntime()
   if(!TextFile::IsDirectory(dirbuf))
   {
     if(mkdir(dirbuf.c_str(), getuid()) != 0)
-      Log() << "Error making new runtime directory: " << strerror(errno);
-  }else
+      throw CoreException(printfify("Error making new runtime directory: %s", strerror(errno)));
+  }
+  else
   {
     Flux::vector files = TextFile::DirectoryListing(dirbuf);
     for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
