@@ -13,6 +13,7 @@
 //Move on and call me an idiot later.
 Flux::insensitive_map<module*> Modules;
 std::vector<module *> ModuleHandler::EventHandlers[I_END];
+
 /** 
  * \fn module::module(Flux::string n)
  * \brief Module Constructor
@@ -35,22 +36,67 @@ module::module(const Flux::string &n) : name(n)
     Log() << "Loaded module " << n;
 }
 
-module::~module(){
+/**
+ * \fn module::~module()
+ * \brief Module destructor
+ */
+module::~module()
+{
   SET_SEGV_LOCATION();
   Log(LOG_DEBUG) << "Unloading module " << this->name;
   ModuleHandler::DetachAll(this);
   Modules.erase(this->name);
 }
 
+/**
+ * \fn void module::SetAuthor(const Flux::string &person)
+ * \brief Sets the module author, can only be set by the module its self
+ * \param Author the name of the author(s) to be set
+ */
 void module::SetAuthor(const Flux::string &person) { this->author = person; }
+
+/**
+ * \fn void module::SetVersion(const Flux::string &ver)
+ * \brief Sets the module version, can only be set by the module its self
+ * \param Version the module version
+ */
 void module::SetVersion(const Flux::string &ver) { this->version = ver; }
+
+/**
+ * \fn void module::SetAuthor(const Flux::string &person)
+ * \brief Sets the module priority, can only be set by the module its self
+ * \param Priority sets the priority of the module
+ */
 void module::SetPriority(ModulePriority p) { this->Priority = p; }
+
+/**
+ * \fn Flux::string module::GetVersion()
+ * \brief Gets the string of the modules version
+ * \return The modules version
+ */
 Flux::string module::GetVersion() { return this->version; }
+
+/**
+ * \fn time_t module::GetLoadTime()
+ * \brief Gets the time the module was loaded
+ * \return load time of the module
+ */
 time_t module::GetLoadTime() { return this->loadtime; }
+
+/**
+ * \fn Flux::string module::GetAuthor()
+ * \brief Gets the module author(s)
+ * \return The modules author string
+ */
 Flux::string module::GetAuthor() { return this->author; }
+
+/**
+ * \fn ModulePriority module::GetPriority()
+ * \brief Gets the module priority
+ * \return Priority of the module
+ */
 ModulePriority module::GetPriority() { return this->Priority; }
 
-/*******************************************************************/
 /** 
  * \fn module *FindModule(const Flux::string &name)
  * \brief Find a module in the module list
@@ -63,7 +109,6 @@ module *FindModule(const Flux::string &name)
     return it->second;
  return NULL;
 }
-/*******************************************************************/
 
 /** 
  * \fn bool ModuleHandler::Attach(Implementation i, module *mod)
@@ -86,9 +131,15 @@ void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
    Attach(i[n], mod);
 }
 
-
-Flux::string DecodeModErr(ModErr err){
- switch(err){
+/**
+ * \fn Flux::string DecodeModErr(ModErr err)
+ * \brief Decodes module errors into a useful string to use in user-end functions
+ * \param Error The error to decode
+ */
+Flux::string DecodeModErr(ModErr err)
+{
+ switch(err)
+ {
    case MOD_ERR_OK:
      return "No error (MOD_ERR_OK)";
    case MOD_ERR_MEMORY:
@@ -221,6 +272,11 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   return MOD_ERR_OK;
 }
 
+/**
+ * \fn bool ModuleHandler::DeleteModule(module *m)
+ * \brief Delete the module from module lists and unload it from navn completely
+ * \param Module the module to be removed
+ */
 bool ModuleHandler::DeleteModule(module *m)
 {
   SET_SEGV_LOCATION();
@@ -251,6 +307,11 @@ bool ModuleHandler::DeleteModule(module *m)
   return true;
 }
 
+/**
+ * \fn bool ModuleHandler::Unload(module *m)
+ * \brief Unloads the module safely and announces the module unload event
+ * \param Module the module to be unloaded
+ */
 bool ModuleHandler::Unload(module *m)
 {
   if(!m)
@@ -258,6 +319,11 @@ bool ModuleHandler::Unload(module *m)
   FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
   return DeleteModule(m);
 }
+
+/**
+ * \fn void ModuleHandler::UnloadAll()
+ * \brief Safely unloads ALL modules from navn
+ */
 void ModuleHandler::UnloadAll()
 {
 #ifdef _CXX11
@@ -269,6 +335,11 @@ void ModuleHandler::UnloadAll()
 #endif
 }
 
+/**
+ * \fn Flux::string ModuleHandler::DecodePriority(ModulePriority p)
+ * \brief Decodes the module priority to a string used in user-end functions
+ * \param Priority The priority to decode
+ */
 Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 {
  switch(p)
@@ -285,6 +356,10 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
  return "";
 }
 
+/**
+ * \fn void ModuleHandler::SanitizeRuntime()
+ * \brief Deletes all files in the runtime directory.
+ */
 void ModuleHandler::SanitizeRuntime()
 {
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
@@ -303,11 +378,14 @@ void ModuleHandler::SanitizeRuntime()
   }
 }
 /******************Configuration variables***********************/
+
 /**Rehash void
  * \fn void ReadConfig()
+ * \deprecated This will be removed soon.
  * This will re-read the config file values when told to do so
  */
-void ReadConfig(){
+void ReadConfig()
+{
   sepstream sep(Config->Modules, ',');
   Flux::string tok;
   while(sep.GetToken(tok))
