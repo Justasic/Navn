@@ -346,7 +346,7 @@ public:
 	Log(u) << "used Da_Goats !slap command in " << c->name << "to poke " << u2->nick;
       } 
     }
-	/*******************************************************/
+	/***************************************************************************************************/
 	if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
       c->SendMessage("NO U!");
     if(cmd.equals_ci("!everything"))
@@ -370,8 +370,8 @@ public:
       c->SendMessage("U SHUT UP!");
     if(msg.search_ci("shut the fuck up"))
       c->SendMessage("U SHUT THE FUCK UP!");
-    if(msg.search_ci("why") && c->name.equals_ci("#Minecraft"))
-      c->SendMessage("Because you touch yourself at night!");
+    /*if(msg.search_ci("why") && c->name.equals_ci("#Minecraft"))
+      c->SendMessage("Because you touch yourself at night!");*/
   }
 };
 
