@@ -324,12 +324,13 @@ public:
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
       } 
     }
-	/****************************************slap command*******************************************/
-	if(cmd.equals_ci("!slap"))
-        { //Easter egg ;P
+    /****************************************slap command*******************************************/
+    if(cmd.equals_ci("!slap"))
+    { //Easter egg ;P
       Flux::string person = params.size() == 2?params[1]:"";
       person.trim();
       User *u2 = finduser(person);
+
       if(u2 && u2->IsOwner())
       {
 	c->SendMessage("why would I wanna slap my master!?");
@@ -340,14 +341,16 @@ public:
 	c->SendAction("bitch slaps %s", u->nick.c_str());
 	c->kick(u, "\002\00315Dont slap me!\017");
 	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
-      }else{
+      }
+      else
+      {
 	c->SendAction("bitch slaps %s", u2->nick.c_str());
 	c->kick(u2, "\002\00315Dont slap me!\017");
 	Log(u) << "used Da_Goats !slap command in " << c->name << "to poke " << u2->nick;
-      } 
+      }
     }
-	/***************************************************************************************************/
-	if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
+    /***************************************************************************************************/
+    if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
       c->SendMessage("NO U!");
     if(cmd.equals_ci("!everything"))
       c->SendMessage("Yes, there is a script for everything...\007");
@@ -370,7 +373,7 @@ public:
       c->SendMessage("U SHUT UP!");
     if(msg.search_ci("shut the fuck up"))
       c->SendMessage("U SHUT THE FUCK UP!");
-    /*if(msg.search_ci("why") && c->name.equals_ci("#Minecraft"))
+    /*if(params[0].search_ci("why") && c->name.equals_ci("#Minecraft"))
       c->SendMessage("Because you touch yourself at night!");*/
   }
 };
