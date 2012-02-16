@@ -106,7 +106,8 @@ void Oper::gline(const Flux::string &target, const Flux::string &time, const Flu
  * \param char* The message in a c string format
  * \param va_list any other functions, vars to pass to va_list to form the string
  */
-void CommandSource::Reply(const char *fmt, ...){
+void CommandSource::Reply(const char *fmt, ...)
+{
   va_list args;
   char buf[BUFSIZE];
   if(fmt){
@@ -117,7 +118,8 @@ void CommandSource::Reply(const char *fmt, ...){
   }
 }
 /** \overload void CommandSource::Reply(const Flux::string &msg) */
-void CommandSource::Reply(const Flux::string &msg){
+void CommandSource::Reply(const Flux::string &msg)
+{
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
@@ -129,11 +131,13 @@ CommandMap ChanCommandMap;
 
 /**
  * \brief Find a command in the command map
- * \fn Command *FindCommand(const Flux::string &name)
+ * \fn Command *FindCommand(const Flux::string &name, CommandType type)
  * \return Command class you wanted to find
  * \param name A string containing the command name you're looking for
+ * \param type The command type you are looking for
  */
-Command *FindCommand(const Flux::string &name, CommandType type){
+Command *FindCommand(const Flux::string &name, CommandType type)
+{
   if(name.empty())
     return NULL;
 
@@ -158,10 +162,12 @@ Command *FindCommand(const Flux::string &name, CommandType type){
 
 /**
  * \class Command A class which most private message commands inside of modules work in.
- * \fn Command::Command(const Flux::string &sname, size_t min_params, size_t max_params)
+ * \fn Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params)
  * \param Flux::string command name
  * \param size_t the minimum size of the buffer the command vector gets
- * \param size_t the maximum size the vector gets
+ * \param size_t the maximum size the vector gets, the rest is a string
+ * \param CommandType The type of command this command is
+ * \param module The module that this command belongs to
  */
 Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params): type(t), MaxParams(max_params), MinParams(min_params), name(sname), mod(m)
 {
@@ -188,6 +194,7 @@ Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min
   if(it.second != true)
     throw ModuleException("Command "+this->name+" already loaded!");
 }
+
 Command::~Command()
 {
   switch(this->type)
@@ -239,7 +246,8 @@ void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
  * \fn const Flux::string &Command::GetDesc() const
  * \return Flux::string with the description
  */
-const Flux::string &Command::GetDesc() const{
+const Flux::string &Command::GetDesc() const
+{
  return this->desc; 
 }
 bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand) { return false; }

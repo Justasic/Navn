@@ -17,7 +17,8 @@
  * out as a hunt to be able to tell the time in the IRC channel because
  * Justasic lived in a different timezone. From there it evolved to what you see today 
  * with the help of Justasic coming in to help with the code and debugging.
- * If you want a really detailed history go look at our svn commit log in googlecode.
+ * If you want a really detailed history go look at our svn commit log in googlecode (old)
+ * or our Git history on gitorious.
  * \section dev Further Development
  * Navn is always growing and getting better. If you would like to help, contact Justasic or Lordofsraam.
  * \subsection mods Module Development
@@ -27,6 +28,11 @@
  */
 #include "flux_net_irc.hpp"
 
+/**
+ * \fn bool SocketIO::Read(const Flux::string &buf) const
+ * \brief Read from a socket for the IRC processor
+ * \param buffer Raw socket buffer
+ */
 bool SocketIO::Read(const Flux::string &buf) const
 {
   if(buf.search_ci("ERROR :Closing link:")){
@@ -38,32 +44,53 @@ bool SocketIO::Read(const Flux::string &buf) const
   return true;
 }
 
+// used for justifying how many times the bot has run the main loop to prevent loop bombs
 uint32_t startcount, loopcount;
+/**
+ * \fn bool SocketIO::Read(const Flux::string &buf) const
+ * \brief Read from a socket for the IRC processor
+ * \param buffer Raw socket buffer
+ */
 void Connect()
 {
   if(quitting)
     return;
   ++startcount;
   Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
+  
   FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+  
   if(Config->Server.empty())
     throw SocketException("No Server Specified.");
   if(Config->Port.empty())
     throw SocketException("No Port Specified.");
-  if(sock){
+  if(sock)
+  {
     SocketIO *s = sock;
     delete s;
   }
+  
   FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+  
   sock = new SocketIO(Config->Server, Config->Port);
   sock->Connect();
-  if(ircproto){
+  
+  if(ircproto)
+  {
     ircproto->user(Config->Ident, Config->Realname);
     ircproto->nick(Config->BotNick);
   }
+  
   FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
 }
 
+/**
+ * \fn int main (int argcx, char** argvx, char *envp[])
+ * \brief Main Entry point for the bot
+ * \param argc the number of args provided by the system
+ * \param argv the args in a c-string array provided by the system
+ * \param envp[] Not quite sure what this is lol
+ */
 int main (int argcx, char** argvx, char *envp[])
 {
   SET_SEGV_LOCATION();

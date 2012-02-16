@@ -10,7 +10,13 @@
 
 #include "log.h"
 
-Flux::string NoTermColor(const Flux::string &ret){
+/**
+ * \fn Flux::string NoTermColor(const Flux::string &ret)
+ * \brief Strip all *nix terminal style colors
+ * \param buffer Buffer to strip
+ */
+Flux::string NoTermColor(const Flux::string &ret)
+{
   Flux::string str;
   bool in_term_color = false;
   for(unsigned i=0; i < ret.length(); ++i){
@@ -30,6 +36,12 @@ Flux::string NoTermColor(const Flux::string &ret){
   return str;
 }
 
+/**
+ * \fn static Flux::string GetLogDate(time_t t = time(NULL))
+ * \brief Get the date for the log files that is user readable
+ * \param time time to use on the log files
+ * \return returns a string containing the human-readable date format
+ */
 static Flux::string GetLogDate(time_t t = time(NULL))
 {
   char timestamp[32];
@@ -42,11 +54,23 @@ static Flux::string GetLogDate(time_t t = time(NULL))
   return timestamp;
 }
 
+/**
+ * \fn static inline Flux::string CreateLogName(const Flux::string &file, time_t t = time(NULL))
+ * \brief Returns a filename for the logs
+ * \param file string containing the filename
+ * \param time time to use on the filename
+ * \return the filename that has been generated
+ */
 static inline Flux::string CreateLogName(const Flux::string &file, time_t t = time(NULL))
 {
   return "logs/" + file + "." + GetLogDate(t) + "-" + value_cast<Flux::string>(t);
 }
 
+/**
+ * \fn void CheckLogDelete(Log *log)
+ * \brief Check to see if logs need to be removed due to old age
+ * \param log A log class variable
+ */
 void CheckLogDelete(Log *log)
 {
   Flux::string dir = Config->Binary_Dir+"/logs/";
@@ -82,6 +106,11 @@ void CheckLogDelete(Log *log)
   }
 }
 
+/**
+ * \fn Flux::string Log::TimeStamp()
+ * \brief Returns a logging timestamp for use as log message prefixes
+ * \return Generated human readable timestamp
+ */
 Flux::string Log::TimeStamp()
 {
  char tbuf[256];
@@ -108,22 +137,32 @@ Flux::string Log::TimeStamp()
   return Flux::Sanitize(tbuf);
 }
 
+/**
+ * \fn Log::Log(LogType t) : type(t), u(NULL), c(NULL)
+ * \brief Logging class used for generating log files and messages
+ */
 Log::Log(LogType t) : type(t), u(NULL), c(NULL) {}
+/// \overload Log::Log(LogType t, User *user):type(t), u(user), c(NULL)
 Log::Log(LogType t, User *user):type(t), u(user), c(NULL) { if(!u) throw CoreException("No user argument in Log()"); }
+/// \overload Log::Log(User *user): type(LOG_NORMAL), u(user), c(NULL)
 Log::Log(User *user): type(LOG_NORMAL), u(user), c(NULL) { if(!u) throw CoreException("No user argument in Log()"); }
-
+/// \overload Log::Log(User *user, Command *command):type(LOG_NORMAL), u(user), c(command)
 Log::Log(User *user, Command *command):type(LOG_NORMAL), u(user), c(command)
 { 
   if(!u) throw CoreException("No user argument in Log()");
   if(!c) throw CoreException("No command argument in Log()");
 }
-
+/// \overload Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command)
 Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command)
 { 
   if(!u) throw CoreException("No user argument in Log()"); 
   if(!c) throw CoreException("No command argument in Log()");
 }
 
+/**
+ * \fn Log::~Log()
+ * \brief Logging destructor, this is where the files are actually written and messages are logged
+ */
 Log::~Log()
 {
   this->filename = CreateLogName(Config->LogFile, starttime);
