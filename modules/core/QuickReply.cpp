@@ -1,3 +1,13 @@
+/* Navn IRC bot -- ?
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "flux_net_irc.hpp"
 
 XMLFile * xf = new XMLFile("myxml.xml");
@@ -10,10 +20,10 @@ public:
     this->SetVersion("1.0");
     this->SetAuthor("Lordofsraam");
     this->SetPriority(PRIORITY_LAST);
-    Implementation i[] = { I_OnPrivmsg, I_OnNotice };
+    Implementation i[] = { I_OnPrivmsgChannel, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)

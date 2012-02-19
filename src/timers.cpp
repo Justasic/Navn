@@ -6,7 +6,8 @@
  * 
  * Based on the original code of Epona by Lara.
  * Based on the original code of Services by Andy Church.
- * All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html)
+ *
+ * Please read COPYING and README before copying functions
  */
 
 #include "includes.h"

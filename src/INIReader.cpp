@@ -1,3 +1,13 @@
+/* Navn IRC bot -- INI File parser
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 // Read an INI file into easy-to-access name/value pairs.
 
 #include <cctype>
@@ -71,7 +81,7 @@ int INIReader::Parse(const Flux::string &filename)
     else if(!line.empty() && line.find_first_of('=')){
       name = line;
       int d = line.find_first_of('=');
-      if(line.find_first_of(';') < (unsigned)d)
+      if(line.find_first_of(';') < static_cast<unsigned>(d))
 	error = linenum;
       else if(d > 0){
 	name = name.erase(d, name.size()-d);
@@ -176,6 +186,14 @@ long INIReader::GetInteger(const Flux::string &section, const Flux::string &name
     return end > value ? n : default_value;
 }
 
+float INIReader::GetFloat(const Flux::string &section, const Flux::string &name, float default_value)
+{
+  Flux::string valstr = Get(section, name, "");
+  float val = (float)valstr;
+
+  return val > 0 ? val : default_value;
+}
+
 Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string &name)
 {
     Flux::string key = section + "." + name;
@@ -208,7 +226,9 @@ BotConfig::BotConfig(const Flux::string &dir)
  }
 }
 BotConfig::~BotConfig() { if(Parser) delete Parser; }
-void BotConfig::Read(){
+
+void BotConfig::Read()
+{
   SET_SEGV_LOCATION();
   this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
   this->PingTimeoutTime = this->Parser->GetInteger("Bot", "PingTimeoutTime", 120);
@@ -234,5 +254,6 @@ void BotConfig::Read(){
   this->IdentOnConn = this->Parser->GetBoolean("Services","Identify on connect", true);
   this->ServicesService = this->Parser->Get("Services", "Service", "");
   this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
+  this->LogAge = Parser->GetInteger("Log", "Log Age", 2);
 }
 

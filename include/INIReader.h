@@ -1,3 +1,13 @@
+/* Navn IRC bot -- INI Parser header
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 // Read an INI file into easy-to-access name/value pairs.
 
 // inih and INIReader are released under the New BSD license (see LICENSE.txt).
@@ -32,6 +42,8 @@ public:
     // not found.
     long GetInteger(const Flux::string&, const Flux::string&, long);
 
+    float GetFloat(const Flux::string&, const Flux::string&, float);
+
     bool GetBoolean(const Flux::string&, const Flux::string&, bool);
     ~INIReader();
 
@@ -43,6 +55,7 @@ private:
     // Parse the INI file
     int Parse(const Flux::string &filename);
 };
+
 class CoreExport BotConfig
 {
 public:
@@ -70,6 +83,7 @@ public:
   Flux::string ServicesSendString;
   Flux::string AutoIdentString;
   Flux::string ServicesService;
+  int LogAge;
   bool IdentOnConn;
   time_t PingTimeoutTime;
   size_t LogTime;

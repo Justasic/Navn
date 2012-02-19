@@ -1,9 +1,19 @@
+/* Navn IRC bot -- Example module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "flux_net_irc.hpp"
 
 class CommandSimple : public Command
 {
 public:
-  CommandSimple():Command("HI")
+  CommandSimple(module *m):Command(m, "HI", C_PRIVATE)
   {
     this->SetDesc("Says Hi");
   }
@@ -25,11 +35,10 @@ class SimpleMod : public module
 {
   CommandSimple s;
 public:
-  SimpleMod(const Flux::string &Name):module(Name)
+  SimpleMod(const Flux::string &Name):module(Name), s(this)
   {
     this->SetVersion("1.0");
     this->SetAuthor("Justasic & Lordofsraam");
-    this->AddCommand(&s);
     this->SetPriority(PRIORITY_LAST);
     Implementation i[] = { I_OnPrivmsg, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));

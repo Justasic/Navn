@@ -1,6 +1,16 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Command header
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "command.h"
 #include "module.h"
+/*******************************************************************************************/
+/* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
 /**
  *\file  command.cpp 
  *\brief Contains the command class.
@@ -96,7 +106,8 @@ void Oper::gline(const Flux::string &target, const Flux::string &time, const Flu
  * \param char* The message in a c string format
  * \param va_list any other functions, vars to pass to va_list to form the string
  */
-void CommandSource::Reply(const char *fmt, ...){
+void CommandSource::Reply(const char *fmt, ...)
+{
   va_list args;
   char buf[BUFSIZE];
   if(fmt){
@@ -107,60 +118,95 @@ void CommandSource::Reply(const char *fmt, ...){
   }
 }
 /** \overload void CommandSource::Reply(const Flux::string &msg) */
-void CommandSource::Reply(const Flux::string &msg){
+void CommandSource::Reply(const Flux::string &msg)
+{
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
    this->u->SendMessage(tok);
 }
 
+CommandMap Commandsmap;
+CommandMap ChanCommandMap;
+
 /**
  * \brief Find a command in the command map
- * \fn Command *FindCommand(const Flux::string &name)
+ * \fn Command *FindCommand(const Flux::string &name, CommandType type)
  * \return Command class you wanted to find
  * \param name A string containing the command name you're looking for
+ * \param type The command type you are looking for
  */
-Command *FindCommand(const Flux::string &name, CommandType type){
+Command *FindCommand(const Flux::string &name, CommandType type)
+{
   if(name.empty())
     return NULL;
-  if((type == COMMAND_PRIVATE))
+
+  CommandMap::iterator it;
+  switch(type)
   {
-    CommandMap::iterator it = Commandsmap.find(name);
+    case C_PRIVATE:
+      it = Commandsmap.find(name);
       if(it != Commandsmap.end())
 	return it->second;
-  }
-  else if((type == COMMAND_CHANNEL))
-  {
-    CommandMap::iterator it = ChanCommandMap.find(name);
-    if(it != ChanCommandMap.end())
-      return it->second;
+      break;
+    case C_CHANNEL:
+      it = ChanCommandMap.find(name);
+      if(it != ChanCommandMap.end())
+	return it->second;
+      break;
+    case C_NULL:
+      break;
   }
   return NULL;
 }
-/*******************************************************************************************/
-/* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
+
 /**
  * \class Command A class which most private message commands inside of modules work in.
- * \fn Command::Command(const Flux::string &sname, size_t min_params, size_t max_params)
+ * \fn Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params)
  * \param Flux::string command name
  * \param size_t the minimum size of the buffer the command vector gets
- * \param size_t the maximum size the vector gets
+ * \param size_t the maximum size the vector gets, the rest is a string
+ * \param CommandType The type of command this command is
+ * \param module The module that this command belongs to
  */
-Command::Command(const Flux::string &sname, size_t min_params, size_t max_params): MaxParams(max_params), MinParams(min_params), name(sname)
+Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params): type(t), MaxParams(max_params), MinParams(min_params), name(sname), mod(m)
 {
   for(unsigned i=0; i < sname.size(); ++i) //commands with spaces can screw up the command handler
     if(isspace(sname[i]))
       throw ModuleException("Commands cannot contain spaces!");
-  this->mod = NULL;
+  
+  if(this->type == C_NULL)
+    throw ModuleException("Command \""+this->name+"\" MUST have a type!");
+
+  std::pair<CommandMap::iterator, bool> it;
+  switch(this->type)
+  {
+    case C_PRIVATE:
+      it = Commandsmap.insert(std::make_pair(this->name, this));
+      break;
+    case C_CHANNEL:
+      it = ChanCommandMap.insert(std::make_pair(this->name, this));
+      break;
+    case C_NULL:
+      break;
+  }
+
+  if(it.second != true)
+    throw ModuleException("Command "+this->name+" already loaded!");
 }
+
 Command::~Command()
 {
-  if(this->mod){
-    CommandMap::iterator it = ChanCommandMap.find(this->name);
-   if(it->second != NULL)
-     this->mod->DelChanCommand(this);
-   else
-     this->mod->DelCommand(this);
+  switch(this->type)
+  {
+    case C_PRIVATE:
+      Commandsmap.erase(this->name);
+      break;
+    case C_CHANNEL:
+      ChanCommandMap.erase(this->name);
+      break;
+    case C_NULL:
+      break;
   }
 }
 /**
@@ -200,7 +246,8 @@ void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
  * \fn const Flux::string &Command::GetDesc() const
  * \return Flux::string with the description
  */
-const Flux::string &Command::GetDesc() const{
+const Flux::string &Command::GetDesc() const
+{
  return this->desc; 
 }
 bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand) { return false; }

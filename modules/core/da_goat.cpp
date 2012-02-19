@@ -1,9 +1,18 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Da_Goat script in C++
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 
 /**
  * \file da_goat.h Header file holding the \a Da_Goat function.
  * \author Lordofsraam & Justasic
+ * maintained by \a DeathBlade
  */
 
 /**
@@ -48,7 +57,7 @@ struct sysinfo sys_info;
 class CommandCVersion: public Command
 {
 public:
-  CommandCVersion():Command("!VERSION")
+  CommandCVersion(module *m):Command(m, "!VERSION", C_CHANNEL)
   {
     this->SetDesc("Displays the bots version info into the channel");
   }
@@ -58,7 +67,7 @@ public:
     Channel *c = source.c;
     c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION);
     c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
-    c->SendMessage("Report all bugs at: \2http://flux-net.net/bugs/\2");
+    c->SendMessage("Report all bugs at: \2http://bugs.flux-net.net\2");
     c->SendMessage("Navn is managed by \2%s\2", Config->Owner.c_str());
     Log(u, this) << "command in " << c->name;
   }
@@ -75,7 +84,7 @@ public:
 class CommandCSpam: public Command
 {
 public:
-  CommandCSpam():Command("!SPAM")
+  CommandCSpam(module *m):Command(m, "!SPAM", C_CHANNEL)
   {
     this->SetDesc("Displays the spam warning");
   }
@@ -96,7 +105,7 @@ public:
 class CommandCRules: public Command
 {
 public:
-  CommandCRules():Command("!RULES")
+  CommandCRules(module *m):Command(m, "!RULES", C_CHANNEL)
   {
     this->SetDesc("Displays the rules of the chatroom");
   }
@@ -125,7 +134,7 @@ public:
 class CommandCUptime: public Command
 {
 public:
-  CommandCUptime():Command("!UPTIME")
+  CommandCUptime(module *m):Command(m, "!UPTIME", C_CHANNEL)
   {
     this->SetDesc("Prints Syatem Uptime in the channel");
   }
@@ -163,7 +172,7 @@ public:
 class CommandCSocialInfo: public Command
 {
 public:
-  CommandCSocialInfo():Command("!SOCIALINFO")
+  CommandCSocialInfo(module *m):Command(m, "!SOCIALINFO", C_CHANNEL)
   {
     this->SetDesc("Displays Flux-Net's Social Information");
   }
@@ -173,7 +182,7 @@ public:
     User *u = source.u;
     c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.flux-net.net:6667");
     c->SendMessage("Minecraft Server: \2 Minecraft.Flux-Net.net port: 25565 (default)");
-    c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nGalaxy.Flux-Net.net:9987");
+    c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nPulsar.Flux-Net.net:9987");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -186,10 +195,11 @@ public:
     return true;
   }
 };
+
 class CommandCRegister: public Command
 {
 public:
-  CommandCRegister():Command("!REGISTER")
+  CommandCRegister(module *m):Command(m, "!REGISTER", C_CHANNEL)
   {
     this->SetDesc("Displays how to register your nickname");
   }
@@ -197,16 +207,8 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("To Register your nickname type:");
-    c->SendMessage("\0034If this is the nick you want then skip step 1.\017");
-    c->SendMessage("\0034Do not include brackets when registering, this will cause errors\017");
-    c->SendMessage("Step 1: change your nick \00312/nick [nickname here]\017");
-    c->SendMessage("Step 2: now to begin registration type:");
-    c->SendMessage("\00312/ns register [\037YourPasswordHere\017] [\002YouremailHere\015]");
-    c->SendMessage("Step 3: Then to identify so you can have op status type:");
-    c->SendMessage("\00312/identify [passwordhere]\017");
-    c->SendMessage("\0034You will need to indetify everytime you join into the chatroom\017");
-    c->SendMessage("Unless your client does it automatically (ei. xchat, mIRC, iceChat).\017");
+    c->SendMessage("To Register your nickname type: /register <Your password>");
+	c->SendMessage("REMEMBER THIS PASSWORD! YOUR WILL USE IT EVERYTIME U JOIN!");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -225,7 +227,7 @@ public:
 class CommandCRename: public Command
 {
 public:
-  CommandCRename():Command("!RENAME")
+  CommandCRename(module *m):Command(m, "!RENAME", C_CHANNEL)
   {
     this->SetDesc("Displays how to rename");
   }
@@ -248,10 +250,11 @@ public:
     return true;
   }
 };
+
 class CommandCInfo : public Command
 {
 public:
-  CommandCInfo():Command("!INFO")
+  CommandCInfo(module *m):Command(m, "!INFO", C_CHANNEL)
   {
     this->SetDesc("General Da_Goat info");
   }
@@ -259,8 +262,8 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("Our forum is at \037http://flux-net.net/forum2/\017");
-    c->SendMessage("Our Website is \002Flux-Net.net\017");
+    c->SendMessage("Our forum is at \037http://forum.flux-net.net/\017");
+    c->SendMessage("Our Website is \002www.Flux-Net.net\017");
     c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
   }
@@ -285,21 +288,15 @@ class Da_Goat:public module
   CommandCSpam spam;
   CommandCVersion ver;
 public:
-  Da_Goat(const Flux::string &Name):module(Name)
+  Da_Goat(const Flux::string &Name):module(Name), info(this), rename(this), reg(this), sinfo(this), uptime(this), rules(this),
+  spam(this), ver(this)
   {
     this->SetAuthor("Justasic & Lordofsraam");
     this->SetVersion(VERSION);
-    this->AddChanCommand(&info);
-    this->AddChanCommand(&rename);
-    this->AddChanCommand(&reg);
-    this->AddChanCommand(&sinfo);
-    this->AddChanCommand(&uptime);
-    this->AddChanCommand(&rules);
-    this->AddChanCommand(&spam);
-    this->AddChanCommand(&ver);
-    ModuleHandler::Attach(I_OnPrivmsg, this);
+    ModuleHandler::Attach(I_OnPrivmsgChannel, this);
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  
+  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string cmd = params.empty()?"":params[0], msg;
     for(unsigned i=0; i < params.size(); ++i)
@@ -327,17 +324,57 @@ public:
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
       } 
     }
-    if(msg.search_ci("no u!") || msg.search_ci("no u"))
+    /****************************************slap command*******************************************/
+    if(cmd.equals_ci("!slap"))
+    { //Easter egg ;P
+      Flux::string person = params.size() == 2?params[1]:"";
+      person.trim();
+      User *u2 = finduser(person);
+
+      if(u2 && u2->IsOwner())
+      {
+	c->SendMessage("why would I wanna slap my master!?");
+	return;
+      }
+      else if(!u2)
+      {
+	c->SendAction("bitch slaps %s", u->nick.c_str());
+	c->kick(u, "\002\00315Dont slap me!\017");
+	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
+      }
+      else
+      {
+	c->SendAction("bitch slaps %s", u2->nick.c_str());
+	c->kick(u2, "\002\00315Dont slap me!\017");
+	Log(u) << "used Da_Goats !slap command in " << c->name << "to poke " << u2->nick;
+      }
+    }
+    /***************************************************************************************************/
+    if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
       c->SendMessage("NO U!");
     if(cmd.equals_ci("!everything"))
       c->SendMessage("Yes, there is a script for everything...\007");
     /***********************End Da_Goat Functions******************************/
     if(cmd.equals_ci("!bugs"))
-      c->SendMessage("Report Bugs at: http://flux-net.net/bugs/");
+      c->SendMessage("Report Bugs at: http://bugs.flux-net.net/");
     if(cmd.equals_ci("!git"))
       u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
     if(msg.search_ci("the game"))
       c->SendMessage("YOU JUST LOST THE GAME.");
+    if(msg.search_ci("i win"))
+      c->SendMessage("YOU LOSE!");
+    if(msg.search_ci("won the game"))
+      c->SendMessage("YOU JUST LOST THE GAME.");
+    if(msg.search_ci("!navn"))
+      c->SendMessage("That's my name don't wear it out!");
+    if(msg.search_ci("!login"))
+      c->SendMessage("Type: /login <yourpassword>");
+    if(msg.search_ci("shut up"))
+      c->SendMessage("U SHUT UP!");
+    if(msg.search_ci("shut the fuck up"))
+      c->SendMessage("U SHUT THE FUCK UP!");
+    /*if(params[0].search_ci("why") && c->name.equals_ci("#Minecraft"))
+      c->SendMessage("Because you touch yourself at night!");*/
   }
 };
 

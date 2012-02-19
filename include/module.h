@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Module header
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #ifndef MODULE_H
 #define MODULE_H
 #include "user.h"
@@ -19,6 +27,7 @@ enum Implementation{
 	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
 	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument, I_OnFork,
 	I_OnSocketError, I_OnPing, I_OnPong, I_OnPreReceiveMessage,
+	I_OnPrivmsgChannel, I_OnNoticeChannel, I_OnLog,
   I_END
 };
 enum ModulePriority{
@@ -26,6 +35,7 @@ enum ModulePriority{
   PRIORITY_DONTCARE,
   PRIORITY_LAST
 };
+
 class CoreExport module : public Base
 {
   Flux::string author, version;
@@ -35,11 +45,7 @@ protected:
   void SetAuthor(const Flux::string&);
   void SetVersion(const Flux::string&);
   void SetPriority(ModulePriority);
-  int AddCommand(Command*);
-  int AddChanCommand(Command*);
 public:
-  int DelChanCommand(Command*);
-  int DelCommand(Command*);
   void *handle;
   Flux::string name, filename, filepath;
   Flux::string GetAuthor();
@@ -51,13 +57,14 @@ public:
   virtual ~module();
   virtual EventResult OnPreReceiveMessage(const Flux::string&) { return EVENT_CONTINUE; }
   virtual void OnPrivmsg(User*, const std::vector<Flux::string>&) {}
-  virtual void OnPrivmsg(User*, Channel*, const std::vector<Flux::string>&) {}
+  virtual void OnPrivmsgChannel(User*, Channel*, const std::vector<Flux::string>&) {}
   virtual void OnNotice(User*, const std::vector<Flux::string>&) {}
-  virtual void OnNotice(User*, Channel*, const std::vector<Flux::string>&) {}
+  virtual void OnNoticeChannel(User*, Channel*, const std::vector<Flux::string>&) {}
   virtual void OnCTCP(const Flux::string&, const std::vector<Flux::string>&) {}
   virtual void OnPing(const std::vector<Flux::string>&) {}
   virtual void OnPong(const std::vector<Flux::string>&) {}
   virtual void OnArgument(int, const Flux::string&) {}
+  virtual EventResult OnLog(Log*) { return EVENT_CONTINUE; }
   virtual void OnModuleLoad(module*) {}
   virtual void OnFork(int) {}
   virtual void OnSocketError(const Flux::string&) {}

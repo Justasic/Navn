@@ -1,3 +1,13 @@
+/* Navn IRC bot -- Player vs. Player game
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "flux_net_irc.hpp"
 #include "Player.h"
 
@@ -19,7 +29,7 @@ namespace BattleField
 class Join : public Command
 {
 public:
-  Join():Command("!joinPvP")
+  Join(module *m):Command(m, "!joinPvP", C_PRIVATE)
   {
     this->SetDesc("Say !joinPvP to join the PvP game.");
   }
@@ -36,7 +46,7 @@ public:
 class Info : public Command
 {
 public:
-  Info():Command("!PvPInfo")
+  Info(module *m):Command(m, "!PvPInfo", C_CHANNEL)
   {
     this->SetDesc("Say !PvPInfo to get information about the game.");
   }
@@ -56,7 +66,7 @@ public:
 class Stab : public Command
 {
 public:
-  Stab():Command("!stab")
+  Stab(module *m):Command(m, "!stab", C_CHANNEL)
   {
     this->SetDesc("Say !stab <victim> to stab someone! (Uses 5 energy).");
   }
@@ -73,13 +83,10 @@ class PvPModule : public module
   Stab stab;
   Info info;
 public:
-  PvPModule(const Flux::string &Name):module(Name)
+  PvPModule(const Flux::string &Name):module(Name), join(this), stab(this), info(this)
   {
     this->SetVersion("1.0.3");
     this->SetAuthor("Lordofsraam");
-    this->AddCommand(&join);
-    this->AddChanCommand(&stab);
-    this->AddChanCommand(&info);
     this->SetPriority(PRIORITY_LAST);
     Implementation i[] = { I_OnPrivmsg, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));

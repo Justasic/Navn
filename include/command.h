@@ -1,14 +1,20 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Command class header
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #ifndef command_h
 #define command_h
-/**
- * \include includes.h
- */
+
+///\include includes.h
 #include "includes.h"
-/**
- * \include user.h
- */
+///\include user.h
 #include "user.h"
+///\include module.h
 /**
  *\file  command.h
  *\brief Contains the classes Command, and Oper.
@@ -69,7 +75,7 @@ public:
 struct CoreExport CommandSource
 {
   User *u;
-  Channel *c; /* Channel name, this will be replaced with channel class */
+  Channel *c;
   Flux::string command;
   Flux::string raw;
   std::vector<Flux::string> params;
@@ -80,21 +86,20 @@ struct CoreExport CommandSource
 
 /**
  * \class Command
- * \brief A wrapper clas for Module commands
+ * \brief A wrapper class for Module commands
  * Contains methods and properties for handling/getting information from module commands.
- * \note Not to be confused with the Commands class.
  */
 class CoreExport Command : public Base
 {
   Flux::string desc;
   std::vector<Flux::string> syntax;
+  CommandType type;
 public:
   size_t MaxParams;
   size_t MinParams;
   Flux::string name;
-  CommandType type;
   module *mod;
-  Command(const Flux::string &sname, size_t min_params=0, size_t max_params=0);
+  Command(module*, const Flux::string &sname, CommandType, size_t min_params=0, size_t max_params=0);
   virtual ~Command();
 protected:
   void SetDesc(const Flux::string&);
@@ -103,6 +108,7 @@ protected:
   void SendSyntax(CommandSource&, const Flux::string&);
 public:
   const Flux::string &GetDesc() const;
+  const CommandType GetType() const;
   virtual void Run(CommandSource&, const std::vector<Flux::string> &params);
   virtual bool OnHelp(CommandSource&, const Flux::string&);
   virtual void OnList(User *u);

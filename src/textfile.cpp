@@ -1,3 +1,13 @@
+/* Navn IRC bot -- Text File parser wrapper
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "textfile.h"
 
 /** TextFile parser
@@ -170,6 +180,31 @@ bool TextFile::IsFile(const Flux::string &filename)
   if (!stat(filename.c_str(), &fileinfo))
     return true;
   return false;
+}
+
+Flux::vector TextFile::DirectoryListing(const Flux::string &directory)
+{
+  Flux::vector nil;
+  if(!TextFile::IsDirectory(directory))
+    return nil;
+  
+  DIR *dp;
+  struct dirent *drip;
+  if((dp = opendir(directory.c_str())) == NULL)
+    return nil;
+  
+  Flux::vector files;
+  while ((drip = readdir(dp)) != NULL)
+  {
+    if(!drip->d_ino)
+      continue;
+    if(Flux::string(drip->d_name).equals_cs(".") || Flux::string(drip->d_name).equals_cs(".."))
+      continue;
+    files.push_back(Flux::string(drip->d_name));
+  }
+  
+  closedir(dp);
+  return files;
 }
 
 bool TextFile::IsDirectory(const Flux::string &dirname)

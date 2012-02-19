@@ -1,5 +1,26 @@
+/* Navn IRC bot -- Incoming IRC Protocol parser
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "user.h"
 #include "module.h"
+
+/**
+ * \file  process.cpp
+ * \brief Contains IRC buffer processing functions
+ * This file has functions which process the raw buffer from the
+ * socket engine and then continues to process module events
+ * and commands which depend on this processing system.
+ * This system also implements the "Parameters system" which
+ * allows for strings to be split by spaces and placed into a
+ * vector which makes for easy processing
+ */
 
 /** 
  * \fn void ProcessJoin(CommandSource &source, const Flux::string &chan)
@@ -7,7 +28,8 @@
  * \param source CommandSource struct used to find all the information needed to make new users
  * \param chan The channel we're processing
  */
-void ProcessJoin(CommandSource &source, const Flux::string &chan){
+void ProcessJoin(CommandSource &source, const Flux::string &chan)
+{
     std::vector<Flux::string> &params = source.params;
     if(params.size() < 7)
       return;
@@ -49,18 +71,21 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
   SET_SEGV_LOCATION();
   User *u = Source.u;
   Channel *c = Source.c;
+  
   if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
- if(!FindCommand(params2[0], COMMAND_PRIVATE) && command == "PRIVMSG")
+  
+ if(!FindCommand(params2[0], C_PRIVATE) && command == "PRIVMSG")
   {
     if(!protocoldebug)
       Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
     
-    if(!IsValidChannel(receiver)){
+    if(!IsValidChannel(receiver))
+    {
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
     }
     else{
-      Command *ccom = FindCommand(params2[0], COMMAND_CHANNEL);
+      Command *ccom = FindCommand(params2[0], C_CHANNEL);
       if(ccom)
       {
 	Source.command = ccom->name;
@@ -98,13 +123,13 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       }
       else
       {
-	FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, c, params2)); //This will one day be a actual function for channel only messages..
+	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(u, c, params2)); //This will one day be a actual function for channel only messages..
       }
     }
   }
   else
   {
-    Command *com = FindCommand(params2[0], COMMAND_PRIVATE);
+    Command *com = FindCommand(params2[0], C_PRIVATE);
     if(com && !IsValidChannel(receiver) && command == "PRIVMSG")
     {
       Source.command = com->name;
@@ -152,7 +177,12 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 
 /** 
  * \fn void process(const Flux::string &buffer)
- * \brief Main Processing function
+ * \brief Main Processing function.
+ * This function takes the raw socket buffer and processes it down to
+ * the basic IRC protocol so Navn can interpret it and process its
+ * commands and events. This void function is rather large and
+ * has a lot of complex functions in it, it may be modified to become
+ * simpler to understand in later releases
  * \param buffer The raw socket buffer
  */
 void process(const Flux::string &buffer){
@@ -254,7 +284,7 @@ void process(const Flux::string &buffer){
   if(command.equals_cs("INVITE")) { FOREACH_MOD(I_OnInvite, OnInvite(u, params[1])); }
   if(command.equals_cs("NOTICE") && !source.find('.')){
     if(!IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); } 
-    else { FOREACH_MOD(I_OnNotice, OnNotice(u, c, params2)); }
+    else { FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2)); }
   }
   if(command.equals_cs("MODE")) {
     if(IsValidChannel(params[0]) && params.size() == 2) { FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1])); }

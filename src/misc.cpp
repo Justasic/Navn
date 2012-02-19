@@ -1,11 +1,19 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Miscellaneous Functions
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "module.h"
 #include "INIReader.h"
 
 //General misc functions
-/**Random Number Generator
- * This will generate a random number x is start number, y is the stop number.
- * @param randint(int x, int y)
+/** Random Number Generator
+ *  This will generate a random number x is start number, y is the stop number.
+ *  \param randint(int x, int y)
  */
 int randint(int x, int y)
 {
@@ -15,23 +23,28 @@ int randint(int x, int y)
 
 /**
  * \fn IsoHost(const Flux::string &fullhost)
+ * \brief Basic class for isolating and decoding a basic IRC hostname
  * \param fullhost A Flux::string containing the full host of an irc message
  */
 IsoHost::IsoHost(const Flux::string &fullhost)
 {
-  nick = isolate(':','!',fullhost);
+  nick = fullhost.isolate(':','!');
   raw = fullhost;
-  host = isolate('@',' ',fullhost);
-  ident = isolate('!','@',fullhost);
+  host = fullhost.isolate('@',' ');
+  ident = fullhost.isolate('!','@');
 }
 
+/**
+ * \fn void Fork()
+ * \brief This is a simple start-up function which justifies whether we fork to background or not.
+ */
 void Fork()
 {
   if (!nofork && InTerm()){
     int i = fork();
     if(i > 0){
 	    Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
-	    Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[22;37m";
+	    Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[0m";
 	    FOREACH_MOD(I_OnFork, OnFork(i));
 	    exit(0);
     }
@@ -49,6 +62,102 @@ void Fork()
     Log() << Config->BotNick << " Started, PID: " << getpid() << "\033[22;36m";
 }
 
+/**
+ * \fn Flux::string Flux::RandomNickString(size_t length)
+ * \brief Generates a completely random, valid IRC nickname string, Good for temp nicknames.
+ * \param length the size type of how long you want the string.
+ */
+Flux::string Flux::RandomNickString(size_t length)
+{
+  Flux::string randomchars;
+  srand(time(NULL));
+  for(unsigned i=0; i < length; ++i)
+  {
+    top:
+    char c = static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
+    if(isalphibeticnum(c))
+      randomchars += c;
+    else
+      goto top;
+  }
+  return randomchars;
+}
+
+/**
+ * \fn Flux::string Flux::RandomString(size_t length)
+ * \brief Similar to the Flux::RandomNickString, it generates a random string of valid ASCII characters.
+ * \param length the size type of how long you want the string.
+ */
+Flux::string Flux::RandomString(size_t length)
+{
+  Flux::string randomchars;
+  srand(static_cast<unsigned>(time(NULL)));
+  for(unsigned i=0; i < length; ++i)
+    randomchars += static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
+  return randomchars;
+}
+
+/**
+ * \fn Flux::string strip_mirc_codes(const Flux::string &str)
+ * \brief Attempts to remove all mIRC color codes from an IRC message
+ * \param buffer A Flux::string containing mIRC color codes
+ * This function was an import of eggdrops mirc stripper and was
+ * rewritten into C++ for compatability with Flux::strings
+ */
+// FIXME: This has buffer overflow written all over it! BOUNDS CHECKING!
+Flux::string strip_mirc_codes(const Flux::string &str)
+{
+  Flux::string txt;
+
+  for(unsigned i = 0; i < str.size(); ++i)
+  {
+    char c = str[i];
+    switch (c) {
+      case 2:                    		/* Bold text */
+	continue;
+      case 3:                    		/* mIRC colors? */
+	if (isdigit(c)) { 			/* Is the first char a number? */
+	  c = str[i+2];				/* Skip over the ^C and the first digit */
+	  if (isdigit(c)) //FIXME: this needs to strip the remaining numbers and shit
+	    c = str[++i];             		/* Is this a double digit number? */
+	    if (c == ',') {   			/* Do we have a background color next? */
+	      if (isdigit(c))
+		c = str[i+2];			/* Skip over the first background digit */
+		if (isdigit(c))
+		  c = str[++i];			/* Is it a double digit? */
+	    }
+	} else
+	continue;
+      case 7:
+	continue;
+      case 0x16:                 /* Reverse video */
+	continue;
+      case 0x1f:                 /* Underlined text */
+	continue;
+      case 033:
+	c = str[++i];
+	if (c == '[') {
+	  c = str[++i];
+	  while ((c == ';') || isdigit(c))
+	    c = str[++i];
+	  if (c)
+	    c = str[++i];             /* also kill the following char */
+	}
+	continue;
+    }
+    if(c != '\0')
+      txt += c;
+  }
+  return txt;
+}
+
+/**
+ * \fn Flux::string Flux::Sanitize(const Flux::string &string)
+ * \brief Strips ALL color codes and anything of the like from a string, including \001 chars and even terminal colors.
+ * \param buffer A Flux::string containing mIRC color codes
+ * This function was an import of eggdrops mirc stripper and was
+ * rewritten into C++ for compatability with Flux::strings
+ */
 Flux::string Flux::Sanitize(const Flux::string &string)
 {
  static struct special_chars{
@@ -67,19 +176,12 @@ Flux::string Flux::Sanitize(const Flux::string &string)
   special_chars("","")
  };
   Flux::string ret = string.c_str();
-  while(ret.search('\003')){ //Strip color codes completely
-      size_t l = ret.find('\003');
-      if(isdigit(ret[l+1]))
-	ret = ret.erase(l, l+1);
-      else if(isdigit(ret[l+2]))
-	ret = ret.erase(l, l+2);
-      else if(isdigit(ret[l+3]))
-	ret = ret.erase(l, l+3);
-  }
+  ret = strip_mirc_codes(ret);
   for(int i = 0; special[i].character.empty() == false; ++i)
     ret = ret.replace_all_cs(special[i].character, special[i].replace);
   return ret.c_str();
 }
+
 /**
  * \fn Flux::string make_pass()
  * \brief Makes a random password
@@ -87,7 +189,8 @@ Flux::string Flux::Sanitize(const Flux::string &string)
  * quit and other password protected commands.
  * \return A Flux::string containing the 5 digit password.
  */
-Flux::string make_pass(){
+Flux::string make_pass()
+{
   int p1,p2,p3,p4,p5;
   srand(time(NULL));
   p1 = rand()%10;
@@ -99,18 +202,27 @@ Flux::string make_pass(){
   pass_ss << p1 << p2 << p3 << p4 << p5;
   return pass_ss.str();
 }
+
 /**
- * \fn bool IsValadChannel(const Flux::string nerp)
+ * \fn bool IsValidChannel(const Flux::string &chan)
  * This function returns if the channel is valid or not.
- * \param nerp Channel sring to be tested.
+ * \param channel Channel sring to be tested.
  * \return True if the Flux::string is a valid channel, false otherwise.
  */
-bool IsValidChannel(const Flux::string &chan){
+bool IsValidChannel(const Flux::string &chan)
+{
  if (chan[0] != '#')
     return false;
  return true;
 }
 
+/**
+ * \fn Flux::string printfify(const char *fmt, ...)
+ * \brief Returns a formatted string similar to printf() just in a Flux::string
+ * \param Text The text to format
+ * \param Format The format, in printf() form, to be formatted
+ * \return a formatted Flux::string
+ */
 Flux::string printfify(const char *fmt, ...)
 {
   if(fmt)
@@ -126,30 +238,9 @@ Flux::string printfify(const char *fmt, ...)
 }
 
 /**
-  * \fn Flux::string isolate(char begin, char end, Flux::string msg)
-  * \brief Isolates a Flux::string between two characters
-  * Finds the first character, then begins to add every consecutive character from there to a Flux::string
-  *  until it reaches the end character.
-  * \param begin The character saying where the cut should begin.
-  * \param end The character saying where the cut should end.
-  * \param msg The Flux::string you are wanting to isolate from.
-  */
-Flux::string isolate(char begin, char end, const Flux::string &msg){
-  Flux::string to_find;
-  size_t pos = msg.find(begin);
-  pos += 1;
-  for (unsigned i = pos; i < msg.length(); i++){
-    if (msg.at(i) == end){
-      break;
-    }else{to_find = to_find+msg.at(i);}
-  }
-  return to_find;
-}
-
-/**
  * \fn Flux::string VectorString(const Flux::vector &params)
  * \brief Returns a condensed string of a Flux::vector
- * \param Flux::vector a vector containing a string that needs condensing
+ * \param Flux::string A string of a Flux::vector condensed
  */
 Flux::string CondenseString(const Flux::vector &p)
 {
@@ -162,8 +253,8 @@ Flux::string CondenseString(const Flux::vector &p)
 }
 
 /**
- * \fn std::vector<Flux::string> StringVector(const Flux::string &src, char delim)
- * \brief creates a vector that breaks down a string word-by-word using the delim as the seperater
+ * \fn Flux::vector SerializeString(const Flux::string &src, char delim)
+ * \brief creates a vector that breaks down a string word-by-word using the delim as the separater
  * \param src The source string for it to break down
  * \param delim The char used to seperate the words in the source string
  */
@@ -178,8 +269,8 @@ Flux::vector SerializeString(const Flux::string &src, char delim)
 }
 /** Check if a file exists
  * \fn bool InTerm()
- * \brief returns if the 
- * \return true if the file exists, false if it doens't
+ * \brief returns if the bot is started in terminal
+ * \return true if in terminal, false otherwise
  */
 bool InTerm() { return isatty(fileno(stdout) && isatty(fileno(stdin)) && isatty(fileno(stderr))); }
 /* butt-plug?

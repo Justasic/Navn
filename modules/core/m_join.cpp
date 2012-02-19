@@ -1,3 +1,12 @@
+/* Navn IRC bot -- Join-part management for the bot
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 
 /*This module setup needs serious work!
@@ -6,7 +15,7 @@
 class CommandJoin : public Command
 {
 public:
-  CommandJoin() : Command("JOIN", 1, 1)
+  CommandJoin(module *m) : Command(m, "JOIN", C_PRIVATE, 1, 1)
   {
    this->SetDesc("Joins a channel");
    this->SetSyntax("\37channel\37");
@@ -46,7 +55,7 @@ public:
 class CommandPart : public Command
 {
 public:
-  CommandPart():Command("PART", 1,1)
+  CommandPart(module *m):Command(m, "PART", C_PRIVATE, 1,1)
   {
     this->SetDesc("Part a channel");
     this->SetSyntax("\37channel\37");
@@ -85,10 +94,8 @@ class Join : public module
   CommandJoin cmdjoin;
   CommandPart cmdpart;
 public:
-  Join(const Flux::string &Name):module(Name)
+  Join(const Flux::string &Name):module(Name), cmdjoin(this), cmdpart(this)
   { 
-    this->AddCommand(&cmdjoin);
-    this->AddCommand(&cmdpart);
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");
   }

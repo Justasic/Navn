@@ -1,139 +1,145 @@
+/* Navn IRC bot -- Module Functions
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "module.h"
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
 //This code sucks, you know it and I know it. 
 //Move on and call me an idiot later.
 Flux::insensitive_map<module*> Modules;
 std::vector<module *> ModuleHandler::EventHandlers[I_END];
-CommandMap Commandsmap;
-CommandMap ChanCommandMap;
+
 /** 
  * \fn module::module(Flux::string n)
  * \brief Module Constructor
  * \param name Name of the module
- * \param activated Wether the module is activated or not
- * \param priority The module priority
  */
-module::module(const Flux::string &n){
+module::module(const Flux::string &n) : name(n)
+{
   SET_SEGV_LOCATION();
-  this->name = n;
+  
   this->handle = NULL;
   this->Priority = PRIORITY_DONTCARE;
+  this->loadtime = time(NULL);
+  this->filename = this->filepath = this->author = this->version = "";
+  
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
   
   Modules[this->name] = this;
-  this->loadtime = time(NULL);
-  if(!nofork)
+  if(InTerm())
     Log() << "Loaded module " << n;
 }
-module::~module(){
+
+/**
+ * \fn module::~module()
+ * \brief Module destructor
+ */
+module::~module()
+{
   SET_SEGV_LOCATION();
   Log(LOG_DEBUG) << "Unloading module " << this->name;
   ModuleHandler::DetachAll(this);
   Modules.erase(this->name);
 }
-void module::SetAuthor(const Flux::string &person) { this->author = person; }
-void module::SetVersion(const Flux::string &ver) { this->version = ver; }
-void module::SetPriority(ModulePriority p) { this->Priority = p; }
-Flux::string module::GetVersion() { return this->version; }
-time_t module::GetLoadTime() { return this->loadtime; }
-Flux::string module::GetAuthor() { return this->author; }
-ModulePriority module::GetPriority() { return this->Priority; }
-/* commands stuff */
-/** 
- * \fn int module::AddCommand(Command *c)
- * \brief Adds commands from modules into the bot
- * \param command The command to add
- */
-int module::AddCommand(Command *c){
- if(!c)
-   return 1;
- std::pair<CommandMap::iterator, bool> it = Commandsmap.insert(std::make_pair(c->name, c));
- if(it.second != true){
-   Log() << "Command " << c->name << " already loaded!";
-   return 2;
- }
- c->mod = this;
- c->type = COMMAND_PRIVATE;
- return 0;
-}
-/** 
- * \fn int module::DelCommand(Command *c)
- * \brief delete commands from modules in the bot
- * \param command The command to add
- */
-int module::DelCommand(Command *c){
-  if(!c)
-    return 1;
-  if(!Commandsmap.erase(c->name))
-    return 2;
-  c->mod = NULL;
-  return 0;
-}
-/** 
- * \fn int module::AddCommand(Command *c)
- * \brief Adds commands from modules into the bot
- * \param command The command to add
- */
-int module::AddChanCommand(Command *c){
- if(!c)
-   return 1;
- std::pair<CommandMap::iterator, bool> it = ChanCommandMap.insert(std::make_pair(c->name, c));
- if(it.second != true){
-   Log() << "Command " << c->name << " already loaded!";
-   return 2;
- }
- c->mod = this;
- c->type = COMMAND_CHANNEL;
- return 0;
-}
-/** 
- * \fn int module::DelCommand(Command *c)
- * \brief delete commands from modules in the bot
- * \param command The command to add
- */
-int module::DelChanCommand(Command *c){
-  if(!c)
-    return 1;
-  if(!ChanCommandMap.erase(c->name))
-    return 2;
-  c->mod = NULL;
-  return 0;
-}
 
-/*******************************************************************/
+/**
+ * \fn void module::SetAuthor(const Flux::string &person)
+ * \brief Sets the module author, can only be set by the module its self
+ * \param Author the name of the author(s) to be set
+ */
+void module::SetAuthor(const Flux::string &person) { this->author = person; }
+
+/**
+ * \fn void module::SetVersion(const Flux::string &ver)
+ * \brief Sets the module version, can only be set by the module its self
+ * \param Version the module version
+ */
+void module::SetVersion(const Flux::string &ver) { this->version = ver; }
+
+/**
+ * \fn void module::SetAuthor(const Flux::string &person)
+ * \brief Sets the module priority, can only be set by the module its self
+ * \param Priority sets the priority of the module
+ */
+void module::SetPriority(ModulePriority p) { this->Priority = p; }
+
+/**
+ * \fn Flux::string module::GetVersion()
+ * \brief Gets the string of the modules version
+ * \return The modules version
+ */
+Flux::string module::GetVersion() { return this->version; }
+
+/**
+ * \fn time_t module::GetLoadTime()
+ * \brief Gets the time the module was loaded
+ * \return load time of the module
+ */
+time_t module::GetLoadTime() { return this->loadtime; }
+
+/**
+ * \fn Flux::string module::GetAuthor()
+ * \brief Gets the module author(s)
+ * \return The modules author string
+ */
+Flux::string module::GetAuthor() { return this->author; }
+
+/**
+ * \fn ModulePriority module::GetPriority()
+ * \brief Gets the module priority
+ * \return Priority of the module
+ */
+ModulePriority module::GetPriority() { return this->Priority; }
+
 /** 
  * \fn module *FindModule(const Flux::string &name)
  * \brief Find a module in the module list
  * \param name A string containing the module name you're looking for
  */
-module *FindModule(const Flux::string &name){
+module *FindModule(const Flux::string &name)
+{
   Flux::insensitive_map<module*>::iterator it = Modules.find(name);
   if(it != Modules.end())
     return it->second;
  return NULL;
 }
-/*******************************************************************/
 
 /** 
  * \fn bool ModuleHandler::Attach(Implementation i, module *mod)
- * \brief Module hook for the FOREACH_MOD macro
+ * \brief Module hook for the FOREACH_MOD events
  * \param Implementation The Implementation of the call list you want your module to have
  * \param Module the module the Implementation is on
  */
-bool ModuleHandler::Attach(Implementation i, module *mod){
+bool ModuleHandler::Attach(Implementation i, module *mod)
+{
   if(std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod) != EventHandlers[i].end())
     return false;
   EventHandlers[i].push_back(mod);
   return true;
 }
+
+/// \overload void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
 void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
 {
  for(size_t n = 0; n < sz; ++n)
    Attach(i[n], mod);
 }
-Flux::string DecodeModErr(ModErr err){
- switch(err){
+
+/**
+ * \fn Flux::string DecodeModErr(ModErr err)
+ * \brief Decodes module errors into a useful string to use in user-end functions
+ * \param Error The error to decode
+ */
+Flux::string DecodeModErr(ModErr err)
+{
+ switch(err)
+ {
    case MOD_ERR_OK:
      return "No error (MOD_ERR_OK)";
    case MOD_ERR_MEMORY:
@@ -156,8 +162,9 @@ Flux::string DecodeModErr(ModErr err){
      return "Unknown error code";
  }
 }
+
 /*  This code was found online at http://www.linuxjournal.com/article/3687#comment-26593 */
-template<class TYPE> TYPE class_cast(void *symbol)
+template<class TYPE> TYPE function_cast(void *symbol)
 {
     union
     {
@@ -167,6 +174,7 @@ template<class TYPE> TYPE class_cast(void *symbol)
     cast.symbol = symbol;
     return cast.function;
 }
+
 /** 
  * \fn bool ModuleHandler::Detach(Implementation i, module *mod)
  * \brief Unhook for the module hook ModuleHandler::Attach()
@@ -180,18 +188,32 @@ bool ModuleHandler::Detach(Implementation i, module *mod){
   EventHandlers[i].erase(x);
   return true;
 }
+
+/**
+ * \fn void ModuleHandler::DetachAll(module *m)
+ * \brief Remove all event lists from the module
+ * \param Module the module the Implementation is on
+ */
 void ModuleHandler::DetachAll(module *m)
 {
  for(size_t n = I_BEGIN+1; n != I_END; ++n)
    Detach(static_cast<Implementation>(n), m);
 }
+
+/**
+ * \fn ModErr ModuleHandler::LoadModule(const Flux::string &modname)
+ * \brief Load a module into the bot
+ * \param Module the module to load
+ */
 ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
   SET_SEGV_LOCATION();
+  
   if(modname.empty())
     return MOD_ERR_PARAMS;
   if(FindModule(modname))
     return MOD_ERR_EXISTS;
+  
   Log() << "Attempting to load module [" << modname << ']';
   
   Flux::string mdir = Config->Binary_Dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX"),
@@ -201,6 +223,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   Flux::string output = TextFile::TempFile(mdir);
   Log(LOG_RAWIO) << "Runtime module location: " << output;
   mod.Copy(output);
+  
   if(mod.GetLastError() != FILE_IO_OK){
     Log(LOG_RAWIO) << "Runtime Copy Error: " << mod.DecodeLastError();
     return MOD_ERR_FILE_IO;
@@ -208,17 +231,18 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   
   dlerror();
   
-  void *handle = dlopen(output.c_str(), RTLD_LAZY);
+  void *handle = dlopen(output.c_str(), RTLD_NOW);
   const char *err = dlerror();
   if(!handle && err && *err)
   {
     Log() << '[' << modname << "] " << err;
     return MOD_ERR_NOLOAD;
   }
-  dlerror();
   
-  module *(*f)(const Flux::string&) = class_cast<module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
+  dlerror();
+  module *(*f)(const Flux::string&) = function_cast<module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
   err = dlerror();
+  
   if(!f && err && *err){
     Log() << "No module init function, moving on.";
     dlclose(handle);
@@ -237,13 +261,22 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     Log() << "Error while loading " << modname << ": " << e.GetReason();
     return MOD_ERR_EXCEPTION;
   }
+  
   m->filepath = output;
   m->filename = (modname.search(".so")?modname:modname+".so");
   m->handle = handle;
   m->OnLoad();
+  
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
+  
   return MOD_ERR_OK;
 }
+
+/**
+ * \fn bool ModuleHandler::DeleteModule(module *m)
+ * \brief Delete the module from module lists and unload it from navn completely
+ * \param Module the module to be removed
+ */
 bool ModuleHandler::DeleteModule(module *m)
 {
   SET_SEGV_LOCATION();
@@ -254,7 +287,7 @@ bool ModuleHandler::DeleteModule(module *m)
   Flux::string filepath = m->filepath;
   
   dlerror();
-  void (*df)(module*) = class_cast<void (*)(module*)>(dlsym(m->handle, "ModunInit"));
+  void (*df)(module*) = function_cast<void (*)(module*)>(dlsym(m->handle, "ModunInit"));
   const char *err = dlerror();
   if (!df && err && *err)
   {
@@ -267,17 +300,32 @@ bool ModuleHandler::DeleteModule(module *m)
   if(handle)
     if(dlclose(handle))
       Log() << "[" << m->name << ".so] " << dlerror();
+    
   if (!filepath.empty())
     Delete(filepath.c_str());
+  
   return true;
 }
-bool ModuleHandler::Unload(module *m){
+
+/**
+ * \fn bool ModuleHandler::Unload(module *m)
+ * \brief Unloads the module safely and announces the module unload event
+ * \param Module the module to be unloaded
+ */
+bool ModuleHandler::Unload(module *m)
+{
   if(!m)
     return false;
   FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
   return DeleteModule(m);
 }
-void ModuleHandler::UnloadAll(){
+
+/**
+ * \fn void ModuleHandler::UnloadAll()
+ * \brief Safely unloads ALL modules from navn
+ */
+void ModuleHandler::UnloadAll()
+{
 #ifdef _CXX11
   for(auto var : Modules)
     Unload(var.second);
@@ -286,6 +334,12 @@ void ModuleHandler::UnloadAll(){
     Unload(it->second);
 #endif
 }
+
+/**
+ * \fn Flux::string ModuleHandler::DecodePriority(ModulePriority p)
+ * \brief Decodes the module priority to a string used in user-end functions
+ * \param Priority The priority to decode
+ */
 Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 {
  switch(p)
@@ -301,36 +355,37 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
  }
  return "";
 }
+
+/**
+ * \fn void ModuleHandler::SanitizeRuntime()
+ * \brief Deletes all files in the runtime directory.
+ */
 void ModuleHandler::SanitizeRuntime()
 {
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
   Flux::string dirbuf = Config->Binary_Dir+"/runtime/";
+  
   if(!TextFile::IsDirectory(dirbuf))
-    if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1)
-      Log() << "Error making new runtime directory: " << strerror(errno);
-  DIR *dirp = opendir(dirbuf.c_str());
-  if (!dirp)
   {
-	  Log(LOG_DEBUG) << "Cannot open directory (" << dirbuf << ')';
-	  return;
+    if(mkdir(dirbuf.c_str(), getuid()) != 0)
+      throw CoreException(printfify("Error making new runtime directory: %s", strerror(errno)));
   }
-  for(dirent *dp; (dp = readdir(dirp));)
+  else
   {
-	  if (!dp->d_ino)
-		  continue;
-	  if (Flux::string(dp->d_name).equals_cs(".") || Flux::string(dp->d_name).equals_cs(".."))
-		  continue;
-	  Flux::string filebuf = dirbuf + "/" + dp->d_name;
-	  Delete(filebuf.c_str());
+    Flux::vector files = TextFile::DirectoryListing(dirbuf);
+    for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
+      Delete(Flux::string(dirbuf+(*it)).c_str());
   }
-  closedir(dirp);
 }
 /******************Configuration variables***********************/
+
 /**Rehash void
  * \fn void ReadConfig()
+ * \deprecated This will be removed soon.
  * This will re-read the config file values when told to do so
  */
-void ReadConfig(){
+void ReadConfig()
+{
   sepstream sep(Config->Modules, ',');
   Flux::string tok;
   while(sep.GetToken(tok))

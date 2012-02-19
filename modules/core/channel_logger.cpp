@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Channel Logging module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 
 /**
@@ -50,16 +58,19 @@ void CLog(const char *fmt, ...){
   va_end(args);
   clog.close();
 }
-class Chanlog:public module{
+
+class Chanlog : public module
+{
 public:
-  Chanlog(const Flux::string &Name):module(Name){ 
+  Chanlog(const Flux::string &Name):module(Name)
+  { 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
-    Implementation i[] = { I_OnPart, I_OnPrivmsg, I_OnNotice, I_OnJoin, I_OnQuit, I_OnJoin, I_OnChannelMode, I_OnChannelOp };
+    Implementation i[] = { I_OnPart, I_OnPrivmsgChannel, I_OnNoticeChannel, I_OnJoin, I_OnQuit, I_OnJoin, I_OnChannelMode, I_OnChannelOp };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params){
+  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params){
     Flux::string nolog = params.size() == 2?params[1]:"";
     if(c->name != Config->LogChannel)
       return;
@@ -77,7 +88,7 @@ public:
       }
     }
   }
-  void OnNotice(User *u, Channel *c, const Flux::vector &params){
+  void OnNoticeChannel(User *u, Channel *c, const Flux::vector &params){
     if(c && c->name != Config->LogChannel)
       return;
     Flux::string msg;

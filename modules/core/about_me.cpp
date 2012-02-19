@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- User information module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 /**
  * \file about_me.h Header file holding the \a about_me function.
@@ -21,7 +29,7 @@
 class CommandDecodeHost : public Command
 {
 public:
-  CommandDecodeHost():Command("!DECODEHOST", 1, 1)
+  CommandDecodeHost(module *m):Command(m, "!DECODEHOST", C_CHANNEL, 1, 1)
   {
    this->SetDesc("Decodes a hostname");
    this->SetSyntax("\37fullhost\37");
@@ -56,15 +64,15 @@ class about_me : public module
 {
   CommandDecodeHost host;
 public:
-  about_me(const Flux::string &Name):module(Name){ 
+  about_me(const Flux::string &Name):module(Name), host(this)
+  { 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
-    this->AddChanCommand(&host);
-    ModuleHandler::Attach(I_OnPrivmsg, this);
+    ModuleHandler::Attach(I_OnPrivmsgChannel, this);
   }
   
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)

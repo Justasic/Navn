@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- DNS lookup tools for IRC
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #ifndef NI_MAXHOST
 #define NI_MAXHOST 1025
 #endif
@@ -40,7 +48,7 @@
 class CommandCDNS : public Command
 {
 public:
-  CommandCDNS():Command("!DNS", 1, 1)
+  CommandCDNS(module *m):Command(m, "!DNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays a resolved hostname");
     this->SetSyntax("hostname"); 
@@ -48,6 +56,7 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string ip = ForwardResolution(params[1]);
+    
     if (ip.empty())
 	source.c->SendMessage("\0034[DNS]\017 Error");
     else
@@ -67,7 +76,7 @@ public:
 class CommandCADNS : public Command
 {
 public:
-  CommandCADNS():Command("!ADNS", 1, 1)
+  CommandCADNS(module *m):Command(m, "!ADNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays ALL resolved ip addresses from hostnames");
     this->SetSyntax("hostname");
@@ -77,17 +86,21 @@ public:
     Flux::string hostname = params[1];
     struct addrinfo *result, *res;
     int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
+    
     if(err != 0)
     {
       source.c->SendMessage("Failed to resolve %s: %s", hostname.c_str(), gai_strerror(err));
       return;
     }
+    
     Flux::string ret = hostname, laststr;
     int c = 0;
+    
     for(res = result; res != NULL; res = res->ai_next)
     {
       struct sockaddr *haddr = res->ai_addr;
       char address[INET6_ADDRSTRLEN + 1] = "";
+      
       switch(haddr->sa_family)
       {
 	case AF_INET:
@@ -107,8 +120,10 @@ public:
 	  }
 	  break;
       }
+      
       ret = address;
-      if(!laststr.equals_cs(ret)){
+      if(!laststr.equals_cs(ret))
+      {
 	source.c->SendMessage("\0034[ADNS]\017 %s", ret.c_str());
 	laststr = ret;
 	c++; //LOL!
@@ -136,11 +151,12 @@ public:
 class CommandCRDNS : public Command
 {
 public:
-  CommandCRDNS():Command("!RDNS", 1, 1)
+  CommandCRDNS(module *m):Command(m, "!RDNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays a reversely resolved DNS IP Address");
     this->SetSyntax("ipaddress"); 
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     struct addrinfo *result;
@@ -150,14 +166,17 @@ public:
     error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
     if (error != 0)
       source.c->SendMessage("\0034[rDNS]\017 Error: %s\n", gai_strerror(error)); 
-    else{
-    char hostname[NI_MAXHOST] = "";
-    res = result;
+    else
+    {
+      char hostname[NI_MAXHOST] = "";
+      res = result;
       error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+      
       if(error != 0)
 	source.c->SendMessage("\0034[rDNS]\017 Error: %s", gai_strerror(error));
       if(*hostname != '\0')
 	source.c->SendMessage("\0034[rDNS]\017 %s", hostname);
+      
       freeaddrinfo(result);
     }
   }
@@ -178,7 +197,7 @@ public:
 class CommandCARDNS : public Command
 {
 public:
-  CommandCARDNS():Command("!ARDNS", 1, 1)
+  CommandCARDNS(module *m):Command(m, "!ARDNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays ALL reverse DNS ip addresses");
     this->SetSyntax("ipaddress"); 
@@ -191,26 +210,32 @@ public:
     int count = 0;
     
     error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
-    if (error != 0){ 
-      source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error)); 
-    }else{
+    if (error != 0) 
+      source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error));
+    else
+    {
       Flux::string laststr, ret;
-    for (res = result; res != NULL; res = res->ai_next){
-      char hostname[NI_MAXHOST] = "";
-      error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
-      if(error != 0){ 
-	source.c->SendMessage("\0034[All rDNS]\017 error in getnameinfo: %s", gai_strerror(error)); 
-	continue; 
+      for (res = result; res != NULL; res = res->ai_next)
+      {
+	char hostname[NI_MAXHOST] = "";
+	error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+
+	if(error != 0){
+	  source.c->SendMessage("\0034[All rDNS]\017 error in getnameinfo: %s", gai_strerror(error));
+	  continue;
+	}
+
+	ret = hostname;
+	if(!laststr.equals_cs(ret))
+	{
+	  source.c->SendMessage("\0034[All rDNS]\017 %s", hostname);
+	  laststr = ret;
+	  count++;
+	}
       }
-      ret = hostname;
-      if(!laststr.equals_cs(ret)){
-	source.c->SendMessage("\0034[All rDNS]\017 %s", hostname);
-	laststr = ret;
-	count++;
-      }
-    }
-    source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostname%s.", count, count > 1?"s":"");
-    freeaddrinfo(result);
+    
+      source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostname%s.", count, count > 1?"s":"");
+      freeaddrinfo(result);
     }
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -231,13 +256,10 @@ class dns_m:public module
   CommandCDNS dns;
   CommandCADNS adns;
 public:
-  dns_m(const Flux::string &Name):module(Name){ 
+  dns_m(const Flux::string &Name):module(Name), ardns(this), rdns(this), dns(this), adns(this)
+  { 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
-    this->AddChanCommand(&adns);
-    this->AddChanCommand(&ardns);
-    this->AddChanCommand(&rdns);
-    this->AddChanCommand(&dns);
   }
 };
 /**

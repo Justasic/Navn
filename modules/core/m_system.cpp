@@ -1,24 +1,38 @@
+/* Navn IRC bot -- Generic Bot management functions
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "flux_net_irc.hpp"
 
 struct sysinfo sys_info;
+
 class CommandRehash : public Command
 {
 public:
-  CommandRehash():Command("REHASH", 0, 0)
+  CommandRehash(module *m):Command(m, "REHASH", C_PRIVATE, 0, 0)
   {
     this->SetDesc("Rehashes the config file");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
+    
    if(!u->IsOwner())
       source.Reply(ACCESS_DENIED);
-   else{
+   else
+   {
      source.Reply("Rehashing Configuration file");
      Log(u, this) << "to rehash the configuration";
      Rehash();
    }
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -35,7 +49,7 @@ public:
 class CommandNick : public Command
 {
 public:
-  CommandNick():Command("NICK", 1, 1)
+  CommandNick(module *m):Command(m, "NICK", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Change the bots nickname");
     this->SetSyntax("\37nickname\37");
@@ -44,7 +58,9 @@ public:
   {
     User *u = source.u;
     Flux::string newnick = params[1];
-    if(newnick.empty()){
+    
+    if(newnick.empty())
+    {
      this->SendSyntax(source);
      return;
     }
@@ -53,7 +69,8 @@ public:
      return;
     }
     for(unsigned i = 0, end = newnick.length(); i < end; i++)
-      if(!isvalidnick(newnick[i])){
+      if(!isvalidnick(newnick[i]))
+      {
 	source.Reply("\2%s\2 is an invalid nickname.");
 	Config->BotNick = newnick;
       }
@@ -75,14 +92,15 @@ public:
 class CommandRestart : public Command
 {
 public:
-  CommandRestart():Command("RESTART", 0, 1)
+  CommandRestart(module *m):Command(m, "RESTART", C_PRIVATE, 0, 1)
   {
    this->SetDesc("Restarts the bot");
    this->SetSyntax("\37reason\37");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    if(source.u->IsOwner()){
+    if(source.u->IsOwner())
+    {
       ircproto->quit("Restarting..");
       restart("Restarting..");
       Log(source.u, this) << " to restart the bot.";
@@ -105,7 +123,7 @@ public:
 class CommandKick : public Command
 {
 public:
-  CommandKick():Command("KICK", 1, 3)
+  CommandKick(module *m):Command(m, "KICK", C_PRIVATE, 2, 3)
   {
     this->SetDesc("Kick a user from the channel");
     this->SetSyntax("channel \37nick\15");
@@ -113,26 +131,34 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    if(u->IsOwner()){
-      Flux::string kickchan = params[1];
-      Flux::string kickee = params[2];
-      if(kickee.empty() || kickchan.empty()){
+    if(u->IsOwner())
+    {
+      Flux::string kickchan = params[0];
+      Flux::string kickee = params[1];
+      Flux::string msg = params[2];
+      
+      if(kickee.empty() || kickchan.empty())
+      {
 	this->SendSyntax(source);
 	return;
       }
-      if(!IsValidChannel(kickchan)){
+      
+      if(!IsValidChannel(kickchan))
+      {
 	source.Reply(CHANNEL_X_INVALID, kickchan.c_str()); 
 	return;
       }
+      
       Channel *c = findchannel(kickchan);
-      if(!c){
+      if(!c)
+      {
 	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
 	return;
       }
-      c->kick(kickee, "Kick from %s", u->nick.c_str());
-    }else{
+      
+      c->kick(kickee, "%s(%s)", u->nick.c_str(), msg.empty()?msg.c_str():"No message");
+    }else
       source.Reply(ACCESS_DENIED);
-    }
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
@@ -149,7 +175,7 @@ public:
 class CommandChown : public Command
 {
 public:
-  CommandChown():Command("CHOWN", 1, 1)
+  CommandChown(module *m):Command(m, "CHOWN", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Change ownership over the bot");
     this->SetSyntax("\37owner\37");
@@ -173,7 +199,7 @@ public:
 class CommandQuit : public Command
 {
 public:
-  CommandQuit():Command("QUIT", 1, 1)
+  CommandQuit(module *m):Command(m, "QUIT", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Quits the bot from IRC");
     this->SetSyntax("\37randompass\37");
@@ -183,12 +209,14 @@ public:
     User *u = source.u;
     Flux::string pass = params[1];
     
-    if(pass == password || pass == Config->UserPass){
+    if(pass == password || pass == Config->UserPass)
+    {
       source.Reply("Quitting..");
       Log(u) << "quit the bot with password: \"" << password << "\"";
       ircproto->quit("Requested From \2%s\17. Pass: \00320%s\017", u->nick.c_str(), password.c_str());
       quitting = true;
-    }else{
+    }else
+    {
       source.Reply(ACCESS_DENIED);
       Log(u) << "Attempted to quit the bot";
     }
@@ -209,37 +237,44 @@ public:
 class CommandTopic: public Command
 {
 public:
-  CommandTopic():Command("TOPIC", 2, 2)
+  CommandTopic(module *m):Command(m, "TOPIC", C_PRIVATE, 2, 2)
   {
     this->SetDesc("Set the topic on a channel");
     this->SetSyntax("\37channel\37 [\37topic\37]");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
+    Flux::string tchan = params[0];
+    Flux::string msg = params[1];
     User *u = source.u;
-    if(!u->IsOwner()){
+    Channel *ch = findchannel(tchan);
+    
+    if(!u->IsOwner())
+    {
       source.Reply(ACCESS_DENIED);
       return;
     }
-    Flux::string tchan = params[0];
-    if(!IsValidChannel(tchan)){
+    if(!IsValidChannel(tchan))
+    {
       source.Reply(CHANNEL_X_INVALID, tchan.c_str());
       return;
     }
-    Channel *ch = findchannel(tchan);
-    if(!ch){
+    if(!ch)
+    {
       source.Reply("I am not in channel \2%s\2", tchan.c_str());
       return;
     }
-    Flux::string msg = params[1];
-    msg.trim();
+    
     ch->ChangeTopic(msg);
     std::fstream topic;
     topic.open("topic.tmp", std::fstream::in | std::fstream::out | std::fstream::app);
-    if(!topic.is_open()){
+    
+    if(!topic.is_open())
+    {
 	    source.Reply("Unable to write topic temp file");
 	    Log(u, this) << " in an attempt to change the topic in " << tchan << " and failed to write to temp file 'topic.tmp'";
-    }else{
+    }else
+    {
 	    topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><topic> " << tchan << " Topic: " << msg.strip() << " </topic></channel></rss>" << std::endl;
 	    system("sh ftp.sh");
     }
@@ -260,17 +295,20 @@ public:
 class CommandPID: public Command
 {
 public:
-  CommandPID():Command("PID")
+  CommandPID(module *m):Command(m, "PID", C_PRIVATE)
   {
     this->SetDesc("Gets the bots Process ID");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    if(u->IsOwner()){
-      source.Reply("My PID is: \2%i\2", (int)getpid());
+    
+    if(u->IsOwner())
+    {
+      source.Reply("My PID is: \2%i\2", static_cast<int>(getpid()));
       Log(u, this) << "command to get navn's PID " << getpid();
-    }else{
+    }else
+    {
       source.Reply(ACCESS_DENIED);
     }
   }
@@ -288,17 +326,20 @@ public:
 class CommandPass: public Command
 {
 public:
-  CommandPass():Command("PASS")
+  CommandPass(module *m):Command(m, "PASS", C_PRIVATE)
   {
     this->SetDesc("Gets the bots Random Password");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    if (u->IsOwner()){
+    
+    if (u->IsOwner())
+    {
       source.Reply("The password is:\2 %s", password.c_str());
       Log(u, this) << "to request navn's quit password: " << password;
-    }else{
+    }else
+    {
       source.Reply(ACCESS_DENIED);
       Log(u, this) << "to attempt to request navn's quit password.";
     }
@@ -319,7 +360,7 @@ public:
 class CommandStats: public Command
 {
 public:
-  CommandStats():Command("STATS")
+  CommandStats(module *m):Command(m, "STATS", C_PRIVATE)
   {
     this->SetDesc("Shows system stats");
   }
@@ -359,18 +400,17 @@ public:
     source.Reply("Buffered Ram: %ldk", sys_info.bufferram / 1024);
 
     // Swap space
-    source.Reply("Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024,
-				sys_info.freeswap / 1024);
+    source.Reply("Total Swap: %ldk\tFree: %ldk", sys_info.totalswap / 1024, sys_info.freeswap / 1024);
 
     // Number of processes currently running.
     source.Reply("Number of processes: %d", sys_info.procs);
-    source.Reply(" ");
+    source.Reply("");
     source.Reply("System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
     source.Reply("System Version: %s", uts.version);
 
     source.Reply(execute("grep 'model name' /proc/cpuinfo").strip());
 #else
-    source.Reply("This is currently not avalable on windows syetems, sorry.");
+    source.Reply("This is currently not available on windows syetems, sorry.");
 #endif
     Log(source.u, this) << "command";
   }
@@ -387,7 +427,7 @@ public:
 };
 class m_system : public module
 {
-  CommandChown cmdchown;
+  CommandChown cmdchown;//So many commands! .-.
   CommandKick cmdkick;
   CommandRehash cmdrehash;
   CommandQuit cmdquit;
@@ -400,18 +440,9 @@ class m_system : public module
 private:
   Flux::string orig;
 public:
-  m_system(const Flux::string &Name):module(Name)
+  m_system(const Flux::string &Name):module(Name), cmdchown(this), cmdkick(this), cmdrehash(this), cmdquit(this), cmdrestart(this),
+  topic(this), stats(this), nick(this), pid(this), pass(this)
   {
-    this->AddCommand(&cmdrehash);//So many commands! .-.
-    this->AddCommand(&cmdkick);
-    this->AddCommand(&cmdchown);
-    this->AddCommand(&cmdquit);
-    this->AddCommand(&cmdrestart);
-    this->AddCommand(&nick);
-    this->AddCommand(&stats);
-    this->AddCommand(&topic);
-    this->AddCommand(&pid);
-    this->AddCommand(&pass);
     Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick, I_OnNotice, I_OnChannelOp };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");

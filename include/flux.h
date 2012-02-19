@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Flux::string class
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #ifndef FLUX_H
 #define FLUX_H
 #include <cstring>
@@ -15,6 +23,8 @@
 #include <ios>
 #include <typeinfo>
 #include "config.h" /* we include the config header from ./configure */
+
+/* Deprecation crap */
 #ifdef __GNUC__
 # define DEPRECATED(func) func __attribute__ ((deprecated))
 #elif defined(_MSC_VER)
@@ -23,7 +33,7 @@
 # pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 # define DEPRECATED(func) func
 #endif
-/* stupid windows class crap for the modules */
+/* stupid windows class crap for the modules */ 
 #ifdef _WIN32
 # define CoreExport __declspec(dllimport)
 # define DllExport __declspec(dllexport)
@@ -46,11 +56,10 @@ template<typename T, typename V> inline T value_cast(const V &y)
   T x;
   if(!(stream << std::setprecision(800) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
-  if(!(stream >> x)){ //If stringstream fails, force the cast.
-    if(protocoldebug)
-      printf("Failed to cast \"%s\" to \"%s\", attempting to force with reinterpret_cast\n", typeid(V).name(), typeid(T).name());
+  
+  if(!(stream >> x)) //If stringstream fails, force the cast.
     x = *reinterpret_cast<T*>(const_cast<V*>(&(y)));
-  }
+  
   return x;
 }
 
@@ -76,6 +85,32 @@ unsigned const char ascii_case_insensitive_map[256] = {
 	220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,     /* 220-239 */
 	240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255                          /* 240-255 */
 };
+/** Percent-encoding map for HTML output **/
+static const char* url_escape_table[256] = {
+  "%00", "%01", "%02", "%03", "%04", "%05", "%06", "%07", "%08", "%09",
+  "%0a", "%0b", "%0c", "%0d", "%0e", "%0f", "%10", "%11", "%12", "%13",
+  "%14", "%15", "%16", "%17", "%18", "%19", "%1a", "%1b", "%1c", "%1d",
+  "%1e", "%1f", "%20", "%21", "%22", "%23", "%24", "%25", "%26", "%27",
+  0, 0, "%2a", "%2b", "%2c", "%2d", 0, "%2f", 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, "%3a", "%3b", "%3c", "%3d", "%3e", "%3f", "%40", 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  "%5b", "%5c", "%5d", "%5e", 0, "%60", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "%7b", "%7c", "%7d", 0,
+  "%7f", "%80", "%81", "%82", "%83", "%84", "%85", "%86", "%87", "%88",
+  "%89", "%8a", "%8b", "%8c", "%8d", "%8e", "%8f","%90", "%91", "%92",
+  "%93", "%94", "%95", "%96", "%97", "%98", "%99","%9a", "%9b", "%9c",
+  "%9d", "%9e", "%9f", "%a0", "%a1", "%a2", "%a3", "%a4", "%a5", "%a6",
+  "%a7", "%a8", "%a9", "%aa", "%ab", "%ac", "%ad", "%ae", "%af", "%b0",
+  "%b1", "%b2", "%b3", "%b4", "%b5", "%b6", "%b7", "%b8", "%b9", "%ba",
+  "%bb", "%bc", "%bd", "%be", "%bf", "%c0", "%c1", "%c2", "%c3", "%c4",
+  "%c5", "%c6", "%c7", "%c8", "%c9", "%ca", "%cb", "%cc", "%cd", "%ce",
+  "%cf", "%d0", "%d1", "%d2", "%d3", "%d4", "%d5", "%d6", "%d7", "%d8",
+  "%d9", "%da", "%db", "%dc", "%dd", "%de", "%df", "%e0", "%e1", "%e2",
+  "%e3", "%e4", "%e5", "%e6", "%e7", "%e8", "%e9", "%ea", "%eb", "%ec",
+  "%ed", "%ee", "%ef", "%f0", "%f1", "%f2", "%f3", "%f4", "%f5", "%f6",
+  "%f7", "%f8", "%f9", "%fa", "%fb", "%fc", "%fd", "%fe", "%ff"
+};
+
 /** The ci namespace contains a number of helper classes.
  */
 namespace ci
@@ -242,7 +277,6 @@ namespace Flux{
     string(const base_string &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
     string(const string &_str, size_type pos = 0, size_type n = npos) : _string(_str._string, pos, n) { }
-//     ~string() { printf("~: %s\n", this->c_str()); }
     template <class InputIterator> string(InputIterator first, InputIterator last) : _string(first, last) { }
 
     inline string &operator=(char chr) { this->_string = chr; return *this; }
@@ -296,6 +330,22 @@ namespace Flux{
     inline ci::string ci_str() const { return ci::string(this->_string.c_str()); }
     inline const base_string &std_str() const { return this->_string; }
     inline base_string &std_str() { return this->_string; }
+    inline string url_str() const
+    {
+      string ret;
+      const char *t = this->_string.c_str();
+      while(t && *t)
+      {
+	int c = *t;
+	const char *e = url_escape_table[c];
+	if(e)
+	  ret += e;
+	else
+	  ret += c;
+	t++;
+      }
+      return ret;
+    }
 
     inline bool empty() const { return this->_string.empty(); }
     inline size_type length() const { return this->_string.length(); }
@@ -323,6 +373,7 @@ namespace Flux{
     inline void tolower() { std::transform(_string.begin(), _string.end(), _string.begin(), ::tolower); }
     inline void toupper() { std::transform(_string.begin(), _string.end(), _string.begin(), ::toupper); }
     inline void clear() { this->_string.clear(); }
+    
     inline bool search(const string &_str) { if(_string.find(_str._string) != base_string::npos) return true; return false; }
     inline bool search(const string &_str) const { if(_string.find(_str._string) != base_string::npos) return true; return false; }
     inline bool search_ci(const string &_str) { if(ci::string(this->_string.c_str()).find(ci::string(_str.c_str())) != ci::string::npos) return true; return false; }
@@ -427,6 +478,25 @@ namespace Flux{
     inline std::allocator<char> get_allocator() const { return this->_string.get_allocator(); }
     inline char &operator[](size_type n) { return this->_string[n]; }
     inline const char &operator[](size_type n) const { return this->_string[n]; }
+
+    inline string isolate(char b, char e) const
+    {
+      string to_find;
+      size_type pos = _string.find(b);
+      pos += 1;
+      for (unsigned i = pos; i < _string.length(); i++)
+      {
+	if (_string[i] == e)
+	{
+	  break;
+	}
+	else
+	{
+	  to_find = to_find+_string[i];
+	}
+      }
+      return to_find;
+    }
 
     /* Strip Return chars */
     inline string strip()

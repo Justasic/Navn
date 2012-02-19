@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Search url generator
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 
 /**
@@ -33,8 +41,8 @@
  * \brief generates search links for url's
  * This is what generates the search links.
  */
-Flux::string search(const Flux::string &s, const Flux::string &command){
-  Flux::string searchstring = urlify(s);
+Flux::string search(const Flux::string &text, const Flux::string &command){
+  Flux::string searchstring = text.url_str();
   if (searchstring.empty())
     return "Empty searchstring.";
   else{
@@ -57,7 +65,7 @@ Flux::string search(const Flux::string &s, const Flux::string &command){
 class CommandCGoogle : public Command
 {
 public:
-  CommandCGoogle():Command("!GOOGLE", 1,1)
+  CommandCGoogle(module *m):Command(m, "!GOOGLE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Google search url");
     this->SetSyntax("\37message\37");
@@ -80,7 +88,7 @@ public:
 class CommandCYoutube : public Command
 {
 public:
-  CommandCYoutube():Command("!YOUTUBE", 1,1)
+  CommandCYoutube(module *m):Command(m, "!YOUTUBE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a youtube search url");
     this->SetSyntax("\37message\37");
@@ -103,7 +111,7 @@ public:
 class CommandCPirateBay : public Command
 {
 public:
-  CommandCPirateBay():Command("!TPB", 1,1)
+  CommandCPirateBay(module *m):Command(m, "!TPB", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Pirate Bay search url");
     this->SetSyntax("\37message\37");
@@ -126,7 +134,7 @@ public:
 class CommandCDefine : public Command
 {
 public:
-  CommandCDefine():Command("!DEFINE", 1,1)
+  CommandCDefine(module *m):Command(m, "!DEFINE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Dictionary search url");
     this->SetSyntax("\37message\37");
@@ -149,7 +157,7 @@ public:
 class CommandCUrban : public Command
 {
 public:
-  CommandCUrban():Command("!URBAN", 1,1)
+  CommandCUrban(module *m):Command(m, "!URBAN", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Urban Dictionary search url");
     this->SetSyntax("\37message\37");
@@ -172,7 +180,7 @@ public:
 class CommandCMovie : public Command
 {
 public:
-  CommandCMovie():Command("!MOVIE", 1,1)
+  CommandCMovie(module *m):Command(m, "!MOVIE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a movie search url");
     this->SetSyntax("\37message\37");
@@ -195,7 +203,7 @@ public:
 class CommandCWiki : public Command
 {
 public:
-  CommandCWiki():Command("!WIKI", 1,1)
+  CommandCWiki(module *m):Command(m, "!WIKI", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a wikipedia search url");
     this->SetSyntax("\37message\37");
@@ -218,7 +226,7 @@ public:
 class CommandCMusic : public Command
 {
 public:
-  CommandCMusic():Command("!MUSIC", 1,1)
+  CommandCMusic(module *m):Command(m, "!MUSIC", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a music search url");
     this->SetSyntax("\37message\37");
@@ -254,17 +262,11 @@ class searcher:public module
   CommandCWiki wiki;
   CommandCMusic music;
 public:
-  searcher(const Flux::string &Name):module(Name){
+  searcher(const Flux::string &Name):module(Name), google(this), yt(this), tpb(this), d(this), urban(this),
+  movie(this), wiki(this), music(this)
+  {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
-    this->AddChanCommand(&google);
-    this->AddChanCommand(&yt);
-    this->AddChanCommand(&tpb);
-    this->AddChanCommand(&d);
-    this->AddChanCommand(&urban);
-    this->AddChanCommand(&movie);
-    this->AddChanCommand(&wiki);
-    this->AddChanCommand(&music);
   }
 };
 /**

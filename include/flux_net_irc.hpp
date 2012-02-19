@@ -1,13 +1,25 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Main include
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ *
+ * WARNING: this file is going bye bye VERY SOON!
+ */
 #ifndef DERP_H
 #define DERP_H
 #include "module.h"
 #include "defs.h"
 #include "xmlfile.h"
+
 IRCProto *ircproto;
 SocketIO *sock;
 BotConfig *Config;
 module *LastRunModule;
+
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
@@ -54,7 +66,7 @@ class irc_string:Flux::string{
   Flux::string message;
   /**
    * \fn irc_string(Flux::string reply)
-   * \deprecated
+   * \deprecated This class is deprecated, find another way of using your strings
    *Constructor for \a irc_string class
    * This is where the magic happens. The constructor takes the Flux::string
    * and breaks it down into its component parts to find the
@@ -62,10 +74,10 @@ class irc_string:Flux::string{
    */
   DEPRECATED(irc_string(Flux::string reply)){
     raw_string = reply;
-    usernick = isolate(':','!',reply);
-    host = isolate('@',' ',reply);
-    user = isolate('!','@',reply);
-    channel = '#'+isolate('#',' ',reply);
+    usernick = reply.isolate(':','!');
+    host = reply.isolate('@',' ');
+    user = reply.isolate('!','@');
+    channel = '#'+reply.isolate('#',' ');
     Flux::string space = " ";
     size_t pos = reply.find(" :");
     pos += 2;
@@ -79,7 +91,7 @@ class irc_string:Flux::string{
     }
 
     Flux::string fmessage = message;
-    char * cmessage = (char *)fmessage.c_str();
+    char * cmessage = const_cast<char*>(fmessage.c_str());
     char * pch;
     pch = strtok(cmessage," ");
     while (pch != NULL)
@@ -91,7 +103,7 @@ class irc_string:Flux::string{
   /**
    * \fn Flux::string params(int i)
    * \brief Returns individual words from the message of a reply
-   * \deprecated
+   * \deprecated use module parameter vectors instead
    * Because \a toks is private, this is its "get" function.
    * We made this so someone writing a module doesn't try to go out
    * of bounds while accessing an array.
@@ -130,13 +142,14 @@ class irc_string:Flux::string{
   /**
    * \fn static Flux::string isolate(char begin, char end, Flux::string msg)
    * \brief Isolates a Flux::string between two characters
+   * \deprecated use the plain isolate function instead
    * Finds the first character, then begins to add every consecutive character from there to a Flux::string
    *  until it reaches the end character.
    * \param begin The character saying where the cut should begin.
    * \param end The character saying where the cut should end.
    * \param msg The Flux::string you are wanting to isolate from.
    */
-  DEPRECATED(static Flux::string cisolate(char begin, char end, Flux::string msg)){
+  DEPRECATED(static Flux::string isolate(char begin, char end, Flux::string msg)){
     Flux::string to_find;
     size_t pos = msg.find(begin);
     pos += 1;
@@ -151,7 +164,7 @@ class irc_string:Flux::string{
   /**
    * \fn bool said(Flux::string findee)
    * \brief Check if something was said.
-   * \deprecated
+   * \deprecated use Flux::string::search() and Flux::string::search_ci() instead
    * \param findee The Flux::string you want to check if was said.
    * \return True if \a findee was found, false otherwise.
    */
@@ -164,6 +177,7 @@ class irc_string:Flux::string{
   /**
    * \overload static bool said(Flux::string source, Flux::string findee)
    * \brief Static overload of said() function.
+   * \deprecated
    * \param source A Flux::string that is to be searched through.
    * \param findee The Flux::string that is to be found.
    * We overloaded the said function and made it static because we thought it would be
@@ -182,11 +196,14 @@ class irc_string:Flux::string{
  * \brief Removes a command from a Flux::string.
  * \param command String to be taken out.
  * \param s Original Flux::string.
+ * \deprecated use module parameters system instead
  * This takes out \a command from \a s and returns \a s without \a command It's very useful when you want
  * to use the rest of a Flux::string as an argument for a command.
  * \return A Flux::string \a s without \a command.
  */
-Flux::string removeCommand(Flux::string command, Flux::string s){
+DEPRECATED(Flux::string removeCommand(Flux::string command, Flux::string s));
+Flux::string removeCommand(Flux::string command, Flux::string s)
+{
   size_t pos = s.find(command);
   return s.substr(pos+(command.size())+1);
 }
@@ -195,10 +212,12 @@ Flux::string removeCommand(Flux::string command, Flux::string s){
  * \fn Flux::string urlify(Flux::string raw_searchstring)
  * \brief Replaces special chars in a Flux::string with url compliant codes.
  * \param raw_searchstring
+ * \deprecated use Flux::string::url_str() instead
  * Goes through each character in a Flux::string and if it finds a special character,
  * it replaces it with what would be in a url for that character.
  * \return A Flux::string without any special characters other than %
  */
+DEPRECATED(Flux::string urlify(const Flux::string &received));
 Flux::string urlify(const Flux::string &received){
   Flux::string string;
   for(unsigned i=0; i < received.size(); ++i){
@@ -321,10 +340,17 @@ static void remove_pidfile() { Delete(Config->PidFile.c_str()); }
  * \fn static void WritePID()
  * \brief Write the bots PID file
  */
-static void WritePID(){
+static void WritePID()
+{
   //logging to a text file and making the PID file.
   if(Config->PidFile.empty())
     throw CoreException("Cannot write PID file, no PID file specified.");
+
+  if(TextFile::IsFile(Config->PidFile))
+  {
+    Log(LOG_DEBUG) << "Deleting stale pid file " << Config->PidFile;
+    Delete(Config->PidFile.c_str());
+  }
   FILE *pidfile = fopen(Config->PidFile.c_str(), "w");
   if(pidfile){
     #ifdef _WIN32
@@ -338,11 +364,64 @@ static void WritePID(){
   else
     throw CoreException("Can not write to PID file "+Config->PidFile);
 }
+
+class CommandLineArguments
+{
+protected:
+  Flux::map<Flux::string> Arguments;
+public:
+  CommandLineArguments(int ac, char **av)
+  {
+    for(int i = 1; i < ac; ++i)
+    {
+      Flux::string argsarg = av[i];
+      Flux::string param;
+      while(!argsarg.empty() && argsarg[0] == '-')
+	argsarg.erase(argsarg.begin());
+
+      size_t t = argsarg.find('=');
+      if(t != Flux::string::npos)
+      {
+	param = argsarg.substr(t+1);
+	argsarg.erase(t);
+      }
+
+      if(argsarg.empty())
+	continue;
+
+      Arguments[argsarg] = param;
+    }
+  }
+  
+  bool HasArg(const Flux::string &name, char shortname = '\0')
+  {
+    Flux::string Cppisstupidrighthere;
+    return this->HasArg(name, shortname, Cppisstupidrighthere);
+  }
+  
+  bool HasArg(const Flux::string &name, char shortname, Flux::string &args)
+  {
+    args.clear();
+
+    for(Flux::map<Flux::string>::iterator it = this->Arguments.begin(); it != this->Arguments.end(); ++it)
+    {
+      if(it->first.equals_ci(name) || it->first[0] == shortname)
+      {
+	args = it->second;
+	return true;
+      }
+    }
+    return false;
+  }
+};
+
 /**This is the startup sequence that starts at the top to the try loop
  * @param startup(int, char)
  */
-void startup(int argc, char** argv, char *envp[]) {
+void startup(int argc, char** argv, char *envp[])
+{
   SET_SEGV_LOCATION();
+  
   InitSignals();
   Config = NULL;
   ircproto = NULL;
@@ -350,68 +429,84 @@ void startup(int argc, char** argv, char *envp[]) {
   my_av = argv;
   my_envp = envp;
   starttime = time(NULL); //for bot uptime
+  
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
+  
   Config = new BotConfig(binary_dir);
   if(!Config)
     throw CoreException("Config Error.");
+  
   Flux::string dir = argv[0];
   Flux::string::size_type n = dir.rfind('/');
   dir = "." + dir.substr(n);
+  
   //gets the command line paramitors if any.
-  if (!(argc < 1) || argv[1] != NULL){
-    for(int Arg=1; Arg < argc; ++Arg){
-      Flux::string arg = argv[Arg];
-      if((arg.equals_ci("--developer")) ^ (arg.equals_ci("--dev")) ^ (arg == "-d"))
-      {
-	dev = nofork = true;
-	Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode. (" << arg << ")";
-      }
-      else if ((arg.equals_ci("--nofork")) ^ (arg == "-n")){
-	nofork = true;
-	Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
-      }
-      else if ((arg.equals_ci("--help")) ^ (arg == "-h")){
-	Log(LOG_TERMINAL) << "Navn Internet Relay Chat Bot v" << VERSION;
-	Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
-	Log(LOG_TERMINAL) << "-h, --help";
-	Log(LOG_TERMINAL) << "-d, --developer";
-	Log(LOG_TERMINAL) << "-n, --nofork";
-	Log(LOG_TERMINAL) << "-p, --protocoldebug";
-	Log(LOG_TERMINAL) << "-c, --nocolor";
-	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
-	exit(0);
-      }
-      else if ((arg.equals_ci("--version")) ^ (arg == "-v")){
-	Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_FULL;
-	Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
-	Log(LOG_TERMINAL) << "";
-	Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
-	Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
-	Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
-	Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
-	Log(LOG_TERMINAL) << "";
-	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
-	Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
-	exit(0);
-      }
-      else if((arg.equals_ci("--protocoldebug")) ^ (arg == "-p")){
-	protocoldebug = true;
-	Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode. (" << arg << ")";
-      }
-      else if((arg.equals_ci("--nocolor")) ^ (arg == "-c")){
-	nocolor = true;
-	Log() << Config->BotNick << " is started in No Colors mode. (" << arg << ")\033[0m"; //reset terminal colors
-      }
-      else
-      {
-	Log(LOG_TERMINAL) << "Unknown option " << arg;
-	exit(0);
-      }
-    }
+  CommandLineArguments args(argc, argv);
+
+  if(args.HasArg("developer"))
+  {
+    dev = nofork = true;
+    Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode.";
   }
-  if(!nocolor) Log(LOG_TERMINAL) << "\033[22;36m";
+
+  if(args.HasArg("debug", 'd'))
+  {
+    Log(LOG_TERMINAL) << "This mode flag does nothing for now, it will do debug levels eventally ;)";
+    exit(0);
+  }
+  
+  if(args.HasArg("nofork", 'n'))
+  {
+    nofork = true;
+    Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled.";
+  }
+
+  if(args.HasArg("help", 'h'))
+  {
+    Log(LOG_TERMINAL) << "\033[0mNavn Internet Relay Chat Bot v" << VERSION;
+    Log(LOG_TERMINAL) << "Usage: " << dir << " [options] ...";
+    Log(LOG_TERMINAL) << "-h, --help";
+    Log(LOG_TERMINAL) << "    --developer (inhibits --nofork)";
+    Log(LOG_TERMINAL) << "-d, --debug[=level]";
+    Log(LOG_TERMINAL) << "-n, --nofork";
+    Log(LOG_TERMINAL) << "-p, --protocoldebug";
+    Log(LOG_TERMINAL) << "-c, --nocolor";
+    Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+    exit(0);
+  }
+
+  if(args.HasArg("version", 'v'))
+  {
+    Log(LOG_TERMINAL) << "\033[0mNavn IRC C++ Bot Version " << VERSION_FULL;
+    Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
+    Log(LOG_TERMINAL) << "";
+    Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
+    Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
+    Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
+    Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
+    Log(LOG_TERMINAL) << "";
+    Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+    Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
+    exit(0);
+  }
+
+  if(args.HasArg("protocoldebug", 'p'))
+  {
+    protocoldebug = true;
+    Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode.";
+  }
+
+  if(args.HasArg("nocolor", 'c'))
+  {
+    nocolor = true;
+    Log() << Config->BotNick << " is started in No Colors mode.\033[0m"; //reset terminal colors
+  }
+  
+  if(!nocolor)
+    Log(LOG_TERMINAL) << "\033[22;36m";
+  
   ModuleHandler::SanitizeRuntime();
   ReadConfig(); //load modules
   WritePID(); //Write the pid file

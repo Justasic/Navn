@@ -1,6 +1,21 @@
+/* Navn IRC bot -- Clock functions for weather module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "clock.h"
 
-Clock::Clock(){}
+Clock::Clock()
+{
+  time(&rawtime);
+  ptm = gmtime(&rawtime);
+  isdst = ptm->tm_isdst?true:false;
+}
 
 void Clock::CorrectHour(int &h)
 {
@@ -26,28 +41,23 @@ Flux::string Clock::CustomOffset(int i)
 }
 Flux::string Clock::MST()
 {
-  time(&rawtime);
-  ptm = gmtime(&rawtime);
   std::stringstream r;
-  int h = ptm->tm_hour-6;
+  
+  int h = ptm->tm_hour - isdst?6:7;
   CorrectHour(h);
   r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::EST()
 {
-  time(&rawtime);
-  ptm = gmtime(&rawtime);
   std::stringstream r;
-  int h = (ptm->tm_hour)-4;
+  int h = (ptm->tm_hour) - isdst?4:5;
   CorrectHour(h);
   r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::UTC()
 {
-  time(&rawtime);
-  ptm = gmtime(&rawtime);
   std::stringstream r;
   int h = (ptm->tm_hour);
   CorrectHour(h);
@@ -56,8 +66,6 @@ Flux::string Clock::UTC()
 }
 Flux::string Clock::CCT()
 {
-  time(&rawtime);
-  ptm = gmtime(&rawtime);
   std::stringstream r;
   int h = (ptm->tm_hour)+8;
   CorrectHour(h);
@@ -66,20 +74,16 @@ Flux::string Clock::CCT()
 }
 Flux::string Clock::PST()
 {
-  time(&rawtime);
-  ptm = gmtime(&rawtime);
   std::stringstream r;
-  int h = (ptm->tm_hour)-7;
+  int h = (ptm->tm_hour) - isdst?7:8;
   CorrectHour(h);
   r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
 }
 Flux::string Clock::AUS()
 {
-  time(&rawtime);
-  ptm = gmtime(&rawtime);
   std::stringstream r;
-  int h = (ptm->tm_hour)+10;
+  int h = (ptm->tm_hour) + isdst?10:11;
   CorrectHour(h);
   r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
   return r.str();
@@ -99,7 +103,7 @@ Flux::string duration(const time_t &t)
   time_t hours = (t / 3600) % 24;
   time_t minutes = (t / 60) % 60;
   time_t seconds = (t) % 60;
-  
+
   if (!days && !hours && !minutes)
     return value_cast<Flux::string>(seconds) + " " + (seconds != 1 ? "seconds" : "second");
   else

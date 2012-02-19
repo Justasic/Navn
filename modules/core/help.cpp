@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- IRC help module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 /**
  * \file help.cpp Module file holding the \a help function.
@@ -23,21 +31,26 @@
 class CommandHelp : public Command
 {
 public:
-  CommandHelp():Command("HELP", 0, 1)
+  CommandHelp(module *m):Command(m, "HELP", C_PRIVATE, 0, 1)
   {
    this->SetDesc("Displays help messages");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     int c=0;
-    if(!params.empty()){
-      Command *com = FindCommand(params[1], COMMAND_PRIVATE);
+    if(!params.empty())
+    {
+      Command *com = FindCommand(params[1], C_PRIVATE);
+      
       if(com && !com->OnHelp(source, ""))
 	source.Reply("No help available for \2%s\2", params[1].c_str());
       else if(!com)
 	source.Reply("No help available for \2%s\2", params[1].c_str());
+      
       Log(source.u) << "used help command on " << params[1];
-    }else{
+    }else
+    {
 #ifdef _CXX11
       for(auto val : Commandsmap)
       {
@@ -60,32 +73,33 @@ public:
 class CommandCHelp : public Command
 {
 public:
-  CommandCHelp():Command("!HELP", 0,1)
+  CommandCHelp(module *m):Command(m, "!HELP", C_CHANNEL, 0,1)
   {
    this->SetDesc("Displays Channel help messages");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string cmds;
-    if(!params.empty()){
-      Command *c = FindCommand(params[1], COMMAND_CHANNEL);
+    if(!params.empty())
+    {
+      Command *c = FindCommand(params[1], C_CHANNEL);
+      
       if(c && !c->OnHelp(source, ""))
 	source.Reply("No help available for \2%s\2", params[1].c_str());
       else if(!c)
 	source.Reply("No help available for \2%s\2", params[1].c_str());
+      
       Log(source.u) << "used help command on " << params[1];
-    }else{
+    }else
+    {
 #ifdef _CXX11
       for(auto val : ChanCommandMap) //As you can see C++11 is MUCH better than C++98
 	cmds += val.second->name+" ";
 #else
       for(CommandMap::iterator it = ChanCommandMap.begin(), it_end = ChanCommandMap.end(); it != it_end; ++it)
-      {
 	if(it->second != NULL)
-	{
 	    cmds += it->second->name+" ";
-	}
-      }
 #endif
       cmds.trim();
       cmds.tolower();
@@ -100,9 +114,8 @@ class help_m:public module
   CommandHelp help;
   CommandCHelp chelp;
 public:
-  help_m(const Flux::string &Name):module(Name){ 
-    this->AddCommand(&help);
-    this->AddChanCommand(&chelp);
+  help_m(const Flux::string &Name):module(Name), help(this), chelp(this)
+  {
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_FIRST);
     this->SetAuthor("Justasic");

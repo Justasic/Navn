@@ -1,3 +1,13 @@
+/* Navn IRC bot -- Example module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #include "flux_net_irc.hpp"
 
 /**
@@ -24,7 +34,7 @@
 class commanddummy : public Command
 {
 public:
-  commanddummy() : Command("TEST", 2,2) //The 0's are how many params the command gets, they're not required and can be removed.
+  commanddummy(module *m) : Command(m, "TEST", C_PRIVATE, 0, 0) //The 0's are how many params the command gets, they're not required and can be removed.
   {
    this->SetDesc("Test for the modules");
    this->SetSyntax("\37TEST\37");
@@ -47,20 +57,19 @@ class dummy : public module
 {
   commanddummy cmddmy; //Declare our command
 public:
-  dummy(const Flux::string &Name):module(Name)
+  dummy(const Flux::string &Name):module(Name), cmddmy(this) //Add our command to teh bot
   { 
-    this->AddCommand(&cmddmy); //Add our command to teh bot
     this->SetAuthor("Lordofsraam"); //Set the author
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
     
     //Implementation i[] = {  }; //Add that we have a module hook, this can be done in 2 ways
-    ModuleHandler::Attach(I_OnPrivmsg, this);
+    ModuleHandler::Attach(I_OnPrivmsgChannel, this);
     /*or you can do the easy way
      * ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
      */
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  virtual void OnPrivmsgChanenl(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string s;
     for(unsigned i=0; i < params.size(); ++i)

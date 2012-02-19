@@ -1,5 +1,12 @@
-/* Socket.cpp */
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- Socket Engine
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 /**
  *\file  Socket.cpp 
  *\brief Contains the Socket engine.
@@ -56,8 +63,8 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
-SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1){
-  SET_SEGV_LOCATION();
+SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1)
+{
   this->server = cserver;
   this->ip = ForwardResolution(cserver);
   this->port = cport;
@@ -85,26 +92,14 @@ bool SocketIO::SetBlocking()
   return !fcntl(this->GetFD(), F_SETFL, flags & ~O_NONBLOCK);
 }
 
-SocketIO::~SocketIO(){
+SocketIO::~SocketIO()
+{
  if(is_valid()) 
    close(sockn);
  FD_CLR(this->GetFD(), &ReadFD);
 }
 
 bool SocketIO::IsIPv6() const { return ipv6; }
-
-// void *get_in_addr(void *address)
-// {
-//   struct sockaddr *sa = reinterpret_cast<struct sockaddr*>(address);
-//   switch(sa->sa_family)
-//   {
-//     case AF_INET:
-//       return &(reinterpret_cast<struct sockaddr_in*>(sa)->sin_addr);
-//     case AF_INET6:
-//       return &(reinterpret_cast<struct sockaddr_in6*>(sa)->sin6_addr);
-//   }
-//   return NULL;
-// }
 
 bool SocketIO::Connect()
 {
@@ -113,7 +108,7 @@ bool SocketIO::Connect()
   int connected, rv = 0;
   if((rv = getaddrinfo(this->ip.c_str(), this->port.c_str(), NULL, &servinfo)) != 0)
     throw SocketException(printfify("Could not resolve server (%s:%i): %s",this->ip.c_str(),
-				   (int)this->port, gai_strerror(rv)).c_str());
+				   static_cast<int>(this->port), gai_strerror(rv)).c_str());
   
   for(struct addrinfo *p = servinfo; p != NULL; p = p->ai_next)
   {

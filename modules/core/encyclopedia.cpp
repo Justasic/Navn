@@ -1,3 +1,12 @@
+/* Navn IRC bot -- Encyclopedia lookup module
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #include "flux_net_irc.hpp"
 
 class cooldowntimer : public Timer
@@ -91,9 +100,9 @@ public:
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
-    ModuleHandler::Attach(I_OnPrivmsg, this);
+    ModuleHandler::Attach(I_OnPrivmsgChannel, this);
   }
-  void OnPrivmsg(User *u, Channel *c, const Flux::vector &params)
+  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     //Flux::vector MessageParams = StringVector(params, ' ');
     Flux::string msg;

@@ -1,4 +1,12 @@
-/* All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html) */
+/* Navn IRC bot -- External variable definition header
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
 #ifndef EXTERN_H
 #define EXTERN_H
 #include "flux.h"
@@ -61,8 +69,9 @@ enum EventResult
 
 enum CommandType
 {
-  COMMAND_CHANNEL,
-  COMMAND_PRIVATE
+  C_NULL,
+  C_CHANNEL,
+  C_PRIVATE
 };
 
 enum ModErr
