@@ -63,8 +63,8 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
-SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1){
-  SET_SEGV_LOCATION();
+SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1)
+{
   this->server = cserver;
   this->ip = ForwardResolution(cserver);
   this->port = cport;
@@ -92,26 +92,14 @@ bool SocketIO::SetBlocking()
   return !fcntl(this->GetFD(), F_SETFL, flags & ~O_NONBLOCK);
 }
 
-SocketIO::~SocketIO(){
+SocketIO::~SocketIO()
+{
  if(is_valid()) 
    close(sockn);
  FD_CLR(this->GetFD(), &ReadFD);
 }
 
 bool SocketIO::IsIPv6() const { return ipv6; }
-
-// void *get_in_addr(void *address)
-// {
-//   struct sockaddr *sa = reinterpret_cast<struct sockaddr*>(address);
-//   switch(sa->sa_family)
-//   {
-//     case AF_INET:
-//       return &(reinterpret_cast<struct sockaddr_in*>(sa)->sin_addr);
-//     case AF_INET6:
-//       return &(reinterpret_cast<struct sockaddr_in6*>(sa)->sin6_addr);
-//   }
-//   return NULL;
-// }
 
 bool SocketIO::Connect()
 {

@@ -44,7 +44,7 @@ void Fork()
     int i = fork();
     if(i > 0){
 	    Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
-	    Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[22;37m";
+	    Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[0m";
 	    FOREACH_MOD(I_OnFork, OnFork(i));
 	    exit(0);
     }

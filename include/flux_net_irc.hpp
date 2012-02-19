@@ -14,6 +14,7 @@
 #include "module.h"
 #include "defs.h"
 #include "xmlfile.h"
+
 IRCProto *ircproto;
 SocketIO *sock;
 BotConfig *Config;
@@ -339,7 +340,8 @@ static void remove_pidfile() { Delete(Config->PidFile.c_str()); }
  * \fn static void WritePID()
  * \brief Write the bots PID file
  */
-static void WritePID(){
+static void WritePID()
+{
   //logging to a text file and making the PID file.
   if(Config->PidFile.empty())
     throw CoreException("Cannot write PID file, no PID file specified.");
@@ -362,6 +364,57 @@ static void WritePID(){
   else
     throw CoreException("Can not write to PID file "+Config->PidFile);
 }
+
+class CommandLineArguments
+{
+protected:
+  Flux::map<Flux::string> Arguments;
+public:
+  CommandLineArguments(int ac, char **av)
+  {
+    for(int i = 1; i < ac; ++i)
+    {
+      Flux::string argsarg = av[i];
+      Flux::string param;
+      while(!argsarg.empty() && argsarg[0] == '-')
+	argsarg.erase(argsarg.begin());
+
+      size_t t = argsarg.find('=');
+      if(t != Flux::string::npos)
+      {
+	param = argsarg.substr(t+1);
+	argsarg.erase(t);
+      }
+
+      if(argsarg.empty())
+	continue;
+
+      Arguments[argsarg] = param;
+    }
+  }
+  
+  bool HasArg(const Flux::string &name, char shortname = '\0')
+  {
+    Flux::string Cppisstupidrighthere;
+    return this->HasArg(name, shortname, Cppisstupidrighthere);
+  }
+  
+  bool HasArg(const Flux::string &name, char shortname, Flux::string &args)
+  {
+    args.clear();
+
+    for(Flux::map<Flux::string>::iterator it = this->Arguments.begin(); it != this->Arguments.end(); ++it)
+    {
+      if(it->first.equals_ci(name) || it->first[0] == shortname)
+      {
+	args = it->second;
+	return true;
+      }
+    }
+    return false;
+  }
+};
+
 /**This is the startup sequence that starts at the top to the try loop
  * @param startup(int, char)
  */
@@ -389,64 +442,125 @@ void startup(int argc, char** argv, char *envp[]) {
   dir = "." + dir.substr(n);
   
   //gets the command line paramitors if any.
-  if (!(argc < 1) || argv[1] != NULL)
+  CommandLineArguments args(argc, argv);
+
+  if(args.HasArg("developer"))
   {
-    for(int Arg=1; Arg < argc; ++Arg)
-    {
-      Flux::string arg = argv[Arg];
-      if((arg.equals_ci("--developer")) ^ (arg.equals_ci("--dev")) ^ (arg == "-d"))
-      {
-	dev = nofork = true;
-	Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode. (" << arg << ")";
-      }
-      else if ((arg.equals_ci("--nofork")) ^ (arg == "-n"))
-      {
-	nofork = true;
-	Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
-      }
-      else if ((arg.equals_ci("--help")) ^ (arg == "-h"))
-      {
-	Log(LOG_TERMINAL) << "Navn Internet Relay Chat Bot v" << VERSION;
-	Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
-	Log(LOG_TERMINAL) << "-h, --help";
-	Log(LOG_TERMINAL) << "-d, --developer";
-	Log(LOG_TERMINAL) << "-n, --nofork";
-	Log(LOG_TERMINAL) << "-p, --protocoldebug";
-	Log(LOG_TERMINAL) << "-c, --nocolor";
-	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
-	exit(0);
-      }
-      else if ((arg.equals_ci("--version")) ^ (arg == "-v"))
-      {
-	Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_FULL;
-	Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
-	Log(LOG_TERMINAL) << "";
-	Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
-	Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
-	Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
-	Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
-	Log(LOG_TERMINAL) << "";
-	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
-	Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
-	exit(0);
-      }
-      else if((arg.equals_ci("--protocoldebug")) ^ (arg == "-p"))
-      {
-	protocoldebug = true;
-	Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode. (" << arg << ")";
-      }
-      else if((arg.equals_ci("--nocolor")) ^ (arg == "-c"))
-      {
-	nocolor = true;
-	Log() << Config->BotNick << " is started in No Colors mode. (" << arg << ")\033[0m"; //reset terminal colors
-      }
-      else
-      {
-	Log(LOG_TERMINAL) << "Unknown option " << arg;
-	exit(0);
-      }
-    }
+    dev = nofork = true;
+    Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode.";
   }
+
+  if(args.HasArg("debug", 'd'))
+  {
+    Log(LOG_TERMINAL) << "This mode flag does nothing for now, it will do debug levels eventally ;)";
+    exit(0);
+  }
+  
+  if(args.HasArg("nofork", 'n'))
+  {
+    nofork = true;
+    Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled.";
+  }
+
+  if(args.HasArg("help", 'h'))
+  {
+    Log(LOG_TERMINAL) << "\033[0mNavn Internet Relay Chat Bot v" << VERSION;
+    Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
+    Log(LOG_TERMINAL) << "-h, --help";
+    Log(LOG_TERMINAL) << "    --developer";
+    Log(LOG_TERMINAL) << "-d, --debug[=level]";
+    Log(LOG_TERMINAL) << "-n, --nofork";
+    Log(LOG_TERMINAL) << "-p, --protocoldebug";
+    Log(LOG_TERMINAL) << "-c, --nocolor";
+    Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+    exit(0);
+  }
+
+  if(args.HasArg("version", 'v'))
+  {
+    Log(LOG_TERMINAL) << "\033[0mNavn IRC C++ Bot Version " << VERSION_FULL;
+    Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
+    Log(LOG_TERMINAL) << "";
+    Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
+    Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
+    Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
+    Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
+    Log(LOG_TERMINAL) << "";
+    Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+    Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
+    exit(0);
+  }
+
+  if(args.HasArg("protocoldebug", 'p'))
+  {
+    protocoldebug = true;
+    Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode.";
+  }
+
+  if(args.HasArg("nocolor", 'c'))
+  {
+    nocolor = true;
+    Log() << Config->BotNick << " is started in No Colors mode.\033[0m"; //reset terminal colors
+  }
+  
+//   if (!(argc < 1) || argv[1] != NULL)
+//   {
+//     for(int Arg=1; Arg < argc; ++Arg)
+//     {
+//       Flux::string arg = argv[Arg];
+//       if((arg.equals_ci("--developer")) ^ (arg.equals_ci("--dev")) ^ (arg == "-d"))
+//       {
+// 	dev = nofork = true;
+// 	Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode. (" << arg << ")";
+//       }
+//       else if ((arg.equals_ci("--nofork")) ^ (arg == "-n"))
+//       {
+// 	nofork = true;
+// 	Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
+//       }
+//       else if ((arg.equals_ci("--help")) ^ (arg == "-h"))
+//       {
+// 	Log(LOG_TERMINAL) << "Navn Internet Relay Chat Bot v" << VERSION;
+// 	Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
+// 	Log(LOG_TERMINAL) << "-h, --help";
+// 	Log(LOG_TERMINAL) << "-d, --developer";
+// 	Log(LOG_TERMINAL) << "-n, --nofork";
+// 	Log(LOG_TERMINAL) << "-p, --protocoldebug";
+// 	Log(LOG_TERMINAL) << "-c, --nocolor";
+// 	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+// 	exit(0);
+//       }
+//       else if ((arg.equals_ci("--version")) ^ (arg == "-v"))
+//       {
+// 	Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_FULL;
+// 	Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
+// 	Log(LOG_TERMINAL) << "";
+// 	Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
+// 	Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
+// 	Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
+// 	Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
+// 	Log(LOG_TERMINAL) << "";
+// 	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
+// 	Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
+// 	exit(0);
+//       }
+//       else if((arg.equals_ci("--protocoldebug")) ^ (arg == "-p"))
+//       {
+// 	protocoldebug = true;
+// 	Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode. (" << arg << ")";
+//       }
+//       else if((arg.equals_ci("--nocolor")) ^ (arg == "-c"))
+//       {
+// 	nocolor = true;
+// 	Log() << Config->BotNick << " is started in No Colors mode. (" << arg << ")\033[0m"; //reset terminal colors
+//       }
+//       else
+//       {
+// 	Log(LOG_TERMINAL) << "Unknown option " << arg;
+// 	exit(0);
+//       }
+//     }
+//   }
   
   if(!nocolor)
     Log(LOG_TERMINAL) << "\033[22;36m";
