@@ -418,7 +418,8 @@ public:
 /**This is the startup sequence that starts at the top to the try loop
  * @param startup(int, char)
  */
-void startup(int argc, char** argv, char *envp[]) {
+void startup(int argc, char** argv, char *envp[])
+{
   SET_SEGV_LOCATION();
   
   InitSignals();
@@ -465,9 +466,9 @@ void startup(int argc, char** argv, char *envp[]) {
   if(args.HasArg("help", 'h'))
   {
     Log(LOG_TERMINAL) << "\033[0mNavn Internet Relay Chat Bot v" << VERSION;
-    Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
+    Log(LOG_TERMINAL) << "Usage: " << dir << " [options] ...";
     Log(LOG_TERMINAL) << "-h, --help";
-    Log(LOG_TERMINAL) << "    --developer";
+    Log(LOG_TERMINAL) << "    --developer (inhibits --nofork)";
     Log(LOG_TERMINAL) << "-d, --debug[=level]";
     Log(LOG_TERMINAL) << "-n, --nofork";
     Log(LOG_TERMINAL) << "-p, --protocoldebug";
