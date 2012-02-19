@@ -136,6 +136,7 @@ Deprecated urlify() in favor of Flux::string::url_str()
 Depracated removeCommand() in favor of the module parameters system.
 Rewrote the commands system, removed module::AddChanCommand, module::AddCommand, module::DelCommand, and module::DelChanCommand. Commands now have their types in the constructor, constructors now require module variable
 Renamed COMMAND_CHANNEL to C_CHANNEL and COMMAND_PRIVATE to C_PRIVATE; added C_NULL for comparing if the commands have not been set a type.
+Rewrote the way navn parses commandline arguments, argument -d DOES NOT MEAN DEVELOPER!
 
 Navn 2.0.0
 ==========
