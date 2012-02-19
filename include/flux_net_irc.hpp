@@ -503,65 +503,6 @@ void startup(int argc, char** argv, char *envp[]) {
     Log() << Config->BotNick << " is started in No Colors mode.\033[0m"; //reset terminal colors
   }
   
-//   if (!(argc < 1) || argv[1] != NULL)
-//   {
-//     for(int Arg=1; Arg < argc; ++Arg)
-//     {
-//       Flux::string arg = argv[Arg];
-//       if((arg.equals_ci("--developer")) ^ (arg.equals_ci("--dev")) ^ (arg == "-d"))
-//       {
-// 	dev = nofork = true;
-// 	Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode. (" << arg << ")";
-//       }
-//       else if ((arg.equals_ci("--nofork")) ^ (arg == "-n"))
-//       {
-// 	nofork = true;
-// 	Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
-//       }
-//       else if ((arg.equals_ci("--help")) ^ (arg == "-h"))
-//       {
-// 	Log(LOG_TERMINAL) << "Navn Internet Relay Chat Bot v" << VERSION;
-// 	Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
-// 	Log(LOG_TERMINAL) << "-h, --help";
-// 	Log(LOG_TERMINAL) << "-d, --developer";
-// 	Log(LOG_TERMINAL) << "-n, --nofork";
-// 	Log(LOG_TERMINAL) << "-p, --protocoldebug";
-// 	Log(LOG_TERMINAL) << "-c, --nocolor";
-// 	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
-// 	exit(0);
-//       }
-//       else if ((arg.equals_ci("--version")) ^ (arg == "-v"))
-//       {
-// 	Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_FULL;
-// 	Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
-// 	Log(LOG_TERMINAL) << "";
-// 	Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
-// 	Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
-// 	Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
-// 	Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
-// 	Log(LOG_TERMINAL) << "";
-// 	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
-// 	Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
-// 	exit(0);
-//       }
-//       else if((arg.equals_ci("--protocoldebug")) ^ (arg == "-p"))
-//       {
-// 	protocoldebug = true;
-// 	Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode. (" << arg << ")";
-//       }
-//       else if((arg.equals_ci("--nocolor")) ^ (arg == "-c"))
-//       {
-// 	nocolor = true;
-// 	Log() << Config->BotNick << " is started in No Colors mode. (" << arg << ")\033[0m"; //reset terminal colors
-//       }
-//       else
-//       {
-// 	Log(LOG_TERMINAL) << "Unknown option " << arg;
-// 	exit(0);
-//       }
-//     }
-//   }
-  
   if(!nocolor)
     Log(LOG_TERMINAL) << "\033[22;36m";
   
