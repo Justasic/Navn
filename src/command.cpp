@@ -241,6 +241,7 @@ void Command::SendSyntax(CommandSource &source, const Flux::string &syn){
   source.Reply("Syntax: \2%s %s\2", this->name.c_str(), syn.c_str());
   source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), this->name.c_str());
 }
+
 /**
  * \brief Returns a flux::string with the commands description
  * \fn const Flux::string &Command::GetDesc() const
@@ -250,7 +251,14 @@ const Flux::string &Command::GetDesc() const
 {
  return this->desc; 
 }
+
+/**
+ * \brief Returns the help for the command if available
+ * \fn bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand)
+ * \return Flux::string with the description
+ */
 bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand) { return false; }
+
 void Command::OnList(User *u) { }
 /**
  * \brief The Run function is used for when you run the command from IRC, it contains what the actual command does

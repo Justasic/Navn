@@ -102,6 +102,29 @@ public:
     return true;
   }
 };
+
+class CommandCASK: public Command
+{
+public:
+  CommandCASK(module *m):Command(m, "!ASK", C_CHANNEL)
+  {
+    this->SetDesc("Displays the Ask protocol");
+  }
+  void Run(CommandSource &source, const Flux::vector &params)
+  {
+    Log(source.u, this) << "command in " << source.c->name;
+    source.c->SendMessage("The Ask To Ask protocol wastes more bandwidth than any version of the Ask protocol, so just ask your question. (Read: don't ask to ask a question, just ask your question)");
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command shows the Ask to Ask protocol");
+    return true;
+  }
+};
+
+
 class CommandCRules: public Command
 {
 public:
@@ -287,9 +310,10 @@ class Da_Goat:public module
   CommandCRules rules;
   CommandCSpam spam;
   CommandCVersion ver;
+  CommandCASK ask;
 public:
   Da_Goat(const Flux::string &Name):module(Name), info(this), rename(this), reg(this), sinfo(this), uptime(this), rules(this),
-  spam(this), ver(this)
+  spam(this), ver(this), ask(this)
   {
     this->SetAuthor("Justasic & Lordofsraam");
     this->SetVersion(VERSION);
