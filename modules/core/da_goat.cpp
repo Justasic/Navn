@@ -324,7 +324,30 @@ public:
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
       } 
     }
-    if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
+	/****************************************slap command*******************************************/
+	if(cmd.equals_ci("!slap"))
+        { //Easter egg ;P
+      Flux::string person = params.size() == 2?params[1]:"";
+      person.trim();
+      User *u2 = finduser(person);
+      if(u2 && u2->IsOwner())
+      {
+	c->SendMessage("why would I wanna slap my master!?");
+	return;
+      }
+      else if(!u2)
+      {
+	c->SendAction("bitch slaps %s", u->nick.c_str());
+	c->kick(u, "\002\00315Dont slap me!\017");
+	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
+      }else{
+	c->SendAction("bitch slaps %s", u2->nick.c_str());
+	c->kick(u2, "\002\00315Dont slap me!\017");
+	Log(u) << "used Da_Goats !slap command in " << c->name << "to poke " << u2->nick;
+      } 
+    }
+	/*******************************************************/
+	if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
       c->SendMessage("NO U!");
     if(cmd.equals_ci("!everything"))
       c->SendMessage("Yes, there is a script for everything...\007");
