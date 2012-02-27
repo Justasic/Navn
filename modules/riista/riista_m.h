@@ -10,14 +10,10 @@
 
 #ifndef RIISTA_H
 #define RIISTA_H
-#include "includes.h"
 #include "flux_net_irc.hpp"
-//#include "monster.h"
-//#include "player.h"
-using namespace std;
-using namespace flux_net_irc;
+#include "monster.h"
+#include "player.h"
 
-//const Flux::string password = make_pass();
 const Flux::string start_game = "!start_game "+password;
 
 std::map<Flux::string, Player*> players;
