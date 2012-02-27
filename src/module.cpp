@@ -17,15 +17,6 @@ std::vector<module *> ModuleHandler::EventHandlers[I_END];
  * \fn module::module(Flux::string n)
  * \brief Module Constructor
  * \param name Name of the module
- * \param activated Wether the module is activated or not
- * \param priority The module priority
- */
-
-/* Flux::string author, version;
- * time_t loadtime;
- * ModulePriority Priority;
- * void *handle;
- * Flux::string name, filename, filepath;
  */
 module::module(const Flux::string &n) : name(n)
 {
@@ -40,15 +31,17 @@ module::module(const Flux::string &n) : name(n)
     throw ModuleException("Module already exists!");
   
   Modules[this->name] = this;
-  if(!nofork)
+  if(InTerm())
     Log() << "Loaded module " << n;
 }
+
 module::~module(){
   SET_SEGV_LOCATION();
   Log(LOG_DEBUG) << "Unloading module " << this->name;
   ModuleHandler::DetachAll(this);
   Modules.erase(this->name);
 }
+
 void module::SetAuthor(const Flux::string &person) { this->author = person; }
 void module::SetVersion(const Flux::string &ver) { this->version = ver; }
 void module::SetPriority(ModulePriority p) { this->Priority = p; }
@@ -63,7 +56,8 @@ ModulePriority module::GetPriority() { return this->Priority; }
  * \brief Find a module in the module list
  * \param name A string containing the module name you're looking for
  */
-module *FindModule(const Flux::string &name){
+module *FindModule(const Flux::string &name)
+{
   Flux::insensitive_map<module*>::iterator it = Modules.find(name);
   if(it != Modules.end())
     return it->second;
@@ -73,21 +67,26 @@ module *FindModule(const Flux::string &name){
 
 /** 
  * \fn bool ModuleHandler::Attach(Implementation i, module *mod)
- * \brief Module hook for the FOREACH_MOD macro
+ * \brief Module hook for the FOREACH_MOD events
  * \param Implementation The Implementation of the call list you want your module to have
  * \param Module the module the Implementation is on
  */
-bool ModuleHandler::Attach(Implementation i, module *mod){
+bool ModuleHandler::Attach(Implementation i, module *mod)
+{
   if(std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod) != EventHandlers[i].end())
     return false;
   EventHandlers[i].push_back(mod);
   return true;
 }
+
+/// \overload void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
 void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
 {
  for(size_t n = 0; n < sz; ++n)
    Attach(i[n], mod);
 }
+
+
 Flux::string DecodeModErr(ModErr err){
  switch(err){
    case MOD_ERR_OK:
@@ -112,6 +111,7 @@ Flux::string DecodeModErr(ModErr err){
      return "Unknown error code";
  }
 }
+
 /*  This code was found online at http://www.linuxjournal.com/article/3687#comment-26593 */
 template<class TYPE> TYPE function_cast(void *symbol)
 {
@@ -123,6 +123,7 @@ template<class TYPE> TYPE function_cast(void *symbol)
     cast.symbol = symbol;
     return cast.function;
 }
+
 /** 
  * \fn bool ModuleHandler::Detach(Implementation i, module *mod)
  * \brief Unhook for the module hook ModuleHandler::Attach()
@@ -136,11 +137,23 @@ bool ModuleHandler::Detach(Implementation i, module *mod){
   EventHandlers[i].erase(x);
   return true;
 }
+
+/**
+ * \fn void ModuleHandler::DetachAll(module *m)
+ * \brief Remove all event lists from the module
+ * \param Module the module the Implementation is on
+ */
 void ModuleHandler::DetachAll(module *m)
 {
  for(size_t n = I_BEGIN+1; n != I_END; ++n)
    Detach(static_cast<Implementation>(n), m);
 }
+
+/**
+ * \fn ModErr ModuleHandler::LoadModule(const Flux::string &modname)
+ * \brief Load a module into the bot
+ * \param Module the module to load
+ */
 ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
   SET_SEGV_LOCATION();
@@ -238,13 +251,15 @@ bool ModuleHandler::DeleteModule(module *m)
   return true;
 }
 
-bool ModuleHandler::Unload(module *m){
+bool ModuleHandler::Unload(module *m)
+{
   if(!m)
     return false;
   FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
   return DeleteModule(m);
 }
-void ModuleHandler::UnloadAll(){
+void ModuleHandler::UnloadAll()
+{
 #ifdef _CXX11
   for(auto var : Modules)
     Unload(var.second);
@@ -269,6 +284,7 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
  }
  return "";
 }
+
 void ModuleHandler::SanitizeRuntime()
 {
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
