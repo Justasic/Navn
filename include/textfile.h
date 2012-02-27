@@ -41,6 +41,7 @@ public:
   FileIOErrors GetLastError();
   static Flux::string TempFile(const Flux::string&);
   static bool IsFile(const Flux::string&);
+  static Flux::vector DirectoryListing(const Flux::string&);
   static bool IsDirectory(const Flux::string&);
   Flux::string DecodeLastError(), GetFilename(), Extension();
   int NumberOfLines();

@@ -186,6 +186,14 @@ long INIReader::GetInteger(const Flux::string &section, const Flux::string &name
     return end > value ? n : default_value;
 }
 
+float INIReader::GetFloat(const Flux::string &section, const Flux::string &name, float default_value)
+{
+  Flux::string valstr = Get(section, name, "");
+  float val = (float)valstr;
+
+  return val > 0 ? val : default_value;
+}
+
 Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string &name)
 {
     Flux::string key = section + "." + name;
@@ -218,7 +226,9 @@ BotConfig::BotConfig(const Flux::string &dir)
  }
 }
 BotConfig::~BotConfig() { if(Parser) delete Parser; }
-void BotConfig::Read(){
+
+void BotConfig::Read()
+{
   SET_SEGV_LOCATION();
   this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
   this->PingTimeoutTime = this->Parser->GetInteger("Bot", "PingTimeoutTime", 120);
@@ -244,5 +254,6 @@ void BotConfig::Read(){
   this->IdentOnConn = this->Parser->GetBoolean("Services","Identify on connect", true);
   this->ServicesService = this->Parser->Get("Services", "Service", "");
   this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
+  this->LogAge = Parser->GetInteger("Log", "Log Age", 2);
 }
 

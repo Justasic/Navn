@@ -73,10 +73,10 @@ class irc_string:Flux::string{
    */
   DEPRECATED(irc_string(Flux::string reply)){
     raw_string = reply;
-    usernick = isolate(':','!',reply);
-    host = isolate('@',' ',reply);
-    user = isolate('!','@',reply);
-    channel = '#'+isolate('#',' ',reply);
+    usernick = reply.isolate(':','!');
+    host = reply.isolate('@',' ');
+    user = reply.isolate('!','@');
+    channel = '#'+reply.isolate('#',' ');
     Flux::string space = " ";
     size_t pos = reply.find(" :");
     pos += 2;
@@ -148,7 +148,7 @@ class irc_string:Flux::string{
    * \param end The character saying where the cut should end.
    * \param msg The Flux::string you are wanting to isolate from.
    */
-  DEPRECATED(static Flux::string cisolate(char begin, char end, Flux::string msg)){
+  DEPRECATED(static Flux::string isolate(char begin, char end, Flux::string msg)){
     Flux::string to_find;
     size_t pos = msg.find(begin);
     pos += 1;
@@ -343,6 +343,12 @@ static void WritePID(){
   //logging to a text file and making the PID file.
   if(Config->PidFile.empty())
     throw CoreException("Cannot write PID file, no PID file specified.");
+
+  if(TextFile::IsFile(Config->PidFile))
+  {
+    Log(LOG_DEBUG) << "Deleting stale pid file " << Config->PidFile;
+    Delete(Config->PidFile.c_str());
+  }
   FILE *pidfile = fopen(Config->PidFile.c_str(), "w");
   if(pidfile){
     #ifdef _WIN32
@@ -361,6 +367,7 @@ static void WritePID(){
  */
 void startup(int argc, char** argv, char *envp[]) {
   SET_SEGV_LOCATION();
+  
   InitSignals();
   Config = NULL;
   ircproto = NULL;
@@ -368,29 +375,37 @@ void startup(int argc, char** argv, char *envp[]) {
   my_av = argv;
   my_envp = envp;
   starttime = time(NULL); //for bot uptime
+  
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
+  
   Config = new BotConfig(binary_dir);
   if(!Config)
     throw CoreException("Config Error.");
+  
   Flux::string dir = argv[0];
   Flux::string::size_type n = dir.rfind('/');
   dir = "." + dir.substr(n);
+  
   //gets the command line paramitors if any.
-  if (!(argc < 1) || argv[1] != NULL){
-    for(int Arg=1; Arg < argc; ++Arg){
+  if (!(argc < 1) || argv[1] != NULL)
+  {
+    for(int Arg=1; Arg < argc; ++Arg)
+    {
       Flux::string arg = argv[Arg];
       if((arg.equals_ci("--developer")) ^ (arg.equals_ci("--dev")) ^ (arg == "-d"))
       {
 	dev = nofork = true;
 	Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode. (" << arg << ")";
       }
-      else if ((arg.equals_ci("--nofork")) ^ (arg == "-n")){
+      else if ((arg.equals_ci("--nofork")) ^ (arg == "-n"))
+      {
 	nofork = true;
 	Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled. (" << arg << ")";
       }
-      else if ((arg.equals_ci("--help")) ^ (arg == "-h")){
+      else if ((arg.equals_ci("--help")) ^ (arg == "-h"))
+      {
 	Log(LOG_TERMINAL) << "Navn Internet Relay Chat Bot v" << VERSION;
 	Log(LOG_TERMINAL) << "Usage: " << dir << " [options]";
 	Log(LOG_TERMINAL) << "-h, --help";
@@ -401,7 +416,8 @@ void startup(int argc, char** argv, char *envp[]) {
 	Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
 	exit(0);
       }
-      else if ((arg.equals_ci("--version")) ^ (arg == "-v")){
+      else if ((arg.equals_ci("--version")) ^ (arg == "-v"))
+      {
 	Log(LOG_TERMINAL) << "Navn IRC C++ Bot Version " << VERSION_FULL;
 	Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
 	Log(LOG_TERMINAL) << "";
@@ -414,11 +430,13 @@ void startup(int argc, char** argv, char *envp[]) {
 	Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
 	exit(0);
       }
-      else if((arg.equals_ci("--protocoldebug")) ^ (arg == "-p")){
+      else if((arg.equals_ci("--protocoldebug")) ^ (arg == "-p"))
+      {
 	protocoldebug = true;
 	Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode. (" << arg << ")";
       }
-      else if((arg.equals_ci("--nocolor")) ^ (arg == "-c")){
+      else if((arg.equals_ci("--nocolor")) ^ (arg == "-c"))
+      {
 	nocolor = true;
 	Log() << Config->BotNick << " is started in No Colors mode. (" << arg << ")\033[0m"; //reset terminal colors
       }
@@ -429,7 +447,10 @@ void startup(int argc, char** argv, char *envp[]) {
       }
     }
   }
-  if(!nocolor) Log(LOG_TERMINAL) << "\033[22;36m";
+  
+  if(!nocolor)
+    Log(LOG_TERMINAL) << "\033[22;36m";
+  
   ModuleHandler::SanitizeRuntime();
   ReadConfig(); //load modules
   WritePID(); //Write the pid file

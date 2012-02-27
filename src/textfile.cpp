@@ -182,6 +182,31 @@ bool TextFile::IsFile(const Flux::string &filename)
   return false;
 }
 
+Flux::vector TextFile::DirectoryListing(const Flux::string &directory)
+{
+  Flux::vector nil;
+  if(!TextFile::IsDirectory(directory))
+    return nil;
+  
+  DIR *dp;
+  struct dirent *drip;
+  if((dp = opendir(directory.c_str())) == NULL)
+    return nil;
+  
+  Flux::vector files;
+  while ((drip = readdir(dp)) != NULL)
+  {
+    if(!drip->d_ino)
+      continue;
+    if(Flux::string(drip->d_name).equals_cs(".") || Flux::string(drip->d_name).equals_cs(".."))
+      continue;
+    files.push_back(Flux::string(drip->d_name));
+  }
+  
+  closedir(dp);
+  return files;
+}
+
 bool TextFile::IsDirectory(const Flux::string &dirname)
 {
   struct stat fileinfo;

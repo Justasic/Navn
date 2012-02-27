@@ -42,6 +42,8 @@ public:
     // not found.
     long GetInteger(const Flux::string&, const Flux::string&, long);
 
+    float GetFloat(const Flux::string&, const Flux::string&, float);
+
     bool GetBoolean(const Flux::string&, const Flux::string&, bool);
     ~INIReader();
 
@@ -53,6 +55,7 @@ private:
     // Parse the INI file
     int Parse(const Flux::string &filename);
 };
+
 class CoreExport BotConfig
 {
 public:
@@ -80,6 +83,7 @@ public:
   Flux::string ServicesSendString;
   Flux::string AutoIdentString;
   Flux::string ServicesService;
+  int LogAge;
   bool IdentOnConn;
   time_t PingTimeoutTime;
   size_t LogTime;

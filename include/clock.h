@@ -17,8 +17,9 @@ class CoreExport Clock
 {
 private:
   time_t rawtime;
-  struct tm * ptm;
+  struct tm *ptm;
   void CorrectHour(int &);
+  bool isdst;
 public:
   Clock();
   Flux::string Local();

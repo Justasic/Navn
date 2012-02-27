@@ -56,11 +56,10 @@ template<typename T, typename V> inline T value_cast(const V &y)
   T x;
   if(!(stream << std::setprecision(800) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
-  if(!(stream >> x)){ //If stringstream fails, force the cast.
-    if(protocoldebug)
-      printf("Failed to cast \"%s\" to \"%s\", attempting to force with reinterpret_cast\n", typeid(V).name(), typeid(T).name());
+  
+  if(!(stream >> x)) //If stringstream fails, force the cast.
     x = *reinterpret_cast<T*>(const_cast<V*>(&(y)));
-  }
+  
   return x;
 }
 
@@ -374,6 +373,7 @@ namespace Flux{
     inline void tolower() { std::transform(_string.begin(), _string.end(), _string.begin(), ::tolower); }
     inline void toupper() { std::transform(_string.begin(), _string.end(), _string.begin(), ::toupper); }
     inline void clear() { this->_string.clear(); }
+    
     inline bool search(const string &_str) { if(_string.find(_str._string) != base_string::npos) return true; return false; }
     inline bool search(const string &_str) const { if(_string.find(_str._string) != base_string::npos) return true; return false; }
     inline bool search_ci(const string &_str) { if(ci::string(this->_string.c_str()).find(ci::string(_str.c_str())) != ci::string::npos) return true; return false; }
@@ -478,6 +478,25 @@ namespace Flux{
     inline std::allocator<char> get_allocator() const { return this->_string.get_allocator(); }
     inline char &operator[](size_type n) { return this->_string[n]; }
     inline const char &operator[](size_type n) const { return this->_string[n]; }
+
+    inline string isolate(char b, char e) const
+    {
+      string to_find;
+      size_type pos = _string.find(b);
+      pos += 1;
+      for (unsigned i = pos; i < _string.length(); i++)
+      {
+	if (_string[i] == e)
+	{
+	  break;
+	}
+	else
+	{
+	  to_find = to_find+_string[i];
+	}
+      }
+      return to_find;
+    }
 
     /* Strip Return chars */
     inline string strip()

@@ -275,27 +275,15 @@ void ModuleHandler::SanitizeRuntime()
   Flux::string dirbuf = Config->Binary_Dir+"/runtime/";
   
   if(!TextFile::IsDirectory(dirbuf))
-    if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1)
+  {
+    if(mkdir(dirbuf.c_str(), getuid()) != 0)
       Log() << "Error making new runtime directory: " << strerror(errno);
-    
-  DIR *dirp = opendir(dirbuf.c_str());
-  if (!dirp)
+  }else
   {
-	  Log(LOG_DEBUG) << "Cannot open directory (" << dirbuf << ')';
-	  return;
+    Flux::vector files = TextFile::DirectoryListing(dirbuf);
+    for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
+      Delete(Flux::string(dirbuf+(*it)).c_str());
   }
-  
-  for(dirent *dp; (dp = readdir(dirp));)
-  {
-	  if (!dp->d_ino)
-		  continue;
-	  if (Flux::string(dp->d_name).equals_cs(".") || Flux::string(dp->d_name).equals_cs(".."))
-		  continue;
-	  Flux::string filebuf = dirbuf + "/" + dp->d_name;
-	  Delete(filebuf.c_str());
-  }
-  
-  closedir(dirp);
 }
 /******************Configuration variables***********************/
 /**Rehash void

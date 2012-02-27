@@ -19,6 +19,7 @@ protected:
   std::fstream log;
 public:
   LogType type;
+  Flux::string filename;
   User *u;
   Command *c;
   std::stringstream buffer;
