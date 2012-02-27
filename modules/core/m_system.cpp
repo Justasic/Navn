@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Generic Bot management functions
+/* Riista IRC bot -- Generic Bot management functions
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

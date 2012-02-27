@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Clock functions for weather module
+/* Riista IRC bot -- Clock functions for weather module
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

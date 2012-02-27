@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Separation Stream Functions
+/* Riista IRC bot -- Separation Stream Functions
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

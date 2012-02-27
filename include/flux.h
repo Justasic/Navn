@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Flux::string class
+/* Riista IRC bot -- Flux::string class
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Main entry point file
+/* Riista IRC bot -- Main entry point file
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

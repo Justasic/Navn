@@ -85,7 +85,7 @@ class ConfigException : public CoreException
 };
 #endif
 =======
-/* Navn IRC bot -- Exceptions header
+/* Riista IRC bot -- Exceptions header
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

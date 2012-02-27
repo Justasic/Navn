@@ -1,4 +1,4 @@
-/* Navn IRC bot -- DNS lookup tools for IRC
+/* Riista IRC bot -- DNS lookup tools for IRC
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Player vs. Player game
+/* Riista IRC bot -- Player vs. Player game
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

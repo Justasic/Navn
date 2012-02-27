@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Join-part management for the bot
+/* Riista IRC bot -- Join-part management for the bot
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Da_Goat script in C++
+/* Riista IRC bot -- Da_Goat script in C++
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

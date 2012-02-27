@@ -1,4 +1,4 @@
-/* Navn IRC bot -- User class and functions
+/* Riista IRC bot -- User class and functions
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

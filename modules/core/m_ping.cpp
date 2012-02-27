@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Ping module
+/* Riista IRC bot -- Ping module
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

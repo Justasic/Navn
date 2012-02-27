@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Windows shit
+/* Riista IRC bot -- Windows shit
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

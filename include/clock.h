@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Clock class header
+/* Riista IRC bot -- Clock class header
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

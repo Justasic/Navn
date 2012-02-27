@@ -1,4 +1,4 @@
-/* Navn IRC bot -- INI File parser
+/* Riista IRC bot -- INI File parser
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Weather module
+/* Riista IRC bot -- Weather module
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

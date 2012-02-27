@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Commandline interface
+/* Riista IRC bot -- Commandline interface
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

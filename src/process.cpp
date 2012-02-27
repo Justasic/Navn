@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Incoming IRC Protocol parser
+/* Riista IRC bot -- Incoming IRC Protocol parser
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

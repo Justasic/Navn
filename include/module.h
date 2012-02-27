@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Module header
+/* Riista IRC bot -- Module header
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

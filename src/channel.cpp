@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Channel class and functions
+/* Riista IRC bot -- Channel class and functions
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Threading engine header
+/* Riista IRC bot -- Threading engine header
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Example module
+/* Riista IRC bot -- Example module
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Misc Definitions file
+/* Riista IRC bot -- Misc Definitions file
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

@@ -1,7 +1,17 @@
+/* Riista IRC bot -- main game file
+ * 
+ * (C) 2011-2012 Flux-Net
+ * Contact us at Dev@Flux-Net.net
+ *
+ * Please read COPYING and README for further details.
+ *
+ * Based on the original code of Anope by The Anope Team.
+ */
+
 #ifndef RIISTA_H
 #define RIISTA_H
-#include "../../includes.h"
-#include "../../flux_net_irc.hpp"
+#include "includes.h"
+#include "flux_net_irc.hpp"
 //#include "monster.h"
 //#include "player.h"
 using namespace std;

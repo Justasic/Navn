@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Main include
+/* Riista IRC bot -- Main include
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

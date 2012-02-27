@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Signal Handler
+/* Riista IRC bot -- Signal Handler
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net

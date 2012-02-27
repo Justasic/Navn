@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Clock module
+/* Riista IRC bot -- Clock module
  * 
  * (C) 2011-2012 Flux-Net
  * Contact us at Dev@Flux-Net.net
