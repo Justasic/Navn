@@ -1,0 +1,70 @@
+Legend: 
+	x = done
+	? = unsure
+	+ = in progress
+	$ = half completed
+
+
+Navn 2.0.1
+----------
+[x] Fix --help message showing full execution directory
+[x] Rewrite the config system (Burn INIreader with fire!)
+[x] Do away with the damn flux_net_irc namespace
+[x] timer function
+[x] Case Insensitivity
+[x] Make module system load binary files (.so files)
+  [x] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
+  [x] Add some kind of command handler so it can list all loaded commands from all modules
+  [+] Fix glibc crashes with this system
+  [ ] Fix crash in timer system
+
+[ ] Fix CHOWN command
+[ ] Fix botnick not changeable
+[x] Make default channel's in the config
+[x] Make a server numeric catcher
+[x] Add timed pinging (should handle ping timeouts and connection issues)
+[x] Add better error handling instead of a throw or a error code in some places
+[x] Add some sort of buffer processor for the socket engine (make lines process correctly instead of printing the raw buffer)
+[x] Add Select() multiplexing to stop high cpu usage
+
+
+Navn 2.0.2
+----------
+[ ] Multisocket the socket engine
+  [ ] Multi-Network handling
+  [ ] Possible webserver type module for stats, etc.
+
+[ ] Add Mode Handler
+  [ ] Parse 005 Numeric for modes and server support stuff, take action on it
+  [ ] Add u->IsOp()
+
+[ ] Add Ban Manager
+[ ] Add Database/User accounts type system for metadata
+  [ ] Add IDENTIFY type command
+  [ ] Add Bot Administrators
+  [ ] Add E-Mail handling
+  [ ] Add Message handling (ie. memo's')
+  [ ] Add Op status management
+  [ ] Add Mode Locks
+  [ ] Add Greetings
+  [ ] Add lists of networks, channels, etc.
+  [ ] Add information on those users (what chans are they op in? are they an IRCop? etc.)
+  [ ] Add Personal command aliases
+
+[ ] Add more event handlers (FOREACH_MOD)
+[ ] Add calculator
+[ ] Kill automake with fire!
+[ ] Add buffer limiter (so freenode does not kill the bot)
+[ ] Better config format
+[ ] Better startup switch management
+[ ] Add Oper Protocol modules
+[ ] Better terminal Commands Parsing
+[ ] Add a flags system like channel/user modes
+
+
+Future
+------
+[x] Move to CMake
+[ ] Add support for GETTEXT so it allows for the program to be translated
+[+] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
+[ ] Add python support
