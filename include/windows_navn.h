@@ -92,7 +92,7 @@
 	extern "C" void ModunInit(x *m) { if(m) delete m; }
 #else // *nix
 	//If we're compiling with C++ 11
-	#if defined(__GXX_EXPERIMENTAL_CXX0X__) && defined(HAVE_CXX_11)
+	#ifdef __GXX_EXPERIMENTAL_CXX0X__
 	# define _CXX11
 	# include <atomic>
 	# include <thread>
