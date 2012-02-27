@@ -35,5 +35,6 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <alloca.h>
+#include <algorithm>
 #endif
 

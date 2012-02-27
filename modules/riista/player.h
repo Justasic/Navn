@@ -8,18 +8,8 @@
  * Based on the original code of Anope by The Anope Team.
  */
 
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 #include "flux.h"
-#include <time.h>
-#include <sstream>
-#include <signal.h>
-#include <map>
-#include <vector>
-#include <algorithm>
-
-using namespace std;
+#include "includes.h"
 
 class Player {
 public:
@@ -58,6 +48,7 @@ public:
      INT = 3;
      LUK = 3;     
   }
+  
   Player(Flux::string user, Flux::string job_name) {
      name = user;
      if(job_name == "n00b"){
@@ -70,6 +61,7 @@ public:
       INT = 3;
       LUK = 3;
      }
+     
      if(job_name == "mage"){
       job = "Mage";
       stance = "normal";
@@ -80,6 +72,7 @@ public:
       INT = 9;
       LUK = 6;
      }
+     
      if(job_name == "rogue"){
       job = "Rogue";
       stance = "normal";
@@ -90,6 +83,7 @@ public:
       INT = 6;
       LUK = 7;
      }
+     
      if(job_name == "fighter"){
       job = "Fighter";
       stance = "normal";
@@ -126,7 +120,43 @@ public:
   }
   
   void reset_stats(){
-    if(this->job == "n00b"){
+    switch(this->job)
+    {
+      case "n00b":
+      case "noob":
+	STR = 3;
+	END = 3;
+	DEF = 3;
+	AGI = 3;
+	INT = 3;
+	LUK = 3;
+	break;
+      case "Mage":
+	STR = 4;
+	END = 5;
+	DEF = 6;
+	AGI = 6;
+	INT = 9;
+	LUK = 6;
+	break;
+      case "Rogue":
+	STR = 5;
+	END = 6;
+	DEF = 5;
+	AGI = 8;
+	INT = 6;
+	LUK = 7;
+	break;
+      case "Fighter":
+	STR = 8;
+	END = 7;
+	DEF = 7;
+	AGI = 5;
+	INT = 4;
+	LUK = 5;
+	break;
+    }
+/*    if(this->job == "n00b"){
       STR = 3;
       END = 3;
       DEF = 3;
@@ -157,10 +187,11 @@ public:
       AGI = 5;
       INT = 4;
       LUK = 5;
-     }    
+     } */
   }
   
-  Flux::string get_health(){
+  Flux::string get_health()
+  {
     stringstream health;
     health << this->name << "'s HP: " << this->hp << "/" << this->maxHp << "\t" << "MP: " << this->mp << "/" << this->maxMp << ". Job: " << this->job << ". Stance: " << this->stance;
     Flux::string output = health.str();
@@ -229,8 +260,8 @@ public:
   
 };
 
-map<Flux::string, Player*> players;
-vector<Flux::string> playersV;
+std::map<Flux::string, Player*> players;
+std::vector<Flux::string> playersV;
 
 bool in_player_list(Flux::string n){
   bool t; 
