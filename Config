@@ -1,4 +1,5 @@
 #!/bin/sh
+PROJECT="Riista"
 echo2 () {
 	$ECHO2 "$*$ECHO2SUF" # these are defined later
 }
@@ -71,7 +72,7 @@ Run_Build_System () {
 	cmake $GEN_TYPE $WITH_INST $RUN_CC_PL $WITH_CXX11 $BUILD_TYPE $EXTRA_CONFIG_ARGS $REAL_SOURCE_DIR
 
 	echo ""
-	echo "Now cd build and run make to build Navn."
+	echo "Now cd build and run make to build $PROJECT."
 }
 
 ECHO2SUF=''
@@ -91,7 +92,7 @@ export ECHO2 ECHO2SUF
 # Init values
 ###########################################################################
 
-INSTDIR=$HOME/navn
+INSTDIR=$HOME/$PROJECT
 USE_RUN_CC_PL="no"
 USE_CXX_11="no"
 DEBUG="yes"
@@ -105,7 +106,7 @@ SOURCE_DIR=`dirname $0`
 
 while [ $# -ge 1 ] ; do
 	if [ $1 = "--help" ] ; then
-		echo "Config utility for Navn"
+		echo "Config utility for $PROJECT"
 		echo "------------------------"
 		echo "Syntax: ./Config [options]"
 		echo "-nocache     Ignore settings saved in config.cache"
@@ -128,7 +129,7 @@ while [ $# -ge 1 ] ; do
 	shift 1
 done
 
-echo "Beginning Navn compile configuration."
+echo "Beginning $PROJECT compile configuration."
 echo ""
 
 ###########################################################################
@@ -167,7 +168,7 @@ while [ $ok -eq 0 ] ; do
 			fi
 		fi
 	elif exists "$INPUT/include/module.h" ; then
-		echo "You cannot use Navn's source directory as a target directory."
+		echo "You cannot use $PROJECT's source directory as a target directory."
 	else
 		ok=1
 	fi
@@ -206,7 +207,7 @@ TEMP_YN="n"
 if [ "$DEBUG" = "yes" ] ; then
 	TEMP_YN="y"
 fi
-echo "Would you like to build a debug version of Navn?"
+echo "Would you like to build a debug version of $PROJECT?"
 echo2 "[$TEMP_YN] "
 read YN
 if [ "$YN" ] ; then

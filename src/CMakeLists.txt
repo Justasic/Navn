@@ -41,7 +41,7 @@ if(WIN32)
   append_to_list(SRC_SRCS ${CMAKE_CURRENT_BINARY_DIR}/win32/win32.rc)
   # For MinGW, we have to change the compile flags
   if(MINGW)
-    set(RC_CFLAGS "-DMINGW -Ocoff -I${navn_SOURCE_DIR}/include")
+    set(RC_CFLAGS "-DMINGW -Ocoff -I${${PROJECT_NAME}_SOURCE_DIR}/include")
     # If any sort of debugging is being enabled, add a _DEBUG define to the flags for the resource compiler
     if(CMAKE_BUILD_TYPE STREQUAL "DEBUG" OR CMAKE_BUILD_TYPE STREQUAL "RELWITHDEBINFO")
       set(RC_CFLAGS "${RC_CFLAGS} -D_DEBUG")
@@ -49,7 +49,7 @@ if(WIN32)
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/win32/win32.rc COMPILE_FLAGS "${RC_CFLAGS}")
   # For anything else, assumingly Visual Studio at this point, use a different set of compile flags
   else(MINGW)
-    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/win32/win32.rc COMPILE_FLAGS "/i\"${navn_SOURCE_DIR}/include\"")
+    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/win32/win32.rc COMPILE_FLAGS "/i\"${${PROJECT_NAME}_SOURCE_DIR}/include\"")
   endif(MINGW)
 endif(WIN32)
 
@@ -78,7 +78,7 @@ get_target_property(BOT_BINARY ${PROGRAM_NAME} LOCATION)
 get_filename_component(BOT_BINARY ${BOT_BINARY} NAME)
 
 # Generate conf.h from the earlier configuration
-configure_file(${navn_SOURCE_DIR}/include/config.h.cmake ${navn_SOURCE_DIR}/include/config.h)
+configure_file(${${PROJECT_NAME}_SOURCE_DIR}/include/config.h.cmake ${${PROJECT_NAME}_SOURCE_DIR}/include/config.h)
 
 # Set Navn to be installed to the bin directory
 install(TARGETS ${PROGRAM_NAME}
