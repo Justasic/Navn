@@ -13,6 +13,7 @@ const Flux::string start_game = "!start_game "+password;
 
 std::map<Flux::string, Player*> players;
 std::vector<Flux::string> playersV;
+bool game_started;
 
 class m_riista : public module
 {
@@ -22,6 +23,7 @@ public:
   {
     this->SetAuthor("Lordofsraam");
     ModuleHandler::Attach(I_OnPrivmsg, this);
+    game_started = false;
   }
 
   void OnPrivmsgChannel(User *u, Channel *c, const std::vector<Flux::string> &params)

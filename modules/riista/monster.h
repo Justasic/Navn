@@ -145,6 +145,7 @@ public :
 	return output.str();
 	}else{return "Not enough MP.";}
       }
+      return ""; // FIXME: idk what's supposed to be returned.
   }
   
   Flux::string retaliate(){
@@ -213,4 +214,13 @@ public :
   }
   
 };
+
+Flux::string print_vector(std::vector<Flux::string> vec)
+{
+  Flux::string ret;
+  for(unsigned i = 0; i < vec.size(); ++i)
+    ret += vec[i] + '\n';
+
+  return ret;
+}
 #endif // _MONSTER_H_
