@@ -224,8 +224,8 @@ public:
   
 };
 
-std::map<Flux::string, Player*> players;
-std::vector<Flux::string> playersV;
+extern std::map<Flux::string, Player*> players;
+extern std::vector<Flux::string> playersV;
 
 bool in_player_list(Flux::string n){
   bool t; 

@@ -14,25 +14,6 @@ const Flux::string start_game = "!start_game "+password;
 std::map<Flux::string, Player*> players;
 std::vector<Flux::string> playersV;
 
-bool in_player_list(Flux::string n){
-  bool t; 
-  if(find(playersV.begin(), playersV.end(), n)!=playersV.end()){
-    t = true;
-  }
-  else{
-    t = false;
-  }
-  return t;  
-}
-
-void delete_from_playersV(Flux::string n){
-  for (unsigned i = 0; i < playersV.size(); i++){
-    if (playersV[i] == n){
-      playersV.erase(playersV.begin()+i);
-    }
-  }
-}
-
 class m_riista : public module
 {
   monster *riista;
@@ -94,14 +75,14 @@ public:
 	    c->ChangeTopic(riista->get_health());
 	  }
 	}
-	if (reply->said("!testing")){
+	if (message.search_ci("!testing")){
 	  srand(time(NULL));
 	  int p1 = playersV.size();
 	  int p2 = rand()%p1;
 	  Flux::string victim = playersV[p2];
-	  cout << p1 << endl;
-	  cout << p2 << endl;
-	  cout << victim << endl;
+	  std::cout << p1 << std::endl;
+	  std::cout << p2 << std::endl;
+	  std::cout << victim << std::endl;
 	}
 
 	if (message.search_ci("!attack") && game_started){
@@ -148,8 +129,8 @@ public:
 	    if (message.search_ci("heal")){
 	      bool already_cast = false;
 	      for(unsigned i = 0; i < playersV.size(); i++){
-		if (message.search_ci(playersV[i]) && playersV[i] != unick && players[playersV[i]]->alive()){
-		  if (players[unick]->mp >= 8) {
+		if (message.search_ci(playersV[i]) && playersV[i] != u->nick && players[playersV[i]]->alive()){
+		  if (players[u->nick]->mp >= 8) {
 		    std::stringstream output;
 		    int heals = (.05*players[playersV[i]]->INT)*players[playersV[i]]->maxHp;
 		    players[playersV[i]]->hp += heals;
@@ -169,7 +150,7 @@ public:
 		c->SendMessage(players[u->nick]->get_health());
 	      }
 	    }
-	    else if(reply->said("paralyze")){
+	    else if(message.search_ci("paralyze")){
 	      if (players[u->nick]->job == "Mage" or players[u->nick]->job == "Rogue"){
 		if (players[u->nick]->mp > 20){
 		  if(!riista->paralyzed){
@@ -230,7 +211,7 @@ public:
       }else{c->SendMessage("You are dead.");}
       }
       
-      if (reply->said("!my_stats")){
+      if (message.search_ci("!my_stats")){
 	  if (in_player_list(u->nick)){
 	    u->SendMessage(players[u->nick]->get_health());
 	  }else{
@@ -251,7 +232,7 @@ public:
       }else{*/
 	c->SendMessage(riista->name+" is dead!");
 	c->SendMessage(riista->last_attacker+" killed "+riista->name+"!");
-	sock << quit("SCREW you guys! I'M going Home!");
+	ircproto->quit("SCREW you guys! I'M going Home!");
 	delete riista;
 	exit(EXIT_FAILURE);
       }

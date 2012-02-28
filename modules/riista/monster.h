@@ -73,7 +73,7 @@ public :
   }
   
   Flux::string get_health(){
-   stringstream health;
+   std::stringstream health;
     health << name << "'s HP: " << hp << "/" << maxHp;
     Flux::string output = health.str();
     return output;
@@ -83,7 +83,7 @@ public :
       last_attacker3 = last_attacker2;
       last_attacker2 = last_attacker;
       last_attacker = uname;
-      stringstream output;
+      std::stringstream output;
       if (attack_name == "slash"){
 	int hit = randint(1,100);
 	int crit = randint(1,100);
@@ -148,7 +148,7 @@ public :
   }
   
   Flux::string retaliate(){
-    stringstream output;
+    std::stringstream output;
     if (!paralyzed){
       srand(time(NULL));
       int p1;
@@ -185,7 +185,7 @@ public :
   }
   
   Flux::string retaliate(Flux::string uname){
-    stringstream output;
+    std::stringstream output;
     if (!paralyzed){
       int hit = randint(1,100);
       if (hit <= players[uname]->evasion) {
