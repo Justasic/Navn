@@ -7,18 +7,9 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include "flux.h"
-#include <time.h>
-#include <sstream>
-#include <signal.h>
-#include "defs.h"
+#ifndef _MONSTER_H_
+#define _MONSTER_H_
 #include "player.h"
-
-using namespace std;
 
 int randint(int x, int y) {
   srand(time(NULL));
@@ -222,3 +213,4 @@ public :
   }
   
 };
+#endif // _MONSTER_H_

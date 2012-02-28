@@ -7,9 +7,9 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-
-#include "flux.h"
-#include "includes.h"
+#ifndef _PLAYER_H_
+#define _PLAYER_H_
+#include "flux_net_irc.hpp"
 
 class Player {
 public:
@@ -120,43 +120,7 @@ public:
   }
   
   void reset_stats(){
-    switch(this->job)
-    {
-      case "n00b":
-      case "noob":
-	STR = 3;
-	END = 3;
-	DEF = 3;
-	AGI = 3;
-	INT = 3;
-	LUK = 3;
-	break;
-      case "Mage":
-	STR = 4;
-	END = 5;
-	DEF = 6;
-	AGI = 6;
-	INT = 9;
-	LUK = 6;
-	break;
-      case "Rogue":
-	STR = 5;
-	END = 6;
-	DEF = 5;
-	AGI = 8;
-	INT = 6;
-	LUK = 7;
-	break;
-      case "Fighter":
-	STR = 8;
-	END = 7;
-	DEF = 7;
-	AGI = 5;
-	INT = 4;
-	LUK = 5;
-	break;
-    }
-/*    if(this->job == "n00b"){
+    if(this->job == "n00b"){
       STR = 3;
       END = 3;
       DEF = 3;
@@ -187,12 +151,12 @@ public:
       AGI = 5;
       INT = 4;
       LUK = 5;
-     } */
+     }
   }
   
   Flux::string get_health()
   {
-    stringstream health;
+    std::stringstream health;
     health << this->name << "'s HP: " << this->hp << "/" << this->maxHp << "\t" << "MP: " << this->mp << "/" << this->maxMp << ". Job: " << this->job << ". Stance: " << this->stance;
     Flux::string output = health.str();
     return output;
@@ -206,7 +170,7 @@ public:
   
   Flux::string heal() {
     if (this->mp >= 8) {
-    stringstream output;
+    std::stringstream output;
     int heals = (.1*this->INT)*this->maxHp;
     this->hp += heals;
     this->mp -= 8;
@@ -275,9 +239,10 @@ bool in_player_list(Flux::string n){
 }
 
 void delete_from_playersV(Flux::string n){
-  for (int i = 0; i < playersV.size(); i++){
+  for (unsigned i = 0; i < playersV.size(); i++){
     if (playersV[i] == n){
       playersV.erase(playersV.begin()+i);
     }
   }
 }
+#endif // _PLAYER_H_

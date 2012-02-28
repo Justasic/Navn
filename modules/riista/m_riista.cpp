@@ -7,12 +7,7 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-
-#ifndef RIISTA_H
-#define RIISTA_H
-#include "flux_net_irc.hpp"
 #include "monster.h"
-#include "player.h"
 
 const Flux::string start_game = "!start_game "+password;
 
@@ -40,9 +35,9 @@ void delete_from_playersV(Flux::string n){
 
 class m_riista : public module
 {
-  monster riista;
+  monster *riista;
 public:
-  m_riista(const Flux::string &Name):module(Name), riista("Riista")
+  m_riista(const Flux::string &Name):module(Name), riista(new monster("Riista"))
   {
     this->SetAuthor("Lordofsraam");
     ModuleHandler::Attach(I_OnPrivmsg, this);
@@ -243,7 +238,6 @@ public:
 	  }
       }
       
-      
       if (game_started && riista->alive() && playersV.size() > 0){
 	int ri = randint(1,100);
 	if (ri <= 10){
@@ -251,7 +245,6 @@ public:
 	  c->SendMessage(riista->retaliate());
 	}
       }
-
 
       if (!riista->alive()){
 	/*continue;
@@ -266,5 +259,3 @@ public:
 
   }
 };
-
-#endif
