@@ -114,6 +114,9 @@ int main (int argcx, char** argvx, char *envp[])
     //Set the username and nick
     ircproto->user(Config->Ident, Config->Realname);
     ircproto->nick(Config->BotNick);
+    if(!Config->ServerPassword.empty())
+      ircproto->pass(Config->ServerPassword);
+    
     FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
     
     while(!quitting){

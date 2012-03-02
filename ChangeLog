@@ -19,7 +19,7 @@ Added Anope's Timer manager
 Fixed sending 2 quit messages on signal
 Moved irc_string class to its own file
 Removed DoQuit()
-Removed old samode api as old api is depracated
+Removed old samode api as old api is deprecated
 Added DEPRECATED() macro for deprecated functions
 Removed flux_net_irc namespace
 Changed how version string works, now has version major, minor, patch, and extra
@@ -100,7 +100,7 @@ Removed Send->raw() as it now uses send_cmd()
 Added Flux::RandomString and Flux::RandomNickString
 Services configuration is now network specific supported
 Module Segmentation Faults no longer cause the bot to exit if the system supports it
-Added Base class in an attempt to elimate the glibc crash
+Added Base class in an attempt to eliminate the glibc crash
 Removed Flux::stringify as its replaced by value_cast<>() which can cast any value into any return type as long as std::stringstream is ok with it.
 Added operator >> to Flux::string
 Removed CommandSource::raw_source
@@ -137,11 +137,13 @@ Depracated removeCommand() in favor of the module parameters system.
 Rewrote the commands system, removed module::AddChanCommand, module::AddCommand, module::DelCommand, and module::DelChanCommand. Commands now have their types in the constructor, constructors now require module variable
 Renamed COMMAND_CHANNEL to C_CHANNEL and COMMAND_PRIVATE to C_PRIVATE; added C_NULL for comparing if the commands have not been set a type.
 Rewrote the way navn parses commandline arguments, argument -d DOES NOT MEAN DEVELOPER!
+Added support for server password command (pass) which adds config variable Connect:Password
+Renamed Flux::base_string to Flux::sstr to make typing an std::string inside the flux namespace easier
 
 Navn 2.0.0
 ==========
 Fixed weather module
-Fixed weather function using depracated API
+Fixed weather function using deprecated API
 Added build time into the build script
 Added Doxygen Documentation (http://www.galaxy.flux-net.net/doxy/)
 Fixed forking not forking
@@ -155,17 +157,17 @@ Moved functions from system module to a new navn.h module
 Added a vector of modules that is iterated through inside the while loop in main.cpp
 Added Module class is now purely virtual.
 Modules will now only run if they are activated.
-Strip return carrages before sending a ping
+Strip return carriages before sending a ping
 Created class SendMessage, Depracated old API
 Rewrote Socket class to SocketIO as a result of the new SendMessage class
 Updated all modules to use SendMessage and used lordofsraams module handler
 Fixed not removing .o files on a failed compile in build.sh
-Depracated rejoin as it was spamming people who said 'rejoin' and the command had been replaced by /msg join
+Deprecated rejoin as it was spamming people who said 'rejoin' and the command had been replaced by /msg join
 Bug #6 - Converted the dns module to use getaddrinfo() instead of c-ares
 Added Command class, depracating old command api
 Added a messy module management system
-Added Enumoration for easier to understand module priority system
-Added Enumoration for a module return to stop the module from processing
+Added Enumeration for easier to understand module priority system
+Added Enumeration for a module return to stop the module from processing
 Added SetDesc and GetDesc for modules (this will later be moved to a command handling class used within the module)
 Made module lists show "ModuleName <proper spacing> Module Description \bold[Activated]\bold"
 Added Nick Change Handling for when the bots nickname changes
@@ -189,14 +191,14 @@ Small bug/error fixes, cleaned up code
 Fixed throwing exceptions on quitting the server
 Added identify on request from NickServ
 Added forking
-Added some extra command line arguements and --nofork for above function
+Added some extra command line arguments and --nofork for above function
 Fixed time offsets in !time function (possibly from daylight savings)
 Added restart to the bot, terminates the bots process and starts another one
 Updated outdated info
 Added stringify() function
 Added error handling to restart function incase there is a problem
 Rewrote the logger to display time/date in logs
-Added Strip which will strip return carrages from a string
+Added Strip which will strip return carriages from a string
 Added va_list to all message sending functions so you can send %s mid string
 Added /msg bot stats and will give you operating system information
 Renamed flux_net_irc.cpp to flux_net_irc.hpp as lordofsraam doesn't know coding standards, also would have caused issues in future versions
@@ -227,9 +229,9 @@ Added teamspeak info into Da_Goat
 Added oper abilities into config
 Added ftp.sh for topic function
 Fixed build script not working on some OS'
-Added IsoHost which can isolate user, nick, and ident from a givin hostname
+Added IsoHost which can isolate user, nick, and ident from a given hostname
 Added !decodehost as an IsoHost example
-Attepmted a timed ping function, commented it out for later work
+Attempted a timed ping function, commented it out for later work
 Changed how signals are handled, now navn will not quit from a terminal interrupt unless it finishes processing its code
 Added Channel logger module
 Added CTCP SOURCE to reply with all links to navn's source code
@@ -237,14 +239,14 @@ Fixed a possible memory leak
 Added git link to !version
 Added about_me.h
 Removed /msg search function as it never worked
-Updated comments/documenatation
+Updated comments/documentation
 Moved weather function from Da_Goat into its own weather function
 Fixed on bot join welcome message
 Broke !poke in Da_Goat
 Fixed writing PID file (now writes the current PID and removes it on exit)
 Added Rehash via terminal Signals
 Stripped return carrages in the socket engine
-Added multiple commandline arguements support
+Added multiple commandline arguments support
 Removed useless terminal signals
 Added beginning of TinyURL maker (Module)
 Added some code for DeathBlade so he can learn how C++ works better
@@ -271,7 +273,7 @@ Added CoreException to be used instead of SocketException (as some stuff was not
 Added PID file
 Cleaned up logging function
 Made a mess with some stringstreams but moved them out of main.cpp
-Added command line paramitors --help and -h
+Added command line parameters --help and -h
 Added startup() function to run pre-while loop functions, moved those functions into that void
 Added thepiratebay, dictionary, and urban dictionary search
 Fixed params (caused Segmentation Faults if not called correctly, properly fixed it)
@@ -280,7 +282,7 @@ Gave credit to Justasic in build.sh
 Added IsChannelValid() boolean to validate if a given channel is valid
 Fixed join messages being sent every time the bot recieved the wrong numeric from the IRC server
 Added quit functions which now save and exit through 1 function.
-Made random quit messages for when CTRL+C is recieved from console. moved the signal handler to a header file
+Made random quit messages for when CTRL+C is received from console. moved the signal handler to a header file
 Made 2 part functions, 1 for parting with a message, the other for NULL messages
 Added #ifndef/#define macro's for all the headers (this ends includes hell)
 Moved all functions into a namespace called flux_net_irc in flux_net_irc.cpp
@@ -349,7 +351,7 @@ Added a kick handler
 Added the bot owner string
 Added date to compile script
 Added Timezone clock, removed old clock function
-Added password alogrithm for !quit (security function)
+Added password algorithm for !quit (security function)
 Added nickname is taken checker
 Added exit() to exit the bot properly instead of a return statement
 Added color coding to terminal output

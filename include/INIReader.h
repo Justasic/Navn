@@ -78,6 +78,7 @@ public:
   Flux::string OperatorPass;
   Flux::string ModuleDir;
   Flux::string Modules;
+  Flux::string ServerPassword;
   Flux::string ServicesAccount;
   Flux::string ServicesPass;
   Flux::string ServicesSendString;

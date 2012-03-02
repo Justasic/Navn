@@ -91,12 +91,6 @@ void IRCProto::action(const Flux::string &where, const Flux::string &msg){
  while(sep.GetToken(tok))
    send_cmd("PRIVMSG %s :\001ACTION %s\001\n", where.c_str(), tok.c_str());
 }
-/*****************************************************************************************/
-/**
- * \file  command.cpp
- *\brief Contains the command class.
- */
-// IRCProto::Commands(){}
 /**
  * \fn void command::kick(Flux::string Channel, Flux::string User, const char *fmt, ...)
  * \brief Handles kick requests
@@ -156,6 +150,11 @@ void IRCProto::part(const Flux::string &channel, const char *fmt, ...){
  */
 void IRCProto::kick(const Flux::string &chan, const Flux::string &userstr, const Flux::string &msg){
   send_cmd("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), msg.c_str());
+}
+
+void IRCProto::pass(const Flux::string &password)
+{
+  send_cmd("PASS %s\n", password.c_str());
 }
 /**
  * \overload void IRCProto::quit(Flux::string message)
