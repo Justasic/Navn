@@ -16,15 +16,20 @@ void ProcessInput(const Flux::string &str)
   if(params.empty())
     return;
 
-  if(params[0].equals_ci("QUIT")){
+  if(params[0].equals_ci("QUIT"))
+  {
 	quitting = true;
 	send_cmd("%s\n", str.c_str());
   }
   else if(params[0].equals_ci("MSG"))
-    send_cmd("PRIVMSG %s\n", str.substr(4).c_str());
-  else if(params[0].equals_ci("NICK"))
-    send_cmd("NICK %s\n", str.substr(5).c_str());
-  else if(params[0].equals_ci("MODRELOAD")){
+  {
+    if(str.size() > 4)
+      send_cmd("PRIVMSG %s\n", str.substr(4).c_str());
+  }else if(params[0].equals_ci("NICK"))
+  {
+    if(str.size() > 5)
+      send_cmd("NICK %s\n", str.substr(5).c_str());
+  }else if(params[0].equals_ci("MODRELOAD")){
     if(params.size() >= 2){
       module *m = FindModule(params[1]);
       if(m)
