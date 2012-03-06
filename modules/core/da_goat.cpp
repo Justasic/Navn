@@ -344,7 +344,7 @@ public:
 	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
       }else{
 	c->SendAction("is angry at %s", u2->nick.c_str());
-	c->kick(u2, "\002\00315Dont poke me!\017");
+	c->kick(u2, "\002\00315Don't poke me!\017");
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
       } 
     }
