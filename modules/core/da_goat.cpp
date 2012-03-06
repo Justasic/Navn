@@ -340,7 +340,7 @@ public:
       else if(!u2)
       {
 	c->SendAction("is angry at %s", u->nick.c_str());
-	c->kick(u, "\002\00315Dont poke me!\017");
+	c->kick(u, "\002\00315Don't poke me!\017");
 	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
       }else{
 	c->SendAction("is angry at %s", u2->nick.c_str());
