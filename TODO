@@ -53,6 +53,7 @@ Navn 2.0.2
 
 [ ] Add more event handlers (FOREACH_MOD)
 [ ] Add calculator
+[ ] Make searcher module use config for search URL's instead of hard coded ones.
 [ ] Kill automake with fire!
 [ ] Add buffer limiter (so freenode does not kill the bot)
 [ ] Better config format
