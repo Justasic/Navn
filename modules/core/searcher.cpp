@@ -58,10 +58,13 @@ Flux::string search(const Flux::string &text, const Flux::string &command){
       return "http://www.urbandictionary.com/define.php?term="+searchstring;
     else if(command.equals_ci("!movie"))
       return "www.letmewatchthis.ch/index.php?search_keywords="+searchstring;
+    else if(command.equals_ci("!lmgtfy"))
+      return "http://lmgtfy.com/?q="+searchstring;
     else
       return "http://www.google.com/search?q="+searchstring;
   }
 }
+
 class CommandCGoogle : public Command
 {
 public:
@@ -85,6 +88,7 @@ public:
     return true;
   }
 };
+
 class CommandCYoutube : public Command
 {
 public:
@@ -108,6 +112,7 @@ public:
     return true;
   }
 };
+
 class CommandCPirateBay : public Command
 {
 public:
@@ -131,6 +136,7 @@ public:
     return true;
   }
 };
+
 class CommandCDefine : public Command
 {
 public:
@@ -154,6 +160,7 @@ public:
     return true;
   }
 };
+
 class CommandCUrban : public Command
 {
 public:
@@ -177,6 +184,7 @@ public:
     return true;
   }
 };
+
 class CommandCMovie : public Command
 {
 public:
@@ -200,6 +208,7 @@ public:
     return true;
   }
 };
+
 class CommandCWiki : public Command
 {
 public:
@@ -223,6 +232,7 @@ public:
     return true;
   }
 };
+
 class CommandCMusic : public Command
 {
 public:
@@ -246,6 +256,31 @@ public:
     return true;
   }
 };
+
+class CommandClmgtfy : public Command
+{
+public:
+  CommandClmgtfy(module *m):Command(m, "!LMGTFY", C_CHANNEL, 1,1)
+  {
+    this->SetDesc("Generate a Let me google that for you search url");
+    this->SetSyntax("\37message\37");
+  }
+  void Run(CommandSource &source, const Flux::vector &params)
+  {
+    Flux::string str = search(params[0], this->name);
+    source.c->SendMessage(str);
+    Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
+  }
+  bool OnHelp(CommandSource &source, const Flux::string &nill)
+  {
+    this->SendSyntax(source);
+    source.Reply(" ");
+    source.Reply("This command generates a Let me google that for you\n"
+    "search link for the requested text");
+    return true;
+  }
+};
+
 /**
  * \fn class searcher(bool a):module("Searcher Handler", a, PRIORITY_DONTCARE){ this->SetDesc("Search Module used to search for stuff"); }
  * \brief Returns search links for different sites.
@@ -261,9 +296,10 @@ class searcher:public module
   CommandCMovie movie;
   CommandCWiki wiki;
   CommandCMusic music;
+  CommandClmgtfy lmgtfy;
 public:
   searcher(const Flux::string &Name):module(Name), google(this), yt(this), tpb(this), d(this), urban(this),
-  movie(this), wiki(this), music(this)
+  movie(this), wiki(this), music(this), lmgtfy(this)
   {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);
