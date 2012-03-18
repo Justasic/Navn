@@ -1,6 +1,6 @@
 /* Navn IRC bot -- Text file parser header
  * 
- * (C) 2011-2012 Flux-Net
+ * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
  * Please read COPYING and README for further details.
