@@ -203,7 +203,7 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.Azuru.net:6667");
+    c->SendMessage("Ventrilo Server:\002 Pulsar.Azuru.net Port:\00313 3784\nOur IRC server: irc.Azuru.net:6667");
     c->SendMessage("Minecraft Server: \2 Minecraft.Azuru.net port: 25565 (default)");
     c->SendMessage("The Azuru TeamSpeak 3 server is:\nPulsar.Azuru.net:9987");
     Log(u, this) << "command in " << c->name;
