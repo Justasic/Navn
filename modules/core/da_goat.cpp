@@ -1,7 +1,7 @@
 /* Navn IRC bot -- Da_Goat script in C++
  * 
  * (C) 2011-2012 Azuru
- * Contact us at Development@Azuru.net
+ * Contact us at Dev@Azuru.net
  *
  * Please read COPYING and README for further details.
  *
@@ -23,23 +23,23 @@
  * \subsection poke !poke
  * Say \a !poke to poke Da Goat!
  * \subsection info !info
- * Say \a !info to get information about flux-net.
+ * Say \a !info to get information about Azuru.
  * \subsection rename !rename
  * Say \a !rename to learn how to rename yourself.
  * \subsection register !register
  * Say \a !register to learn how to reegister yourself.
  * \subsection socialinfo !socialinfo
- * Say \a !socialinfo to learn about contacting flux-net.
+ * Say \a !socialinfo to learn about contacting Azuru.
  * \subsection help !help
  * Say \a !help to get help on IRC.
  * \subsection ts3 !ts3
- * Say \a !ts3 to get information about flux-net's TeamSpeak 3 server.
+ * Say \a !ts3 to get information about Azuru's TeamSpeak 3 server.
  * \subsection uptime !uptime
  * Say \a !uptime to get the uptime of the server that Navn is running on.
  * \subsection rules !rules
  * Say \a !rules to learn about our IRC rules.
  * \subsection spam !spam
- * Say \a !spam to get flux-net's definition of
+ * Say \a !spam to get Azuru's definition of
  * \subsection version !version
  * Say \a !version to get Navn's verion.
  * \subsection everything !everything
@@ -67,7 +67,7 @@ public:
     Channel *c = source.c;
     c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION);
     c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
-    c->SendMessage("Report all bugs at: \2http://bugs.flux-net.net\2");
+    c->SendMessage("Report all bugs at: \2http://bugs.Azuru.net\2");
     c->SendMessage("Navn is managed by \2%s\2", Config->Owner.c_str());
     Log(u, this) << "command in " << c->name;
   }
@@ -98,7 +98,7 @@ public:
     this->SendSyntax(source);
     source.Reply(" ");
     source.Reply("This command shows the rules and policies\n"
-		 "Flux-Net has on channel spam");
+		 "Azuru has on channel spam");
     return true;
   }
 };
@@ -149,8 +149,8 @@ public:
     this->SendSyntax(source);
     source.Reply(" ");
     source.Reply("This command simply shows the channel rules for\n"
-		 "Flux-Net's main channel #Computers, this command\n"
-		 "is pretty specific to Flux-Net");
+		 "Azuru's main channel #Computers, this command\n"
+		 "is pretty specific to Azuru");
     return true;
   }
 };
@@ -197,22 +197,22 @@ class CommandCSocialInfo: public Command
 public:
   CommandCSocialInfo(module *m):Command(m, "!SOCIALINFO", C_CHANNEL)
   {
-    this->SetDesc("Displays Flux-Net's Social Information");
+    this->SetDesc("Displays Azuru's Social Information");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.flux-net.net:6667");
-    c->SendMessage("Minecraft Server: \2 Minecraft.Flux-Net.net port: 25565 (default)");
-    c->SendMessage("The Flux-Net TeamSpeak 3 server is:\nPulsar.Flux-Net.net:9987");
+    c->SendMessage("Ventrilo Server:\002 5.110.166.75 Port:\00313 3784\nOur IRC server: irc.Azuru.net:6667");
+    c->SendMessage("Minecraft Server: \2 Minecraft.Azuru.net port: 25565 (default)");
+    c->SendMessage("The Azuru TeamSpeak 3 server is:\nPulsar.Azuru.net:9987");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
     source.Reply(" ");
-    source.Reply("This command shows Flux-Net's information\n"
+    source.Reply("This command shows Azuru's information\n"
 		 "used to tell people where to go for various\n"
 		 "other activities in the network");
     return true;
@@ -285,8 +285,8 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("Our forum is at \037http://forum.flux-net.net/\017");
-    c->SendMessage("Our Website is \002www.Flux-Net.net\017");
+    c->SendMessage("Our forum is at \037http://forum.Azuru.net/\017");
+    c->SendMessage("Our Website is \002www.Azuru.net\017");
     c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
   }
@@ -294,7 +294,7 @@ public:
   {
     this->SendSyntax(source);
     source.Reply(" ");
-    source.Reply("This command shows all of Flux-Net's\n"
+    source.Reply("This command shows all of Azuru's\n"
 		 "information, such as the forums url");
     return true;
   }
@@ -380,7 +380,7 @@ public:
       c->SendMessage("Yes, there is a script for everything...\007");
     /***********************End Da_Goat Functions******************************/
     if(cmd.equals_ci("!bugs"))
-      c->SendMessage("Report Bugs at: http://bugs.flux-net.net/");
+      c->SendMessage("Report Bugs at: http://bugs.Azuru.net/");
     if(cmd.equals_ci("!git"))
       u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
     if(msg.search_ci("the game"))
