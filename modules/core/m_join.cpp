@@ -64,14 +64,18 @@ public:
   {
     Flux::string chan = params[1];
     User *u = source.u;
-    if(!u->IsOwner()){
+    
+    if(!u->IsOwner())
+    {
      source.Reply(ACCESS_DENIED);
      Log(u) << "attempted to make bot part " << chan;
      return;
     }
+    
     if(!IsValidChannel(chan))
      source.Reply(CHANNEL_X_INVALID, chan.c_str());
-    else{
+    else
+    {
       Channel *c = findchannel(chan);
       if(c)
 	c->SendPart();
