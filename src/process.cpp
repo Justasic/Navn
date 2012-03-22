@@ -47,9 +47,12 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
 	u = new User(Nickname, Ident, Host, realname, Server);
     }
     Channel *c = findchannel(channel);
-    if(!c){
-     if(!channel.empty())
+    if(!c)
+    {
+     if(!channel.empty() && IsValidChannel(channel))
        c = new Channel(channel);
+     else
+       Log(LOG_DEBUG) << "Invalid channel " << channel << " in processing channels from numeric 352!";
     }
     if(u)
       u->AddChan(c);
