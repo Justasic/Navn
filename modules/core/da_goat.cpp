@@ -139,8 +139,8 @@ public:
     c->SendMessage("There are only a few simple rules for %s.", c->name.c_str());
     c->SendMessage("Do NOT hate on others in any way. Basically do not troll in any shape or form.");
     c->SendMessage("Do not ask for op status. you will be granted op status when the moderators feel you deserve op status.");
-    c->SendMessage("Do not Mini-mod the chatroom. The moderators are there for a reason, we don't need more.");
-    c->SendMessage("Do not spam the chatroom. This includes flooding by text, private messages, join/quit commands, External links, etc.");
+    c->SendMessage("Do not Mini-mod the chat room. The moderators are there for a reason, we don't need more.");
+    c->SendMessage("Do not spam the chat room. This includes flooding by text, private messages, join/quit commands, External links, etc.");
     c->SendMessage("If you violate any of these rules you will be kicked and possably banned from %s.", c->name.c_str());
     Log(u, this) << "command in " << c->name;
   }
@@ -177,7 +177,7 @@ public:
       c->SendMessage("System Uptime: %d days, %d hours, %d minutes, %ld seconds",days, hours, mins, sys_info.uptime % 60);
       c->SendMessage("Bot Uptime: %s", duration(time(NULL) - starttime).c_str());
 #else
-      source.Reply("This is currently not avalable on windows systems, sorry.");
+      source.Reply("This is currently not available on windows systems, sorry.");
 #endif
       Log(u, this) << "command in " << c->name;
   }
@@ -231,7 +231,7 @@ public:
     Channel *c = source.c;
     User *u = source.u;
     c->SendMessage("To Register your nickname type: /register <Your password>");
-	c->SendMessage("REMEMBER THIS PASSWORD! YOUR WILL USE IT EVERY TIME YOU JOIN!");
+	c->SendMessage("REMEMBER THIS PASSWORD! YOU WILL USE IT EVERY TIME YOU JOIN!");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -287,7 +287,7 @@ public:
     User *u = source.u;
     c->SendMessage("Our forum is at \037http://forum.Azuru.net/\017");
     c->SendMessage("Our Website is \002www.Azuru.net\017");
-    c->SendMessage("Ftp server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
+    c->SendMessage("FTP server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -363,13 +363,13 @@ public:
       else if(!u2)
       {
 	c->SendAction("bitch slaps %s", u->nick.c_str());
-	c->kick(u, "\002\00315Dont slap me!\017");
+	c->kick(u, "\002\00315Don't slap me!\017");
 	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
       }
       else
       {
 	c->SendAction("bitch slaps %s", u2->nick.c_str());
-	c->kick(u2, "\002\00315Dont slap me!\017");
+	c->kick(u2, "\002\00315Don't slap me!\017");
 	Log(u) << "used Da_Goats !slap command in " << c->name << "to poke " << u2->nick;
       }
     }
@@ -383,12 +383,10 @@ public:
       c->SendMessage("Report Bugs at: http://bugs.Azuru.net/");
     if(cmd.equals_ci("!git"))
       u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
-    if(msg.search_ci("the game"))
+    if(msg.search_ci("the game") || msg.search_ci("won the game"))
       c->SendMessage("YOU JUST LOST THE GAME.");
     if(msg.search_ci("i win"))
       c->SendMessage("YOU LOSE!");
-    if(msg.search_ci("won the game"))
-      c->SendMessage("YOU JUST LOST THE GAME.");
     if(msg.search_ci("!navn"))
       c->SendMessage("That's my name don't wear it out!");
     if(msg.search_ci("!login"))
