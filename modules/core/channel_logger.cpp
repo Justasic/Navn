@@ -78,7 +78,9 @@ public:
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string nolog = params.size() == 2?params[1]:"";
-    if(c && c->name != Config->LogChannel)
+    if(!u || !c)
+      return;
+    if(c->name != Config->LogChannel)
       return;
     
     Flux::string msg;
@@ -99,7 +101,9 @@ public:
   
   void OnNoticeChannel(User *u, Channel *c, const Flux::vector &params)
   {
-    if(c && c->name != Config->LogChannel)
+    if(!u || !c)
+      return;
+    if(c->name != Config->LogChannel)
       return;
     
     Flux::string msg;
@@ -114,15 +118,19 @@ public:
   
   void OnPart(User *u, Channel *c, const Flux::string &reason)
   {
-     if(c && c->name != Config->LogChannel)
+    if(!u || !c)
       return;
-     
-     CLog("*** %s has parted %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
+    if(c->name != Config->LogChannel)
+    return;
+
+    CLog("*** %s has parted %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
   }
   
   void OnJoin(User *u, Channel *c)
   {
-    if(c && c->name != Config->LogChannel)
+    if(!u || !c)
+      return;
+    if(c->name != Config->LogChannel)
       return;
     
     CLog("*** %s has joined %s", u->nick.c_str(), c->name.c_str());
@@ -135,15 +143,19 @@ public:
   
   void OnChannelMode(User *u, Channel *c, const Flux::string &mode)
   {
-      if(c && c->name != Config->LogChannel)
-	return;
+    if(!u || !c)
+      return;
+    if(c->name != Config->LogChannel)
+      return;
       
-      CLog("*** %s sets mode %s %s", u->nick.c_str(), c->name.c_str(), mode.c_str());
+    CLog("*** %s sets mode %s %s", u->nick.c_str(), c->name.c_str(), mode.c_str());
   }
   
   void OnChannelOp(User *u, Channel *c, const Flux::string &mode, const Flux::string &nick)
   {
-    if(c && c->name != Config->LogChannel)
+    if(!u || !c)
+      return;
+    if(c->name != Config->LogChannel)
 	return;
     
     CLog("*** %s sets mode %s %s %s", u->nick.c_str(), c->name.c_str(), mode.c_str(), nick.c_str());
