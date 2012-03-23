@@ -231,7 +231,7 @@ public:
     Channel *c = source.c;
     User *u = source.u;
     c->SendMessage("To Register your nickname type: /register <Your password>");
-	c->SendMessage("REMEMBER THIS PASSWORD! YOUR WILL USE IT EVERYTIME U JOIN!");
+	c->SendMessage("REMEMBER THIS PASSWORD! YOUR WILL USE IT EVERY TIME YOU JOIN!");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
