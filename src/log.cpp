@@ -165,7 +165,10 @@ Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command)
  */
 Log::~Log()
 {
-  this->filename = CreateLogName(Config->LogFile, starttime);
+  if(Config)
+  	this->filename = CreateLogName(Config->LogFile, starttime);
+  else
+	this->filename = "";
   Flux::string message = Flux::Sanitize(this->buffer.str()), raw = this->buffer.str();
   
   if(this->u && !this->c)
@@ -195,9 +198,13 @@ Log::~Log()
       CheckLogDelete(this);
       log.open(this->filename.c_str(), std::fstream::out | std::fstream::app);
       if(!log.is_open())
-	throw LogException(Config->LogFile.empty()?"Cannot open Log File.":
+      {
+	if(!Config)
+		throw LogException("Cannot read log file from config! (is there a bot.conf?)");
+	else
+		throw LogException(Config->LogFile.empty()?"Cannot open Log File.":
 			Flux::string("Failed to open Log File "+this->filename+": "+strerror(errno)).c_str());
-	
+      }
       log << TimeStamp() << " " << NoTermColor(message) << std::endl;
       if(log.is_open())
 	log.close();

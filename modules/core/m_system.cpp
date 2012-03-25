@@ -409,6 +409,7 @@ public:
     source.Reply("System Version: %s", uts.version);
 
     source.Reply(execute("grep 'model name' /proc/cpuinfo").strip());
+    source.Reply("CPUs: %s", execute("grep 'model name' /proc/cpuinfo | wc -l").c_str());
 #else
     source.Reply("This is currently not available on windows syetems, sorry.");
 #endif
