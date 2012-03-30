@@ -33,6 +33,7 @@ enum Implementation
 	I_OnPrivmsgChannel, I_OnNoticeChannel, I_OnLog,
   I_END
 };
+
 enum ModulePriority
 {
   PRIORITY_FIRST,

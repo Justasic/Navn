@@ -10,7 +10,7 @@
 #include <channel.h>
 
 Flux::insensitive_map<Channel*> ChanMap;
-Channel::Channel(const Flux::string &nname, time_t ts) : name(nname), creation_time(ts), topic_time(0)
+Channel::Channel(const Flux::string &nname, time_t ts) : name(nname), topic_time(0), creation_time(ts)
 {
   if(this->name.empty())
     throw CoreException("I don't like empty channel names in my channel constructor >:d");

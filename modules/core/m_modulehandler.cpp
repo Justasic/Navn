@@ -18,6 +18,7 @@ public:
     this->SetDesc("Lists all loaded modules");
     this->SetSyntax("\37priority\37");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string priority = params.size() == 2?params[1]:"";
@@ -29,7 +30,8 @@ public:
 		     ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	++c;
       }
-    }else
+    }
+    else
     { // There is probably a WAY easier way of doing this but whatever
       for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it){
 	if(priority.equals_ci("LAST") || priority == '1'){
@@ -52,6 +54,7 @@ public:
     source.Reply("Total of \2%i\2 Modules", c);
     Log(source.u, this) << "to list all module" << (priority.empty()?"":" with priority "+priority);
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -71,6 +74,7 @@ public:
     this->SetDesc("Load a module");
     this->SetSyntax("\37name\37");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string module = params[1];
@@ -91,6 +95,7 @@ public:
       }
     }
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -103,6 +108,7 @@ public:
     return true;
   }
 };
+
 class CommandMUnload : public Command
 {
 public:
@@ -111,26 +117,40 @@ public:
     this->SetDesc("Unloads a module");
     this->SetSyntax("\37name\37");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    const Flux::string module = params[1];
+    const Flux::string modulestr = params[1];
     if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
     else
     {
-      bool e = ModuleHandler::Unload(FindModule(module));
-      if(!e)
+      module *moo = FindModule(modulestr);
+      if(!moo)
       {
-	source.Reply("Failed to unload module %s", module.c_str());
-	Log(source.u, this) << "to unload " << module << " and failed";
+	source.Reply("Module \002%s\002 isn't loaded", modulestr.c_str());
+	return;
+      }
+      
+      if(!moo->handle || moo->GetPermanent())
+      {
+	source.Reply("Unable to remove module \002%s\002", modulestr.c_str());
+	return;
+      }
+      
+      if(!ModuleHandler::Unload(moo))
+      {
+	source.Reply("Failed to remove module %s", modulestr.c_str());
+	Log(source.u, this) << "to unload " << modulestr << " and failed";
       }
       else
       {
-	source.Reply("Module \2%s\2 unloaded sucessfuly", module.c_str());
-	Log(source.u, this) << "to unload " << module;
+	source.Reply("Module \2%s\2 unloaded sucessfuly", modulestr.c_str());
+	Log(source.u, this) << "to unload " << modulestr;
       }
     }
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -149,24 +169,42 @@ public:
     this->SetDesc("Reloads a module");
     this->SetSyntax("\37name\37");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
-    const Flux::string module = params[1];
+    const Flux::string modulestr = params[1];
     if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
-    else{
-      bool err = ModuleHandler::Unload(FindModule(module));
-      ModErr err2 = ModuleHandler::LoadModule(module);
+    else
+    {
+      module* mo = FindModule(modulestr);
+      if(!mo)
+      {
+	source.Reply("Module \002%s\002 isn't loaded", modulestr.c_str());
+	return;
+      }
+
+      if(!mo->handle || mo->GetPermanent())
+      {
+	source.Reply("Unable to reload module \002%s\002", modulestr.c_str());
+	return;
+      }
+      
+      bool err = ModuleHandler::Unload(mo);
+      ModErr err2 = ModuleHandler::LoadModule(modulestr);
       if(!err || err2 != MOD_ERR_OK)
       {
-	source.Reply("Failed to reload module %s%s", module.c_str(), err2 != MOD_ERR_OK?Flux::string(": "+DecodeModErr(err2)).c_str():"");
-	Log(source.u, this) << "to reload " << module << " and failed";
-      }else{
-	source.Reply("Module \2%s\2 reloaded sucessfuly", module.c_str());
-	Log(source.u, this) << "to reload " << module;
+	source.Reply("Failed to reload module %s%s", modulestr.c_str(), err2 != MOD_ERR_OK?Flux::string(": "+DecodeModErr(err2)).c_str():"");
+	Log(source.u, this) << "to reload " << modulestr << " and failed";
+      }
+      else
+      {
+	source.Reply("Module \2%s\2 reloaded sucessfuly", modulestr.c_str());
+	Log(source.u, this) << "to reload " << modulestr;
       }
     }
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -186,38 +224,46 @@ public:
    this->SetDesc("Provides info on a module");
    this->SetSyntax("\37name\37");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string modd = params[1];
-    if(modd.empty()){
+    if(modd.empty())
+    {
       this->SendSyntax(source);
       return;
     }
-      module *mo = FindModule(modd);
-      if(!mo){
-	source.Reply("Module \2%s\2 is not loaded", modd.c_str());
-	return;
-      }
-      source.Reply("******** \2%s\2 Info ********", mo->name.c_str());
-      source.Reply("Module: \2%s\2 Version: \2%s\2 Author: \2%s\2\nLoaded: \2%s\2", mo->filename.c_str(), mo->GetVersion().c_str(), mo->GetAuthor().c_str(), do_strftime(mo->GetLoadTime()).c_str());
-      Flux::string cmds;
-      for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
-	if((it->second->mod == mo)){ //For /msg commands
-	  cmds += it->second->name+" ";
-	}
-	cmds.trim();
-      for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
-	if((it->second->mod == mo)){ //For Channel Commands
-	  cmds += it->second->name+" ";
-	}
+    
+    module *mo = FindModule(modd);
+    if(!mo)
+    {
+      source.Reply("Module \2%s\2 is not loaded", modd.c_str());
+      return;
+    }
+    
+    source.Reply("******** \2%s\2 Info ********", mo->name.c_str());
+    source.Reply("Module: \2%s\2 Version: \2%s\2 Author: \2%s\2\nLoaded: \2%s\2", mo->filename.c_str(), mo->GetVersion().c_str(), mo->GetAuthor().c_str(), do_strftime(mo->GetLoadTime()).c_str());
+    
+    Flux::string cmds;
+    for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
+      if((it->second->mod == mo))//For /msg commands
+	cmds += it->second->name+" ";
       cmds.trim();
-      if(cmds.empty())
-	source.Reply("Adds no commands");
-      else
-	source.Reply("Adds commands: \2%s\2", cmds.c_str());
-	source.Reply("******** End Info ********");
-      Log(source.u, this) << "to show info on module " << mo->name;
+    
+    for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
+      if((it->second->mod == mo)) //For Channel Commands
+	cmds += it->second->name+" ";
+    cmds.trim();
+    
+    if(cmds.empty())
+      source.Reply("Adds no commands");
+    else
+      source.Reply("Adds commands: \2%s\2", cmds.c_str());
+      source.Reply("******** End Info ********");
+    
+    Log(source.u, this) << "to show info on module " << mo->name;
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -244,9 +290,11 @@ public:
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_FIRST);
+    this->SetPermanent(true);
     Implementation i[] = { I_OnStart, I_OnReload };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
+  
   void OnStart(int, char**)
   {
     CurrentModuleList = SerializeString(Config->Modules, ',');
@@ -255,6 +303,7 @@ public:
       printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
     }
   }
+  
   void OnReload()
   {
     Flux::vector updatedmodlist = SerializeString(Config->Modules, ',');
@@ -263,11 +312,14 @@ public:
       (*it).trim();
       for(Flux::vector::iterator it2; it2 != CurrentModuleList.end(); ++it2)
       {
-	if((*it) != (*it2)){
+	if((*it) != (*it2))
+	{
 	  Log(LOG_TERMINAL) << "(*it) != (*it2)";
 	  ModuleHandler::Unload(FindModule(*it2));
 	  CurrentModuleList.erase(it2);
-	}else if((*it2) != (*it)){
+	}
+	else if((*it2) != (*it))
+	{
 	  Log(LOG_TERMINAL) << "(*it2) != (*it)";
 	  ModuleHandler::LoadModule(*it);
 	  CurrentModuleList.push_back(*it);

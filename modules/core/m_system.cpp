@@ -448,6 +448,7 @@ public:
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
+    this->SetPermanent(true);
     orig = Config->BotNick;
   }
   void OnNumeric(int i, const std::vector<Flux::string> &params)
