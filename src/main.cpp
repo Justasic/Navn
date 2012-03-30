@@ -100,26 +100,31 @@ int main (int argcx, char** argvx, char *envp[])
     startup(argcx, argvx, envp);
     SocketStart:
     try { Connect(); }
-    catch(SocketException &e){
+    catch(SocketException &e)
+    {
       if(startcount >= 3)
 	throw CoreException(e.description().c_str());
       Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
       goto SocketStart;
     }
+    
     if(!sock)
       goto SocketStart;
+    
     ircproto = new IRCProto();
     time_t last_check = time(NULL);
     
     //Set the username and nick
     ircproto->user(Config->Ident, Config->Realname);
     ircproto->nick(Config->BotNick);
+    
     if(!Config->ServerPassword.empty())
       ircproto->pass(Config->ServerPassword);
     
     FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
     
-    while(!quitting){
+    while(!quitting)
+    {
       Log(LOG_RAWIO) << "Top of main loop";
       if(++loopcount >= 50)
 	raise(SIGSEGV); //prevent loop bombs, we raise a segfault because the segfault handler will handle it better
@@ -130,7 +135,8 @@ int main (int argcx, char** argvx, char *envp[])
       {
 	Log() << "Socket Exception: " << exc.description();
 	try { Connect(); }
-	catch(SocketException &ex){
+	catch(SocketException &ex)
+	{
 	  Log() << "Socket Exception: " << ex.description();
 	  throw CoreException(ex.description());
 	}
@@ -150,7 +156,8 @@ int main (int argcx, char** argvx, char *envp[])
     ModuleHandler::SanitizeRuntime();
     Log(LOG_TERMINAL) << "\033[0m";
   }//try ends here
-  catch(const CoreException& e){
+  catch(const CoreException& e)
+  {
     /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
     Log(LOG_TERMINAL) << "\033[0m";
     if(!Config)
