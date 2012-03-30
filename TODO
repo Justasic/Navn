@@ -61,6 +61,7 @@ Navn 2.0.2
 [ ] Add Oper Protocol modules
 [ ] Better terminal Commands Parsing
 [ ] Add a flags system like channel/user modes
+[ ] Add !forecast
 
 
 Future

@@ -1,0 +1,30 @@
+All commands begin with !
+COMMAND         PARAMETER       RETURNS                 EXAMPLE
+-------------------------------------------------------------------------
+adns            ip number       number of addresses     !adns 12.21.32.45
+ardns           domain name     number of addresses     !rdns google.com
+ask             anything        How to ask a question   !ask
+decodehost      user string     seperate nick fields    !decodehost ANT@CIA.Azuru.net
+define          a word          link to definition      !define liberty
+dns             ip number       domain name             !dns 123.45.67.89
+google          anything        link to search          !google NAVN
+help            <none>          command help            !help
+info            <none>          Network Info            !info
+lmgtfy          anything        LetMeGoogleThatForYou   !lmgtfy NAVN
+movie           anything        link to search          !movie Batman (www.letmewatchthis.ch)
+music           anything        link to search          !music EQRF   (Google)
+rdns            domain name     ip address              !rdns www.azuru.net
+register        <none>          registers channel       !register
+rename          <none>          how to change nicks     !rename
+rules           <none>          network rules           !rules
+socialinfo      <none>          server info             !socialinfo
+spam            <none>          defines spam            !spam
+time            <none>          incorrect time          !time
+time            location        local time              !time Portland OR
+tpb             anything        link to search          !tpb Star Trek    (The Pirate Bay)
+uptime          <none>          time since last reset   !uptime
+urban           anything        link to search          !urban derp    (Urban Dictionary)
+version         <none>          version information     !version
+weather         location        weather conditions      !weather San Francisco
+wiki            anything        link to search          !wiki Chicago   (Wikipedia)
+youtube         anything        link to search          !youtube How to Make a Deathray    (Youtube)

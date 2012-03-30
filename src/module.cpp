@@ -17,14 +17,10 @@
  * \brief Module Constructor
  * \param name Name of the module
  */
-module::module(const Flux::string &n) : name(n)
+module::module(const Flux::string &n) : name(n), handle(NULL), Priority(PRIORITY_DONTCARE), loadtime(time(NULL)),
+filename(""), author(""), version(""), filepath(""), permanent(false)
 {
   SET_SEGV_LOCATION();
-  
-  this->handle = NULL;
-  this->Priority = PRIORITY_DONTCARE;
-  this->loadtime = time(NULL);
-  this->filename = this->filepath = this->author = this->version = "";
   
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
@@ -67,6 +63,9 @@ void module::SetVersion(const Flux::string &ver) { this->version = ver; }
  */
 void module::SetPriority(ModulePriority p) { this->Priority = p; }
 
+void module::SetPermanent(bool value) { this->permanent = value; }
+
+bool module::GetPermanent() { return this->permanent; }
 /**
  * \fn Flux::string module::GetVersion()
  * \brief Gets the string of the modules version

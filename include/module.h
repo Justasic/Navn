@@ -20,7 +20,8 @@
 #  error dlfcn.h is required by navn to compile modules!
 # endif
 #endif
-enum Implementation{
+enum Implementation
+{
   I_BEGIN,
 	I_OnPrivmsg, I_OnModuleLoad, I_OnModuleUnload,
 	I_OnRestart, I_OnShutdown, I_OnReload, I_OnCommand,
@@ -32,7 +33,8 @@ enum Implementation{
 	I_OnPrivmsgChannel, I_OnNoticeChannel, I_OnLog,
   I_END
 };
-enum ModulePriority{
+enum ModulePriority
+{
   PRIORITY_FIRST,
   PRIORITY_DONTCARE,
   PRIORITY_LAST
@@ -43,15 +45,18 @@ class CoreExport module : public Base
   Flux::string author, version;
   time_t loadtime;
   ModulePriority Priority;
+  bool permanent;
 protected:
   void SetAuthor(const Flux::string&);
   void SetVersion(const Flux::string&);
   void SetPriority(ModulePriority);
+  void SetPermanent(bool);
 public:
   void *handle;
   Flux::string name, filename, filepath;
   Flux::string GetAuthor();
   Flux::string GetVersion();
+  bool GetPermanent();
   ModulePriority GetPriority();
   time_t GetLoadTime();
   module(const Flux::string&);

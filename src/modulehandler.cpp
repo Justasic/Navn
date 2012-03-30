@@ -200,7 +200,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 bool ModuleHandler::DeleteModule(module *m)
 {
   SET_SEGV_LOCATION();
-  if (!m || !m->handle)
+  if (!m || !m->handle || m->GetPermanent())
 	  return false;
 
   void *handle = m->handle;

@@ -78,7 +78,8 @@ public:
       this->SendSyntax(source);
     else if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
-    else{
+    else
+    {
       ModErr e = ModuleHandler::LoadModule(module);
       if(e != MOD_ERR_OK)
       {
@@ -115,13 +116,16 @@ public:
     const Flux::string module = params[1];
     if(!source.u->IsOwner())
       source.Reply(ACCESS_DENIED);
-    else{
+    else
+    {
       bool e = ModuleHandler::Unload(FindModule(module));
       if(!e)
       {
 	source.Reply("Failed to unload module %s", module.c_str());
 	Log(source.u, this) << "to unload " << module << " and failed";
-      }else{
+      }
+      else
+      {
 	source.Reply("Module \2%s\2 unloaded sucessfuly", module.c_str());
 	Log(source.u, this) << "to unload " << module;
       }
