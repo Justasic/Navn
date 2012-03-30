@@ -259,6 +259,7 @@ void BotConfig::Read()
   this->IdentOnConn = this->Parser->GetBoolean("Services","Identify on connect", true);
   this->ServicesService = this->Parser->Get("Services", "Service", "");
   this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
+  this->WelcomeMessage = this->Parser->Get("Bot", "Welcome Message", "");
   this->LogAge = Parser->GetInteger("Log", "Log Age", 2);
 }
 

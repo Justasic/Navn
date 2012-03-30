@@ -462,7 +462,11 @@ public:
 	tok.trim();
 	Channel *c = new Channel(tok);
 	c->SendJoin();
-	c->SendMessage(welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
+	
+	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
+	WelcomeMessage.trim();
+	if(!WelcomeMessage.empty())
+	  c->SendMessage(WelcomeMessage.c_str());
       }
       if(!Config->OperatorAccount.empty() || !Config->OperatorPass.empty()){
 	ircproto->oper(Config->OperatorAccount, Config->OperatorPass);

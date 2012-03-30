@@ -36,10 +36,18 @@ public:
       Channel *c = findchannel(chan);
       if(c){
 	c->SendJoin();
-	c->SendMessage(welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
+	
+	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
+	WelcomeMessage.trim();
+	if(!WelcomeMessage.empty())
+	  c->SendMessage(WelcomeMessage.c_str());
       }else{
 	ircproto->join(chan);
-	ircproto->privmsg(chan, welcome_msg, Config->BotNick.c_str(), Config->BotNick.c_str());
+	
+	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
+	WelcomeMessage.trim();
+	if(!WelcomeMessage.empty())
+	  ircproto->privmsg(chan, WelcomeMessage);
       }
     }
   }

@@ -139,6 +139,10 @@ Renamed COMMAND_CHANNEL to C_CHANNEL and COMMAND_PRIVATE to C_PRIVATE; added C_N
 Rewrote the way navn parses commandline arguments, argument -d DOES NOT MEAN DEVELOPER!
 Added support for server password command (pass) which adds config variable Connect:Password
 Renamed Flux::base_string to Flux::sstr to make typing an std::string inside the flux namespace easier
+Renamed modules to follow the m_ prefix and moved some non-core modules into a folder called 'optional'
+Added Multi-Owner support
+Removed flux_net_irc.hpp and defs.h in favor if modules.h and system.cpp
+Added "Welcome Message" to the config file which now optionally displays a custom message on join
 
 Navn 2.0.0
 ==========

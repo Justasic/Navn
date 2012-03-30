@@ -19,7 +19,8 @@
 Flux::string siginit(int sigstring)
 {
   Flux::string message;
-  switch(sigstring){
+  switch(sigstring)
+  {
     case 1: message = "Read on an empty pipe (ENOTOBACCO)"; break;
     case 2: message = "Invalid syntax (EBEFOREI)"; break;
     case 3: message = "Core dumped (ECHERNOBYL)"; break;
@@ -84,7 +85,8 @@ havecxx11 = true;
    slog << "C++ Version: " << __VERSION__ " C++11 support: " << (havecxx11?"true":"false") << std::endl;
    slog << "Socket Buffer: " << LastBuf << std::endl;
    slog << "Location: " << segv_location << std::endl;
-   if(m){
+   if(m)
+   {
      slog << "Module: " << m->name << std::endl;
      slog << "Module Version: " << m->GetVersion() << std::endl;
      slog << "Module Author: " << m->GetAuthor() << std::endl;
