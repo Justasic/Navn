@@ -42,7 +42,8 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
     Flux::string realname = params[7].erase(0,2);
     /*******************************************************/
     User *u = finduser(Nickname);
-    if(!u){
+    if(!u)
+    {
       if(!Host.empty() || !Nickname.empty() || !Ident.empty())
 	u = new User(Nickname, Ident, Host, realname, Server);
     }
@@ -196,8 +197,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
  * simpler to understand in later releases
  * \param buffer The raw socket buffer
  */
-void process(const Flux::string &buffer){
-
+void process(const Flux::string &buffer)
+{
   EventResult e;
   FOREACH_RESULT(I_OnPreReceiveMessage, OnPreReceiveMessage(buffer), e);
   if(e != EVENT_CONTINUE)
@@ -237,6 +238,7 @@ void process(const Flux::string &buffer){
     else
       params.push_back(bufferseparator_token);
   }
+  
   Log(LOG_RAWIO) << "Received: " << Flux::Sanitize(buffer);
   if(protocoldebug)
   {
