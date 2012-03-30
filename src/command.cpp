@@ -151,7 +151,8 @@ void CommandSource::Reply(const char *fmt, ...)
 {
   va_list args;
   char buf[BUFSIZE];
-  if(fmt){
+  if(fmt)
+  {
     va_start(args, fmt);
     vsnprintf(buf, sizeof(buf), fmt, args);
     this->Reply(Flux::string(buf));

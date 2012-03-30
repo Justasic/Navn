@@ -53,6 +53,7 @@ public:
     return true;
   }
 };
+
 class dummy : public module
 {
   commanddummy cmddmy; //Declare our command

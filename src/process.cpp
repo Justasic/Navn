@@ -106,7 +106,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	  return;
 	}
 #ifdef HAVE_SETJMP_H
-	if(setjmp(sigbuf) == 0){
+	if(setjmp(sigbuf) == 0)
+	{
 #endif
 	LastRunModule = ccom->mod;
 	ccom->Run(Source, params2);
@@ -116,10 +117,13 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	{
 	  Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
-// 	  User *ou = finduser(Config->Owner);
-// 	  
-// 	  if(ou)
-// 	    ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
+
+	  for(unsigned i = 0; i < Config->Owners.size(); ++i)
+	  {
+	    User *ou = finduser(Config->Owners[i]);
+	    if(ou)
+	      ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
+	  }
 	}
 #endif
 	LastRunModule = NULL;
@@ -150,7 +154,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	return;
       }
 #ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
-	if(setjmp(sigbuf) == 0){
+	if(setjmp(sigbuf) == 0)
+	{
 #endif
 	LastRunModule = com->mod;
 	com->Run(Source, params2);
@@ -160,10 +165,13 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	{ //Module segfaulted.
 	  Log() << "Command " << com->name << " failed to execute. Stack Restored.";
 	  Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
-// 	  User *ou = finduser(Config->Owner);
-// 	  
-// 	  if(ou) //notify the owner if possible.
-// 	    ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
+
+	  for(unsigned i = 0; i < Config->Owners.size(); ++i)
+	  {
+	    User *ou = finduser(Config->Owners[i]);
+	    if(ou)
+	      ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
+	  }
 	}
 #endif
 	LastRunModule = NULL;
