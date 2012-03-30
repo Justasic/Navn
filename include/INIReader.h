@@ -16,8 +16,9 @@
 // http://code.google.com/p/inih/
 // This INIReader has been modified by Justasic, it is NOT the one on google code!
 
-#ifndef __INIREADER_H__
-#define __INIREADER_H__
+#pragma once
+#ifndef INIREADER_H
+#define INIREADER_H
 #include "flux.h"
 #include "extern.h"
 #include "textfile.h"

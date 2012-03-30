@@ -7,7 +7,7 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-#include "flux_net_irc.hpp"
+#include "modules.h"
 
 /**
  * \file weather.h Header file holding the \a weather function.

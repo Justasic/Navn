@@ -11,6 +11,7 @@
  *\file  SocketException.h
  *\brief Contains the Exception throw classes.
  */
+#pragma once
 #ifndef SOCKET_EXCEPTION_H
 #define SOCKET_EXCEPTION_H
 #include "flux.h"

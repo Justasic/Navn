@@ -7,8 +7,10 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
+#pragma once
 #ifndef MODULE_H
 #define MODULE_H
+
 #include "user.h"
 #include "command.h"
 #ifndef _WIN32

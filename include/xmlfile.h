@@ -7,9 +7,10 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-
+#pragma once
 #ifndef XMLFILE_H
 #define XMLFILE_H
+
 #include "module.h"
 
 class CoreExport XMLFile : public TextFile {

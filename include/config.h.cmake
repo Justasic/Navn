@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _SYSCONF_H_
 #define _SYSCONF_H_
 

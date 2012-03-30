@@ -8,7 +8,7 @@
  * Based on the original code of Services by Andy Church.
  * All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html)
  */
-
+#pragma once
 #ifndef TIMERS_H
 #define TIMERS_H
 

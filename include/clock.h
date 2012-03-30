@@ -8,7 +8,7 @@
  * Based on the original code of Anope by The Anope Team.
  */
 
-
+#pragma once
 #ifndef CLOCK_H
 #define CLOCK_H
 #include "module.h"

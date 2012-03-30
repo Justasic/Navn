@@ -7,7 +7,7 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-
+#pragma once
 #ifndef TEXTFILE_H
 #define TEXTFILE_H
 #include "flux.h"

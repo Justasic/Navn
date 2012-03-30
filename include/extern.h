@@ -7,8 +7,10 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
+#pragma once
 #ifndef EXTERN_H
 #define EXTERN_H
+
 #include "flux.h"
 #include <list> //for std::list
 /* Prototypes and external variable declarations only */

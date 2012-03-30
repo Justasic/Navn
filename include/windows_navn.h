@@ -8,6 +8,7 @@
  * Based on the original code of Anope by The Anope Team.
  */
 
+#pragma once
 #ifndef WINDOWS_H
 #define WINDOWS_H
 #ifdef _WIN32

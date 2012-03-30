@@ -7,7 +7,7 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-#include "flux_net_irc.hpp"
+#include "modules.h"
 /**
  * \file about_me.h Header file holding the \a about_me function.
  * \author Justasic. Polished by Lordofsraam.

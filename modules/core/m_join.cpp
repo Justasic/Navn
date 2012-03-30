@@ -7,7 +7,7 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-#include "flux_net_irc.hpp"
+#include "modules.h"
 
 /*This module setup needs serious work!
  * Justasic will work on it but its going to be hard with los's module class.

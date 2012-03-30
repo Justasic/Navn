@@ -10,7 +10,7 @@
 #ifndef NI_MAXHOST
 #define NI_MAXHOST 1025
 #endif
-#include "flux_net_irc.hpp"
+#include "modules.h"
 
 /**
  * \file dns.h Header file holding the \a DNS functions.

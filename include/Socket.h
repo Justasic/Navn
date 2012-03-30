@@ -11,6 +11,7 @@
  *\file  Socket.h 
  *\brief Socket header for Socket.cpp
  */
+#pragma once
 #ifndef SOCKET
 #define SOCKET
 

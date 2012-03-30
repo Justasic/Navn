@@ -26,7 +26,7 @@
  * feature available, we have made it as easy as possible to make modules.
  * See the examples tab for an example module.
  */
-#include "flux_net_irc.hpp"
+#include "modules.h"
 
 /**
  * \fn bool SocketIO::Read(const Flux::string &buf) const

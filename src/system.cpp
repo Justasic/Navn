@@ -1,46 +1,44 @@
-/* Navn IRC bot -- Main include
- * 
+/* Navn IRC bot -- Primary functions (This file is old)
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
  * Please read COPYING and README for further details.
  *
  * Based on the original code of Anope by The Anope Team.
- *
- * WARNING: this file is going bye bye VERY SOON!
  */
-#ifndef DERP_H
-#define DERP_H
-#include "module.h"
-#include "defs.h"
-#include "xmlfile.h"
 
-IRCProto *ircproto;
-SocketIO *sock;
-BotConfig *Config;
-module *LastRunModule;
+#include "module.h"
+#include "xmlfile.h"
 
 /**Runtime directory finder
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
  */
-Flux::string getprogdir(const Flux::string &dir){
+Flux::string getprogdir(const Flux::string &dir)
+{
   char buffer[FILENAME_MAX];
-  if (GetCurrentDir(buffer, sizeof(buffer))) {
+  if (GetCurrentDir(buffer, sizeof(buffer)))
+  {
     Flux::string remainder = dir;
     bot_bin = remainder;
     Flux::string::size_type n = bot_bin.rfind("/");
     Flux::string fullpath;
+    
     if (bot_bin[0] == '/')
       fullpath = bot_bin.substr(0, n);
     else
       fullpath = Flux::string(buffer) + "/" + bot_bin.substr(0, n);
+    
     bot_bin = bot_bin.substr(n + 1, remainder.length());
+    
     return fullpath;
   }
   return "/";
 }
-class irc_string:Flux::string{
+
+class irc_string:Flux::string
+{
   /** \class irc_string
    * NOTE this MUST be included in the main file.
    * This class wraps around a Flux::string (usually revieved from the irc server)
@@ -54,10 +52,11 @@ class irc_string:Flux::string{
    * \param user Will hold the user of the person who sent the message.
    * \param channel Will hold the channel of where the message was said.
    * \param message Will hold the message (stripped of irc protocol stuff)
+   * \deprecated Find a better way of using this.
    */
   private:
     std::vector<Flux::string> toks;
-  public:
+public:
   Flux::string raw_string;
   Flux::string usernick;
   Flux::string host;
@@ -89,7 +88,7 @@ class irc_string:Flux::string{
     if(message.size()>2){
       message.resize(message.size()-2);
     }
-
+    
     Flux::string fmessage = message;
     char * cmessage = const_cast<char*>(fmessage.c_str());
     char * pch;
@@ -201,7 +200,6 @@ class irc_string:Flux::string{
  * to use the rest of a Flux::string as an argument for a command.
  * \return A Flux::string \a s without \a command.
  */
-DEPRECATED(Flux::string removeCommand(Flux::string command, Flux::string s));
 Flux::string removeCommand(Flux::string command, Flux::string s)
 {
   size_t pos = s.find(command);
@@ -217,7 +215,6 @@ Flux::string removeCommand(Flux::string command, Flux::string s)
  * it replaces it with what would be in a url for that character.
  * \return A Flux::string without any special characters other than %
  */
-DEPRECATED(Flux::string urlify(const Flux::string &received));
 Flux::string urlify(const Flux::string &received){
   Flux::string string;
   for(unsigned i=0; i < received.size(); ++i){
@@ -265,7 +262,8 @@ Flux::string urlify(const Flux::string &received){
  * \param cmd A command
  * \return A Flux::string containing the response from the OS.
  */
-Flux::string execute(const char *cmd) {
+Flux::string execute(const char *cmd)
+{
   /*
    * Roses are red,
    * Violets are blue,
@@ -288,23 +286,31 @@ Flux::string execute(const char *cmd) {
  * \brief Restart the bot process
  * \param reason The reason for the restart
  */
-void restart(const Flux::string &reason){
+void restart(const Flux::string &reason)
+{
   char CurrentPath[FILENAME_MAX];
   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
   FOREACH_MOD(I_OnRestart, OnRestart(reason));
-  if(reason.empty()){
+  
+  if(reason.empty())
+  {
     Log() << "Restarting: No Reason";
     if(ircproto)
       ircproto->quit("Restarting: No Reason");
-  }else{
+  }
+  else
+  {
     Log() << "Restarting: " << reason;
     if(ircproto)
       ircproto->quit("Restarting: %s", reason.c_str());
   }
+  
   chdir(CurrentPath);
   int execvpret = execvp(my_av[0], my_av);
+  
   if(execvpret > 0)
     throw CoreException("Restart Failed, Exiting");
+  
   Delete(Config->PidFile.c_str());
   exit(1);
 }
@@ -322,11 +328,14 @@ void Rehash()
     BotConfig *configtmp = Config;
     Config = new BotConfig(bi_dir);
     delete configtmp;
+    
     if(!Config)
       throw ConfigException("Could not read config.");
+    
     FOREACH_MOD(I_OnReload, OnReload());
     ReadConfig();
-  }catch(const ConfigException &ex)
+  }
+  catch(const ConfigException &ex)
   {
     Log() << "Configuration Exception Caught: " << ex.GetReason();
     for(unsigned i = 0; i < Config->Owners.size(); ++i)
@@ -348,7 +357,7 @@ static void WritePID()
   //logging to a text file and making the PID file.
   if(Config->PidFile.empty())
     throw CoreException("Cannot write PID file, no PID file specified.");
-
+  
   if(TextFile::IsFile(Config->PidFile))
   {
     Log(LOG_DEBUG) << "Deleting stale pid file " << Config->PidFile;
@@ -381,17 +390,17 @@ public:
       Flux::string param;
       while(!argsarg.empty() && argsarg[0] == '-')
 	argsarg.erase(argsarg.begin());
-
+      
       size_t t = argsarg.find('=');
       if(t != Flux::string::npos)
       {
 	param = argsarg.substr(t+1);
 	argsarg.erase(t);
       }
-
+      
       if(argsarg.empty())
 	continue;
-
+      
       Arguments[argsarg] = param;
     }
   }
@@ -405,7 +414,7 @@ public:
   bool HasArg(const Flux::string &name, char shortname, Flux::string &args)
   {
     args.clear();
-
+    
     for(Flux::map<Flux::string>::iterator it = this->Arguments.begin(); it != this->Arguments.end(); ++it)
     {
       if(it->first.equals_ci(name) || it->first[0] == shortname)
@@ -447,13 +456,13 @@ void startup(int argc, char** argv, char *envp[])
   
   //gets the command line paramitors if any.
   CommandLineArguments args(argc, argv);
-
+  
   if(args.HasArg("developer"))
   {
     dev = nofork = true;
     Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode.";
   }
-
+  
   if(args.HasArg("debug", 'd'))
   {
     Log(LOG_TERMINAL) << "This mode flag does nothing for now, it will do debug levels eventally ;)";
@@ -465,7 +474,7 @@ void startup(int argc, char** argv, char *envp[])
     nofork = true;
     Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled.";
   }
-
+  
   if(args.HasArg("help", 'h'))
   {
     Log(LOG_TERMINAL) << "\033[0mNavn Internet Relay Chat Bot v" << VERSION;
@@ -479,7 +488,7 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
     exit(0);
   }
-
+  
   if(args.HasArg("version", 'v'))
   {
     Log(LOG_TERMINAL) << "\033[0mNavn IRC C++ Bot Version " << VERSION_FULL;
@@ -494,13 +503,13 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
     exit(0);
   }
-
+  
   if(args.HasArg("protocoldebug", 'p'))
   {
     protocoldebug = true;
     Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode.";
   }
-
+  
   if(args.HasArg("nocolor", 'c'))
   {
     nocolor = true;
@@ -516,6 +525,3 @@ void startup(int argc, char** argv, char *envp[])
   FOREACH_MOD(I_OnStart, OnStart(argc, argv)); //announce we are starting the bot
   Fork(); //Fork to background
 }
-
-/***************************************************************************/
-#endif

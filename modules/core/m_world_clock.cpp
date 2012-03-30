@@ -8,7 +8,7 @@
  * Based on the original code of Anope by The Anope Team.
  */
 
-#include "flux_net_irc.hpp"
+#include "modules.h"
 
 /**
  * \file world_clock.h Header file holding the \a world_clock function.

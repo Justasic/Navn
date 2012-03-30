@@ -7,7 +7,7 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-#include "flux_net_irc.hpp"
+#include "modules.h"
 
 /**
  * \file da_goat.h Header file holding the \a Da_Goat function.
@@ -68,7 +68,7 @@ public:
     c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION);
     c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
     c->SendMessage("Report all bugs at: \2http://bugs.Azuru.net\2");
-    c->SendMessage("Navn is managed by: \2%s\2", CondenseString(Config->Owners).c_str());
+    c->SendMessage("%s is managed by: \2%s\2", Config->BotNick.c_str(), CondenseString(Config->Owners).c_str());
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -332,6 +332,7 @@ public:
       Flux::string person = params.size() == 2?params[1]:"";
       person.trim();
       User *u2 = finduser(person);
+      
       if(u2 && u2->IsOwner())
       {
 	c->SendMessage("why would I wanna kick my master!?");
@@ -342,7 +343,9 @@ public:
 	c->SendAction("is angry at %s", u->nick.c_str());
 	c->kick(u, "\002\00315Don't poke me!\017");
 	Log() << u->nick << " found Da_Goats !poke command in " << c->name;
-      }else{
+      }
+      else
+      {
 	c->SendAction("is angry at %s", u2->nick.c_str());
 	c->kick(u2, "\002\00315Don't poke me!\017");
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
