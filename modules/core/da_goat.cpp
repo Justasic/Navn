@@ -68,7 +68,7 @@ public:
     c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION);
     c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
     c->SendMessage("Report all bugs at: \2http://bugs.Azuru.net\2");
-    c->SendMessage("Navn is managed by \2%s\2", Config->Owner.c_str());
+    c->SendMessage("Navn is managed by: \2%s\2", CondenseString(Config->Owners).c_str());
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)

@@ -24,8 +24,6 @@
  * @{
  */
 
-
-
 /**
  * \fn weather(bool act):module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
  * \brief Says the weather.

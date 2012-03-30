@@ -22,7 +22,7 @@ public:
 
 class encyclopedia : public module
 {
-  cooldowntimer cdt; //Make a cool down timer so we dont request too many too fast and get us banned from wikipedia!
+  cooldowntimer cdt; //Make a cool down timer so we don't request too many too fast and get us banned from wikipedia!
 private:
   Flux::string query;
   void Sanitize(Flux::string &victim)
@@ -43,6 +43,7 @@ private:
     victim = victim.replace_all_cs(".","");
     victim = victim.replace_all_cs("?","");
   }
+  
   Flux::string TooManyRequests()
   {
     Flux::string Errors[] = { //These errors must be generic for any user, whether its their 1st time asking or their 30'th
@@ -54,6 +55,7 @@ private:
     };
     return Errors[randint(0,4)];
   }
+  
   Flux::string RandomOops()
   {
     Flux::string Errors[] = {
@@ -63,6 +65,7 @@ private:
     };
     return Errors[randint(0,2)];
   }
+  
   Flux::string RandomAmb()
   {
     Flux::string Errors[] = {
@@ -72,6 +75,7 @@ private:
     };
     return Errors[randint(0,2)];
   }
+  
   void Brain(User *u, Flux::string q)
   {
     if(!(cdt.requested >= 30))
@@ -88,6 +92,7 @@ private:
     }else
       u->SendMessage(TooManyRequests());
   }
+  
   void SetQuery(unsigned n, const Flux::vector &params)
   {
     query.clear();
@@ -102,6 +107,7 @@ public:
     this->SetPriority(PRIORITY_LAST);
     ModuleHandler::Attach(I_OnPrivmsgChannel, this);
   }
+  
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     //Flux::vector MessageParams = StringVector(params, ' ');
@@ -116,21 +122,25 @@ public:
       SetQuery(1, params);
       Brain(u,query);
     }
+    
     if(msg.search_ci(Config->BotNick+", what do you know about "))
     {
       SetQuery(6, params);
       Brain(u, query);
     }
+    
     else if(msg.search_ci(Config->BotNick+", what is a ") ^ msg.search_ci(Config->BotNick+", what is the") ^ msg.search_ci(Config->BotNick+", tell me about ") ^ msg.search_ci(Config->BotNick+", who are the ") ^ msg.search_ci(Config->BotNick+", what is an "))
     {
       SetQuery(4, params);
       Brain(u, query);
     }
+    
     else if(msg.search_ci(Config->BotNick+", what is ") ^ msg.search_ci(Config->BotNick+", what are ") ^ msg.search_ci(Config->BotNick+", who is ") ^ msg.search_ci(Config->BotNick+", what's a ") ^ msg.search_ci(Config->BotNick+", what's an "))
     {
       SetQuery(3, params);
       Brain(u, query);
     }
+    
     else if(msg.search_ci(Config->BotNick+", tell me what you know about "))
     {
       SetQuery(7, params);
@@ -138,4 +148,5 @@ public:
     }
   }
 };
+
 MODULE_HOOK(encyclopedia)

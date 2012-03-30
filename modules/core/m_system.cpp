@@ -480,7 +480,8 @@ public:
     {
       Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m";
       Log(LOG_TERMINAL) << "\033[22;34mSession Password: \033[01;32m" << password << "\033[22;36m";
-      ircproto->notice(Config->Owner, "The randomly generated password is: %s", password.c_str());
+      for(unsigned o = 0; o < Config->Owners.size(); ++o)
+	ircproto->notice(Config->Owners[o], "The randomly generated password is: %s", password.c_str());
       started = true;
       /* Identify to the networks services */
       if((!Config->ServicesAccount.empty() || !Config->ServicesPass.empty()) && Config->IdentOnConn){
@@ -531,18 +532,15 @@ public:
     IsoHost *Host = new IsoHost(u->fullhost);
     if(Host->nick == Config->BotNick)
       Config->BotNick = Host->nick;
-    if(newnick == Config->Owner)
-      Config->Owner = Host->nick;
+
+    // Keep owners in the owners vector updated..
+    if(u->IsOwner())
+    {
+      for(unsigned i = 0; i < Config->Owners.size(); ++i)
+	if(newnick.equals_ci(Config->Owners[i]))
+	  Config->Owners[i] = newnick;
+    }
     delete Host;
-   /*if(command == "NICK"){
-   if(u && u->nick == Config->BotNick){
-       nick = params[0];
-       delete u; //we shouldnt be a user in the 1st place (:
-  }else if(u->IsOwner())
-    owner_nick = params[0];
-  else
-    delete u; //we delete the user because the above if statement makes a new one for the nick change
-   }*/
   }
 };
 

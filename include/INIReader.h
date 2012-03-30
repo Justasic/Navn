@@ -64,7 +64,6 @@ public:
   INIReader *Parser;
   Flux::string LogFile;
   Flux::string Binary_Dir;
-  Flux::string Owner;
   Flux::string Realname;
   Flux::string Ident;
   Flux::string BotNick;
@@ -84,6 +83,7 @@ public:
   Flux::string ServicesSendString;
   Flux::string AutoIdentString;
   Flux::string ServicesService;
+  Flux::vector Owners;
   int LogAge;
   bool IdentOnConn;
   time_t PingTimeoutTime;

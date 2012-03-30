@@ -314,7 +314,8 @@ void restart(const Flux::string &reason){
  * \brief Reload the bot config file
  * \param boolean this boolean tells rehash if we are starting from start or not
  */
-void Rehash(){
+void Rehash()
+{
   Log() << "Rehashing Configuration File";
   try{
     const Flux::string bi_dir = Config->Binary_Dir;
@@ -325,9 +326,11 @@ void Rehash(){
       throw ConfigException("Could not read config.");
     FOREACH_MOD(I_OnReload, OnReload());
     ReadConfig();
-  }catch(const ConfigException &ex){
+  }catch(const ConfigException &ex)
+  {
     Log() << "Configuration Exception Caught: " << ex.GetReason();
-    ircproto->notice(Config->Owner, "Config Exception Caught: %s", ex.GetReason());
+    for(unsigned i = 0; i < Config->Owners.size(); ++i)
+      ircproto->notice(Config->Owners[i], "Config Exception Caught: %s", ex.GetReason());
   }
 }
 

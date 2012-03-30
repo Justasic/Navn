@@ -43,6 +43,7 @@ public:
     else { Source.Reply("You are already in the game."); }
   }
 };
+
 class Info : public Command
 {
 public:
@@ -63,6 +64,7 @@ public:
     else { Source.Reply("Number of players: %i", BattleField::NumberOfPlayers()); }
   }
 };
+
 class Stab : public Command
 {
 public:
@@ -104,4 +106,5 @@ public:
       msg += params[i] +' ';
   }
 };
+
 MODULE_HOOK(PvPModule)
