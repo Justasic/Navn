@@ -426,6 +426,7 @@ public:
     return true;
   }
 };
+
 class m_system : public module
 {
   CommandChown cmdchown;//So many commands! .-.
@@ -453,11 +454,14 @@ public:
   }
   void OnNumeric(int i, const std::vector<Flux::string> &params)
   {
-    if((i == 4)){
+    if((i == 4))
+    {
       if(params[3].search('B')) //Set bot mode if the network has it.
 	ircproto->mode(Config->BotNick, "+B");
+      
       sepstream cs(Config->Channel, ',');
       Flux::string tok;
+      
       while(cs.GetToken(tok))
       {
 	tok.trim();
@@ -469,6 +473,7 @@ public:
 	if(!WelcomeMessage.empty())
 	  c->SendMessage(WelcomeMessage.c_str());
       }
+      
       if(!Config->OperatorAccount.empty() || !Config->OperatorPass.empty()){
 	ircproto->oper(Config->OperatorAccount, Config->OperatorPass);
 	IsOper = true;
@@ -476,11 +481,14 @@ public:
       }
       Log() << "Successfully connected to the server \"" << Config->Server+":"+Config->Port << "\" Master Channel(s): " << Config->Channel;
     }
-    if((i == 433)){
+    
+    if((i == 433))
+    {
       Config->BotNick.push_back(Flux::RandomNickString(5));
       ircproto->nick(Config->BotNick);
       istempnick = true;
     }
+    
     if((i == 376))
     {
       Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m";
