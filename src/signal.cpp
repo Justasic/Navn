@@ -76,7 +76,7 @@ havecxx11 = true;
       
    strftime(tbuf, sizeof(tbuf), "[%b %d %H:%M:%S %Y]", localtime(&now));
    slog << "====================== Segmentation Fault ======================" << std::endl;
-   slog << "Please report this bug to http://flux-net.net/bugs/ and submit a bug report." << std::endl;
+   slog << "Please report this bug to http://bugs.Azuru.net and submit a bug report." << std::endl;
    slog << "Please note that the Flux-Net developers may ask you to re-run this under gdb!" << std::endl;
    slog << "Time of crash: " << tbuf << std::endl;
    slog << "Navn version: " << VERSION_FULL << std::endl;
