@@ -11,20 +11,17 @@
 Flux::insensitive_map<User *> UserNickList;
 uint32_t usercnt = 0, maxusercnt = 0;
 
-User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname, const Flux::string &sserver)
+User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname, const Flux::string &sserver) : nick(snick), ident(sident), host(shost), realname(srealname), server(sserver)
 {
  /* check to see if a empty string was passed into the constructor */
  if(snick.empty() || sident.empty() || shost.empty())
    throw CoreException("Bad args sent to User constructor");
  
- this->nick = snick;
- this->ident = sident;
- this->host = shost;
- this->realname = srealname;
- this->server = sserver;
  this->fullhost = snick+"!"+sident+"@"+shost;
  UserNickList[snick] = this;
+ 
  Log(LOG_RAWIO) << "New user! " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
+ 
  ++usercnt;
  if(usercnt > maxusercnt)
  {
@@ -115,11 +112,7 @@ void User::DelChan(Channel *c)
 
 Channel *User::findchannel(const Flux::string &name)
 {
-#ifdef _CXX11
-  auto it1 = ChanMap.find(name);
-#else
   Flux::insensitive_map<Channel*>::iterator it1 = ChanMap.find(name);
-#endif
   Channel *c = it1->second;
   if(!c)
     return NULL;
@@ -141,28 +134,21 @@ void User::SendPrivmsg(const Flux::string &message)
 
 User *finduser(const Flux::string &fnick)
 {
-#ifdef _CXX11
-  auto it = UserNickList.find(fnick);
-#else
   Flux::map<User *>::iterator it = UserNickList.find(fnick);
-#endif
+  
   if(it != UserNickList.end())
     return it->second;
+  
   return NULL;
 }
 
 void ListUsers(CommandSource &source)
 {
   Flux::string users;
-#ifdef _CXX11
-  for(auto var : UserNickList)
-    users += var.second->nick+' ';
-#else
   for(Flux::map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end; ++it){
     User *u2 = it->second;
     users += u2->nick+' ';
   }
-#endif
   users.trim();
   source.Reply("Users: %s\n", users.c_str());
 }

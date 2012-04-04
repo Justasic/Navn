@@ -16,7 +16,7 @@ public:
   CommandMList(module *m):Command(m, "MODLIST", C_PRIVATE, 0, 1)
   {
     this->SetDesc("Lists all loaded modules");
-    this->SetSyntax("\37priority\37");
+    this->SetSyntax("\037priority\037");
   }
   
   void Run(CommandSource &source, const Flux::vector &params)
@@ -90,7 +90,7 @@ public:
 	source.Reply("Failed to load module %s: %s", module.c_str(), DecodeModErr(e).c_str());
 	Log(source.u, this) << "to load " << module << " and failed: " << DecodeModErr(e);
       }else{
-	source.Reply("Module \2%s\2 loaded sucessfuly", module.c_str());
+	source.Reply("Module \2%s\2 loaded successfully", module.c_str());
 	Log(source.u, this) << "to load " << module;
       }
     }
@@ -145,7 +145,7 @@ public:
       }
       else
       {
-	source.Reply("Module \2%s\2 unloaded sucessfuly", modulestr.c_str());
+	source.Reply("Module \2%s\2 unloaded successfully", modulestr.c_str());
 	Log(source.u, this) << "to unload " << modulestr;
       }
     }
@@ -199,7 +199,7 @@ public:
       }
       else
       {
-	source.Reply("Module \2%s\2 reloaded sucessfuly", modulestr.c_str());
+	source.Reply("Module \2%s\2 reloaded successfully", modulestr.c_str());
 	Log(source.u, this) << "to reload " << modulestr;
       }
     }
@@ -298,7 +298,8 @@ public:
   void OnStart(int, char**)
   {
     CurrentModuleList = SerializeString(Config->Modules, ',');
-    for(unsigned i=0; i < CurrentModuleList.size(); ++i){
+    for(unsigned i=0; i < CurrentModuleList.size(); ++i)
+    {
       CurrentModuleList[i].trim();
       printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
     }

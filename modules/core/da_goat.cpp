@@ -226,6 +226,7 @@ public:
   {
     this->SetDesc("Displays how to register your nickname");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -234,6 +235,7 @@ public:
 	c->SendMessage("REMEMBER THIS PASSWORD! YOU WILL USE IT EVERY TIME YOU JOIN!");
     Log(u, this) << "command in " << c->name;
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -245,6 +247,7 @@ public:
     );
     return true;
   }
+  
 };
 
 class CommandCRename: public Command
@@ -254,6 +257,7 @@ public:
   {
     this->SetDesc("Displays how to rename");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -262,6 +266,7 @@ public:
     c->SendMessage("To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
     Log(u, this) << "command in " << c->name;
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -272,6 +277,7 @@ public:
     );
     return true;
   }
+  
 };
 
 class CommandCInfo : public Command
@@ -281,6 +287,7 @@ public:
   {
     this->SetDesc("General Da_Goat info");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -290,6 +297,7 @@ public:
     c->SendMessage("FTP server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -298,6 +306,7 @@ public:
 		 "information, such as the forums url");
     return true;
   }
+  
 };
 
 class Da_Goat:public module
