@@ -31,7 +31,7 @@
 void *::operator new(size_t iSize)
 {
 	void *ptr = HeapAlloc(GetProcessHeap(), 0, iSize); /* zero memory for unix compatibility */
-	/* This is the correct behaviour according to C++ standards for out of memory,
+	/* This is the correct behavior according to C++ standards for out of memory,
 	 * not returning null -- Brain
 	 */
 	if (!ptr)

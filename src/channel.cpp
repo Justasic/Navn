@@ -33,12 +33,16 @@ User *Channel::finduser(const Flux::string &usr)
 {
   Flux::insensitive_map<User*>::iterator it1 = UserNickList.find(usr);
   User *u = it1->second;
+  
   if(!u)
-    return NULL;
+    return nullptr;
+  
   UList::iterator it = UserList.find(u);
+  
   if(it != UserList.end())
     return it->first;
-  return NULL;
+  
+  return nullptr;
 }
 
 void Channel::SendJoin(){ ircproto->join(this->name); }
@@ -47,13 +51,15 @@ void Channel::AddUser(User *u) { if(u) this->UserList[u] = this; }
 void Channel::DelUser(User *u)
 {
   UList::iterator it = UserList.find(u);
+  
   if(it != UserList.end())
     UserList.erase(it);
 }
 
 void Channel::SendPart(const char *fmt, ...)
 {
-  if(fmt){
+  if(fmt)
+  {
     char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
@@ -67,7 +73,8 @@ void Channel::SendPart(const Flux::string &reason){ ircproto->part(this->name, r
 void Channel::kick(User *u, const Flux::string &reason){ u->kick(this->name, reason); }
 void Channel::kick(User *u, const char *fmt, ...)
 {
-  if(fmt){
+  if(fmt)
+  {
     char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
@@ -79,7 +86,8 @@ void Channel::kick(User *u, const char *fmt, ...)
 
 void Channel::kick(const Flux::string &u, const char *fmt, ...)
 {
-  if(fmt){
+  if(fmt)
+  {
     char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
@@ -125,9 +133,12 @@ void Channel::RemoveMode(const Flux::string &mode)
 
 void Channel::RemoveMode(User *u, const Flux::string &mode)
 {
-  if(mode[0] == '-'){
+  if(mode[0] == '-')
+  {
     ircproto->mode(this->name, mode, u->nick);
-  }else{
+  }
+  else
+  {
     mode == '-' + mode;
     ircproto->mode(this->name, mode, u->nick);
   }
@@ -135,7 +146,8 @@ void Channel::RemoveMode(User *u, const Flux::string &mode)
 
 void Channel::ChangeTopic(const char *fmt, ...)
 {
-  if(fmt){
+  if(fmt)
+  {
     char buffer[BUFSIZE] = "";
     va_list args;
     va_start(args, fmt);
@@ -194,34 +206,24 @@ void QuitUser(User *u)
 {
   if(!u)
     return;
-#ifdef _CXX11
-    for(auto var : ChanMap)
-      for(auto var1 : var.second->UserList)
-	if(var1.first == u)
-	  var1.second->DelUser(u);
-#else
+  
   for(Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
     for(UList::iterator it1 = it->second->UserList.begin(), it1_end = it->second->UserList.end(); it1 != it1_end; ++it1)
     {
       if(it1->first == u)
 	it1->second->DelUser(u);
     }
-#endif
     delete u;
 }
 
 void ListChans(CommandSource &source)
 {
   Flux::string channels;
-#ifdef _CXX11
-  for(auto var : ChanMap)
-    channels += var.second->name+' ';
-#else
-  for(Flux::map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it){
+  for(Flux::map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
+  {
     Channel *ch = it->second;
     channels += ch->name+' ';
   }
-#endif
   channels.trim();
   source.Reply("Channels: %s\n", channels.c_str());
 }
@@ -231,5 +233,5 @@ Channel *findchannel(const Flux::string &channel)
   Flux::map<Channel *>::iterator it = ChanMap.find(channel);
   if(it != ChanMap.end())
     return it->second;
-  return NULL;
+  return nullptr;
 }

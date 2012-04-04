@@ -435,9 +435,9 @@ void startup(int argc, char** argv, char *envp[])
   SET_SEGV_LOCATION();
   
   InitSignals();
-  Config = NULL;
-  ircproto = NULL;
-  sock = NULL;
+  Config = nullptr;
+  ircproto = nullptr;
+  sock = nullptr;
   my_av = argv;
   my_envp = envp;
   starttime = time(NULL); //for bot uptime

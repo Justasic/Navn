@@ -181,7 +181,7 @@ CommandMap ChanCommandMap;
 Command *FindCommand(const Flux::string &name, CommandType type)
 {
   if(name.empty())
-    return NULL;
+    return nullptr;
 
   CommandMap::iterator it;
   switch(type)
@@ -197,7 +197,7 @@ Command *FindCommand(const Flux::string &name, CommandType type)
     case C_NULL:
       break;
   }
-  return NULL;
+  return nullptr;
 }
 
 /**

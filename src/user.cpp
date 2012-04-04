@@ -115,11 +115,11 @@ Channel *User::findchannel(const Flux::string &name)
   Flux::insensitive_map<Channel*>::iterator it1 = ChanMap.find(name);
   Channel *c = it1->second;
   if(!c)
-    return NULL;
+    return nullptr;
   CList::iterator it = ChannelList.find(c);
   if(it != ChannelList.end())
     return it->first;
-  return NULL;
+  return nullptr;
 }
 
 void User::SendMessage(const Flux::string &message)
@@ -139,13 +139,14 @@ User *finduser(const Flux::string &fnick)
   if(it != UserNickList.end())
     return it->second;
   
-  return NULL;
+  return nullptr;
 }
 
 void ListUsers(CommandSource &source)
 {
   Flux::string users;
-  for(Flux::map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end; ++it){
+  for(Flux::map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end; ++it)
+  {
     User *u2 = it->second;
     users += u2->nick+' ';
   }

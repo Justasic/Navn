@@ -246,13 +246,8 @@ bool ModuleHandler::Unload(module *m)
  */
 void ModuleHandler::UnloadAll()
 {
-#ifdef _CXX11
-  for(auto var : Modules)
-    Unload(var.second);
-#else
   for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
     Unload(it->second);
-#endif
 }
 
 /**
@@ -308,6 +303,7 @@ void ReadConfig()
 {
   sepstream sep(Config->Modules, ',');
   Flux::string tok;
+  
   while(sep.GetToken(tok))
   {
     tok.trim();

@@ -19,14 +19,17 @@ Flux::string NoTermColor(const Flux::string &ret)
 {
   Flux::string str;
   bool in_term_color = false;
-  for(unsigned i=0; i < ret.length(); ++i){
+  for(unsigned i=0; i < ret.length(); ++i)
+  {
     char c = ret[i];
-    if(in_term_color){
+    if(in_term_color)
+    {
       if(c == 'm')
 	in_term_color = false;
       continue;
     }
-    if(c == '\033'){
+    if(c == '\033')
+    {
       in_term_color = true;
       continue;
     }

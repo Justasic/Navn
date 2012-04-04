@@ -85,6 +85,28 @@
 	dirent *readdir(DIR*);
 	int closedir(DIR*);
 
+	#ifndef nullptr
+	// Find out if this causes compiler warnings?
+	  // Some crazy fix for being able to use the C++11 nullptr, based on Scott Meyers nullptr "backport"
+	  // http://en.wikibooks.org/wiki/More_C++_Idioms/nullptr#Solution_and_Sample_Code
+	  const // It is a const object...
+	  class nullptr_t
+	  {
+	  public:
+	    template<class T>
+	    inline operator T*() const // convertible to any type of null non-member pointer...
+	    { return 0; }
+
+	    template<class C, class T>
+	    inline operator T C::*() const   // or any type of null member pointer...
+	    { return 0; }
+
+	  private:
+	    void operator&() const;  // Can't take address of nullptr
+
+	  } nullptr = {};
+	#endif
+
 	#define MODULE_INIT(x) \
 	extern "C" DllExport Module *ModInit(const Flux::string&); \
 	extern "C" DllExport void ModunInit(x *); \
@@ -97,7 +119,29 @@
 	# define _CXX11
 	# include <atomic>
 	# include <thread>
-	#endif
+	#else
+	# ifndef nullptr
+	# pragma GCC system_header // Crazy GCC warning fix to make GCC shutup about nullptr being defined in C++11
+	  // Some crazy fix for being able to use the C++11 nullptr, based on Scott Meyers nullptr "backport"
+	  // http://en.wikibooks.org/wiki/More_C++_Idioms/nullptr#Solution_and_Sample_Code
+	  const // It is a const object...
+	  class nullptr_t
+	  {
+	  public:
+	    template<class T>
+	    inline operator T*() const // convertible to any type of null non-member pointer...
+	    { return 0; }
+
+	    template<class C, class T>
+	    inline operator T C::*() const   // or any type of null member pointer...
+	    { return 0; }
+
+	  private:
+	    void operator&() const;  // Can't take address of nullptr
+
+	  } nullptr = {};
+	# endif // ifndef nullptr
+	#endif // ifndef __GXX_EXPERIMENTAL_CXX0X__
 	
 	#define GetCurrentDir getcwd
 	#define Delete unlink

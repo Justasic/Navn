@@ -160,12 +160,14 @@ Flux::string INIReader::Get(const Flux::string &section, const Flux::string &nam
 bool INIReader::GetBoolean(const Flux::string &section, const Flux::string &name, bool default_value){
   Flux::string valstr = Get(section, name, "");
   valstr.trim();
+  
   if(valstr.empty())
     return default_value;
   if(valstr.equals_ci("yes") || valstr.equals_ci("1") || valstr.equals_ci("y") || valstr.equals_ci("true"))
     return true;
   else if(valstr.equals_ci("false") || valstr.equals_ci("0") || valstr.equals_ci("n") || valstr.equals_ci("no"))
     return false;
+  
   return default_value;
 }
 /**
@@ -210,15 +212,21 @@ BotConfig::BotConfig(const Flux::string &dir)
  try
  {
   this->Parser = new INIReader(conffile);
+  
   if(!this->Parser)
 	throw ConfigException("Cannot read config parser (is the config file there?)");
+  
   this->Binary_Dir = dir;
   this->Read();
+  
   if(this->Parser->ParseError() == -1)
     throw ConfigException("Cannot open '"+conffile+"'");
+  
   if(this->Parser->ParseError() != 0)
     throw ConfigException(printfify("Error on line %i", this->Parser->ParseError()));
- }catch(const ConfigException &e){
+ }
+ catch(const ConfigException &e)
+ {
    if (starttime == time(NULL))
      throw CoreException(printfify("Config: %s", e.GetReason()));
    else

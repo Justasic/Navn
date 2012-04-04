@@ -145,7 +145,7 @@ void sigact(int sig)
       	break;
       }
       #endif
-      HandleSegfault(NULL);
+      HandleSegfault(nullptr);
       exit(sig);
       break;
     case SIGINT:
