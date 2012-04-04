@@ -21,6 +21,17 @@
  * allows for strings to be split by spaces and placed into a
  * vector which makes for easy processing
  */
+// EVENT_HOOK(command, "PING", I_OnPing, OnPing);
+#define EVENT_HOOK(w, x, y, z) \
+if(true) \
+{ \
+  if(w.equals_ci(x)) \
+  {\
+    FOREACH_MOD(y, z); \
+  } \
+} \
+else \
+  static_cast<void>(0);
 
 /** 
  * \fn void ProcessJoin(CommandSource &source, const Flux::string &chan)
@@ -78,7 +89,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
   
   if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
   
- if(!FindCommand(params2[0], C_PRIVATE) && command == "PRIVMSG")
+ if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
   {
     if(!protocoldebug)
       Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
@@ -111,8 +122,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	if(setjmp(sigbuf) == 0)
 	{
 #endif
-	LastRunModule = ccom->mod;
-	ccom->Run(Source, params2);
+	  LastRunModule = ccom->mod;
+	  ccom->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
 	}
 	else
@@ -132,7 +143,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       }
       else
       {
-	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(u, c, params2)); //This will one day be a actual function for channel only messages..
+	//This will one day be a actual function for channel only messages..
+	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(u, c, params2)); 
       }
     }
   }
@@ -159,8 +171,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	if(setjmp(sigbuf) == 0)
 	{
 #endif
-	LastRunModule = com->mod;
-	com->Run(Source, params2);
+	  LastRunModule = com->mod;
+	  com->Run(Source, params2);
 #ifdef HAVE_SETJMP_H
 	}
 	else
@@ -273,57 +285,95 @@ void process(const Flux::string &buffer)
   Channel *c = findchannel(receiver);
   std::vector<Flux::string> params2 = SerializeString(message, ' ');
   /***********************************************/
-  if(command == "004" && source.search('.')) { server_name = source; }
+  if(command == "004" && source.search('.'))
+    server_name = source;
+  
   if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION"))
   {
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));
-    return; //Dont allow the rest of the system to process ctcp's as it will be caught by the command handler.
+    return; // Don't allow the rest of the system to process ctcps as it will be caught by the command handler.
   }
-  if(command.equals_cs("NICK") && u) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); u->SetNewNick(params[0]); }
+  // the nickname hook MUST go before the creation of a new user, or we'll end up with phantom users in the map!
+  if(command.equals_ci("NICK") && u)
+  {
+    FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0]));
+    u->SetNewNick(params[0]);
+  }
+  
   if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty()))
   {
     if(!nickname.search('.'))
       u = new User(nickname, uident, uhost);
   }
-  if(command == "QUIT")
+  
+  if(command.equals_ci("QUIT"))
   {
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     QuitUser(u);
   }
-  if(command == "PART")
+  
+  if(command.equals_ci("PART"))
   {
     FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c; //This should remove the channel from all users if the bot is parting..
-    else{
+    else
+    {
      if(u)
        u->DelChan(c);
+     
      if(c)
        c->DelUser(u);
-     if(u && c && !u->findchannel(c->name)){
+     
+     if(u && c && !u->findchannel(c->name))
+     {
        Log(LOG_TERMINAL) << "Deleted " << u->nick << '|' << c->name << '|' << u->findchannel(c->name);
        delete u; 
       }
     }
   }
-  if(command.is_pos_number_only()) { FOREACH_MOD(I_OnNumeric, OnNumeric((int)command, params)); }
-  if(command.equals_cs("PING")){ FOREACH_MOD(I_OnPing, OnPing(params)); }
-  if(command.equals_cs("PONG")){ FOREACH_MOD(I_OnPong, OnPong(params)); }
-  if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2])); }
-  if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
-  if(command.equals_cs("INVITE")) { FOREACH_MOD(I_OnInvite, OnInvite(u, params[1])); }
-  if(command.equals_cs("NOTICE") && !source.find('.'))
+  
+  if(command.is_pos_number_only())
   {
-    if(!IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); } 
-    else { FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2)); }
+    FOREACH_MOD(I_OnNumeric, OnNumeric((int)command, params));
   }
-  if(command.equals_cs("MODE"))
+
+  // Various events we need to pay attention to.
+  EVENT_HOOK(command, "PING", I_OnPing, OnPing(params));
+  EVENT_HOOK(command, "PONG", I_OnPong, OnPong(params));
+  EVENT_HOOK(command, "KICK", I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2]));
+  EVENT_HOOK(command, "ERROR", I_OnConnectionError, OnConnectionError(buffer));
+  EVENT_HOOK(command, "INVITE", I_OnInvite, OnInvite(u, params[1]));
+  
+  if(command.equals_ci("NOTICE") && !source.find('.'))
   {
-    if(IsValidChannel(params[0]) && params.size() == 2) { FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1])); }
-    else if(IsValidChannel(params[0]) && params.size() == 3) { FOREACH_MOD(I_OnChannelOp, OnChannelOp(u, c, params[1], params[2])); }
-    else if(params[0] == Config->BotNick) { FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1])); }
+    if(!IsValidChannel(receiver))
+    {
+      FOREACH_MOD(I_OnNotice, OnNotice(u, params2));
+    }
+    else
+    {
+      FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2));
+    }
   }
-  if(command == "JOIN")
+  
+  if(command.equals_ci("MODE"))
+  {
+    if(IsValidChannel(params[0]) && params.size() == 2)
+    {
+      FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1]));
+    }
+    else if(IsValidChannel(params[0]) && params.size() == 3)
+    {
+      FOREACH_MOD(I_OnChannelOp, OnChannelOp(u, c, params[1], params[2]));
+    }
+    else if(params[0] == Config->BotNick)
+    {
+      FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1]));
+    }
+  }
+  
+  if(command.equals_ci("JOIN"))
   {
     if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
       u = new User(nickname, uident, uhost);
@@ -338,6 +388,7 @@ void process(const Flux::string &buffer)
       FOREACH_MOD(I_OnJoin, OnJoin(u, c));
     }
   }
+  
   /**************************************/
   CommandSource Source;
   Source.u = u; //User class
@@ -345,9 +396,14 @@ void process(const Flux::string &buffer)
   Source.params = params;
   Source.raw = buffer;
   /**************************************/
-  if(command == "352"){ ProcessJoin(Source, c->name); }
+  if(command == "352")
+  {
+    ProcessJoin(Source, c->name);
+  }
+  
   if(source.empty() || message.empty() || params2.empty())
     return;
+  
   ProcessCommand(Source, params2, receiver, command);
   command.clear();
 }
