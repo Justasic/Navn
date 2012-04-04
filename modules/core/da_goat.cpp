@@ -203,9 +203,9 @@ public:
   {
     Channel *c = source.c;
     User *u = source.u;
-    c->SendMessage("Ventrilo Server:\002 Pulsar.Azuru.net Port:\00313 3784\nOur IRC server: irc.Azuru.net:6667");
-    c->SendMessage("Minecraft Server: \2 Minecraft.Azuru.net port: 25565 (default)");
-    c->SendMessage("The Azuru TeamSpeak 3 server is:\nPulsar.Azuru.net:9987");
+    c->SendMessage("Our IRC server: \002irc.Azuru.net:6667\002");
+    c->SendMessage("Minecraft Server: \002 Minecraft.Azuru.net port: 25565 (default)\002");
+    c->SendMessage("The Azuru TeamSpeak 3 server is:\002Pulsar.Azuru.net:9987\002");
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)

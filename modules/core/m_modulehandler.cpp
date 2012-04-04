@@ -25,7 +25,8 @@ public:
     int c=0;
     if(priority.empty())
     {
-      for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it){
+      for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
+      {
 	source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
 		     ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	++c;
@@ -33,17 +34,21 @@ public:
     }
     else
     { // There is probably a WAY easier way of doing this but whatever
-      for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it){
-	if(priority.equals_ci("LAST") || priority == '1'){
+      for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
+      {
+	if(priority.equals_ci("LAST") || priority == '1')
+	{
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
 			ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	  ++c;
-	}else if(priority.equals_ci("NORMAL") || priority == '2')
+	}
+	else if(priority.equals_ci("NORMAL") || priority == '2')
 	{
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
 		     ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
 	  ++c;
-	}else if(priority.equals_ci("FIRST") || priority == '3')
+	}
+	else if(priority.equals_ci("FIRST") || priority == '3')
 	{
 	  source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
 		     ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
@@ -89,7 +94,9 @@ public:
       {
 	source.Reply("Failed to load module %s: %s", module.c_str(), DecodeModErr(e).c_str());
 	Log(source.u, this) << "to load " << module << " and failed: " << DecodeModErr(e);
-      }else{
+      }
+      else
+      {
 	source.Reply("Module \2%s\2 loaded successfully", module.c_str());
 	Log(source.u, this) << "to load " << module;
       }
@@ -307,6 +314,7 @@ public:
   
   void OnReload()
   {
+    // FIXME: Rewrite this so it isn't so dumb and actually loads the different modules.
     Flux::vector updatedmodlist = SerializeString(Config->Modules, ',');
     for(Flux::vector::iterator it; it != updatedmodlist.end(); ++it)
     {

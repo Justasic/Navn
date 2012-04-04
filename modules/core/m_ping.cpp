@@ -26,6 +26,7 @@ class PingTimeoutTimer : public Timer
 public:
   PingTimeoutTimer(time_t w, PingTimer *pt2):Timer(w, time(NULL), false), wait(w) { this->pt = pt2; }
   ~PingTimeoutTimer() { this->pt->ptt = NULL; }
+  
   void Tick(time_t)
   {
     sock->ThrowException(printfify("Ping Timeout: %i seconds", static_cast<int>(this->wait)));
@@ -50,6 +51,7 @@ public:
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_FIRST);
   }
+  
   void OnPong(const std::vector<Flux::string> &params)
   {
      Flux::string ts = params[1];
@@ -59,19 +61,23 @@ public:
      if(protocoldebug)
         Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
   }
+  
   void OnPing(const Flux::vector &params)
   {
     if(pingtimer.ptt)
       delete pingtimer.ptt;
     send_cmd("PONG :%s\n", params[0].c_str());
   }
+  
   void OnConnectionError(const Flux::string &buffer)
   {
     throw CoreException(buffer.c_str());
   }
+  
   void OnNumeric(int i, const std::vector<Flux::string> &params)
   {
-   if((i == 451)){
+   if((i == 451))
+   {
      ircproto->user(Config->Ident, Config->Realname);
      ircproto->nick(Config->BotNick);
    }

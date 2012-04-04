@@ -187,13 +187,11 @@ Command *FindCommand(const Flux::string &name, CommandType type)
   switch(type)
   {
     case C_PRIVATE:
-      it = Commandsmap.find(name);
-      if(it != Commandsmap.end())
+      if((it = Commandsmap.find(name)) != Commandsmap.end())
 	return it->second;
       break;
     case C_CHANNEL:
-      it = ChanCommandMap.find(name);
-      if(it != ChanCommandMap.end())
+      if((it = ChanCommandMap.find(name)) != ChanCommandMap.end())
 	return it->second;
       break;
     case C_NULL:
@@ -234,7 +232,7 @@ Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min
   }
 
   if(it.second != true)
-    throw ModuleException("Command "+this->name+" already loaded!");
+    throw ModuleException("Command \""+this->name+"\" already loaded!");
 }
 
 Command::~Command()
