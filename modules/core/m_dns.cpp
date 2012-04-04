@@ -106,7 +106,8 @@ public:
 	case AF_INET:
 	  struct sockaddr_in *v4;
 	  v4 = reinterpret_cast<struct sockaddr_in*>(haddr);
-	  if (!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address))){
+	  if (!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address)))
+	  {
 	    source.c->SendMessage("DNS: %s", strerror(errno));
 	    return;
 	  }
@@ -114,7 +115,8 @@ public:
 	case AF_INET6:
 	  struct sockaddr_in6 *v6;
 	  v6 = reinterpret_cast<struct sockaddr_in6*>(haddr);
-	  if (!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address))){
+	  if (!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address)))
+	  {
 	    source.c->SendMessage("DNS: %s", strerror(errno));
 	    return;
 	  }

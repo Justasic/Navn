@@ -112,7 +112,7 @@ havecxx11 = true;
    throw CoreException("Segmentation Fault, cannot write backtrace!");
 #else
    Log(LOG_SILENT) << "Segmentation Fault";
-   printf("\033[0mOh no! A Segmentation Fault has occured!\n");
+   printf("\033[0mOh no! A Segmentation Fault has occurred!\n");
    printf("This system does not support backtracing, please use gdb or a similar debugger!\n");
    printf("Please follow these instructions on how to file a bug report of Flux-Net:\n");
    printf("1) type \"gdb navn\"\n2) type \"r -n --protocoldebug\"\n3) Cause the program to crash\n4) Type \"bt full\" and copy and paste the output to http://www.pastebin.com/\n5) File a bug report at http://flux-net.net/bugs/\n");
@@ -126,7 +126,8 @@ havecxx11 = true;
 void sigact(int sig)
 {
   Flux::string sigstr;
-  switch(sig){
+  switch(sig)
+  {
     case SIGHUP:
       signal(sig, SIG_IGN);
       Rehash();
@@ -134,7 +135,8 @@ void sigact(int sig)
     case SIGSEGV:
       /* this is where the module stack needs to be */
       #ifdef HAVE_SETJMP_H
-      if(LastRunModule){
+      if(LastRunModule)
+      {
 	HandleSegfault(LastRunModule);
 	ModuleHandler::Unload(LastRunModule);
       	Log() << "Attempting to restore Stack to before Crash";
@@ -152,13 +154,13 @@ void sigact(int sig)
       signal(sig, SIG_IGN);
       signal(SIGHUP, SIG_IGN);
       sigstr = siginit(randint(1,20));
-      quitmsg = "Recieved Signal: "+sigstr;
+      quitmsg = "Received Signal: "+sigstr;
       if(ircproto)
 	ircproto->quit(quitmsg);
       quitting = true;
       break;
     default:
-      Log() << "Recieved weird signal from terminal. Sig Number: " << sig;
+      Log() << "Received weird signal from terminal. Sig Number: " << sig;
   }
 }
 /** Signal Initializer

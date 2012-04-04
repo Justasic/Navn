@@ -44,19 +44,22 @@ public:
   {
     Flux::string cmd = params.empty()?"":params[0];
     Log(LOG_SILENT) << "Received CTCP " << Flux::Sanitize(cmd) << " from " << source;
-    Log(LOG_TERMINAL) << "\033[22;31mRecieved CTCP " << Flux::Sanitize(cmd) << " from " << source << "\033[22;36m";
+    Log(LOG_TERMINAL) << "\033[22;31mReceived CTCP " << Flux::Sanitize(cmd) << " from " << source << "\033[22;36m";
       
-    if(cmd == "\001VERSION\001"){ // for CTCP VERSION reply
+    if(cmd == "\001VERSION\001")
+    { // for CTCP VERSION reply
       struct utsname uts;
       if(uname(&uts) < 0)
 	      throw CoreException("uname() Error");
 
 	ircproto->notice(source, "\001VERSION Navn-%s %s %s\001",VERSION_FULL, uts.sysname, uts.machine);
     }
-    if(cmd == "\001TIME\001"){ // for CTCP TIME reply
+    if(cmd == "\001TIME\001")
+    { // for CTCP TIME reply
 	ircproto->notice(source,"\001TIME %s\001", do_strftime(time(NULL), true).c_str());
     }
-    if(cmd == "\001SOURCE\001"){
+    if(cmd == "\001SOURCE\001")
+    {
       ircproto->notice(source, "\001SOURCE https://gitorious.org/navn/navn\001");
       ircproto->notice(source, "\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
       ircproto->notice(source, "\1SOURCE git://gitorious.org/navn/navn.git\1");

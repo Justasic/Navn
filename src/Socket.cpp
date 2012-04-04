@@ -40,7 +40,8 @@ Flux::string ForwardResolution(const Flux::string &hostname)
       case AF_INET:
 	struct sockaddr_in *v4;
 	v4 = reinterpret_cast<struct sockaddr_in*>(haddr);
-	if (!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address))){
+	if (!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address)))
+	{
 	  Log(LOG_DEBUG) << "DNS: " << strerror(errno);
 	  return "";
 	}
@@ -48,7 +49,8 @@ Flux::string ForwardResolution(const Flux::string &hostname)
       case AF_INET6:
 	struct sockaddr_in6 *v6;
 	v6 = reinterpret_cast<struct sockaddr_in6*>(haddr);
-	if (!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address))){
+	if (!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address)))
+	{
 	  Log(LOG_DEBUG) << "DNS: " << strerror(errno);
 	  return "";
 	}
@@ -63,11 +65,9 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
-SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1)
+SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1), server(cserver), port(cport)
 {
-  this->server = cserver;
   this->ip = ForwardResolution(cserver);
-  this->port = cport;
   throwex = false;
 
   if(this->ip.find_first_not_of("1234567890.:/") != Flux::string::npos)
@@ -146,22 +146,26 @@ int SocketIO::Process()
   FD_SET(this->GetFD(), &read);
   
   int sres = select(this->GetFD() + 1, &read, NULL, NULL, &timeout);
-  if(sres == -1 && errno != EINTR){
+  if(sres == -1 && errno != EINTR)
+  {
     Log(LOG_DEBUG) << "Select() error: " << strerror(errno);
     return errno;
   }
+  
   if(throwex) //throw a socket exception if we want to. mainly used for ping timeouts.
     throw SocketException(throwmsg);
+  
   if(FD_ISSET(this->GetFD(), &read) && sres)
   {
-  if(this->recv() == -1 && !quitting)
-      {
-	Log(LOG_RAWIO) << "Socket Error: " << strerror(errno);
-	return errno;
-      }else
-      {
-	return this->recv();
-      }
+    if(this->recv() == -1 && !quitting)
+    {
+      Log(LOG_RAWIO) << "Socket Error: " << strerror(errno);
+      return errno;
+    }
+    else
+    {
+      return this->recv();
+    }
   }
   return sres;
 }
@@ -188,8 +192,10 @@ int SocketIO::send(const Flux::string buf) const
 {
  LastBuf = buf;
  Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();
+ 
  if(!protocoldebug)
    Log(LOG_DEBUG) << buf;
+ 
  int i = write(this->GetFD(), buf.c_str(), buf.size());
  return i;
 }

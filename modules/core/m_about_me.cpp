@@ -50,7 +50,7 @@ public:
     this->SendSyntax(source);
     source.Reply(" ");
     source.Reply("This command simply shows you your\n"
-		  "hostname decoded into seperate strings");
+		  "hostname decoded into separate strings");
     return true;
   }
 };

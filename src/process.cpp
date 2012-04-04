@@ -88,7 +88,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
     }
-    else{
+    else
+    {
       Command *ccom = FindCommand(params2[0], C_CHANNEL);
       if(ccom)
       {
@@ -197,6 +198,8 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
  * simpler to understand in later releases
  * \param buffer The raw socket buffer
  */
+
+// my god, someone PLEASE for the LOVE OF GOD clean this function up!!!
 void process(const Flux::string &buffer)
 {
   EventResult e;
@@ -207,28 +210,37 @@ void process(const Flux::string &buffer)
   SET_SEGV_LOCATION();
   Flux::string buf = buffer;
   buf = buf.replace_all_cs("  ", " ");
+  
   if(buf.empty())
     return;
+  
   Flux::string source;
-  if(buf[0] == ':'){
+  if(buf[0] == ':')
+  {
    size_t space = buf.find_first_of(" ");
+   
    if(space == Flux::string::npos)
      return;
+   
    source = buf.substr(1, space - 1);
    buf = buf.substr(space + 1);
+   
    if(source.empty() || buf.empty())
      return;
   }
   sepstream bufferseparator(buf, ' ');
   Flux::string bufferseparator_token;
   Flux::string command = buf;
+  
   if(bufferseparator.GetToken(bufferseparator_token))
     command = bufferseparator_token;
+  
   std::vector<Flux::string> params;
 
   while(bufferseparator.GetToken(bufferseparator_token))
   {
-    if(bufferseparator_token[0] == ':'){
+    if(bufferseparator_token[0] == ':')
+    {
       if(!bufferseparator.StreamEnd())
 	params.push_back(bufferseparator_token.substr(1)+" "+bufferseparator.GetRemaining());
       else
@@ -244,6 +256,7 @@ void process(const Flux::string &buffer)
   {
     Log(LOG_TERMINAL) << "Source: " << (source.empty()?"No Source":source);
     Log(LOG_TERMINAL) << (command.is_number_only()?"Numeric":"Command") << ": " << command;
+    
    if(params.empty())
      Log(LOG_TERMINAL) << "No Params";
    else
@@ -261,20 +274,24 @@ void process(const Flux::string &buffer)
   std::vector<Flux::string> params2 = SerializeString(message, ' ');
   /***********************************************/
   if(command == "004" && source.search('.')) { server_name = source; }
-  if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION")){
+  if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION"))
+  {
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));
     return; //Dont allow the rest of the system to process ctcp's as it will be caught by the command handler.
   }
   if(command.equals_cs("NICK") && u) { FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0])); u->SetNewNick(params[0]); }
-  if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty())){
+  if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty()))
+  {
     if(!nickname.search('.'))
       u = new User(nickname, uident, uhost);
   }
-  if(command == "QUIT"){
+  if(command == "QUIT")
+  {
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     QuitUser(u);
   }
-  if(command == "PART"){
+  if(command == "PART")
+  {
     FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
     if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
      delete c; //This should remove the channel from all users if the bot is parting..
@@ -295,16 +312,19 @@ void process(const Flux::string &buffer)
   if(command.equals_cs("KICK")){ FOREACH_MOD(I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2])); }
   if(command.equals_ci("ERROR")) { FOREACH_MOD(I_OnConnectionError, OnConnectionError(buffer)); }
   if(command.equals_cs("INVITE")) { FOREACH_MOD(I_OnInvite, OnInvite(u, params[1])); }
-  if(command.equals_cs("NOTICE") && !source.find('.')){
+  if(command.equals_cs("NOTICE") && !source.find('.'))
+  {
     if(!IsValidChannel(receiver)) { FOREACH_MOD(I_OnNotice, OnNotice(u, params2)); } 
     else { FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2)); }
   }
-  if(command.equals_cs("MODE")) {
+  if(command.equals_cs("MODE"))
+  {
     if(IsValidChannel(params[0]) && params.size() == 2) { FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1])); }
     else if(IsValidChannel(params[0]) && params.size() == 3) { FOREACH_MOD(I_OnChannelOp, OnChannelOp(u, c, params[1], params[2])); }
     else if(params[0] == Config->BotNick) { FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1])); }
   }
-  if(command == "JOIN"){
+  if(command == "JOIN")
+  {
     if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
       u = new User(nickname, uident, uhost);
     else if(!c && IsValidChannel(receiver))
@@ -313,7 +333,8 @@ void process(const Flux::string &buffer)
       u->AddChan(c);
     else if(!c->finduser(u->nick))
       c->AddUser(u);
-    else if(u->nick != Config->BotNick){
+    else if(u->nick != Config->BotNick)
+    {
       FOREACH_MOD(I_OnJoin, OnJoin(u, c));
     }
   }

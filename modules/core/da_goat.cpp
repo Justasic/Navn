@@ -141,7 +141,7 @@ public:
     c->SendMessage("Do not ask for op status. you will be granted op status when the moderators feel you deserve op status.");
     c->SendMessage("Do not Mini-mod the chat room. The moderators are there for a reason, we don't need more.");
     c->SendMessage("Do not spam the chat room. This includes flooding by text, private messages, join/quit commands, External links, etc.");
-    c->SendMessage("If you violate any of these rules you will be kicked and possably banned from %s.", c->name.c_str());
+    c->SendMessage("If you violate any of these rules you will be kicked and possibly banned from %s.", c->name.c_str());
     Log(u, this) << "command in " << c->name;
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
