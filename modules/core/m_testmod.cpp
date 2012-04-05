@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Example module
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -59,11 +59,11 @@ class dummy : public module
   commanddummy cmddmy; //Declare our command
 public:
   dummy(const Flux::string &Name):module(Name), cmddmy(this) //Add our command to teh bot
-  { 
+  {
     this->SetAuthor("Lordofsraam"); //Set the author
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
-    
+
     //Implementation i[] = {  }; //Add that we have a module hook, this can be done in 2 ways
     ModuleHandler::Attach(I_OnPrivmsgChannel, this);
     /*or you can do the easy way

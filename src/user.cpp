@@ -1,5 +1,5 @@
 /* Navn IRC bot -- User class and functions
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -11,17 +11,17 @@
 Flux::insensitive_map<User *> UserNickList;
 uint32_t usercnt = 0, maxusercnt = 0;
 
-User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname, const Flux::string &sserver) : nick(snick), ident(sident), host(shost), realname(srealname), server(sserver)
+User::User(const Flux::string &snick, const Flux::string &sident, const Flux::string &shost, const Flux::string &srealname, const Flux::string &sserver) : nick(snick), host(shost), realname(srealname), ident(sident), server(sserver)
 {
  /* check to see if a empty string was passed into the constructor */
  if(snick.empty() || sident.empty() || shost.empty())
    throw CoreException("Bad args sent to User constructor");
- 
+
  this->fullhost = snick+"!"+sident+"@"+shost;
  UserNickList[snick] = this;
- 
+
  Log(LOG_RAWIO) << "New user! " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
- 
+
  ++usercnt;
  if(usercnt > maxusercnt)
  {
@@ -75,7 +75,7 @@ void User::SendPrivmsg(const char *fmt, ...)
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
   this->SendPrivmsg(Flux::string(buffer));
-  va_end(args); 
+  va_end(args);
 }
 
 bool User::IsOwner()
@@ -92,7 +92,7 @@ void User::SetNewNick(const Flux::string &newnick)
 {
   if(newnick.empty())
     throw CoreException("User::SetNewNick() was called with empty arguement");
-  
+
   UserNickList.erase(this->nick);
   this->nick = newnick;
   UserNickList[this->nick] = this;
@@ -135,10 +135,10 @@ void User::SendPrivmsg(const Flux::string &message)
 User *finduser(const Flux::string &fnick)
 {
   Flux::map<User *>::iterator it = UserNickList.find(fnick);
-  
+
   if(it != UserNickList.end())
     return it->second;
-  
+
   return nullptr;
 }
 

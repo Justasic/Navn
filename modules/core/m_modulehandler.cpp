@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Module handling commands
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -18,7 +18,7 @@ public:
     this->SetDesc("Lists all loaded modules");
     this->SetSyntax("\037priority\037");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string priority = params.size() == 2?params[1]:"";
@@ -59,7 +59,7 @@ public:
     source.Reply("Total of \2%i\2 Modules", c);
     Log(source.u, this) << "to list all module" << (priority.empty()?"":" with priority "+priority);
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -79,7 +79,7 @@ public:
     this->SetDesc("Load a module");
     this->SetSyntax("\37name\37");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string module = params[1];
@@ -102,7 +102,7 @@ public:
       }
     }
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -124,7 +124,7 @@ public:
     this->SetDesc("Unloads a module");
     this->SetSyntax("\37name\37");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string modulestr = params[1];
@@ -138,13 +138,13 @@ public:
 	source.Reply("Module \002%s\002 isn't loaded", modulestr.c_str());
 	return;
       }
-      
+
       if(!moo->handle || moo->GetPermanent())
       {
 	source.Reply("Unable to remove module \002%s\002", modulestr.c_str());
 	return;
       }
-      
+
       if(!ModuleHandler::Unload(moo))
       {
 	source.Reply("Failed to remove module %s", modulestr.c_str());
@@ -157,7 +157,7 @@ public:
       }
     }
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -176,7 +176,7 @@ public:
     this->SetDesc("Reloads a module");
     this->SetSyntax("\37name\37");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string modulestr = params[1];
@@ -196,7 +196,7 @@ public:
 	source.Reply("Unable to reload module \002%s\002", modulestr.c_str());
 	return;
       }
-      
+
       bool err = ModuleHandler::Unload(mo);
       ModErr err2 = ModuleHandler::LoadModule(modulestr);
       if(!err || err2 != MOD_ERR_OK)
@@ -211,7 +211,7 @@ public:
       }
     }
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -231,7 +231,7 @@ public:
    this->SetDesc("Provides info on a module");
    this->SetSyntax("\37name\37");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     const Flux::string modd = params[1];
@@ -240,37 +240,37 @@ public:
       this->SendSyntax(source);
       return;
     }
-    
+
     module *mo = FindModule(modd);
     if(!mo)
     {
       source.Reply("Module \2%s\2 is not loaded", modd.c_str());
       return;
     }
-    
+
     source.Reply("******** \2%s\2 Info ********", mo->name.c_str());
     source.Reply("Module: \2%s\2 Version: \2%s\2 Author: \2%s\2\nLoaded: \2%s\2", mo->filename.c_str(), mo->GetVersion().c_str(), mo->GetAuthor().c_str(), do_strftime(mo->GetLoadTime()).c_str());
-    
+
     Flux::string cmds;
     for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
       if((it->second->mod == mo))//For /msg commands
 	cmds += it->second->name+" ";
       cmds.trim();
-    
+
     for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
       if((it->second->mod == mo)) //For Channel Commands
 	cmds += it->second->name+" ";
     cmds.trim();
-    
+
     if(cmds.empty())
       source.Reply("Adds no commands");
     else
       source.Reply("Adds commands: \2%s\2", cmds.c_str());
       source.Reply("******** End Info ********");
-    
+
     Log(source.u, this) << "to show info on module " << mo->name;
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -301,7 +301,7 @@ public:
     Implementation i[] = { I_OnStart, I_OnReload };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
-  
+
   void OnStart(int, char**)
   {
     CurrentModuleList = SerializeString(Config->Modules, ',');
@@ -311,7 +311,7 @@ public:
       printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
     }
   }
-  
+
   void OnReload()
   {
     // FIXME: Rewrite this so it isn't so dumb and actually loads the different modules.

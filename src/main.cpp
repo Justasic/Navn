@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Main entry point file
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -8,14 +8,14 @@
  * Based on the original code of Anope by The Anope Team.
  */
 /**
- *\file  main.cpp 
+ *\file  main.cpp
  *\brief Contains the main() function.
  *\mainpage Documentation for Navn - The C++ IRC Sockets bot by Flux-net
  *\section history Navn's History
  * Navn was started by Lordofsraam because he didn't like depending
- *  on an IRC client to run his scripts for the IRC channel. It really staterted 
+ *  on an IRC client to run his scripts for the IRC channel. It really staterted
  * out as a hunt to be able to tell the time in the IRC channel because
- * Justasic lived in a different timezone. From there it evolved to what you see today 
+ * Justasic lived in a different timezone. From there it evolved to what you see today
  * with the help of Justasic coming in to help with the code and debugging.
  * If you want a really detailed history go look at our svn commit log in googlecode (old)
  * or our Git history on gitorious.
@@ -58,9 +58,9 @@ void Connect()
     return;
   ++startcount;
   Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
-  
+
   FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
-  
+
   if(Config->Server.empty())
     throw SocketException("No Server Specified.");
   if(Config->Port.empty())
@@ -70,18 +70,18 @@ void Connect()
     SocketIO *s = sock;
     delete s;
   }
-  
+
   FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
-  
+
   sock = new SocketIO(Config->Server, Config->Port);
   sock->Connect();
-  
+
   if(ircproto)
   {
     ircproto->user(Config->Ident, Config->Realname);
     ircproto->nick(Config->BotNick);
   }
-  
+
   FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
 }
 
@@ -108,28 +108,28 @@ int main (int argcx, char** argvx, char *envp[])
       Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
       goto SocketStart;
     }
-    
+
     if(!sock)
       goto SocketStart;
-    
+
     ircproto = new IRCProto();
     time_t last_check = time(NULL);
-    
+
     //Set the username and nick
     ircproto->user(Config->Ident, Config->Realname);
     ircproto->nick(Config->BotNick);
-    
+
     if(!Config->ServerPassword.empty())
       ircproto->pass(Config->ServerPassword);
-    
+
     FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
-    
+
     while(!quitting)
     {
       Log(LOG_RAWIO) << "Top of main loop";
       if(++loopcount >= 50)
 	raise(SIGSEGV); //prevent loop bombs, we raise a segfault because the segfault handler will handle it better
-      
+
       /* Process the socket engine */
       try { sock->Process(); }
       catch(SocketException &exc)

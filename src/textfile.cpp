@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Text File parser wrapper
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -187,12 +187,12 @@ Flux::vector TextFile::DirectoryListing(const Flux::string &directory)
   Flux::vector nil;
   if(!TextFile::IsDirectory(directory))
     return nil;
-  
+
   DIR *dp;
   struct dirent *drip;
   if((dp = opendir(directory.c_str())) == NULL)
     return nil;
-  
+
   Flux::vector files;
   while ((drip = readdir(dp)) != NULL)
   {
@@ -202,7 +202,7 @@ Flux::vector TextFile::DirectoryListing(const Flux::string &directory)
       continue;
     files.push_back(Flux::string(drip->d_name));
   }
-  
+
   closedir(dp);
   return files;
 }

@@ -1,5 +1,5 @@
 /* Navn IRC bot -- User information module
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -65,19 +65,19 @@ class about_me : public module
   CommandDecodeHost host;
 public:
   about_me(const Flux::string &Name):module(Name), host(this)
-  { 
+  {
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_LAST);
     ModuleHandler::Attach(I_OnPrivmsgChannel, this);
   }
-  
+
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string msg;
     for(unsigned i=0; i < params.size(); ++i)
       msg += params[i]+' ';
-    
+
     msg.trim();
     if(msg.equals_ci("about me")){
 	  u->SendMessage("Raw: %s", LastBuf.c_str());

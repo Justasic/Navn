@@ -1,5 +1,5 @@
 /* Navn IRC bot -- General includes
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -14,8 +14,8 @@
  *\file includes.h Inlcludes header file
  *\brief Automatically includes all of the things we've used so far.
  *\author Justasic
- * The only use of this file is to fix the includes hell that 
- * Justasic was having earlier. if you can fix it an easier 
+ * The only use of this file is to fix the includes hell that
+ * Justasic was having earlier. if you can fix it an easier
  * way then do so.
  */
 #include "Socket.h"
@@ -24,7 +24,7 @@
 #include "thread.h"
 #include "INIReader.h"
 #include <utility>
-#include <stdint.h> 
+#include <stdint.h>
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <dirent.h>
@@ -38,4 +38,3 @@
 #include <cmath>
 #include <alloca.h>
 #endif
-

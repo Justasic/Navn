@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Search url generator
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -36,7 +36,7 @@
  * @{
  */
 
-/** 
+/**
  * \fn Flux::string search(Flux::string s, Flux::string command)
  * \brief generates search links for url's
  * This is what generates the search links.

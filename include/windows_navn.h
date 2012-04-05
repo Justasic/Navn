@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Windows shit
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -55,7 +55,7 @@
 	# undef EINPROGRESS
 	#endif
 	#define EINPROGRESS WSAEWOULDBLOCK
-	
+
 	/* reinvent some functions as they don't exist in windows */
 	extern void *dlopen(const char*, int);
 	extern char *dlerror(void);
@@ -142,7 +142,7 @@
 	  } nullptr = {};
 	# endif // ifndef nullptr
 	#endif // ifndef __GXX_EXPERIMENTAL_CXX0X__
-	
+
 	#define GetCurrentDir getcwd
 	#define Delete unlink
 	#define MODULE_HOOK(x) \

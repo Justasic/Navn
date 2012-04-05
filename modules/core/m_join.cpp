@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Join-part management for the bot
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -36,14 +36,14 @@ public:
       Channel *c = findchannel(chan);
       if(c){
 	c->SendJoin();
-	
+
 	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
 	WelcomeMessage.trim();
 	if(!WelcomeMessage.empty())
 	  c->SendMessage(WelcomeMessage.c_str());
       }else{
 	ircproto->join(chan);
-	
+
 	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
 	WelcomeMessage.trim();
 	if(!WelcomeMessage.empty())
@@ -72,14 +72,14 @@ public:
   {
     Flux::string chan = params[1];
     User *u = source.u;
-    
+
     if(!u->IsOwner())
     {
      source.Reply(ACCESS_DENIED);
      Log(u) << "attempted to make bot part " << chan;
      return;
     }
-    
+
     if(!IsValidChannel(chan))
      source.Reply(CHANNEL_X_INVALID, chan.c_str());
     else
@@ -107,7 +107,7 @@ class Join : public module
   CommandPart cmdpart;
 public:
   Join(const Flux::string &Name):module(Name), cmdjoin(this), cmdpart(this)
-  { 
+  {
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");
   }

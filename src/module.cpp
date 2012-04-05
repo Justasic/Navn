@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Module Functions
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -9,21 +9,22 @@
  */
 
 #include "module.h"
-//This code sucks, you know it and I know it. 
+//This code sucks, you know it and I know it.
 //Move on and call me an idiot later.
 
-/** 
+/**
  * \fn module::module(Flux::string n)
  * \brief Module Constructor
  * \param name Name of the module
  */
-module::module(const Flux::string &n) : name(n), author(""), version(""), handle(nullptr), Priority(PRIORITY_DONTCARE), loadtime(time(NULL)), filename(""),  filepath(""), permanent(false)
+
+module::module(const Flux::string &n) : author(""), version(""), loadtime(time(NULL)), Priority(PRIORITY_DONTCARE), permanent(false), handle(nullptr), name(n), filename(""),  filepath("")
 {
   SET_SEGV_LOCATION();
-  
+
   if(FindModule(this->name))
     throw ModuleException("Module already exists!");
-  
+
   Modules[this->name] = this;
   if(InTerm())
     Log() << "Loaded module " << n;

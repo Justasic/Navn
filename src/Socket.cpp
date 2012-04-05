@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Socket Engine
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -8,7 +8,7 @@
  * Based on the original code of Anope by The Anope Team.
  */
 /**
- *\file  Socket.cpp 
+ *\file  Socket.cpp
  *\brief Contains the Socket engine.
  */
 #include "SocketException.h"
@@ -65,7 +65,7 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
-SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : sockn(-1), server(cserver), port(cport)
+SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : server(cserver), port(cport), sockn(-1)
 {
   this->ip = ForwardResolution(cserver);
   throwex = false;
@@ -74,7 +74,7 @@ SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : soc
     throw SocketException("Unable to resolve IP address from hostname: "+cserver);
   if(this->ip.search(':'))
     this->ipv6 = true;
-  /****************************/ 
+  /****************************/
 }
 
 int SocketIO::GetFD() const { return sockn; }
@@ -94,7 +94,7 @@ bool SocketIO::SetBlocking()
 
 SocketIO::~SocketIO()
 {
- if(is_valid()) 
+ if(is_valid())
    close(sockn);
  FD_CLR(this->GetFD(), &ReadFD);
 }
@@ -109,11 +109,11 @@ bool SocketIO::Connect()
   if((rv = getaddrinfo(this->ip.c_str(), this->port.c_str(), NULL, &servinfo)) != 0)
     throw SocketException(printfify("Could not resolve server (%s:%i): %s",this->ip.c_str(),
 				   static_cast<int>(this->port), gai_strerror(rv)).c_str());
-  
+
   for(struct addrinfo *p = servinfo; p != NULL; p = p->ai_next)
   {
     sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-    if (this->GetFD() < 0) 
+    if (this->GetFD() < 0)
       continue;
     connected = connect(this->GetFD(), p->ai_addr, p->ai_addrlen);
     if (connected == -1)
@@ -123,12 +123,12 @@ bool SocketIO::Connect()
     }
     break;
   }
-  
+
   if (connected == -1)
     throw SocketException("Connection Failed.");
-    
+
   freeaddrinfo(servinfo); //Clear up used memory we dont need anymore
-  
+
   this->SetNonBlocking();
   FD_SET(this->GetFD(), &ReadFD);
   Log(LOG_DEBUG) << "Connected to " << this->server << ":" << this->port << ' ' << '(' << this->ip << ')';
@@ -141,20 +141,20 @@ int SocketIO::Process()
   timeout.tv_sec = Config->SockWait;
   timeout.tv_usec = 0; //this timeout keeps the bot from being a CPU hog for no reason :)
   fd_set read = ReadFD/*, write = WriteFD, except = ExceptFD*/;
-  
+
   FD_ZERO(&read);
   FD_SET(this->GetFD(), &read);
-  
+
   int sres = select(this->GetFD() + 1, &read, NULL, NULL, &timeout);
   if(sres == -1 && errno != EINTR)
   {
     Log(LOG_DEBUG) << "Select() error: " << strerror(errno);
     return errno;
   }
-  
+
   if(throwex) //throw a socket exception if we want to. mainly used for ping timeouts.
     throw SocketException(throwmsg);
-  
+
   if(FD_ISSET(this->GetFD(), &read) && sres)
   {
     if(this->recv() == -1 && !quitting)
@@ -192,10 +192,10 @@ int SocketIO::send(const Flux::string buf) const
 {
  LastBuf = buf;
  Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();
- 
+
  if(!protocoldebug)
    Log(LOG_DEBUG) << buf;
- 
+
  int i = write(this->GetFD(), buf.c_str(), buf.size());
  return i;
 }

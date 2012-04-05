@@ -167,7 +167,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
     dlclose(handle);
     return MOD_ERR_NOLOAD;
   }
-  
+
   if(!f)
     throw CoreException("Can't find module constructor, yet no moderr?");
 
@@ -303,7 +303,7 @@ void ReadConfig()
 {
   sepstream sep(Config->Modules, ',');
   Flux::string tok;
-  
+
   while(sep.GetToken(tok))
   {
     tok.trim();

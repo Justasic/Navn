@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Flux::string class
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -34,7 +34,7 @@
 # pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 # define DEPRECATED(func) func
 #endif
-/* stupid windows class crap for the modules */ 
+/* stupid windows class crap for the modules */
 #ifdef _WIN32
 # define CoreExport __declspec(dllimport)
 # define DllExport __declspec(dllexport)
@@ -57,10 +57,10 @@ template<typename T, typename V> inline T value_cast(const V &y)
   T x;
   if(!(stream << std::setprecision(800) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
-  
+
   if(!(stream >> x)) //If stringstream fails, force the cast.
     x = *reinterpret_cast<T*>(const_cast<V*>(&(y)));
-  
+
   return x;
 }
 
@@ -374,12 +374,12 @@ namespace Flux{
     inline void tolower() { std::transform(_string.begin(), _string.end(), _string.begin(), ::tolower); }
     inline void toupper() { std::transform(_string.begin(), _string.end(), _string.begin(), ::toupper); }
     inline void clear() { this->_string.clear(); }
-    
+
     inline bool search(const string &_str) { if(_string.find(_str._string) != sstr::npos) return true; return false; }
     inline bool search(const string &_str) const { if(_string.find(_str._string) != sstr::npos) return true; return false; }
     inline bool search_ci(const string &_str) { if(ci::string(this->_string.c_str()).find(ci::string(_str.c_str())) != ci::string::npos) return true; return false; }
     inline bool search_ci(const string &_str) const { if(ci::string(this->_string.c_str()).find(ci::string(_str.c_str())) != ci::string::npos) return true; return false; }
-    
+
     inline size_type find(const string &_str, size_type pos = 0) const { return this->_string.find(_str._string, pos); }
     inline size_type find(char chr, size_type pos = 0) const { return this->_string.find(chr, pos); }
     inline size_type find_ci(const string &_str, size_type pos = 0) const { return ci::string(this->_string.c_str()).find(ci::string(_str._string.c_str()), pos); }

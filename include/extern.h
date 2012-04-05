@@ -1,5 +1,5 @@
 /* Navn IRC bot -- External variable definition header
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -197,5 +197,5 @@ if (true) \
 else \
   static_cast<void>(0)
 
-      
+
 #endif

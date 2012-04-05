@@ -1,5 +1,5 @@
 /* Navn IRC bot -- CTCP handler
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -45,7 +45,7 @@ public:
     Flux::string cmd = params.empty()?"":params[0];
     Log(LOG_SILENT) << "Received CTCP " << Flux::Sanitize(cmd) << " from " << source;
     Log(LOG_TERMINAL) << "\033[22;31mReceived CTCP " << Flux::Sanitize(cmd) << " from " << source << "\033[22;36m";
-      
+
     if(cmd == "\001VERSION\001")
     { // for CTCP VERSION reply
       struct utsname uts;

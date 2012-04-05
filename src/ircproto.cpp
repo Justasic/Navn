@@ -1,5 +1,5 @@
 /* Navn IRC bot -- IRC Protocol classes
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -16,7 +16,7 @@ IRCProto::IRCProto() {}
 /**
  * \brief Sends a IRC private message to the user or channel
  * \param Destination Where the message will go
- * \param Message The message to send to Destination 
+ * \param Message The message to send to Destination
  */
 void IRCProto::privmsg(const Flux::string &where, const char *fmt, ...)
 {
@@ -44,7 +44,7 @@ void IRCProto::privmsg(const Flux::string &where, const Flux::string &msg)
 /**
  * \brief Sends a IRC notice to the user or channel
  * \param Destination Where the message will go
- * \param Message The message to send to Destination 
+ * \param Message The message to send to Destination
  */
 void IRCProto::notice(const Flux::string &where, const char *fmt, ...)
 {
@@ -72,7 +72,7 @@ void IRCProto::notice(const Flux::string &where, const Flux::string &msg)
 /**
  * \brief Sends a IRC action (/me) to the user or channel
  * \param Destination Where the message will go
- * \param Message The message to send to Destination 
+ * \param Message The message to send to Destination
  */
 void IRCProto::action(const Flux::string &where, const char *fmt, ...)
 {

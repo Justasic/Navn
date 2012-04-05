@@ -1,9 +1,9 @@
 /* Timer stuff.
  *
  * Functions ported from Anope IRC Services
- * 
+ *
  * (C) 2003-2011 Anope Team
- * 
+ *
  * Based on the original code of Epona by Lara.
  * Based on the original code of Services by Andy Church.
  *

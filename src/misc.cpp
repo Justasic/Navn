@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Miscellaneous Functions
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -127,7 +127,7 @@ Flux::string StripColors(const Flux::string &input)
     }
     else
       seq = 0;
-    
+
     if (seq || ((*i == 2) || (*i == 15) || (*i == 22) || (*i == 21) || (*i == 31)))
     {
       if (i != sentence.begin())
@@ -146,7 +146,7 @@ Flux::string StripColors(const Flux::string &input)
     else
       ++i;
   }
-  
+
   return sentence;
 }
 
@@ -175,12 +175,12 @@ Flux::string Flux::Sanitize(const Flux::string &string)
   special_chars("\001",""),
   special_chars("","")
  };
- 
+
   Flux::string ret = StripColors(string.c_str());
 
   for(int i = 0; special[i].character.empty() == false; ++i)
     ret = ret.replace_all_cs(special[i].character, special[i].replace);
-  
+
   return ret.c_str();
 }
 

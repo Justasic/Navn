@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Logging header
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -30,7 +30,7 @@ public:
   Log(User*, Command*);
   Log(LogType, User*, Command*);
   ~Log();
-  
+
   template<typename T> Log &operator<<(T val)
   {
    this->buffer << val;

@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Separation Stream Functions
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -13,7 +13,7 @@
 #include "flux.h"
 #include "extern.h"
 /**
- * \file  Sepstream.cpp 
+ * \file  Sepstream.cpp
  * \brief Contains the Seperator Stream class.
  * This class allows for strings to be split into substrings
  * based on the charactor used to split those strings
@@ -32,12 +32,12 @@ bool sepstream::GetToken(Flux::string &token)
 			{
 				last_starting_position = n + 1;
 				token = Flux::string(lsp, n + 1 == tokens.end() ? n + 1 : n);
-				
+
 				while (token.length() && token.rfind(sep) == token.length() - 1)
                                  token.erase(token.end() - 1);
 
 				++n;
-				
+
 				return true;
 			}
 			++n;
@@ -70,7 +70,7 @@ bool sepstream::StreamEnd()
  * These classes depend on ascii_case_insensitive_map
  *
  */
- 
+
 
 bool ci::ci_char_traits::eq(char c1st, char c2nd)
 {

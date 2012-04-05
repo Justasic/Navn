@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Channel class and functions
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -33,15 +33,15 @@ User *Channel::finduser(const Flux::string &usr)
 {
   Flux::insensitive_map<User*>::iterator it1 = UserNickList.find(usr);
   User *u = it1->second;
-  
+
   if(!u)
     return nullptr;
-  
+
   UList::iterator it = UserList.find(u);
-  
+
   if(it != UserList.end())
     return it->first;
-  
+
   return nullptr;
 }
 
@@ -51,7 +51,7 @@ void Channel::AddUser(User *u) { if(u) this->UserList[u] = this; }
 void Channel::DelUser(User *u)
 {
   UList::iterator it = UserList.find(u);
-  
+
   if(it != UserList.end())
     UserList.erase(it);
 }
@@ -206,7 +206,7 @@ void QuitUser(User *u)
 {
   if(!u)
     return;
-  
+
   for(Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
     for(UList::iterator it1 = it->second->UserList.begin(), it1_end = it->second->UserList.end(); it1 != it1_end; ++it1)
     {

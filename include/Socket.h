@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Socket engine header
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -8,7 +8,7 @@
  * Based on the original code of Anope by The Anope Team.
  */
 /**
- *\file  Socket.h 
+ *\file  Socket.h
  *\brief Socket header for Socket.cpp
  */
 #pragma once

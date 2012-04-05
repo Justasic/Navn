@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Channel class header
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -84,3 +84,4 @@ public:
   void SendNotice(const char*, ...);
 };
 #endif
+

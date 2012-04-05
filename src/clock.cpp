@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Clock functions for weather module
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -42,7 +42,7 @@ Flux::string Clock::CustomOffset(int i)
 Flux::string Clock::MST()
 {
   std::stringstream r;
-  
+
   int h = ptm->tm_hour - isdst?6:7;
   CorrectHour(h);
   r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;

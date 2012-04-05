@@ -1,5 +1,5 @@
 /* Navn IRC bot -- IRC help module
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -35,19 +35,19 @@ public:
   {
    this->SetDesc("Displays help messages");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     int c=0;
     if(!params.empty())
     {
       Command *com = FindCommand(params[1], C_PRIVATE);
-      
+
       if(com && !com->OnHelp(source, ""))
 	source.Reply("No help available for \2%s\2", params[1].c_str());
       else if(!com)
 	source.Reply("No help available for \2%s\2", params[1].c_str());
-      
+
       Log(source.u) << "used help command on " << params[1];
     }else
     {
@@ -77,19 +77,19 @@ public:
   {
    this->SetDesc("Displays Channel help messages");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string cmds;
     if(!params.empty())
     {
       Command *c = FindCommand(params[1], C_CHANNEL);
-      
+
       if(c && !c->OnHelp(source, ""))
 	source.Reply("No help available for \2%s\2", params[1].c_str());
       else if(!c)
 	source.Reply("No help available for \2%s\2", params[1].c_str());
-      
+
       Log(source.u) << "used help command on " << params[1];
     }else
     {

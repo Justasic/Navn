@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Logging classes
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -90,11 +90,11 @@ void CheckLogDelete(Log *log)
 
   if(files.empty())
     Log(LOG_TERMINAL) << "No Logs!";
-  
+
   for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
   {
     Flux::string file = dir+(*it);
-    
+
     if(TextFile::IsFile(file))
     {
       Flux::string t = file.isolate('-', ' ').strip('-');
@@ -136,7 +136,7 @@ Flux::string Log::TimeStamp()
   else
 #endif
     strftime(tbuf, sizeof(tbuf) - 1, "[%b %d %H:%M:%S %Y]", &tm);
-    
+
   return Flux::Sanitize(tbuf);
 }
 
@@ -151,14 +151,14 @@ Log::Log(LogType t, User *user):type(t), u(user), c(NULL) { if(!u) throw CoreExc
 Log::Log(User *user): type(LOG_NORMAL), u(user), c(NULL) { if(!u) throw CoreException("No user argument in Log()"); }
 /// \overload Log::Log(User *user, Command *command):type(LOG_NORMAL), u(user), c(command)
 Log::Log(User *user, Command *command):type(LOG_NORMAL), u(user), c(command)
-{ 
+{
   if(!u) throw CoreException("No user argument in Log()");
   if(!c) throw CoreException("No command argument in Log()");
 }
 /// \overload Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command)
 Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command)
-{ 
-  if(!u) throw CoreException("No user argument in Log()"); 
+{
+  if(!u) throw CoreException("No user argument in Log()");
   if(!c) throw CoreException("No command argument in Log()");
 }
 
@@ -173,12 +173,12 @@ Log::~Log()
   else
 	this->filename = "";
   Flux::string message = Flux::Sanitize(this->buffer.str()), raw = this->buffer.str();
-  
+
   if(this->u && !this->c)
    message = this->u->nick + " " + message;
   if(this->u && this->c)
     message = this->u->nick + " used " + this->c->name + " " + message;
-  
+
   if((type == LOG_RAWIO || type == LOG_DEBUG) && protocoldebug && InTerm())
     std::cout << TimeStamp() << " " << (nocolor?NoTermColor(message):message) << std::endl;
   else if(type == LOG_NORMAL && nofork && InTerm())

@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Incoming IRC Protocol parser
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -33,7 +33,7 @@ if(true) \
 else \
   static_cast<void>(0);
 
-/** 
+/**
  * \fn void ProcessJoin(CommandSource &source, const Flux::string &chan)
  * \brief Processes the /who numeric (352), this should only be used in Process() unless its for something special
  * \param source CommandSource struct used to find all the information needed to make new users
@@ -86,14 +86,14 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
   SET_SEGV_LOCATION();
   User *u = Source.u;
   Channel *c = Source.c;
-  
+
   if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
-  
+
  if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
   {
     if(!protocoldebug)
       Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
-    
+
     if(!IsValidChannel(receiver))
     {
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
@@ -106,13 +106,13 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       {
 	Source.command = ccom->name;
 	params2.erase(params2.begin());
-	
+
 	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
 	{
 	  params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
 	  params2.erase(params2.begin() + ccom->MaxParams);
 	}
-	
+
 	if(params2.size() < ccom->MinParams)
 	{
 	  ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
@@ -144,7 +144,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
       else
       {
 	//This will one day be a actual function for channel only messages..
-	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(u, c, params2)); 
+	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(u, c, params2));
       }
     }
   }
@@ -155,13 +155,13 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
     {
       Source.command = com->name;
       params2.erase(params2.begin()); //Remove the command from the params
-      
+
       while(com->MaxParams > 0 && params2.size() > com->MaxParams)
       { // Trim the command separation, then paste the rest unmodified as the last param.
 	 params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
 	 params2.erase(params2.begin() + com->MaxParams);
       }
-      
+
       if(params2.size() < com->MinParams)
       { // Insufficent params
 	com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
@@ -200,7 +200,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 
 /*********************************************************************************/
 
-/** 
+/**
  * \fn void process(const Flux::string &buffer)
  * \brief Main Processing function.
  * This function takes the raw socket buffer and processes it down to
@@ -218,35 +218,35 @@ void process(const Flux::string &buffer)
   FOREACH_RESULT(I_OnPreReceiveMessage, OnPreReceiveMessage(buffer), e);
   if(e != EVENT_CONTINUE)
     return;
-  
+
   SET_SEGV_LOCATION();
   Flux::string buf = buffer;
   buf = buf.replace_all_cs("  ", " ");
-  
+
   if(buf.empty())
     return;
-  
+
   Flux::string source;
   if(buf[0] == ':')
   {
    size_t space = buf.find_first_of(" ");
-   
+
    if(space == Flux::string::npos)
      return;
-   
+
    source = buf.substr(1, space - 1);
    buf = buf.substr(space + 1);
-   
+
    if(source.empty() || buf.empty())
      return;
   }
   sepstream bufferseparator(buf, ' ');
   Flux::string bufferseparator_token;
   Flux::string command = buf;
-  
+
   if(bufferseparator.GetToken(bufferseparator_token))
     command = bufferseparator_token;
-  
+
   std::vector<Flux::string> params;
 
   while(bufferseparator.GetToken(bufferseparator_token))
@@ -262,13 +262,13 @@ void process(const Flux::string &buffer)
     else
       params.push_back(bufferseparator_token);
   }
-  
+
   Log(LOG_RAWIO) << "Received: " << Flux::Sanitize(buffer);
   if(protocoldebug)
   {
     Log(LOG_TERMINAL) << "Source: " << (source.empty()?"No Source":source);
     Log(LOG_TERMINAL) << (command.is_number_only()?"Numeric":"Command") << ": " << command;
-    
+
    if(params.empty())
      Log(LOG_TERMINAL) << "No Params";
    else
@@ -287,7 +287,7 @@ void process(const Flux::string &buffer)
   /***********************************************/
   if(command == "004" && source.search('.'))
     server_name = source;
-  
+
   if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION"))
   {
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));
@@ -299,19 +299,19 @@ void process(const Flux::string &buffer)
     FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0]));
     u->SetNewNick(params[0]);
   }
-  
+
   if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty()))
   {
     if(!nickname.search('.'))
       u = new User(nickname, uident, uhost);
   }
-  
+
   if(command.equals_ci("QUIT"))
   {
     FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
     QuitUser(u);
   }
-  
+
   if(command.equals_ci("PART"))
   {
     FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
@@ -321,18 +321,18 @@ void process(const Flux::string &buffer)
     {
      if(u)
        u->DelChan(c);
-     
+
      if(c)
        c->DelUser(u);
-     
+
      if(u && c && !u->findchannel(c->name))
      {
        Log(LOG_TERMINAL) << "Deleted " << u->nick << '|' << c->name << '|' << u->findchannel(c->name);
-       delete u; 
+       delete u;
       }
     }
   }
-  
+
   if(command.is_pos_number_only())
   {
     FOREACH_MOD(I_OnNumeric, OnNumeric((int)command, params));
@@ -344,7 +344,7 @@ void process(const Flux::string &buffer)
   EVENT_HOOK(command, "KICK", I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2]));
   EVENT_HOOK(command, "ERROR", I_OnConnectionError, OnConnectionError(buffer));
   EVENT_HOOK(command, "INVITE", I_OnInvite, OnInvite(u, params[1]));
-  
+
   if(command.equals_ci("NOTICE") && !source.find('.'))
   {
     if(!IsValidChannel(receiver))
@@ -356,7 +356,7 @@ void process(const Flux::string &buffer)
       FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2));
     }
   }
-  
+
   if(command.equals_ci("MODE"))
   {
     if(IsValidChannel(params[0]) && params.size() == 2)
@@ -372,7 +372,7 @@ void process(const Flux::string &buffer)
       FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1]));
     }
   }
-  
+
   if(command.equals_ci("JOIN"))
   {
     if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
@@ -388,7 +388,7 @@ void process(const Flux::string &buffer)
       FOREACH_MOD(I_OnJoin, OnJoin(u, c));
     }
   }
-  
+
   /**************************************/
   CommandSource Source;
   Source.u = u; //User class
@@ -400,10 +400,10 @@ void process(const Flux::string &buffer)
   {
     ProcessJoin(Source, c->name);
   }
-  
+
   if(source.empty() || message.empty() || params2.empty())
     return;
-  
+
   ProcessCommand(Source, params2, receiver, command);
   command.clear();
 }

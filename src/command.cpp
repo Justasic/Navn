@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Command header
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -12,7 +12,7 @@
 /*******************************************************************************************/
 /* why is this in here with the rest of the commands that send to the server? i dont fucking know lol */
 /**
- *\file  command.cpp 
+ *\file  command.cpp
  *\brief Contains the command class.
  */
 Oper::Oper(){}
@@ -58,7 +58,7 @@ void Oper::satopic(const Flux::string &target, const char *fmt, ...)
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
   this->satopic(target, Flux::string(buffer));
-  va_end(args); 
+  va_end(args);
 }
 
 void Oper::sahost(const Flux::string &target, const Flux::string &host)
@@ -88,7 +88,7 @@ void Oper::saname(const Flux::string &target, const char *fmt, ...)
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
   this->saname(target, Flux::string(buffer));
-  va_end(args); 
+  va_end(args);
 }
 
 void Oper::wallops(const Flux::string &message)
@@ -103,7 +103,7 @@ void Oper::wallops(const char *fmt, ...)
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
   this->wallops(Flux::string(buffer));
-  va_end(args); 
+  va_end(args);
 }
 
 void Oper::globops(const Flux::string &message)
@@ -118,7 +118,7 @@ void Oper::globops(const char *fmt, ...)
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
   this->globops(Flux::string(buffer));
-  va_end(args); 
+  va_end(args);
 }
 
 void Oper::zline(const Flux::string &ipmask, const Flux::string &time, const Flux::string &reason)
@@ -214,7 +214,7 @@ Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min
   for(unsigned i=0; i < sname.size(); ++i) //commands with spaces can screw up the command handler
     if(isspace(sname[i]))
       throw ModuleException("Command \""+ this->name +"\" cannot contain spaces!");
-  
+
   if(this->type == C_NULL)
     throw ModuleException("Command \""+this->name+"\" MUST have a type!");
 
@@ -291,7 +291,7 @@ void Command::SendSyntax(CommandSource &source, const Flux::string &syn)
  */
 const Flux::string &Command::GetDesc() const
 {
- return this->desc; 
+ return this->desc;
 }
 
 /**

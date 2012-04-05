@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Signal Handler
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -62,7 +62,7 @@ havecxx11 = true;
  Flux::string mbuf;
  size_t size;
  time_t now = time(NULL);
- 
+
  size = backtrace(array, 10);
  if(TextFile::IsFile("SEGFAULT.log"))
    Delete("SEGFAULT.log");
@@ -73,7 +73,7 @@ havecxx11 = true;
    struct utsname uts;
    if(uname(&uts) < 0)
      throw CoreException("uname() Error");
-      
+
    strftime(tbuf, sizeof(tbuf), "[%b %d %H:%M:%S %Y]", localtime(&now));
    slog << "====================== Segmentation Fault ======================" << std::endl;
    slog << "Please report this bug to http://bugs.Azuru.net and submit a bug report." << std::endl;

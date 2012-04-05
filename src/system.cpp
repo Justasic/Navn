@@ -24,14 +24,14 @@ Flux::string getprogdir(const Flux::string &dir)
     bot_bin = remainder;
     Flux::string::size_type n = bot_bin.rfind("/");
     Flux::string fullpath;
-    
+
     if (bot_bin[0] == '/')
       fullpath = bot_bin.substr(0, n);
     else
       fullpath = Flux::string(buffer) + "/" + bot_bin.substr(0, n);
-    
+
     bot_bin = bot_bin.substr(n + 1, remainder.length());
-    
+
     return fullpath;
   }
   return "/";
@@ -88,7 +88,7 @@ public:
     if(message.size()>2){
       message.resize(message.size()-2);
     }
-    
+
     Flux::string fmessage = message;
     char * cmessage = const_cast<char*>(fmessage.c_str());
     char * pch;
@@ -291,7 +291,7 @@ void restart(const Flux::string &reason)
   char CurrentPath[FILENAME_MAX];
   GetCurrentDir(CurrentPath, sizeof(CurrentPath));
   FOREACH_MOD(I_OnRestart, OnRestart(reason));
-  
+
   if(reason.empty())
   {
     Log() << "Restarting: No Reason";
@@ -304,13 +304,13 @@ void restart(const Flux::string &reason)
     if(ircproto)
       ircproto->quit("Restarting: %s", reason.c_str());
   }
-  
+
   chdir(CurrentPath);
   int execvpret = execvp(my_av[0], my_av);
-  
+
   if(execvpret > 0)
     throw CoreException("Restart Failed, Exiting");
-  
+
   Delete(Config->PidFile.c_str());
   exit(1);
 }
@@ -328,10 +328,10 @@ void Rehash()
     BotConfig *configtmp = Config;
     Config = new BotConfig(bi_dir);
     delete configtmp;
-    
+
     if(!Config)
       throw ConfigException("Could not read config.");
-    
+
     FOREACH_MOD(I_OnReload, OnReload());
     ReadConfig();
   }
@@ -357,7 +357,7 @@ static void WritePID()
   //logging to a text file and making the PID file.
   if(Config->PidFile.empty())
     throw CoreException("Cannot write PID file, no PID file specified.");
-  
+
   if(TextFile::IsFile(Config->PidFile))
   {
     Log(LOG_DEBUG) << "Deleting stale pid file " << Config->PidFile;
@@ -390,31 +390,31 @@ public:
       Flux::string param;
       while(!argsarg.empty() && argsarg[0] == '-')
 	argsarg.erase(argsarg.begin());
-      
+
       size_t t = argsarg.find('=');
       if(t != Flux::string::npos)
       {
 	param = argsarg.substr(t+1);
 	argsarg.erase(t);
       }
-      
+
       if(argsarg.empty())
 	continue;
-      
+
       Arguments[argsarg] = param;
     }
   }
-  
+
   bool HasArg(const Flux::string &name, char shortname = '\0')
   {
     Flux::string Cppisstupidrighthere;
     return this->HasArg(name, shortname, Cppisstupidrighthere);
   }
-  
+
   bool HasArg(const Flux::string &name, char shortname, Flux::string &args)
   {
     args.clear();
-    
+
     for(Flux::map<Flux::string>::iterator it = this->Arguments.begin(); it != this->Arguments.end(); ++it)
     {
       if(it->first.equals_ci(name) || it->first[0] == shortname)
@@ -433,7 +433,7 @@ public:
 void startup(int argc, char** argv, char *envp[])
 {
   SET_SEGV_LOCATION();
-  
+
   InitSignals();
   Config = nullptr;
   ircproto = nullptr;
@@ -441,40 +441,40 @@ void startup(int argc, char** argv, char *envp[])
   my_av = argv;
   my_envp = envp;
   starttime = time(NULL); //for bot uptime
-  
+
   binary_dir = getprogdir(argv[0]);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
-  
+
   Config = new BotConfig(binary_dir);
   if(!Config)
     throw CoreException("Config Error.");
-  
+
   Flux::string dir = argv[0];
   Flux::string::size_type n = dir.rfind('/');
   dir = "." + dir.substr(n);
-  
+
   //gets the command line paramitors if any.
   CommandLineArguments args(argc, argv);
-  
+
   if(args.HasArg("developer"))
   {
     dev = nofork = true;
     Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode.";
   }
-  
+
   if(args.HasArg("debug", 'd'))
   {
     Log(LOG_TERMINAL) << "This mode flag does nothing for now, it will do debug levels eventally ;)";
     exit(0);
   }
-  
+
   if(args.HasArg("nofork", 'n'))
   {
     nofork = true;
     Log(LOG_DEBUG) << Config->BotNick << " is started With No Forking enabled.";
   }
-  
+
   if(args.HasArg("help", 'h'))
   {
     Log(LOG_TERMINAL) << "\033[0mNavn Internet Relay Chat Bot v" << VERSION;
@@ -488,7 +488,7 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
     exit(0);
   }
-  
+
   if(args.HasArg("version", 'v'))
   {
     Log(LOG_TERMINAL) << "\033[0mNavn IRC C++ Bot Version " << VERSION_FULL;
@@ -503,22 +503,22 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << "Type " << dir << " --help for help on how to use navn, or read the readme.";
     exit(0);
   }
-  
+
   if(args.HasArg("protocoldebug", 'p'))
   {
     protocoldebug = true;
     Log(LOG_RAWIO) << Config->BotNick << " is started in Protocol Debug mode.";
   }
-  
+
   if(args.HasArg("nocolor", 'c'))
   {
     nocolor = true;
     Log() << Config->BotNick << " is started in No Colors mode.\033[0m"; //reset terminal colors
   }
-  
+
   if(!nocolor)
     Log(LOG_TERMINAL) << "\033[22;36m";
-  
+
   ModuleHandler::SanitizeRuntime();
   ReadConfig(); //load modules
   WritePID(); //Write the pid file

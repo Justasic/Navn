@@ -1,5 +1,5 @@
 /* Navn IRC bot -- User classes header
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -25,7 +25,7 @@ public:
   User(const Flux::string&, const Flux::string&, const Flux::string&, const Flux::string &realname = "", const Flux::string &server ="");
   virtual ~User();
   CList ChannelList;
-  Flux::string nick,host,realname,ident,fullhost,server;
+  Flux::string nick, host, realname, ident, fullhost, server;
   void kick(const Flux::string&, const Flux::string&);
   void kick(Channel*, const Flux::string&);
   void kill(const Flux::string&);

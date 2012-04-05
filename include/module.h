@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Module header
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -61,7 +61,7 @@ public:
   ModulePriority GetPriority();
   time_t GetLoadTime();
   module(const Flux::string&);
-  
+
   virtual ~module();
   virtual EventResult OnPreReceiveMessage(const Flux::string&) { return EVENT_CONTINUE; }
   virtual void OnPrivmsg(User*, const std::vector<Flux::string>&) {}
@@ -107,7 +107,7 @@ public:
   static void SanitizeRuntime();
   static void UnloadAll();
   static bool Unload(module*);
-  
+
   static bool Attach(Implementation i, module *mod);
   static void Attach(Implementation *i, module *mod, size_t sz);
   static bool Detach(Implementation i, module *mod);
