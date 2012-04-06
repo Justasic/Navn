@@ -232,7 +232,6 @@ BotConfig::BotConfig(const Flux::string &dir)
    else
       Log(LOG_TERMINAL) << "Config Exception: " << e.GetReason();
    return;
-   //delete this; //This makes segfault :D
  }
 }
 BotConfig::~BotConfig() { if(Parser) delete Parser; }
@@ -268,6 +267,6 @@ void BotConfig::Read()
   this->ServicesService = this->Parser->Get("Services", "Service", "");
   this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
   this->WelcomeMessage = this->Parser->Get("Bot", "Welcome Message", "");
-  this->LogAge = Parser->GetInteger("Log", "Log Age", 2);
+  this->LogAge = this->Parser->GetInteger("Log", "Log Age", 2);
 }
 

@@ -474,7 +474,8 @@ public:
 	  c->SendMessage(WelcomeMessage.c_str());
       }
       
-      if(!Config->OperatorAccount.empty() || !Config->OperatorPass.empty()){
+      if(!Config->OperatorAccount.empty() || !Config->OperatorPass.empty())
+      {
 	ircproto->oper(Config->OperatorAccount, Config->OperatorPass);
 	IsOper = true;
 	ircproto->o = new Oper();
@@ -497,7 +498,8 @@ public:
 	ircproto->notice(Config->Owners[o], "The randomly generated password is: %s", password.c_str());
       started = true;
       /* Identify to the networks services */
-      if((!Config->ServicesAccount.empty() || !Config->ServicesPass.empty()) && Config->IdentOnConn){
+      if((!Config->ServicesAccount.empty() || !Config->ServicesPass.empty()) && Config->IdentOnConn)
+      {
 	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount).replace_all_ci("%p", Config->ServicesPass);
 	ircproto->privmsg(Config->ServicesService, Sendns);
 	Log() << "Identified to " << Config->ServicesService << " with account \"" << Config->ServicesAccount << "\"";
@@ -530,10 +532,11 @@ public:
 
   void OnNotice(User *u, const Flux::vector &params)
   {
-    Flux::string msg = ConsenseString(params);
+    Flux::string msg = CondenseString(params);
       
     // Auto-Identify
-    if(msg.search(Config->AutoIdentString)){
+    if(msg.search(Config->AutoIdentString))
+    {
       if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == Config->ServicesService && Config->IdentOnConn)
       {
 	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount).replace_all_ci("%p", Config->ServicesPass);

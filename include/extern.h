@@ -110,7 +110,7 @@ E uint32_t usercnt, maxusercnt;
 E Flux::string binary_path, bot_bin, binary_dir, server_name, quitmsg, LastBuf;
 E const Flux::string VERSION_LONG;
 E Flux::string ForwardResolution(const Flux::string&);
-E Flux::string getprogdir(const Flux::string&);
+E Flux::string getprogdir(const Flux::string&, Flux::string &bin_var1 = bot_bin);
 E Flux::string DecodeModErr(ModErr err);
 E Flux::string isolate(char begin, char end, const Flux::string &msg);
 E Flux::string make_pass();

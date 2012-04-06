@@ -104,7 +104,8 @@ void User::SetNewNick(const Flux::string &newnick)
 
 void User::AddChan(Channel *c)
 {
-  if(c) ChannelList[c] = this;
+  if(c)
+    ChannelList[c] = this;
 }
 
 void User::DelChan(Channel *c)

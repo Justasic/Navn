@@ -23,7 +23,7 @@ module *FindModule(const Flux::string &name)
   Flux::insensitive_map<module*>::iterator it = Modules.find(name);
   if(it != Modules.end())
     return it->second;
- return NULL;
+ return nullptr;
 }
 
 /**
@@ -217,7 +217,8 @@ bool ModuleHandler::DeleteModule(module *m)
 	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
   }
   else
-	  df(&m); /* Let the module delete it self, just in case */
+    df(&m); /* Let the module delete it self, just in case */
+	  
 
   if(handle)
     if(dlclose(handle))

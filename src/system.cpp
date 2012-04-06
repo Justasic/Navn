@@ -15,22 +15,20 @@
  * This will get the bots runtime directory
  * @param getprogdir(const Flux::string dir)
  */
-Flux::string getprogdir(const Flux::string &dir)
+Flux::string getprogdir(const Flux::string &dir, Flux::string &bot_bin1)
 {
   char buffer[FILENAME_MAX];
   if (GetCurrentDir(buffer, sizeof(buffer)))
   {
-    Flux::string remainder = dir;
-    bot_bin = remainder;
-    Flux::string::size_type n = bot_bin.rfind("/");
-    Flux::string fullpath;
+    Flux::string bin_var = dir, fullpath;
+    Flux::string::size_type n = bin_var.rfind("/");
 
-    if (bot_bin[0] == '/')
-      fullpath = bot_bin.substr(0, n);
+    if (bin_var[0] == '/')
+      fullpath = bin_var.substr(0, n);
     else
-      fullpath = Flux::string(buffer) + "/" + bot_bin.substr(0, n);
+      fullpath = Flux::string(buffer) + "/" + bin_var.substr(0, n);
 
-    bot_bin = bot_bin.substr(n + 1, remainder.length());
+    bot_bin1 = bin_var.substr(n + 1, bin_var.length());
 
     return fullpath;
   }
@@ -215,10 +213,13 @@ Flux::string removeCommand(Flux::string command, Flux::string s)
  * it replaces it with what would be in a url for that character.
  * \return A Flux::string without any special characters other than %
  */
-Flux::string urlify(const Flux::string &received){
+Flux::string urlify(const Flux::string &received)
+{
   Flux::string string;
-  for(unsigned i=0; i < received.size(); ++i){
-    switch(received[i]){
+  for(unsigned i=0; i < received.size(); ++i)
+  {
+    switch(received[i])
+    {
       case '%': string = string+"%25"; break;
       case ' ': string = string+"%20"; break;
       case '+': string = string+"%2B"; break;
@@ -368,8 +369,10 @@ static void WritePID()
     Log(LOG_DEBUG) << "Deleting stale pid file " << Config->PidFile;
     Delete(Config->PidFile.c_str());
   }
+  
   FILE *pidfile = fopen(Config->PidFile.c_str(), "w");
-  if(pidfile){
+  if(pidfile)
+  {
     #ifdef _WIN32
     fprintf(pidfile, "%d\n", static_cast<int>(GetCurrentProcessId()));
     #else
@@ -447,7 +450,7 @@ void startup(int argc, char** argv, char *envp[])
   my_envp = envp;
   starttime = time(NULL); //for bot uptime
 
-  binary_dir = getprogdir(argv[0]);
+  binary_dir = getprogdir(argv[0], bot_bin);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
 

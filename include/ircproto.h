@@ -18,6 +18,7 @@ class CoreExport IRCProto
 public:
   Oper *o;
   IRCProto();
+  ~IRCProto();
   void privmsg(const Flux::string &where, const char *fmt, ...);
   void privmsg(const Flux::string &where, const Flux::string &msg);
   void notice(const Flux::string &where, const char *fmt, ...);

@@ -12,7 +12,14 @@
  *\file  ircproto.cpp
  *\brief Contains the IRCProto class.
  */
-IRCProto::IRCProto() {}
+IRCProto::IRCProto() : o(nullptr) {}
+
+IRCProto::~IRCProto()
+{
+  if(this->o)
+    delete this->o;
+  this->o = nullptr;
+}
 /**
  * \brief Sends a IRC private message to the user or channel
  * \param Destination Where the message will go
