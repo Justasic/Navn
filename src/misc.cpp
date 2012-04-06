@@ -296,6 +296,8 @@ void Cleanup()
     void *ptr = ptrs_to_delete.front();
     ptrs_to_delete.pop();
 
+    Log(LOG_MEMORY) << "Deleting @" << ptr;
+
     if(ptr)
     {
       if(typeid(ptr) == typeid(User*))
@@ -307,12 +309,14 @@ void Cleanup()
   
   if(sock)
   {
+    Log(LOG_MEMORY) << "Deleting socket @" << sock;
     delete sock;
     sock = nullptr;
   }
 
   if(ircproto)
   {
+    Log(LOG_MEMORY) << "Deleting ircproto @" << ircproto;
     delete ircproto;
     ircproto = nullptr;
   }

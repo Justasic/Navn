@@ -56,6 +56,7 @@ struct CommandSource;
 enum LogType
 {
   LOG_DEBUG,
+  LOG_MEMORY,
   LOG_NORMAL,
   LOG_RAWIO,
   LOG_TERMINAL,
@@ -120,7 +121,7 @@ E Flux::string CondenseString(const Flux::vector&);
 E int randint(int x, int y);
 E bool IsValidChannel(const Flux::string&);
 E bool InTerm();
-E bool protocoldebug, IsOper, dev, nofork, quitting, started, nocolor, istempnick;
+E bool protocoldebug, IsOper, dev, nofork, quitting, started, nocolor, memdebug, istempnick;
 E Flux::vector SerializeString(const Flux::string&, char);
 E Flux::insensitive_map<module*> Modules;
 E Flux::insensitive_map<User*> UserNickList;

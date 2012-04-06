@@ -468,9 +468,16 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_DEBUG) << Config->BotNick << " is started in Developer mode.";
   }
 
+  if(args.HasArg("memory", 'm'))
+  {
+    memdebug = true;
+    Log(LOG_MEMORY) << Config->BotNick << " is started in Memory Debug mode";
+  }
+
   if(args.HasArg("debug", 'd'))
   {
-    Log(LOG_TERMINAL) << "This mode flag does nothing for now, it will do debug levels eventally ;)";
+    Log(LOG_TERMINAL) << "This mode flag does nothing for now, it will do debug levels eventually ;)";
+    Log(LOG_TERMINAL) << "note: if you're looking for the old mode -d, type --developer instead";
     exit(0);
   }
 
@@ -488,6 +495,7 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << "    --developer (inhibits --nofork)";
     Log(LOG_TERMINAL) << "-d, --debug[=level]";
     Log(LOG_TERMINAL) << "-n, --nofork";
+    Log(LOG_TERMINAL) << "-m, --memorydebug";
     Log(LOG_TERMINAL) << "-p, --protocoldebug";
     Log(LOG_TERMINAL) << "-c, --nocolor";
     Log(LOG_TERMINAL) << "This bot does have Epic Powers.";
@@ -499,9 +507,9 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << "\033[0mNavn IRC C++ Bot Version " << VERSION_FULL;
     Log(LOG_TERMINAL) << "This bot was programmed from scratch by Justasic and Lordofsraam.";
     Log(LOG_TERMINAL) << "";
-    Log(LOG_TERMINAL) << "IRC: IRC.Flux-Net.net #Computers";
-    Log(LOG_TERMINAL) << "WWW: http://www.Flux-Net.net";
-    Log(LOG_TERMINAL) << "Email: Staff@Flux-Net.net";
+    Log(LOG_TERMINAL) << "IRC: irc.Azuru.net #Computers";
+    Log(LOG_TERMINAL) << "WWW: http://www.Azuru.net";
+    Log(LOG_TERMINAL) << "Email: Development@Azuru.net";
     Log(LOG_TERMINAL) << "Git: git://gitorious.org:navn/navn.git";
     Log(LOG_TERMINAL) << "";
     Log(LOG_TERMINAL) << "This bot does have Epic Powers.";

@@ -331,10 +331,7 @@ public:
   
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
-    Flux::string cmd = params.empty()?"":params[0], msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i]+' ';
-    msg.trim();
+    Flux::string cmd = params.empty()?"":params[0], msg = CondenseString(params);
     /******************************Easter Eggs*********************************/
     if(cmd.equals_ci("!poke"))
     { //Easter egg ;P

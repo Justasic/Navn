@@ -144,6 +144,7 @@ Added Multi-Owner support
 Removed flux_net_irc.hpp and defs.h in favor if modules.h and system.cpp
 Added "Welcome Message" to the config file which now optionally displays a custom message on join
 Separated module.cpp into 2 files: module.cpp containing the base module class and modulehandler.cpp containing the modulehandler class
+Added LOG_MEMORY and new command line parameters --memorydebug and -m which now show memory info we may want.
 
 Navn 2.0.0
 ==========

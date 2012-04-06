@@ -32,7 +32,8 @@ jmp_buf sigbuf;
 
 // Global variables
 char **my_av, **my_envp;
-bool nofork, dev, protocoldebug, IsOper, quitting, started, nocolor, istempnick = false;
+bool nofork = false, dev = false, protocoldebug = false, IsOper = false, quitting = false;
+bool started = false, nocolor = false, istempnick = false, memdebug = false;
 Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name, LastBuf;
 const Flux::string password = make_pass();
 char segv_location[255];
