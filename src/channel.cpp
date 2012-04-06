@@ -25,6 +25,12 @@ Channel::Channel(const Flux::string &nname, time_t ts) : name(nname), topic_time
 Channel::~Channel()
 {
   this->SendPart();
+
+  // Remove the channel from users in the list.
+  for(UList::iterator it = UserList.begin(); it != UserList.end(); ++it)
+    it->first->DelChan(this);
+  UserList.clear();
+  
   Log(LOG_DEBUG) << "Deleted channel " << this->name;
   ChanMap.erase(this->name);
 }

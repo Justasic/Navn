@@ -275,5 +275,49 @@ Flux::vector SerializeString(const Flux::string &src, char delim)
  * \return true if in terminal, false otherwise
  */
 bool InTerm() { return isatty(fileno(stdout) && isatty(fileno(stdin)) && isatty(fileno(stderr))); }
+
+void Cleanup()
+{
+  // a FIFO queue of all the pointers to delete
+  std::queue<void*> ptrs_to_delete;
+
+  // Schedule all channels for deletion
+  for(Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(); it != ChanMap.end(); ++it)
+    ptrs_to_delete.push(it->second);
+  ChanMap.clear();
+
+  // Schedule all Users for deletion
+  for(Flux::insensitive_map<User *>::iterator it = UserNickList.begin(); it != UserNickList.end(); ++it)
+    ptrs_to_delete.push(it->second);
+  UserNickList.clear();
+
+  while (!ptrs_to_delete.empty())
+  {
+    void *ptr = ptrs_to_delete.front();
+    ptrs_to_delete.pop();
+
+    if(ptr)
+    {
+      if(typeid(ptr) == typeid(User*))
+	delete static_cast<User*>(ptr);
+      if(typeid(ptr) == typeid(Channel*))
+	delete static_cast<Channel*>(ptr);
+    }
+  }
+  
+  if(sock)
+  {
+    delete sock;
+    sock = nullptr;
+  }
+
+  if(ircproto)
+  {
+    delete ircproto;
+    ircproto = nullptr;
+  }
+
+}
+
 /* butt-plug?
  * http://www.albinoblacksheep.com/flash/plugs */

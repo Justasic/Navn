@@ -246,8 +246,15 @@ bool ModuleHandler::Unload(module *m)
  */
 void ModuleHandler::UnloadAll()
 {
+  std::queue<module*> modules;
   for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
-    Unload(it->second);
+    modules.push(it->second);
+
+  while (!modules.empty())
+  {
+    Unload(modules.front());
+    modules.pop();
+  }
 }
 
 /**

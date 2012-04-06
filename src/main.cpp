@@ -155,6 +155,7 @@ int main (int argcx, char** argvx, char *envp[])
     FOREACH_MOD(I_OnShutdown, OnShutdown());
     ModuleHandler::UnloadAll();
     ModuleHandler::SanitizeRuntime();
+    Cleanup();
     Log(LOG_TERMINAL) << "\033[0m";
   }//try ends here
   catch(const CoreException& e)
