@@ -511,12 +511,14 @@ public:
       }
     }
   }
+  
   void OnJoin(User *u, Channel *c)
   {
     u->SendMessage("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(),
 		   c->name.c_str(), Config->BotNick.c_str());
     Log(u) << "joined " << c->name;
   }
+
   void OnKick(User *u, User *kickee, Channel *c, const Flux::string &reason)
   {
      if(kickee && kickee->nick.equals_ci(Config->BotNick))
@@ -525,15 +527,15 @@ public:
 	c->SendJoin(); 
      }
   }
+
   void OnNotice(User *u, const Flux::vector &params)
   {
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i]+' ';
+    Flux::string msg = ConsenseString(params);
       
-    msg.trim(); // Auto-Identify
+    // Auto-Identify
     if(msg.search(Config->AutoIdentString)){
-      if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == Config->ServicesService && Config->IdentOnConn){
+      if((!Config->ServicesPass.empty() || !Config->ServicesAccount.empty()) && u->nick == Config->ServicesService && Config->IdentOnConn)
+      {
 	Flux::string Sendns = Config->ServicesSendString.replace_all_ci("%a", Config->ServicesAccount).replace_all_ci("%p", Config->ServicesPass);
 	u->SendPrivmsg(Sendns);
 	Log() << "Identified to " << u->nick << " with account \"" << Config->ServicesAccount << "\"";
@@ -542,9 +544,8 @@ public:
   }
   void OnNickChange(User *u, const Flux::string &newnick)
   {
-    IsoHost *Host = new IsoHost(u->fullhost);
-    if(Host->nick == Config->BotNick)
-      Config->BotNick = Host->nick;
+    if(u->nick == Config->BotNick)
+      Config->BotNick = newnick;
 
     // Keep owners in the owners vector updated..
     if(u->IsOwner())
@@ -553,7 +554,6 @@ public:
 	if(newnick.equals_ci(Config->Owners[i]))
 	  Config->Owners[i] = newnick;
     }
-    delete Host;
   }
 };
 

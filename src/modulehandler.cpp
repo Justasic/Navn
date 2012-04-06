@@ -149,8 +149,10 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 
   dlerror();
 
+  // FIXME: Somehow the binary_dir variable is lost when this executes >:|
   void *handle = dlopen(output.c_str(), RTLD_NOW);
   const char *err = dlerror();
+  
   if(!handle && err && *err)
   {
     Log() << '[' << modname << "] " << err;
