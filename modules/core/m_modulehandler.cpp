@@ -312,27 +312,36 @@ public:
     }
   }
 
+  bool FindInVector(const Flux::string &nname, const Flux::vector &vector)
+  {
+    for(Flux::vector::const_iterator it = vector.begin(); it != vector.end(); ++it)
+    {
+      const Flux::string found = *it;
+      if(found.equals_cs(nname))
+	return true;
+    }
+    return false;
+  }
+  
   void OnReload()
   {
-    // FIXME: Rewrite this so it isn't so dumb and actually loads the different modules.
     Flux::vector updatedmodlist = SerializeString(Config->Modules, ',');
     for(Flux::vector::iterator it; it != updatedmodlist.end(); ++it)
     {
-      (*it).trim();
-      for(Flux::vector::iterator it2; it2 != CurrentModuleList.end(); ++it2)
+      Flux::string modulename = *it;
+      modulename.trim();
+      module *m = FindModule(modulename);
+
+      if(!m)
       {
-	if((*it) != (*it2))
-	{
-	  Log(LOG_TERMINAL) << "(*it) != (*it2)";
-	  ModuleHandler::Unload(FindModule(*it2));
-	  CurrentModuleList.erase(it2);
-	}
-	else if((*it2) != (*it))
-	{
-	  Log(LOG_TERMINAL) << "(*it2) != (*it)";
-	  ModuleHandler::LoadModule(*it);
-	  CurrentModuleList.push_back(*it);
-	}
+	Log() << "Rehash loaded module " << modulename;
+	ModuleHandler::LoadModule(modulename);
+      }
+
+      if(!FindInVector(modulename, updatedmodlist) && m)
+      {
+	Log() << "Rehash unloaded module " << modulename;
+	ModuleHandler::Unload(m);
       }
     }
   }
