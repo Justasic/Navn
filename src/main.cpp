@@ -161,20 +161,12 @@ int main (int argcx, char** argvx, char *envp[])
   catch(const CoreException& e)
   {
     /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
-    Log(LOG_TERMINAL) << "\033[0m";
-    if(!Config)
-      Log(LOG_TERMINAL) << "Core Exception Caught: " << e.GetReason();
-    else
-      Log() << "Core Exception Caught: " << e.GetReason();
+    Log(LOG_CRITICAL) << "\033[0mCore Exception Caught: " << e.GetReason();
     return EXIT_FAILURE;
   }
   catch(std::exception &ex)
   {
-    Log(LOG_TERMINAL) << "\033[0m";
-    if(!Config)
-      Log(LOG_TERMINAL) << "Standard Exception Caught: " << ex.what();
-    else
-      Log() << "Standard Exception Caught: " << ex.what();
+    Log(LOG_CRITICAL) << "\033[0mStandard Exception Caught: " << ex.what();
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

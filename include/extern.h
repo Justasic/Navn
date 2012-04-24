@@ -60,6 +60,8 @@ enum LogType
   LOG_NORMAL,
   LOG_RAWIO,
   LOG_TERMINAL,
+  LOG_CRITICAL,
+  LOG_THREAD,
   LOG_SILENT
 };
 
@@ -122,7 +124,7 @@ E int randint(int x, int y);
 E bool IsValidChannel(const Flux::string&);
 E bool InTerm();
 E bool protocoldebug, IsOper, dev, nofork, quitting, started, nocolor, memdebug, istempnick;
-E Flux::vector SerializeString(const Flux::string&, char);
+E Flux::vector ParametizeString(const Flux::string&, char);
 E Flux::insensitive_map<module*> Modules;
 E Flux::insensitive_map<User*> UserNickList;
 E Flux::insensitive_map<Channel*> ChanMap;

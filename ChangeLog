@@ -146,6 +146,9 @@ Added "Welcome Message" to the config file which now optionally displays a custo
 Separated module.cpp into 2 files: module.cpp containing the base module class and modulehandler.cpp containing the modulehandler class
 Added module::GetPermanent() and module::SetPermanent() to make modules that cannot be unloaded.
 Added LOG_MEMORY and new command line parameters --memorydebug and -m which now show memory info we may want.
+Rewrote the logging algorithm to suck less, also checked if we have a log file to write to before we log (fixes a segmentation fault)
+Added LOG_CRITICAL which logs to stderr and is in all red, also added LOG_THREAD for thread logging
+Renamed SerializeString to ParametizeString for the last and final time.
 
 Navn 2.0.0
 ==========

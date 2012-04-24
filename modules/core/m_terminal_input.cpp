@@ -12,7 +12,7 @@
 
 void ProcessInput(const Flux::string &str)
 {
-  Flux::vector params = SerializeString(str, ' ');
+  Flux::vector params = ParametizeString(str, ' ');
   if(params.empty())
     return;
 
@@ -39,14 +39,16 @@ void ProcessInput(const Flux::string &str)
       if(m)
       {
 	Log(LOG_TERMINAL) << "Reloading module " << params[1];
+	
 	if(!ModuleHandler::Unload(m))
 	  Log(LOG_TERMINAL) << "Failed to unload module " << params[1];
+	
 	ModErr e = ModuleHandler::LoadModule(params[1]);
+	
 	if(e != MOD_ERR_OK)
-	{
 	  Log(LOG_TERMINAL) << "Failed to reload module " << params[1] << ": " << DecodeModErr(e);
-	}
-	Log(LOG_TERMINAL) << "Successfuly reloaded " << params[1];
+	else
+	  Log(LOG_TERMINAL) << "Successfuly reloaded " << params[1];
       }
       else
 	Log(LOG_TERMINAL) << "Module " << params[1] << " does not exist!";
@@ -75,6 +77,7 @@ void ProcessInput(const Flux::string &str)
     if(params.size() >= 2)
     {
       ModErr e = ModuleHandler::LoadModule(params[1]);
+      
       if(e != MOD_ERR_OK)
 	Log(LOG_TERMINAL) << "Failed to load module " << params[1] << ": " << DecodeModErr(e);
       else
@@ -85,6 +88,7 @@ void ProcessInput(const Flux::string &str)
   {
     const Flux::string priority = params.size() == 2?params[1]:"";
     int c=0;
+    
     if(priority.empty())
     {
       for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
@@ -140,10 +144,12 @@ public:
   bool exiting;
   InputThread():Thread(), exiting(false)
   {
-    Log() << "Input Thread Initializing.";
+    Log(LOG_THREAD) << "Input Thread Initializing.";
     this->Start();
   }
-  ~InputThread() { Log() << "Input Thread Exiting."; exiting = true; }
+  
+  ~InputThread() { Log(LOG_THREAD) << "Input Thread Exiting."; exiting = true; }
+  
   void ToRun()
   {
     int nobomb = 0, last_run = time(NULL);
@@ -156,10 +162,11 @@ public:
 	nobomb = 0;
 	last_run = time(NULL);
       }
-      Log(LOG_RAWIO) << "Top of Input Loop";
+      Log(LOG_THREAD) << "Top of Input Loop";
       Flux::string buf;
       std::getline(std::cin, buf.std_str());
       buf.trim();
+      
       if(!buf.empty())
 	ProcessInput(buf);
     }

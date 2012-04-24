@@ -283,7 +283,7 @@ void process(const Flux::string &buffer)
   Flux::string nickname = h.nick, uident = h.ident, uhost = h.host, cmd;
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
-  std::vector<Flux::string> params2 = SerializeString(message, ' ');
+  std::vector<Flux::string> params2 = ParametizeString(message, ' ');
   /***********************************************/
   if(command == "004" && source.search('.'))
     server_name = source;

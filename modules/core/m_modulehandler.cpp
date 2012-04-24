@@ -304,7 +304,7 @@ public:
 
   void OnStart(int, char**)
   {
-    CurrentModuleList = SerializeString(Config->Modules, ',');
+    CurrentModuleList = ParametizeString(Config->Modules, ',');
     for(unsigned i=0; i < CurrentModuleList.size(); ++i)
     {
       CurrentModuleList[i].trim();
@@ -325,7 +325,7 @@ public:
   
   void OnReload()
   {
-    Flux::vector updatedmodlist = SerializeString(Config->Modules, ',');
+    Flux::vector updatedmodlist = ParametizeString(Config->Modules, ',');
     for(Flux::vector::iterator it; it != updatedmodlist.end(); ++it)
     {
       Flux::string modulename = *it;

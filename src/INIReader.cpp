@@ -91,9 +91,11 @@ int INIReader::Parse(const Flux::string &filename)
       value = line;
       value = value.erase(0,value.find('=')+1);
       value.trim();
-      if(value.find_first_of(';')){ //We only erase ';' (semi-colons) if we find them, we cannot erase # signs for
+      if(value.find_first_of(';'))
+      { //We only erase ';' (semi-colons) if we find them, we cannot erase # signs for
 	int i = value.find_first_of(';'); // channels would look like comments.. maybe we can fix this one day..
-	if(i > 0){
+	if(i > 0)
+	{
 	  value = value.erase(i, Flux::string::npos);
 	}
       }
@@ -230,7 +232,7 @@ BotConfig::BotConfig(const Flux::string &dir)
    if (starttime == time(NULL))
      throw CoreException(printfify("Config: %s", e.GetReason()));
    else
-      Log(LOG_TERMINAL) << "Config Exception: " << e.GetReason();
+      Log() << "Config Exception: " << e.GetReason();
    return;
  }
 }
@@ -239,34 +241,36 @@ BotConfig::~BotConfig() { if(Parser) delete Parser; }
 void BotConfig::Read()
 {
   SET_SEGV_LOCATION();
-  this->LogFile = this->Parser->Get("Log","Log_File","navn.log");
+  this->LogFile 	= this->Parser->Get("Log","Log_File","navn.log");
   this->PingTimeoutTime = this->Parser->GetInteger("Bot", "PingTimeoutTime", 120);
-  this->Owners = SerializeString(this->Parser->Get("Bot","Owners",""), ',');
+  this->Owners 		= ParametizeString(this->Parser->Get("Bot","Owners",""), ',');
+  
   for(unsigned i = 0; i < this->Owners.size(); ++i)
     Owners[i].trim(); // Strip any spaces in the owner names..
-  this->Realname = this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+value_cast<Flux::string>(VERSION)));
-  this->Ident = this->Parser->Get("Connect","Ident","Navn");
-  this->BotNick = this->Parser->Get("Connect","Nick","Navn");
-  this->Channel = this->Parser->Get("Connect","Channel","#Test");
-  this->Port = this->Parser->Get("Connect","Port","6667");
-  this->Server = this->Parser->Get("Connect", "Server", "");
-  this->LogChannel = this->Parser->Get("Modules", "LogChannel","");
-  this->PidFile = this->Parser->Get("Bot","PID File","navn.pid");
-  this->UserPass = this->Parser->Get("Bot","Password","Navn");
+    
+  this->Realname 	= this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+value_cast<Flux::string>(VERSION)));
+  this->Ident 		= this->Parser->Get("Connect","Ident","Navn");
+  this->BotNick 	= this->Parser->Get("Connect","Nick","Navn");
+  this->Channel 	= this->Parser->Get("Connect","Channel","#Test");
+  this->Port 		= this->Parser->Get("Connect","Port","6667");
+  this->Server 		= this->Parser->Get("Connect", "Server", "");
+  this->LogChannel	= this->Parser->Get("Modules", "LogChannel","");
+  this->PidFile 	= this->Parser->Get("Bot","PID File","navn.pid");
+  this->UserPass 	= this->Parser->Get("Bot","Password","Navn");
   this->OperatorAccount = this->Parser->Get("Oper","Oper_Username","");
-  this->OperatorPass = this->Parser->Get("Oper","Oper_Password","");
-  this->ModuleDir = Parser->Get("Modules", "ModuleDir", "");
-  this->Modules = Parser->Get("Modules", "Modules", "");
-  this->SockWait = Parser->GetInteger("Bot","Socket Timeout",5);
-  this->LogTime = Parser->GetInteger("Log", "Log Time", 0);
-  this->ServerPassword = Parser->Get("Connect", "Password", "");
+  this->OperatorPass 	= this->Parser->Get("Oper","Oper_Password","");
+  this->ModuleDir 	= Parser->Get("Modules", "ModuleDir", "");
+  this->Modules 	= Parser->Get("Modules", "Modules", "");
+  this->SockWait 	= Parser->GetInteger("Bot","Socket Timeout",5);
+  this->LogTime 	= Parser->GetInteger("Log", "Log Time", 0);
+  this->ServerPassword 	= Parser->Get("Connect", "Password", "");
   this->ServicesAccount = this->Parser->Get("Services","Account","");
-  this->ServicesPass = this->Parser->Get("Services","Password","");
+  this->ServicesPass 	= this->Parser->Get("Services","Password","");
   this->ServicesSendString = this->Parser->Get("Services","Send String","");
-  this->IdentOnConn = this->Parser->GetBoolean("Services","Identify on connect", true);
+  this->IdentOnConn 	= this->Parser->GetBoolean("Services","Identify on connect", true);
   this->ServicesService = this->Parser->Get("Services", "Service", "");
   this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
-  this->WelcomeMessage = this->Parser->Get("Bot", "Welcome Message", "");
-  this->LogAge = this->Parser->GetInteger("Log", "Log Age", 2);
+  this->WelcomeMessage 	= this->Parser->Get("Bot", "Welcome Message", "");
+  this->LogAge 		= this->Parser->GetInteger("Log", "Log Age", 2);
 }
 
