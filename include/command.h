@@ -109,7 +109,7 @@ protected:
   void SendSyntax(CommandSource&, const Flux::string&);
 public:
   const Flux::string &GetDesc() const;
-  const CommandType GetType() const;
+  CommandType GetType() const;
   virtual void Run(CommandSource&, const std::vector<Flux::string> &params);
   virtual bool OnHelp(CommandSource&, const Flux::string&);
   virtual void OnList(User *u);

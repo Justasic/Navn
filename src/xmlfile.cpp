@@ -47,7 +47,7 @@ XMLFile::XMLFile(const Flux::string fn):TextFile(fn)
 	{
 	  std::string attribName = "";
 	  std::string attribVal = "";
-	  for (unsigned m = -1; SingleLineBuffer.at(i+l+m) != ' '; m--)
+	  for (int m = -1; SingleLineBuffer.at(i+l+m) != ' '; m--)
 	  {
 	    attribName.insert(0,1,SingleLineBuffer.at(i+l+m));
 	  }
@@ -108,7 +108,7 @@ XMLFile::Tag::Tag(const Flux::string n, Flux::string conts)
 	{
 	  std::string attribName = "";
 	  std::string attribVal = "";
-	  for (unsigned m = -1; conts.at(i+l+m) != ' '; m--)
+	  for (int m = -1; conts.at(i+l+m) != ' '; m--)
 	  {
 	    attribName.insert(0,1,conts.at(i+l+m));
 	  }

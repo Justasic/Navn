@@ -75,7 +75,7 @@ public:
       return;
     }
     int temp_k = (int)temp_c + 273; // Calculate degrees kelvin from degrees celsius
-    c->SendMessage("%s Current Condition: %s, %s, %s, %s °F %s °C %i °K", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), temp_c.c_str(), temp_k);
+    c->SendMessage("%s Current Condition: %s, %s, %s, %s %cF %s %cC %i %cK", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), 0x00B0, temp_c.c_str(), 0x00B0, temp_k, 0x00B0);
     
     Log(u, this) << "to get weather for area '" << area << "'";
   }
