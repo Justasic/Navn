@@ -55,7 +55,7 @@ Fixed socket engine using select as a timer instead of a multiplexer
 Added User::IsOwner boolean
 Added new logging function
 Added a new compile system (GNU make) so navn can compile files correctly
-Rewrote the INIReader into C++ so now it is more effecent at its job
+Rewrote the INIReader into C++ so now it is more efficient at its job
 Removed Make_two_digits as i (justasic) have no clue what it does and its not used anywhere
 Deprecated irc_string::isolate() as its been replaced by the global function isolate() which does the same thing
 Added Shared Object (.so) Modules, Converted modules to conform to such functions
@@ -89,7 +89,7 @@ Fixed Command Line arguements not working correctly
 Added multiple channels into Config
 Segfault handler now prints output to the terminal as well as to SEGFAULT.log
 Commands now throw ModuleException() if a command contains a space
-Flux::Sanitize now stirps IRC color codes and color code numbers from strings
+Flux::Sanitize now strips IRC color codes and color code numbers from strings
 Added Clock class
 Added a PVP game
 Strip terminal colors from the logs, added --nocolor to command line args
@@ -133,7 +133,7 @@ Removed CommandSource::message in favor of the last param in a module params lis
 Rewrote m_ping to use a timer for when to ping-timeout, also added a user variable for when that should happen.
 Rewrote character stripper for Flux::Sanitize, it now correctly strips all mIRC color codes
 Deprecated urlify() in favor of Flux::string::url_str()
-Depracated removeCommand() in favor of the module parameters system.
+Deprecated removeCommand() in favor of the module parameters system.
 Rewrote the commands system, removed module::AddChanCommand, module::AddCommand, module::DelCommand, and module::DelChanCommand. Commands now have their types in the constructor, constructors now require module variable
 Renamed COMMAND_CHANNEL to C_CHANNEL and COMMAND_PRIVATE to C_PRIVATE; added C_NULL for comparing if the commands have not been set a type.
 Rewrote the way navn parses commandline arguments, argument -d DOES NOT MEAN DEVELOPER!
@@ -174,7 +174,7 @@ Updated all modules to use SendMessage and used lordofsraams module handler
 Fixed not removing .o files on a failed compile in build.sh
 Deprecated rejoin as it was spamming people who said 'rejoin' and the command had been replaced by /msg join
 Bug #6 - Converted the dns module to use getaddrinfo() instead of c-ares
-Added Command class, depracating old command api
+Added Command class, deprecating old command api
 Added a messy module management system
 Added Enumeration for easier to understand module priority system
 Added Enumeration for a module return to stop the module from processing

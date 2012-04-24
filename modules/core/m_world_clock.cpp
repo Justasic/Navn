@@ -61,7 +61,9 @@ public:
       c->SendMessage(buf);
       Log(source.u, this) << "command in " << c->name;
       return;
-    }else{
+    }
+    else
+    {
       Flux::string wget, tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
       wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(location.is_number_only()?location:location.url_str());
       system(wget.c_str());

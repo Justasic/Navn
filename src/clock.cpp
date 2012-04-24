@@ -14,7 +14,7 @@ Clock::Clock()
 {
   time(&rawtime);
   ptm = gmtime(&rawtime);
-  isdst = ptm->tm_isdst?true:false;
+  isdst = (ptm->tm_isdst);
 }
 
 void Clock::CorrectHour(int &h)
@@ -31,62 +31,55 @@ Flux::string Clock::Local()
   time(&t);
   return asctime(localtime(&t));
 }
+
 Flux::string Clock::CustomOffset(int i)
 {
-  std::stringstream r;
   int h = (ptm->tm_hour+i);
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
-  return r.str();
+  return printfify("%02d:%02d:%02d", h, ptm->tm_min, ptm->tm_sec);
 }
+
 Flux::string Clock::MST()
 {
-  std::stringstream r;
-
   int h = ptm->tm_hour - isdst?6:7;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
-  return r.str();
+  return printfify("%02d:%02d:%02d", h, ptm->tm_min, ptm->tm_sec);
 }
+
 Flux::string Clock::EST()
 {
-  std::stringstream r;
-  int h = (ptm->tm_hour) - isdst?4:5;
+  int h = (ptm->tm_hour) - isdst?9:10;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
-  return r.str();
+  return printfify("%02d:%02d:%02d", h, ptm->tm_min, ptm->tm_sec);
 }
+
 Flux::string Clock::UTC()
 {
-  std::stringstream r;
   int h = (ptm->tm_hour);
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
-  return r.str();
+  return printfify("%02d:%02d:%02d", h, ptm->tm_min, ptm->tm_sec);
 }
+
 Flux::string Clock::CCT()
 {
-  std::stringstream r;
-  int h = (ptm->tm_hour)+8;
+  int h = (ptm->tm_hour) + 15;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
-  return r.str();
+  return printfify("%02d:%02d:%02d", h, ptm->tm_min, ptm->tm_sec);
 }
+
 Flux::string Clock::PST()
 {
-  std::stringstream r;
-  int h = (ptm->tm_hour) - isdst?7:8;
+  int h = (ptm->tm_hour) - isdst?6:7;
+  Log(LOG_TERMINAL) << "IS DST: " << std::boolalpha << isdst << " " << ptm->tm_isdst;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
-  return r.str();
+  return printfify("%02d:%02d:%02d", h, ptm->tm_min, ptm->tm_sec);
 }
+
 Flux::string Clock::AUS()
 {
-  std::stringstream r;
-  int h = (ptm->tm_hour) + isdst?10:11;
+  int h = (ptm->tm_hour) + isdst?11:12;
   CorrectHour(h);
-  r << h << ":" << ptm->tm_min << ":" << ptm->tm_sec;
-  return r.str();
+  return printfify("%02d:%02d:%02d", h, ptm->tm_min, ptm->tm_sec);
 }
 
 /**
