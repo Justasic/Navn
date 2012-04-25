@@ -132,6 +132,11 @@ void sigact(int sig)
       signal(sig, SIG_IGN);
       Rehash();
       break;
+    case SIGUSR1:
+      Log(LOG_CRITICAL) << "Ran out of memory! oh noes!";
+      if(ircproto)
+	ircproto->quit("Out of memory!");
+      throw CoreException("Ran out of memory!");
     case SIGSEGV:
       /* this is where the module stack needs to be */
       #ifdef HAVE_SETJMP_H
@@ -170,6 +175,7 @@ void sigact(int sig)
 void InitSignals()
 {
   signal(SIGTERM, sigact);
+  signal(SIGUSR1, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
   signal(SIGSEGV, sigact);
