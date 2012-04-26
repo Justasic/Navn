@@ -89,7 +89,7 @@ public:
     
     if(err != 0)
     {
-      source.c->SendMessage("Failed to resolve %s: %s", hostname.c_str(), gai_strerror(err));
+      source.c->SendMessage("\0034[ADNS]\017 Failed to resolve %s: %s", hostname.c_str(), gai_strerror(err));
       return;
     }
     
