@@ -37,8 +37,9 @@ public:
 
   void OnLoad()
   {
-    if(!TextFile::IsDirectory(Config->Binary_Dir+"/scripts/lua/"))
-      throw ModuleException("Cannot find lua scripts directory for loading! ("+Config->Binary_Dir+"/scripts/lua/)");
+    Flux::string LUADir = Config->Binary_Dir+Config->luadir;
+    if(!TextFile::IsDirectory(LUADir))
+      throw ModuleException("Cannot find lua scripts directory for loading! ("+LUADir+")");
     
     try
     {
@@ -46,6 +47,14 @@ public:
 
       L = luaL_newstate();
       luaL_openlibs(L);
+
+      Flux::vector files = TextFile::DirectoryListing(LUADir);
+
+      for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
+      {
+	Flux::string file = *it, fext;
+	fext = file.substr();
+      }
 
       
 

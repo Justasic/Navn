@@ -268,6 +268,7 @@ void BotConfig::Read()
   this->ServicesPass 	= this->Parser->Get("Services","Password","");
   this->ServicesSendString = this->Parser->Get("Services","Send String","");
   this->IdentOnConn 	= this->Parser->GetBoolean("Services","Identify on connect", true);
+  this->luadir		= this->Parser->Get("Modules", "LUADir", "../modules/scripts/lua/");
   this->ServicesService = this->Parser->Get("Services", "Service", "");
   this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
   this->WelcomeMessage 	= this->Parser->Get("Bot", "Welcome Message", "");

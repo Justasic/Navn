@@ -85,6 +85,7 @@ public:
   Flux::string AutoIdentString;
   Flux::string ServicesService;
   Flux::string WelcomeMessage;
+  Flux::string luadir;
   Flux::vector Owners;
   int LogAge;
   bool IdentOnConn;

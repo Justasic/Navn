@@ -396,7 +396,7 @@ namespace Flux{
     inline size_type find_first_not_of(const string &_str, size_type pos = 0) const { return this->_string.find_first_not_of(_str._string, pos); }
     inline size_type find_first_not_of_ci(const string &_str, size_type pos = 0) const { return ci::string(this->_string.c_str()).find_first_not_of(ci::string(_str._string.c_str()), pos); }
 
-    inline size_type find_last_of(const string &_str, size_type pos = npos) const { return this->_string.find_last_of(_str._string, pos); }
+    inline size_type find_last_of(const string &_str, size_type pos = npos) const { return this->_string.find_last_of(_str._string, pos); }LUADir
     inline size_type find_last_of_ci(const string &_str, size_type pos = npos) const { return ci::string(this->_string.c_str()).find_last_of(ci::string(_str._string.c_str()), pos); }
 
     inline size_type find_last_not_of(const string &_str, size_type pos = npos) const { return this->_string.find_last_not_of(_str._string, pos); }
@@ -442,28 +442,31 @@ namespace Flux{
     inline string replace(iterator first, iterator last, size_type n, char chr) { return string(this->_string.replace(first, last, n, chr)); }
     template <class InputIterator> inline string replace(iterator first, iterator last, InputIterator f, InputIterator l) { return string(this->_string.replace(first, last, f, l)); }
     inline string replace_all_cs(const string &_orig, const string &_repl)
+    {
+	Flux::string new_string = *this;
+	size_type pos = new_string.find(_orig), orig_length = _orig.length(), repl_length = _repl.length();
+	while (pos != npos)
 	{
-		Flux::string new_string = *this;
-		size_type pos = new_string.find(_orig), orig_length = _orig.length(), repl_length = _repl.length();
-		while (pos != npos)
-		{
-			new_string = new_string.substr(0, pos) + _repl + new_string.substr(pos + orig_length);
-			pos = new_string.find(_orig, pos + repl_length);
-		}
-		return new_string;
+	    new_string = new_string.substr(0, pos) + _repl + new_string.substr(pos + orig_length);
+	    pos = new_string.find(_orig, pos + repl_length);
 	}
-     inline string replace_all_ci(const string &_orig, const string &_repl)
+	return new_string;
+    }
+    inline string replace_all_ci(const string &_orig, const string &_repl)
+    {
+	Flux::string new_string = *this;
+	size_type pos = new_string.find_ci(_orig), orig_length = _orig.length(), repl_length = _repl.length();
+	while (pos != npos)
 	{
-		Flux::string new_string = *this;
-		size_type pos = new_string.find_ci(_orig), orig_length = _orig.length(), repl_length = _repl.length();
-		while (pos != npos)
-		{
-			new_string = new_string.substr(0, pos) + _repl + new_string.substr(pos + orig_length);
-			pos = new_string.find_ci(_orig, pos + repl_length);
-		}
-		return new_string;
+	    new_string = new_string.substr(0, pos) + _repl + new_string.substr(pos + orig_length);
+	    pos = new_string.find_ci(_orig, pos + repl_length);
 	}
+	return new_string;
+    }
+
+    
     inline string substr(size_type pos = 0, size_type n = npos) const { return string(this->_string.substr(pos, n)); }
+    inline string substr()
 
     inline iterator begin() { return this->_string.begin(); }
     inline const_iterator begin() const { return this->_string.begin(); }
