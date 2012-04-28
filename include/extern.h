@@ -62,6 +62,7 @@ enum LogType
   LOG_TERMINAL,
   LOG_CRITICAL,
   LOG_THREAD,
+  LOG_SCRIPT,
   LOG_SILENT
 };
 

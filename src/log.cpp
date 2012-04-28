@@ -191,6 +191,9 @@ Log::~Log()
       if(protocoldebug)
 	logstream << TimeStamp() << " [THREAD] " << (nocolor?NoTermColor(message):message);
       break;
+    case LOG_SCRIPT:
+      logstream << TimeStamp() << " [SCRIPT] " << (nocolor?NoTermColor(message):message);
+      break;
     case LOG_DEBUG:
       if(dev || protocoldebug)
 	logstream << TimeStamp() << " " << (nocolor?NoTermColor(message):message);
