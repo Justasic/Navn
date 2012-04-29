@@ -466,7 +466,7 @@ namespace Flux{
 
     
     inline string substr(size_type pos = 0, size_type n = npos) const { return string(this->_string.substr(pos, n)); }
-    inline string substr()
+//     inline string substr()
 
     inline iterator begin() { return this->_string.begin(); }
     inline const_iterator begin() const { return this->_string.begin(); }

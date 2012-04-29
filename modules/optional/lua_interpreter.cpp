@@ -20,11 +20,13 @@ class LUAException : public CoreException
 public:
   LUAException () : CoreException("LUA Script interpreter threw exception", "LUA Module") { }
   LUAException (const Flux::string &msg) : CoreException(msg, "LUA Module") { }
+  LUAException (const Flux::string &msg, const Flux::string &src) : CoreException(msg, src) { }
   virtual ~LUAException () throw() { }
 };
 
 class LUA_Interpreter : public module
 {
+  std::vector<Lua_State*> Lua_States;
 public:
   LUA_Interpreter(const Flux::string &Name):module(Name)
   {
@@ -53,14 +55,28 @@ public:
       for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
       {
 	Flux::string file = *it, fext;
-	fext = file.substr();
+	fext = file.substr((file.rfind('.') != Flux::string::npos));
+	Log(LOG_TERMINAL) << "EXT: " << fext;
+	if(fext.equals_ci("LUA"))
+	{
+	  if(luaL_loadfile(L, file.c_str()))
+	    throw LUAException("Cannot load "+file, lua_tostring(L, -1));
+	  if(lua_pcall(L, 0, 0, 0))
+	    throw LUAException("Failed to run lua_pcall()", lua_tostring(L, -1));
+
+	  lua_getglobal(L, "LUAHook");
+
+	  Log(LOG_SCRIPT) << "Pre-Call of " << file;
+	  if(lua_pcall(L, 0, 0, 0))
+	    throw LUAException("Failed to run lua_pcall()", lua_tostring(L, -1));
+	}
       }
 
-      
-
-    } catch (const LUAException &ex)
+      lua_close(L);
+    }
+    catch (const LUAException &ex)
     {
-      Log(LOG_SCRIPT) << "Failed to load lua script: " << ex.GetReason();
+      Log(LOG_SCRIPT) << "Failed to load lua script: " << ex.GetReason() << " | " << ex.GetSource();
     }
   }
 };
