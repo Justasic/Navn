@@ -302,3 +302,83 @@ void IRCProto::mode(const Flux::string &dest, const Flux::string &chanmode)
 {
   send_cmd("MODE %s %s\n", dest.c_str(), chanmode.c_str());
 }
+
+void IRCProto::invite(const Flux::string &user, const Flux::string &channel)
+{
+  send_cmd("INVITE %s %s\n", user.c_str(), channel.c_str());
+}
+
+void IRCProto::version(const Flux::string &server)
+{
+  if(server.empty())
+    send_cmd("VERSION\n");
+  else
+    send_cmd("VERSION %s\n", server.c_str());
+}
+
+void IRCProto::stats(const Flux::string &query, const Flux::string &server)
+{
+  if(server.empty())
+    send_cmd("STATS %s\n", query.c_str());
+  else
+    send_cmd("STATS %s %s\n", query.c_str(), server.c_str());
+}
+
+void IRCProto::links(const Flux::string &remote, const Flux::string &mask)
+{
+  if(remote.empty() && mask.empty())
+    send_cmd("LINKS\n");
+  else if (!remote.empty() && mask.empty())
+    send_cmd("LINKS %s\n", remote.c_str());
+  else if (!remote.empty() && !mask.empty())
+    send_cmd("LINKS %s %s\n", remote.c_str(), mask.c_str());
+}
+
+void IRCProto::time(const Flux::string &server)
+{
+  if(server.empty())
+    send_cmd("TIME\n");
+  else
+    send_cmd("TIME %s\n", server.c_str());
+}
+
+void IRCProto::admin(const Flux::string &server)
+{
+  if(server.empty())
+    send_cmd("ADMIN\n");
+  else
+    send_cmd("ADMIN %s\n", server.c_str());
+}
+
+void IRCProto::info(const Flux::string &server)
+{
+  if(server.empty())
+    send_cmd("INFO\n");
+  else
+    send_cmd("INFO %s\n", server.c_str());
+}
+
+void IRCProto::whowas(const Flux::string &nickname, int count, const Flux::string &server)
+{
+  if(count != 0 && !server.empty())
+    send_cmd("WHOWAS %s %d %s\n", nickname.c_str(), count, server.c_str());
+  else if (count != 0 && server.empty())
+    send_cmd("WHOWAS %s %d\n", nickname.c_str());
+  else if (count == 0 && !server.empty())
+    send_cmd("WHOWAS %s %s\n", nickname.c_str(), server.c_str());
+  else
+    send_cmd("WHOWAS %s\n", nickname.c_str());
+}
+
+void IRCProto::users(const Flux::string &server)
+{
+  if(server.empty())
+    send_cmd("USERS\n");
+  else
+    send_cmd("USERS %s\n", server.c_str());
+}
+
+void IRCProto::userhost(const Flux::string &nickname)
+{
+  send_cmd("USERHOST %s\n", nickname.c_str());
+}

@@ -151,6 +151,7 @@ Added LOG_CRITICAL which logs to stderr and is in all red, also added LOG_THREAD
 Renamed SerializeString to ParametizeString for the last and final time.
 Added IRCProto::introduce_client to introduce ourselves to the server
 Removed IRCProto::user in favor of IRCProto::introduce_client
+Added most RFC commands required by all IRC clients to IRCProto class
 
 Navn 2.0.0
 ==========
