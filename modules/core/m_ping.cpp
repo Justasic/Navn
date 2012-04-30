@@ -77,10 +77,7 @@ public:
   void OnNumeric(int i, const std::vector<Flux::string> &params)
   {
    if((i == 451))
-   {
-     ircproto->user(Config->Ident, Config->Realname);
-     ircproto->nick(Config->BotNick);
-   }
+     ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
   }
 };
 MODULE_HOOK(Ping_pong)

@@ -77,10 +77,7 @@ void Connect()
   sock->Connect();
 
   if(ircproto)
-  {
-    ircproto->user(Config->Ident, Config->Realname);
-    ircproto->nick(Config->BotNick);
-  }
+    ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
 
   FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
 }
@@ -115,12 +112,8 @@ int main (int argcx, char** argvx, char *envp[])
     ircproto = new IRCProto();
     time_t last_check = time(NULL);
 
-    //Set the username and nick
-    ircproto->user(Config->Ident, Config->Realname);
-    ircproto->nick(Config->BotNick);
-
-    if(!Config->ServerPassword.empty())
-      ircproto->pass(Config->ServerPassword);
+    // Introduce ourselves to the IRC server
+    ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
 
     FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
 

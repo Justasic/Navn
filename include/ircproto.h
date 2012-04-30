@@ -19,6 +19,7 @@ public:
   Oper *o;
   IRCProto();
   ~IRCProto();
+  void introduce_client(const Flux::string&, const Flux::string&, const Flux::string&);
   void privmsg(const Flux::string &where, const char *fmt, ...);
   void privmsg(const Flux::string &where, const Flux::string &msg);
   void notice(const Flux::string &where, const char *fmt, ...);
@@ -35,7 +36,6 @@ public:
   void part(const Flux::string&, const Flux::string&);
   void oper(const Flux::string&, const Flux::string&);
   void mode(const Flux::string&, const Flux::string&);
-  void user(const Flux::string&, const Flux::string&);
   void who(const Flux::string&);
   void quit(const Flux::string&);
   void nick(const Flux::string&);

@@ -149,6 +149,8 @@ Added LOG_MEMORY and new command line parameters --memorydebug and -m which now 
 Rewrote the logging algorithm to suck less, also checked if we have a log file to write to before we log (fixes a segmentation fault)
 Added LOG_CRITICAL which logs to stderr and is in all red, also added LOG_THREAD for thread logging
 Renamed SerializeString to ParametizeString for the last and final time.
+Added IRCProto::introduce_client to introduce ourselves to the server
+Removed IRCProto::user in favor of IRCProto::introduce_client
 
 Navn 2.0.0
 ==========

@@ -273,15 +273,25 @@ void IRCProto::mode(const Flux::string &chan, const Flux::string &usermode, cons
   send_cmd("MODE %s %s %s\n", chan.c_str(), usermode.c_str(), usernick.c_str());
 }
 /**
- * \fn void IRCProto::user(Flux::string ident, Flux::string realname)
- * \brief Sends the user gecos to the server
+ * \fn void IRCProto::introduce_client(const Flux::string &nick, const Flux::string &ident, const Flux::string &realname)
+ * \brief Sends the user gecos to the server on connect
+ * \param nick The nickname to set on connect
  * \param ident The ident at the beginning of the IRC host.
  * \param realname The real name gecos used in irc.
  */
-void IRCProto::user(const Flux::string &ident, const Flux::string &realname)
+void IRCProto::introduce_client(const Flux::string &nickname, const Flux::string &ident, const Flux::string &realname)
 {
-  send_cmd("USER %s * * :%s\n", ident.c_str(), realname.c_str());
+  // Get our hostname of our system
+  char hostname[256];
+  gethostname(hostname, 256);
+  
+  send_cmd("NICK %s\n", nickname.c_str());
+  send_cmd("USER %s %s %s :%s\n", ident.c_str(), hostname, Config->Server.c_str(), realname.c_str());
+
+  if(!Config->ServerPassword.empty())
+    send_cmd("PASS %s\n", Config->ServerPassword.c_str());
 }
+
 /**
  * \overload void command::mode(Flux:;string dest, Flux::string mode)
  * \brief Sends a mode to the server
