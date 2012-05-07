@@ -9,9 +9,9 @@
  * Based on python module of Sigyn by Alyx Wolcott
  */
 #include "modules.h"
-#include <python.h>
+#include <Python.h>
 
-#define ERROR_IF_NULL(x) if (x == NULL) { fprintf(stderr, "Argument %s is undefined.", #x); PyErr_Format(PyExc_TypeError, "Argument %s is undefined.", #x); }
+#define ERROR_IF_NULL(x) if (!x) { Log() << "Argument %s is undefined." << #x; PyErr_Format(PyExc_TypeError, "Argument %s is undefined.", #x); }
 
 
 /*
@@ -20,11 +20,23 @@
  * and should not be used by anything not in a Python file.
  */
 
+static static PyObject * sigyn_config(PyObject * self, PyObject * args)
+{
+  const char * tag, name, defaultval;
+  PyArg_ParseTuple(args, "ss|s", &tag, &name, &defaultval);
+  ERROR_IF_NULL(tag);
+  ERROR_IF_NULL(name);
+  const char * value = Config->Parser->Get(tag, name, defaultval);
+  PyObject *val = (value == NULL ? Py_None : PyString_FromString(value));
+  Py_INCREF(val);
+  return val;
+}
+
 static PyObject * irc_pass(PyObject * self, PyObject * args)
 {
     const char * password;
     PyArg_ParseTuple(args, "s", &password);
-    py_return_err_if_null(password);
+    ERROR_IF_NULL(password);
     ircproto->pass(password);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -33,7 +45,7 @@ static PyObject * irc_nick(PyObject * self, PyObject * args)
 {
     const char * nick;
     PyArg_ParseTuple(args, "s", &nick);
-    py_return_err_if_null(nick);
+    ERROR_IF_NULL(nick);
     ircproto->nick(nick);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -42,10 +54,10 @@ static PyObject * irc_user(PyObject * self, PyObject * args)
 {
     const char * user, * host, * server, * real;
     PyArg_ParseTuple(args, "ssss", &user, &host, &server, &real);
-    py_return_err_if_null(user);
-    py_return_err_if_null(host);
-    py_return_err_if_null(server);
-    py_return_err_if_null(real);
+    ERROR_IF_NULL(user);
+    ERROR_IF_NULL(host);
+    ERROR_IF_NULL(server);
+    ERROR_IF_NULL(real);
     ircproto->user(user, host, server, real);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -54,8 +66,8 @@ static PyObject * irc_oper(PyObject * self, PyObject * args)
 {
     const char * user, * password;
     PyArg_ParseTuple(args, "ss", &user, &password);
-    py_return_err_if_null(user);
-    py_return_err_if_null(password);
+    ERROR_IF_NULL(user);
+    ERROR_IF_NULL(password);
     ircproto->oper(user, password);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -72,8 +84,8 @@ static PyObject * irc_squit(PyObject * self, PyObject * args)
 {
     const char * server, * message;
     PyArg_ParseTuple(args, "ss", &server, &message);
-    py_return_err_if_null(server);
-    py_return_err_if_null(message);
+    ERROR_IF_NULL(server);
+    ERROR_IF_NULL(message);
     ircproto->squit(server, message);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -82,7 +94,7 @@ static PyObject * irc_join(PyObject * self, PyObject * args)
 {
     const char * channel, * key;
     PyArg_ParseTuple(args, "s|s", &channel, &key);
-    py_return_err_if_null(channel);
+    ERROR_IF_NULL(channel);
     ircproto->join(channel, key);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -91,7 +103,7 @@ static PyObject * irc_part(PyObject * self, PyObject * args)
 {
     const char * channel;
     PyArg_ParseTuple(args, "s", &channel);
-    py_return_err_if_null(channel);
+    ERROR_IF_NULL(channel);
     ircproto->part(channel);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -100,8 +112,8 @@ static PyObject * irc_mode(PyObject * self, PyObject * args)
 {
     const char * target, * modestring;
     PyArg_ParseTuple(args, "ss", &target, &modestring);
-    py_return_err_if_null(target);
-    py_return_err_if_null(modestring);
+    ERROR_IF_NULL(target);
+    ERROR_IF_NULL(modestring);
     ircproto->mode(target, modestring);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -110,8 +122,8 @@ static PyObject * irc_topic(PyObject * self, PyObject * args)
 {
     const char * channel, * topic;
     PyArg_ParseTuple(args, "ss", &channel, &topic);
-    py_return_err_if_null(channel);
-    py_return_err_if_null(topic);
+    ERROR_IF_NULL(channel);
+    ERROR_IF_NULL(topic);
     ircproto->topic(channel, topic);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -120,7 +132,7 @@ static PyObject * irc_names(PyObject * self, PyObject * args)
 {
     const char * channel;
     PyArg_ParseTuple(args, "s", &channel);
-    py_return_err_if_null(channel);
+    ERROR_IF_NULL(channel);
     ircproto->names(channel);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -129,8 +141,8 @@ static PyObject * irc_invite(PyObject * self, PyObject * args)
 {
     const char * user, * channel;
     PyArg_ParseTuple(args, "ss", &user, &channel);
-    py_return_err_if_null(user);
-    py_return_err_if_null(channel);
+    ERROR_IF_NULL(user);
+    ERROR_IF_NULL(channel);
     ircproto->invite(user, channel);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -139,8 +151,8 @@ static PyObject * irc_kick(PyObject * self, PyObject * args)
 {
     const char * channel, * user, * comment;
     PyArg_ParseTuple(args, "ss|s", &channel, &user, &comment);
-    py_return_err_if_null(channel);
-    py_return_err_if_null(user);
+    ERROR_IF_NULL(channel);
+    ERROR_IF_NULL(user);
     ircproto->kick(channel, user, comment);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -157,7 +169,7 @@ static PyObject * irc_stats(PyObject * self, PyObject * args)
 {
     const char * query, * server;
     PyArg_ParseTuple(args, "s|s", &query, &server);
-    py_return_err_if_null(query);
+    ERROR_IF_NULL(query);
     ircproto->stats(query, server);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -183,7 +195,7 @@ static PyObject * irc_connect(PyObject * self, PyObject * args)
     const char * target, * remote;
     const int port;
     PyArg_ParseTuple(args, "s|is", &target, &port, &remote);
-    py_return_err_if_null(target);
+    ERROR_IF_NULL(target);
     ircproto->connect(target, port, remote);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -208,8 +220,8 @@ static PyObject * irc_privmsg(PyObject * self, PyObject * args)
 {
     const char * reciever, * string;
     PyArg_ParseTuple(args, "ss", &reciever, &string);
-    py_return_err_if_null(reciever);
-    py_return_err_if_null(string);
+    ERROR_IF_NULL(reciever);
+    ERROR_IF_NULL(string);
     ircproto->privmsg(reciever, string);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -218,8 +230,8 @@ static PyObject * irc_notice(PyObject * self, PyObject * args)
 {
     const char * reciever, * string;
     PyArg_ParseTuple(args, "ss", &reciever, &string);
-    py_return_err_if_null(reciever);
-    py_return_err_if_null(string);
+    ERROR_IF_NULL(reciever);
+    ERROR_IF_NULL(string);
     ircproto->notice(reciever, string);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -228,7 +240,7 @@ static PyObject * irc_who(PyObject * self, PyObject * args)
 {
     const char * name, * o;
     PyArg_ParseTuple(args, "s|s", &name, &o);
-    py_return_err_if_null(name);
+    ERROR_IF_NULL(name);
     ircproto->who(name, o);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -237,7 +249,7 @@ static PyObject * irc_whois(PyObject * self, PyObject * args)
 {
     const char * server, * nickmask;
     PyArg_ParseTuple(args, "s|s", &nickmask, &server);
-    py_return_err_if_null(nickmask);
+    ERROR_IF_NULL(nickmask);
     ircproto->whois(server, nickmask);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -255,8 +267,8 @@ static PyObject * irc_kill(PyObject * self, PyObject * args)
 {
     const char * nickname, * reason;
     PyArg_ParseTuple(args, "ss", &nickname, &reason);
-    py_return_err_if_null(nickname);
-    py_return_err_if_null(reason);
+    ERROR_IF_NULL(nickname);
+    ERROR_IF_NULL(reason);
     ircproto->kill(nickname, reason);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -265,7 +277,7 @@ static PyObject * irc_ping(PyObject * self, PyObject * args)
 {
     const char * server1, * server2;
     PyArg_ParseTuple(args, "s|s", &server1, &server2);
-    py_return_err_if_null(server1);
+    ERROR_IF_NULL(server1);
     ircproto->ping(server1, server2);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -274,7 +286,7 @@ static PyObject * irc_pong(PyObject * self, PyObject * args)
 {
     const char * daemon;
     PyArg_ParseTuple(args, "s", &daemon);
-    py_return_err_if_null(daemon);
+    ERROR_IF_NULL(daemon);
     ircproto->pong(daemon);
     Py_INCREF(Py_None); return Py_None;
 }
@@ -299,7 +311,7 @@ static PyObject * irc_userhost(PyObject * self, PyObject * args)
 {
     const char * nickname;
     PyArg_ParseTuple(args, "s", &nickname);
-    py_return_err_if_null(nickname);
+    ERROR_IF_NULL(nickname);
     ircproto->userhost(nickname);
     Py_INCREF(Py_None); return Py_None;
 }
