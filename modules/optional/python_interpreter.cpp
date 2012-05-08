@@ -1,3 +1,5 @@
+/* RequiredLibraries: python2.7 */
+
 /* Navn IRC bot -- CTCP handler
  *
  * (C) 2011-2012 Azuru

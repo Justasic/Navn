@@ -391,7 +391,7 @@ public:
     if(cmd.equals_ci("!bugs"))
       c->SendMessage("Report Bugs at: http://bugs.Azuru.net/");
     if(cmd.equals_ci("!git"))
-      u->SendMessage("Navn git: git://gitorious.org/navn/navn.git");
+      u->SendMessage("Navn git: git://github.com/Justasic/Navn.git");
     if(msg.search_ci("the game") || msg.search_ci("won the game"))
       c->SendMessage("YOU JUST LOST THE GAME.");
     if(msg.search_ci("i win"))

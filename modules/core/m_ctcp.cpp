@@ -60,9 +60,8 @@ public:
     }
     if(cmd == "\001SOURCE\001")
     {
-      ircproto->notice(source, "\001SOURCE https://gitorious.org/navn/navn\001");
-      ircproto->notice(source, "\001SOURCE http://flux-net.googlecode.com/svn/branches/Navn/\001");
-      ircproto->notice(source, "\1SOURCE git://gitorious.org/navn/navn.git\1");
+      ircproto->notice(source, "\001SOURCE https://github.com/Justasic/Navn\001");
+      ircproto->notice(source, "\1SOURCE git://github.com/Justasic/Navn.git\1");
     }
     if(cmd == "\001DCC")
       ircproto->notice(source, "I do not accept or support DCC connections.");
