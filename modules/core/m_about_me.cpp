@@ -74,13 +74,10 @@ public:
 
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i]+' ';
-
-    msg.trim();
-    if(msg.equals_ci("about me")){
-	  u->SendMessage("Raw: %s", LastBuf.c_str());
+    Flux::string msg = CondenseString(params);
+    if(msg.equals_ci("about me"))
+    {
+	  u->SendMessage("Raw: %s", sock->GetLastBuf().c_str());
 	  u->SendMessage("Message: %s", msg.c_str());
 	  u->SendMessage("Nickname: %s", u->nick.c_str());
 	  u->SendMessage("Ident: %s", u->ident.c_str());

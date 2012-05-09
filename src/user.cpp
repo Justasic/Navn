@@ -32,8 +32,9 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
 
 User::~User()
 {
-  for(CList::iterator it = ChannelList.begin(); it != ChannelList.end(); ++it)
-    it->first->DelUser(this);
+  for(CList::iterator it = ChannelList.begin(), it_end = ChannelList.end(); it != it_end; ++it)
+    if(it->first)
+      it->first->DelUser(this);
   ChannelList.clear();
   
   Log() << "Deleting user " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);

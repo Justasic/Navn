@@ -36,7 +36,7 @@ const int MAXCONNECTIONS = 5;
 class CoreExport SocketIO
 {
 private:
-  Flux::string server, port, ip;
+  Flux::string server, port, ip, LastBuf;
   int sockn;
   bool ipv6;
   size_t recvlen;
@@ -47,11 +47,12 @@ public:
   bool IsIPv6() const;
   bool SetNonBlocking();
   bool SetBlocking();
-  int recv() const;
-  int send(const Flux::string buf) const;
+  int recv();
+  int send(const Flux::string buf);
   bool Connect();
   bool is_valid() const { return this->GetFD() != -1; }
   int Process();
+  Flux::string GetLastBuf() const;
   bool Read(const Flux::string&) const;
   void ThrowException(const Flux::string&);
 };

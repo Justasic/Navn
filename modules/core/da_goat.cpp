@@ -53,7 +53,6 @@
  * Da Goat is used to repeat a lot of things we got tired of saying, like teaching new people how to do thigns and what the
  * rules of the server were.
  */
-struct sysinfo sys_info;
 class CommandCVersion: public Command
 {
 public:
@@ -61,6 +60,7 @@ public:
   {
     this->SetDesc("Displays the bots version info into the channel");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
@@ -71,6 +71,7 @@ public:
     c->SendMessage("%s is managed by: \2%s\2", Config->BotNick.c_str(), CondenseString(Config->Owners).c_str());
     Log(u, this) << "command in " << c->name;
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -81,6 +82,7 @@ public:
     return true;
   }
 };
+
 class CommandCSpam: public Command
 {
 public:
@@ -88,11 +90,13 @@ public:
   {
     this->SetDesc("Displays the spam warning");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Log(source.u, this) << "command in " << source.c->name;
     source.c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -110,11 +114,13 @@ public:
   {
     this->SetDesc("Displays the Ask protocol");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Log(source.u, this) << "command in " << source.c->name;
     source.c->SendMessage("The Ask To Ask protocol wastes more bandwidth than any version of the Ask protocol, so just ask your question. (Read: don't ask to ask a question, just ask your question)");
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -123,7 +129,6 @@ public:
     return true;
   }
 };
-
 
 class CommandCRules: public Command
 {
@@ -154,13 +159,16 @@ public:
     return true;
   }
 };
+
 class CommandCUptime: public Command
 {
+  struct sysinfo sys_info;
 public:
   CommandCUptime(module *m):Command(m, "!UPTIME", C_CHANNEL)
   {
     this->SetDesc("Prints Syatem Uptime in the channel");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -181,6 +189,7 @@ public:
 #endif
       Log(u, this) << "command in " << c->name;
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -192,6 +201,7 @@ public:
     return true;
   }
 };
+
 class CommandCSocialInfo: public Command
 {
 public:
@@ -199,6 +209,7 @@ public:
   {
     this->SetDesc("Displays Azuru's Social Information");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -208,6 +219,7 @@ public:
     c->SendMessage("The Azuru TeamSpeak 3 server is:\002Pulsar.Azuru.net:9987\002");
     Log(u, this) << "command in " << c->name;
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -232,7 +244,7 @@ public:
     Channel *c = source.c;
     User *u = source.u;
     c->SendMessage("To Register your nickname type: /register <Your password>");
-	c->SendMessage("REMEMBER THIS PASSWORD! YOU WILL USE IT EVERY TIME YOU JOIN!");
+    c->SendMessage("REMEMBER THIS PASSWORD! YOU WILL USE IT EVERY TIME YOU JOIN!");
     Log(u, this) << "command in " << c->name;
   }
   
@@ -309,7 +321,7 @@ public:
   
 };
 
-class Da_Goat:public module
+class Da_Goat : public module
 {
   CommandCInfo info;
   CommandCRename rename;
@@ -321,8 +333,7 @@ class Da_Goat:public module
   CommandCVersion ver;
   CommandCASK ask;
 public:
-  Da_Goat(const Flux::string &Name):module(Name), info(this), rename(this), reg(this), sinfo(this), uptime(this), rules(this),
-  spam(this), ver(this), ask(this)
+  Da_Goat(const Flux::string &Name):module(Name), info(this), rename(this), reg(this), sinfo(this), uptime(this), rules(this), spam(this), ver(this), ask(this)
   {
     this->SetAuthor("Justasic & Lordofsraam");
     this->SetVersion(VERSION);

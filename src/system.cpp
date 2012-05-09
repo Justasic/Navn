@@ -545,6 +545,14 @@ void startup(int argc, char** argv, char *envp[])
 void GarbageCollect()
 {
   FOREACH_MOD(I_OnShutdown, OnShutdown());
+
+  if(sock)
+  {
+    Log(LOG_MEMORY) << "Deleting socket @" << sock;
+    delete sock;
+    sock = nullptr;
+  }
+  
   ModuleHandler::UnloadAll();
   // Schedule all channels for deletion
   for(Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end;)
@@ -565,13 +573,6 @@ void GarbageCollect()
     delete u;
   }
   UserNickList.clear();
-
-  if(sock)
-  {
-    Log(LOG_MEMORY) << "Deleting socket @" << sock;
-    delete sock;
-    sock = nullptr;
-  }
 
   if(ircproto)
   {

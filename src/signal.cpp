@@ -83,7 +83,10 @@ havecxx11 = true;
    slog << "System info: " << uts.sysname << " " << uts.nodename << " " <<  uts.release << " " << uts.machine << std::endl;
    slog << "System version: " << uts.version << std::endl;
    slog << "C++ Version: " << __VERSION__ " C++11 support: " << (havecxx11?"true":"false") << std::endl;
-   slog << "Socket Buffer: " << LastBuf << std::endl;
+   if(sock)
+    slog << "Socket Buffer: " << sock->GetLastBuf() << std::endl;
+   else
+     slog << "Socket Buffer: No socket created." << std::endl;
    slog << "Location: " << segv_location << std::endl;
    if(m)
    {

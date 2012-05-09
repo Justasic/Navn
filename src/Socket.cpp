@@ -170,7 +170,12 @@ int SocketIO::Process()
   return sres;
 }
 
-int SocketIO::recv() const
+Flux::string SocketIO::GetLastBuf() const
+{
+  return this->LastBuf;
+}
+
+int SocketIO::recv()
 {
   char tbuf[BUFSIZE + 1] = "";
   memset(tbuf, 0, BUFSIZE + 1);
@@ -182,22 +187,24 @@ int SocketIO::recv() const
   while(sep.GetToken(buf))
   {
     buf.trim();
-    LastBuf = buf;
+    this->LastBuf.clear();
+    this->LastBuf = buf;
     this->Read(buf);
   }
   return i;
 }
 
-int SocketIO::send(const Flux::string buf) const
+int SocketIO::send(const Flux::string buf)
 {
- LastBuf = buf;
- Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();
+  this->LastBuf.clear();
+  this->LastBuf = buf;
+  Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();
 
- if(!protocoldebug)
-   Log(LOG_DEBUG) << buf;
+  if(!protocoldebug)
+    Log(LOG_DEBUG) << buf;
 
- int i = write(this->GetFD(), buf.c_str(), buf.size());
- return i;
+  int i = write(this->GetFD(), buf.c_str(), buf.size());
+  return i;
 }
 /** \fn void send_cmd(const char *fmt, ...)
  * \brief Sends something directly out the socket after being processed by vsnprintf
@@ -210,6 +217,9 @@ void send_cmd(const char *fmt, ...)
   va_list args;
   va_start(args, fmt);
   vsnprintf(buffer, sizeof(buffer), fmt, args);
-  sock->send(buffer);
+  if(sock)
+    sock->send(buffer);
+  else
+    Log(LOG_WARN) << "Attempted to send \"" << buffer << "\" to the server but no socket exists!";
   va_end(args);
 }

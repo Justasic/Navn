@@ -34,7 +34,7 @@ jmp_buf sigbuf;
 char **my_av, **my_envp;
 bool nofork = false, dev = false, protocoldebug = false, IsOper = false, quitting = false;
 bool started = false, nocolor = false, istempnick = false, memdebug = false;
-Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name, LastBuf;
+Flux::string binary_path, bot_bin, binary_dir, quitmsg, server_name;
 const Flux::string password = make_pass();
 char segv_location[255];
 time_t starttime = 0;

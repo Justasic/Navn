@@ -27,8 +27,9 @@ Channel::~Channel()
   this->SendPart();
 
   // Remove the channel from users in the list.
-  for(UList::iterator it = UserList.begin(); it != UserList.end(); ++it)
-    it->first->DelChan(this);
+  for(UList::iterator it = UserList.begin(), it_end = UserList.end(); it != it_end; ++it)
+    if(it->first)
+      it->first->DelChan(this);
   UserList.clear();
   
   Log(LOG_DEBUG) << "Deleted channel " << this->name;
@@ -56,6 +57,9 @@ void Channel::SendPart(){ ircproto->part(this->name); }
 void Channel::AddUser(User *u) { if(u) this->UserList[u] = this; }
 void Channel::DelUser(User *u)
 {
+  if(!sock)
+    return;
+  
   UList::iterator it = UserList.find(u);
 
   if(it != UserList.end())

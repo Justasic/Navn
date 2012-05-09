@@ -37,14 +37,17 @@
 void CLog(const char *fmt, ...)
 {
   std::fstream clog;
-  try{
+  try
+  {
     clog.open(Flux::string(Config->LogChannel+".log").c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
     if(!clog.is_open())
       throw LogException("Failed to open log file.");
     
-  }catch (LogException &e)
+  }
+  catch (LogException &e)
   {
     Log() << "Channel Logger Exception: " << e.GetReason();
+    return;
   }
   
   va_list args;
@@ -83,18 +86,16 @@ public:
     if(c->name != Config->LogChannel)
       return;
     
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i]+' ';
+    Flux::string msg = CondenseString(params);
     
-    msg.trim();
     if(nolog != "#nl" && u)
     {
       if(nolog == "\001ACTION")
       {
 	msg = msg.erase(0,8);
 	CLog("*** %s %s", u->nick.c_str(), Flux::Sanitize(msg).c_str());
-      }else
+      }
+      else
 	CLog("<%s> %s", u->nick.c_str(), msg.c_str());
     }
   }
