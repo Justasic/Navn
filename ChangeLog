@@ -152,6 +152,11 @@ Renamed SerializeString to ParametizeString for the last and final time.
 Added IRCProto::introduce_client to introduce ourselves to the server
 Removed IRCProto::user in favor of IRCProto::introduce_client
 Added most RFC commands required by all IRC clients to IRCProto class
+Added logging colors to config
+Added LOG_WARN for different warnings
+Rewrote how colors are stripped from the log messages
+Check if we're in the terminal before printing to stdout
+Give a warning if server sends messages as an invalid nickname
 
 Navn 2.0.0
 ==========
