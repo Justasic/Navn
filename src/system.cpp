@@ -541,3 +541,50 @@ void startup(int argc, char** argv, char *envp[])
   FOREACH_MOD(I_OnStart, OnStart(argc, argv)); //announce we are starting the bot
   Fork(); //Fork to background
 }
+
+void GarbageCollect()
+{
+  // a FIFO queue of all the pointers to delete
+  std::queue<void*> ptrs_to_delete;
+
+  // Schedule all channels for deletion
+  for(Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(); it != ChanMap.end(); ++it)
+    ptrs_to_delete.push(it->second);
+  ChanMap.clear();
+
+  // Schedule all Users for deletion
+  for(Flux::insensitive_map<User *>::iterator it = UserNickList.begin(); it != UserNickList.end(); ++it)
+    ptrs_to_delete.push(it->second);
+  UserNickList.clear();
+
+  while (!ptrs_to_delete.empty())
+  {
+    void *ptr = ptrs_to_delete.front();
+    ptrs_to_delete.pop();
+
+    Log(LOG_MEMORY) << "Deleting @" << ptr;
+
+    if(ptr)
+    {
+      if(typeid(ptr) == typeid(User*))
+	delete static_cast<User*>(ptr);
+      if(typeid(ptr) == typeid(Channel*))
+	delete static_cast<Channel*>(ptr);
+    }
+  }
+
+  if(sock)
+  {
+    Log(LOG_MEMORY) << "Deleting socket @" << sock;
+    delete sock;
+    sock = nullptr;
+  }
+
+  if(ircproto)
+  {
+    Log(LOG_MEMORY) << "Deleting ircproto @" << ircproto;
+    delete ircproto;
+    ircproto = nullptr;
+  }
+
+}

@@ -135,7 +135,7 @@ E Flux::insensitive_map<Channel*> ChanMap;
 
 /* void's */
 E void Rehash();
-E void Cleanup();
+E void GarbageCollect();
 E void QuitUser(User*);
 E void Fork();
 E void sigact(int);
