@@ -44,7 +44,7 @@ public:
   {
     Flux::string cmd = params.empty()?"":params[0];
     Log(LOG_SILENT) << "Received CTCP " << Flux::Sanitize(cmd) << " from " << source;
-    Log(LOG_TERMINAL) << "\033[22;31mReceived CTCP " << Flux::Sanitize(cmd) << " from " << source << "\033[22;36m";
+    Log(LOG_TERMINAL) << "\033[22;31mReceived CTCP " << Flux::Sanitize(cmd) << " from " << source << Config->LogColor;
 
     if(cmd == "\001VERSION\001")
     { // for CTCP VERSION reply

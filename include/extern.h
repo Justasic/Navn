@@ -60,6 +60,7 @@ enum LogType
   LOG_NORMAL,
   LOG_RAWIO,
   LOG_TERMINAL,
+  LOG_WARN,
   LOG_CRITICAL,
   LOG_THREAD,
   LOG_SILENT
@@ -162,6 +163,7 @@ if(true) \
        ++safei; \
        try \
        { \
+	  SET_SEGV_LOCATION(); \
           (*_i)->x ; \
        } \
        catch (const ModuleException &modexcept) \
@@ -185,6 +187,7 @@ if (true) \
     ++safei; \
     try \
     { \
+      SET_SEGV_LOCATION(); \
       EventResult res = (*_i)->x ; \
       if (res != EVENT_CONTINUE) { \
 	v = res; \

@@ -16,13 +16,15 @@
 #include <fstream>
 #include "INIReader.h"
 #include "log.h"
+
 bool in_comment = false;
 int INIReader::Parse(const Flux::string &filename)
 {
   SET_SEGV_LOCATION();
   std::ifstream file(filename.c_str());
-  int linenum, error =0;
+  int linenum = 0;
   Flux::string line, section, name, value;
+  
   if(file.is_open())
   {
    while(file.good())
@@ -33,14 +35,15 @@ int INIReader::Parse(const Flux::string &filename)
     line.trim();
     //printf("UNPARSED: %s\n", line.c_str());
 
-    if(line[0] == ';' || line[0] == '#' || line.empty())
-      continue;  // Do nothing if any of this is true
+    if(line[0] == '#' || line.empty())
+      continue;
     /********************************************/
     unsigned c=0, len = line.length();
     for(; c < len; ++c)
     {
       char ch = line[c];
-      if(in_comment){
+      if(in_comment)
+      {
 	if(ch == '*' && c+1 < len && line[c+1] == '/')
 	{
 	  in_comment = false;
@@ -61,7 +64,8 @@ int INIReader::Parse(const Flux::string &filename)
 	continue;
       }
     }
-    if(line.search("/*") && line.search("*/")){
+    if(line.search("/*") && line.search("*/"))
+    {
       in_comment = contin = false;
       line = line.erase(line.find("/*"), line.find("*/"));
       line.trim();
@@ -77,13 +81,15 @@ int INIReader::Parse(const Flux::string &filename)
       section.trim();
     }
     else if((line[0] == '[' && line[line.size()-1] != ']') || (line[0] != '[' && line[line.size() -1] == ']'))
-      error = linenum;
-    else if(!line.empty() && line.find_first_of('=')){
+      throw ConfigException(printfify("Brackets not terminated: %i", linenum));
+    else if(!line.empty() && line.find_first_of('='))
+    {
       name = line;
       int d = line.find_first_of('=');
       if(line.find_first_of(';') < static_cast<unsigned>(d))
-	error = linenum;
-      else if(d > 0){
+	throw ConfigException(printfify("Cannot have semi-colon immediately after assignment: %i", linenum));
+      else if(d > 0)
+      {
 	name = name.erase(d, name.size()-d);
 	name.trim();
       }
@@ -96,27 +102,33 @@ int INIReader::Parse(const Flux::string &filename)
 	int i = value.find_first_of(';'); // channels would look like comments.. maybe we can fix this one day..
 	if(i > 0)
 	{
-	  value = value.erase(i, Flux::string::npos);
+	  if(i+1 <= static_cast<int>(value.size()) && value[i+1] == ';')
+	    value = value.replace_all_cs(";;", ";");
+	  else
+	    value = value.erase(i, Flux::string::npos);
 	}
       }
       value.trim();
       /************************************/
       //printf("PARSED: %s | %s | %s | %s | %i\n", line.c_str(), value.c_str(), name.c_str(), section.c_str(), error);
-      if(error != 0)
-	break;
-      else if(value.empty() || section.empty() || name.empty() || value.search(';'))
-	error = linenum;
+
+      if(value.empty() || section.empty() || name.empty())
+	throw ConfigException(printfify("Empty value/section/name: %i", linenum));
       else
-      _values[this->MakeKey(section, name)] = value;
-    }else
-      error = linenum;
+	_values[this->MakeKey(section, name)] = value;
+    }
+    else
+      throw ConfigException(printfify("Undefined data: %i", linenum));
    }
+   
    if(in_comment)
-      error = linenum;
+     throw ConfigException(printfify("Unterminated comment: %i", linenum));
+   
    file.close();
-  }else
+  }
+  else
     return -1;
-  return error;
+  return 0;
 }
 /**
  * \class INIReader The config parser class, this parses the INI file for config values
@@ -236,6 +248,7 @@ BotConfig::BotConfig(const Flux::string &dir)
    return;
  }
 }
+
 BotConfig::~BotConfig() { if(Parser) delete Parser; }
 
 void BotConfig::Read()
@@ -272,5 +285,6 @@ void BotConfig::Read()
   this->AutoIdentString = this->Parser->Get("Services", "AutoIdent String", "");
   this->WelcomeMessage 	= this->Parser->Get("Bot", "Welcome Message", "");
   this->LogAge 		= this->Parser->GetInteger("Log", "Log Age", 2);
+  this->LogColor	= this->Parser->Get("Log", "Color", "\033[22;36m").replace_all_cs("\\033", "\033");
 }
 

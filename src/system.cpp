@@ -533,7 +533,7 @@ void startup(int argc, char** argv, char *envp[])
   }
 
   if(!nocolor)
-    Log(LOG_TERMINAL) << "\033[22;36m";
+    Log(LOG_TERMINAL) << Config->LogColor;
 
   ModuleHandler::SanitizeRuntime();
   ReadConfig(); //load modules

@@ -168,10 +168,17 @@ Log::Log(LogType t, User *user, Command *command): type(t), u(user), c(command)
  */
 Log::~Log()
 {
+  Flux::string LogColor;
   if(Config)
-  	this->filename = CreateLogName(Config->LogFile, starttime);
+  {
+    LogColor = Config->LogColor;
+    this->filename = CreateLogName(Config->LogFile, starttime);
+  }
   else
-	this->filename = "";
+  {
+    LogColor = "\033[0m"; // Whatever the terminal is set at if we cant get colors from the config pointer
+    this->filename = "";
+  }
   
   Flux::string message = Flux::Sanitize(this->buffer.str()), raw = this->buffer.str();
   std::stringstream logstream;
@@ -185,34 +192,37 @@ Log::~Log()
   {
     case LOG_SILENT:
     case LOG_NORMAL:
-      logstream << TimeStamp() << " " << (nocolor?NoTermColor(message):message);
+      logstream << TimeStamp() << " " << message;
       break;
     case LOG_THREAD:
       if(protocoldebug)
-	logstream << TimeStamp() << " [THREAD] " << (nocolor?NoTermColor(message):message);
+	logstream << TimeStamp() << " [THREAD] " << message;
       break;
     case LOG_DEBUG:
       if(dev || protocoldebug)
-	logstream << TimeStamp() << " " << (nocolor?NoTermColor(message):message);
+	logstream << TimeStamp() << " " << message;
       break;
     case LOG_RAWIO:
       if(protocoldebug)
-	logstream << TimeStamp() << " " << (nocolor?NoTermColor(message):message);
+	logstream << TimeStamp() << " " << message;
       break;
     case LOG_CRITICAL:
-      logstream << "\033[22;31m" << TimeStamp() << " [CRITICAL] " << (nocolor?NoTermColor(message):message) << "\033[22;36m";
+      logstream << "\033[22;31m" << TimeStamp() << " [CRITICAL] " << message << LogColor;
+      break;
+    case LOG_WARN:
+      logstream << TimeStamp() << " \033[22;33m[WARNING]" << Config->LogColor << " " << message;
       break;
     case LOG_MEMORY:
       if(memdebug)
-	std::cout << TimeStamp() << " [MEMORY] " << (nocolor?NoTermColor(message):message) << std::endl;
+	std::cout << TimeStamp() << " [MEMORY] " << message << std::endl;
       return; // ignore everything else, it doesn't matter
     case LOG_TERMINAL:
       if(InTerm())
-	std::cout << (nocolor?NoTermColor(raw):raw) << std::endl;
+	std::cout << raw << std::endl;
       return;
     default:
       Log(LOG_CRITICAL) << "Wtf log case is this?";
-      Log(LOG_TERMINAL) << " [NOTYPE] " << message;
+      Log(LOG_TERMINAL) << "\033[22;33m[UNDEFINED]" << LogColor << " " << message;
   }
 
   EventResult result;
@@ -220,15 +230,15 @@ Log::~Log()
   if(result != EVENT_CONTINUE)
     return;
   
-  if(type != LOG_SILENT || type != LOG_CRITICAL)
-    std::cout << logstream.str() << std::endl;
+  if((type != LOG_SILENT || type != LOG_CRITICAL) && InTerm())
+    std::cout << (nocolor?NoTermColor(logstream.str()):logstream.str()) << std::endl;
 
-  if(type == LOG_CRITICAL) // Log to stderr instead of stdout
-    std::cerr << logstream.str() << std::endl;
+  if(type == LOG_CRITICAL && InTerm()) // Log to stderr instead of stdout
+    std::cerr << (nocolor?NoTermColor(logstream.str()):logstream.str()) << std::endl;
 
   if(this->filename.empty())
   {
-    std::cerr << "\033[22;31m" << TimeStamp() << " [CRITICAL] Cannot find log file specified!\033[22;36m" << std::endl;
+    std::cerr << "\033[22;31m" << TimeStamp() << " [CRITICAL] Cannot find log file specified!" << LogColor << std::endl;
     return; // Exit if there's no file to log to
   }
   
