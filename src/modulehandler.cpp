@@ -202,7 +202,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 bool ModuleHandler::DeleteModule(module *m)
 {
   SET_SEGV_LOCATION();
-  if (!m || !m->handle || m->GetPermanent())
+  if (!m || !m->handle)
 	  return false;
 
   void *handle = m->handle;
@@ -237,7 +237,7 @@ bool ModuleHandler::DeleteModule(module *m)
  */
 bool ModuleHandler::Unload(module *m)
 {
-  if(!m)
+  if(!m || m->GetPermanent())
     return false;
   FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
   return DeleteModule(m);
@@ -249,15 +249,14 @@ bool ModuleHandler::Unload(module *m)
  */
 void ModuleHandler::UnloadAll()
 {
-  std::queue<module*> modules;
-  for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
-    modules.push(it->second);
-
-  while (!modules.empty())
+  for(Flux::insensitive_map<module*>::iterator it = Modules.begin(), it_end = Modules.end(); it != it_end;)
   {
-    Unload(modules.front());
-    modules.pop();
+    module *m = it->second;
+    ++it;
+    FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
+    DeleteModule(m);
   }
+  Modules.clear();
 }
 
 /**
