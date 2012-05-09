@@ -492,8 +492,8 @@ public:
     
     if((i == 376))
     {
-      Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << "\033[22;36m";
-      Log(LOG_TERMINAL) << "\033[22;34mSession Password: \033[01;32m" << password << "\033[22;36m";
+      Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << Config->LogColor;
+      Log(LOG_TERMINAL) << "\033[22;34mSession Password: \033[01;32m" << password << Config->LogColor;
       for(unsigned o = 0; o < Config->Owners.size(); ++o)
 	ircproto->notice(Config->Owners[o], "The randomly generated password is: %s", password.c_str());
       started = true;

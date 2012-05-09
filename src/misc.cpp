@@ -40,7 +40,8 @@ IsoHost::IsoHost(const Flux::string &fullhost)
  */
 void Fork()
 {
-  if (!nofork && InTerm()){
+  if (!nofork && InTerm())
+  {
     int i = fork();
     if(i > 0){
 	    Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
@@ -58,8 +59,9 @@ void Fork()
 	    throw CoreException("Unable to setpgid()");
     else if(i == -1)
       Log() << "Error, unable to fork: " << strerror(errno);
-  }else
-    Log() << Config->BotNick << " Started, PID: " << getpid() << "\033[22;36m";
+  }
+  else
+    Log() << Config->BotNick << " Started, PID: " << getpid() << Config->LogColor;
 }
 
 /**

@@ -165,7 +165,10 @@ void CommandSource::Reply(const Flux::string &msg)
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
-   this->u->SendMessage(tok);
+   if(this->u)
+    this->u->SendMessage(tok);
+   else
+     Log(LOG_WARN) << "Cannot send \"" << tok << "\" to server, unknown user!";
 }
 
 CommandMap Commandsmap;
