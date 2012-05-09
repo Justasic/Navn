@@ -149,6 +149,11 @@ Added LOG_MEMORY and new command line parameters --memorydebug and -m which now 
 Rewrote the logging algorithm to suck less, also checked if we have a log file to write to before we log (fixes a segmentation fault)
 Added LOG_CRITICAL which logs to stderr and is in all red, also added LOG_THREAD for thread logging
 Renamed SerializeString to ParametizeString for the last and final time.
+Added logging colors to config
+Added LOG_WARN for different warnings
+Rewrote how colors are stripped from the log messages
+Check if we're in the terminal before printing to stdout
+Give a warning if server sends messages as an invalid nickname
 
 Navn 2.0.0
 ==========
