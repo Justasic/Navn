@@ -128,7 +128,7 @@ Base::Base() { Log(LOG_MEMORY) << "Base::+ @" << this; }
 Base::~Base()
 {
   Log(LOG_MEMORY) << "Base::- @" << this;
-  for(std::set<dynamic_reference_base*>::iterator it = this->References.begin(); it != this->References.end(); ++it)
+  for(std::set<dynamic_reference_base*>::iterator it = this->References.begin() it_end = this->References.end(); it != it_end; ++it)
     (*it)->Invalidate();
 }
 void Base::AddReference(dynamic_reference_base *r) { this->References.insert(r); }

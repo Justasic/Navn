@@ -152,9 +152,6 @@ int main (int argcx, char** argvx, char *envp[])
       }
       /***********************************/
     }//while loop ends here
-    FOREACH_MOD(I_OnShutdown, OnShutdown());
-    ModuleHandler::UnloadAll();
-    ModuleHandler::SanitizeRuntime();
     GarbageCollect();
     Log(LOG_TERMINAL) << "\033[0m";
   }//try ends here
