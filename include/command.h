@@ -61,7 +61,7 @@ public:
 class CoreExport IsoHost:Flux::string
 {
 public:
-  IsoHost(const Flux::string&);
+  explicit IsoHost(const Flux::string&);
   Flux::string raw;
   Flux::string nick;
   Flux::string host;

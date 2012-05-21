@@ -269,14 +269,14 @@ namespace Flux{
     static const size_type npos = static_cast<size_type>(-1);
 
     string() : _string("") { }
-    string(float f) : _string() { _string = value_cast<sstr>(f); }
-    string(double d) : _string() { _string = value_cast<sstr>(d); }
-    string(int i) : _string() { _string = value_cast<sstr>(i); }
+    explicit string(float f) : _string() { _string = value_cast<sstr>(f); }
+    explicit string(double d) : _string() { _string = value_cast<sstr>(d); }
+    explicit string(int i) : _string() { _string = value_cast<sstr>(i); }
     string(char chr) : _string() { _string = chr; }
-    string(size_type n, char chr) : _string(n, chr) { }
     string(const char *_str) : _string(_str) { }
     string(const sstr &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
+    string(size_type n, char chr) : _string(n, chr) { }
     string(const string &_str, size_type pos = 0, size_type n = npos) : _string(_str._string, pos, n) { }
     template <class InputIterator> string(InputIterator first, InputIterator last) : _string(first, last) { }
 

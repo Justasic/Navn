@@ -35,7 +35,7 @@ protected:
 public:
   std::vector<Flux::string> Contents;
   ~TextFile();
-  TextFile(const Flux::string&);
+  explicit TextFile(const Flux::string&);
   TextFile(std::vector<Flux::string>);
   FileIOErrors Copy(const Flux::string&);
   FileIOErrors GetLastError();

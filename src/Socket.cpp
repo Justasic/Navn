@@ -211,7 +211,7 @@ void SocketIO::Process()
       if(!this->Read(buf))
 	throw SocketException("Error reading socket");
     }
-    
+
     FD_CLR(this->GetFD(), &ReadFD);
   }
 

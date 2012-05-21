@@ -24,9 +24,9 @@ public:
   Command *c;
   std::stringstream buffer;
   static Flux::string TimeStamp();
-  Log(LogType type = LOG_NORMAL);
+  explicit Log(LogType type = LOG_NORMAL);
+  explicit Log(User*);
   Log(LogType, User*);
-  Log(User*);
   Log(User*, Command*);
   Log(LogType, User*, Command*);
   ~Log();

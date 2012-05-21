@@ -53,7 +53,7 @@ class CoreException : public std::exception
 	CoreException() : err("Core threw an exception"), source("The core") { }
 	/** This constructor can be used to specify an error message before throwing.
 	 */
-	CoreException(const Flux::string &message) : err(message), source("The core") { }
+	explicit CoreException(const Flux::string &message) : err(message), source("The core") { }
 	/** This constructor can be used to specify an error message before throwing,
 	 * and to specify the source of the exception.
 	 */
