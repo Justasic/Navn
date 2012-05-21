@@ -97,7 +97,6 @@ SocketIO::~SocketIO()
   FD_CLR(this->GetFD(), &WriteFD);
 }
 
-int SocketIO::GetFD() const { return sockn; }
 void SocketIO::ThrowException(const Flux::string &msg) { throwex = true; throwmsg = msg; }
 
 bool SocketIO::SetNonBlocking()
@@ -111,8 +110,6 @@ bool SocketIO::SetBlocking()
   int flags = fcntl(this->GetFD(), F_GETFL, 0);
   return !fcntl(this->GetFD(), F_SETFL, flags & ~O_NONBLOCK);
 }
-
-bool SocketIO::IsIPv6() const { return ipv6; }
 
 void SocketIO::Connect()
 {
@@ -242,11 +239,6 @@ void SocketIO::Process()
       this->iswritable = false;
     }
   }
-}
-
-Flux::string SocketIO::GetLastBuf() const
-{
-  return this->LastBuf;
 }
 
 void SocketIO::send(const Flux::string buf)

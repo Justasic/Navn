@@ -45,16 +45,16 @@ private:
 public:
   SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
-  int GetFD() const;
-  bool IsIPv6() const;
+  inline int GetFD() const { return sockn; }
+  inline bool IsIPv6() const { return this->ipv6; }
+  inline bool is_valid() const { return this->GetFD() != -1; }
+  inline size_t GetReceiveLen() const { return this->recvlen; }
+  inline Flux::string GetLastBuf() const { return this->LastBuf; };
   bool SetNonBlocking();
   bool SetBlocking();
   void send(const Flux::string buf);
   void Connect();
-  bool is_valid() const { return this->GetFD() != -1; }
-  size_t GetReceiveLen() const { return this->recvlen; }
   void Process();
-  Flux::string GetLastBuf() const;
   bool Read(const Flux::string&) const;
   void ThrowException(const Flux::string&);
 };

@@ -249,7 +249,7 @@ inline bool operator!=(const sstr &leftval, const ci::string &rightval)
  * most function programming for the string class goes to The Anope development team but
  * a lot (casting operator for example) is done by Justasic
  */
-namespace Flux{
+namespace Flux {
   /** This class was ported from Anope IRC services to work with Navn
    * most function programming credit goes to The Anope Team
    * See http://tinyurl.com/6btqne4
