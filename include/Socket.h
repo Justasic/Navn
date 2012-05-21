@@ -39,7 +39,9 @@ private:
   Flux::string server, port, ip, LastBuf;
   int sockn;
   bool ipv6;
+  bool iswritable;
   size_t recvlen;
+  std::queue<Flux::string> WriteBuffer;
 public:
   SocketIO(const Flux::string &server, const Flux::string &port);
   ~SocketIO();
@@ -47,11 +49,11 @@ public:
   bool IsIPv6() const;
   bool SetNonBlocking();
   bool SetBlocking();
-  int recv();
-  int send(const Flux::string buf);
-  bool Connect();
+  void send(const Flux::string buf);
+  void Connect();
   bool is_valid() const { return this->GetFD() != -1; }
-  int Process();
+  size_t GetReceiveLen() const { return this->recvlen; }
+  void Process();
   Flux::string GetLastBuf() const;
   bool Read(const Flux::string&) const;
   void ThrowException(const Flux::string&);

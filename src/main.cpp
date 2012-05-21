@@ -90,7 +90,11 @@ void Connect()
     if(static_cast<int>(startcount) >= Config->ReconnectTries)
       throw CoreException("Cannot connect to server!");
     else
+    {
+      delete sock;
+      sock = nullptr;
       new ReconnectTimer();
+    }
   }
 }
 
