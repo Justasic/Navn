@@ -213,7 +213,7 @@ bool ModuleHandler::DeleteModule(module *m)
   const char *err = dlerror();
   if (!df && err && *err)
   {
-	  Log(LOG_DEBUG) << "No destroy function found for " << m->name << ", chancing delete...";
+	  Log(LOG_WARN) << "No destroy function found for " << m->name << ", chancing delete...";
 	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
   }
   else
@@ -291,7 +291,7 @@ void ModuleHandler::SanitizeRuntime()
 
   if(!TextFile::IsDirectory(dirbuf))
   {
-    if(mkdir(dirbuf.c_str(), getuid()) != 0)
+    if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0)
       throw CoreException(printfify("Error making new runtime directory: %s", strerror(errno)));
   }
   else
