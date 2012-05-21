@@ -28,25 +28,20 @@
  */
 #include "modules.h"
 
-/**
- * \fn bool SocketIO::Read(const Flux::string &buf) const
- * \brief Read from a socket for the IRC processor
- * \param buffer Raw socket buffer
- */
-bool SocketIO::Read(const Flux::string &buf) const
-{
-  if(buf.search_ci("ERROR :Closing link:"))
-  {
-    FOREACH_MOD(I_OnSocketError, OnSocketError(buf));
-    throw SocketException(buf.c_str());
-    return false;
-  }
-  process(buf); /* Process the buffer for navn */
-  return true;
-}
-
 // used for justifying how many times the bot has run the main loop to prevent loop bombs
-uint32_t startcount, loopcount;
+unsigned int startcount, loopcount;
+E void Connect();
+
+class ReconnectTimer : public Timer
+{
+public:
+  ReconnectTimer() : Timer(Config->ReconnectTime)
+  {
+    Log() << "Reconnecting to server in " << Config->ReconnectTime << " seconds.";
+  }
+  void Tick(time_t) { Connect(); }
+};
+
 /**
  * \fn bool SocketIO::Read(const Flux::string &buf) const
  * \brief Read from a socket for the IRC processor
@@ -54,32 +49,49 @@ uint32_t startcount, loopcount;
  */
 void Connect()
 {
-  if(quitting)
-    return;
-  ++startcount;
-  Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
-
-  FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
-
-  if(Config->Server.empty())
-    throw SocketException("No Server Specified.");
-  if(Config->Port.empty())
-    throw SocketException("No Port Specified.");
-  if(sock)
+  try
   {
-    SocketIO *s = sock;
-    delete s;
+    if(quitting)
+      return;
+    
+    ++startcount;
+    Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
+
+    FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+
+    if(Config->Server.empty())
+      throw SocketException("No Server Specified.");
+    if(Config->Port.empty())
+      throw SocketException("No Port Specified.");
+    if(sock)
+    {
+      delete sock;
+      sock = nullptr;
+    }
+
+    FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+
+    sock = new SocketIO(Config->Server, Config->Port);
+    sock->Connect();
+
+    if(!sock)
+      throw SocketException("Cannot create socket!");
+    else
+      startcount = 0;
+
+    if(ircproto)
+      ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
+
+    FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
   }
-
-  FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
-
-  sock = new SocketIO(Config->Server, Config->Port);
-  sock->Connect();
-
-  if(ircproto)
-    ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
-
-  FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+  catch (SocketException &e)
+  {
+    Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
+    if(static_cast<int>(startcount) >= Config->ReconnectTries)
+      throw CoreException("Cannot connect to server!");
+    else
+      new ReconnectTimer();
+  }
 }
 
 /**
@@ -96,18 +108,7 @@ int main (int argcx, char** argvx, char *envp[])
   try
   {
     startup(argcx, argvx, envp);
-    SocketStart:
-    try { Connect(); }
-    catch(SocketException &e)
-    {
-      if(startcount >= 3)
-	throw CoreException(e.description().c_str());
-      Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
-      goto SocketStart;
-    }
-
-    if(!sock)
-      goto SocketStart;
+    Connect();
 
     ircproto = new IRCProto();
     time_t last_check = time(NULL);
@@ -120,21 +121,24 @@ int main (int argcx, char** argvx, char *envp[])
     while(!quitting)
     {
       Log(LOG_RAWIO) << "Top of main loop";
+      
       if(++loopcount >= 50)
-	raise(SIGSEGV); //prevent loop bombs, we raise a segfault because the segfault handler will handle it better
+	raise(SIGSEGV); //prevent loop bombs, raise a SIGSEGV to handle elsewhere.
 
       /* Process the socket engine */
-      try { sock->Process(); }
+      try
+      {
+	if(sock)
+	  sock->Process();
+	else
+	  throw SocketException("No socket to read from!");
+      }
       catch(SocketException &exc)
       {
 	Log() << "Socket Exception: " << exc.description();
-	try { Connect(); }
-	catch(SocketException &ex)
-	{
-	  Log() << "Socket Exception: " << ex.description();
-	  throw CoreException(ex.description());
-	}
+	Connect();
       }
+      
       /* Process Timers */
       /***********************************/
       if(time(NULL) - last_check >= 3)
@@ -145,6 +149,7 @@ int main (int argcx, char** argvx, char *envp[])
       }
       /***********************************/
     }//while loop ends here
+    
     GarbageCollect();
     Log(LOG_TERMINAL) << "\033[0m";
   }//try ends here

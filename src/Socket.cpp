@@ -206,6 +206,24 @@ int SocketIO::send(const Flux::string buf)
   int i = write(this->GetFD(), buf.c_str(), buf.size());
   return i;
 }
+
+/**
+ * \fn bool SocketIO::Read(const Flux::string &buf) const
+ * \brief Read from a socket for the IRC processor
+ * \param buffer Raw socket buffer
+ */
+bool SocketIO::Read(const Flux::string &buf) const
+{
+  if(buf.search_ci("ERROR :Closing link:"))
+  {
+    FOREACH_MOD(I_OnSocketError, OnSocketError(buf));
+    throw SocketException(buf.c_str());
+    return false;
+  }
+  process(buf); /* Process the buffer for navn */
+  return true;
+}
+
 /** \fn void send_cmd(const char *fmt, ...)
  * \brief Sends something directly out the socket after being processed by vsnprintf
  * \param char* a string of what to send to the server including printf style format

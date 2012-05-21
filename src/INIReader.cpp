@@ -249,7 +249,7 @@ BotConfig::BotConfig(const Flux::string &dir)
  }
 }
 
-BotConfig::~BotConfig() { if(Parser) delete Parser; }
+BotConfig::~BotConfig() { if(this->Parser) delete this->Parser; }
 
 void BotConfig::Read()
 {
@@ -257,12 +257,10 @@ void BotConfig::Read()
   this->LogFile 	= this->Parser->Get("Log","Log_File","navn.log");
   this->PingTimeoutTime = this->Parser->GetInteger("Bot", "PingTimeoutTime", 120);
   this->Owners 		= ParametizeString(this->Parser->Get("Bot","Owners",""), ',');
-  
-  for(unsigned i = 0; i < this->Owners.size(); ++i)
-    Owners[i].trim(); // Strip any spaces in the owner names..
-    
   this->Realname 	= this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+value_cast<Flux::string>(VERSION)));
   this->Ident 		= this->Parser->Get("Connect","Ident","Navn");
+  this->ReconnectTime 	= this->Parser->GetInteger("Connect", "ReconnectTime", 30);
+  this->ReconnectTries 	= this->Parser->GetInteger("Connect", "ReconnectTries", 5);
   this->BotNick 	= this->Parser->Get("Connect","Nick","Navn");
   this->Channel 	= this->Parser->Get("Connect","Channel","#Test");
   this->Port 		= this->Parser->Get("Connect","Port","6667");

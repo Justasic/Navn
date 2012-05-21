@@ -121,7 +121,10 @@
 	# include <thread>
 	#else
 	# ifndef nullptr
-	# pragma GCC system_header // Crazy GCC warning fix to make GCC shutup about nullptr being defined in C++11
+	#  if __GNUC__ < 4
+	#   define nullptr static_cast<void*>(0)
+	#  else
+	#   pragma GCC system_header // Crazy GCC warning fix to make GCC shutup about nullptr being defined in C++11
 	  // Some crazy fix for being able to use the C++11 nullptr, based on Scott Meyers nullptr "backport"
 	  // http://en.wikibooks.org/wiki/More_C++_Idioms/nullptr#Solution_and_Sample_Code
 	  const // It is a const object...
@@ -140,6 +143,7 @@
 	    void operator&() const;  // Can't take address of nullptr
 
 	  } nullptr = {};
+        #  endif // if __GNUC__ < 4
 	# endif // ifndef nullptr
 	#endif // ifndef __GXX_EXPERIMENTAL_CXX0X__
 

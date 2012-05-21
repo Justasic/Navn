@@ -264,12 +264,15 @@ Flux::string CondenseString(const Flux::vector &p)
  */
 Flux::vector ParametizeString(const Flux::string &src, char delim)
 {
- sepstream tok(src, delim);
- Flux::string token;
- std::vector<Flux::string> ret;
- while(tok.GetToken(token))
-   ret.push_back(token);
- return ret;
+  sepstream tok(src, delim);
+  Flux::string token;
+  Flux::vector ret;
+  while(tok.GetToken(token))
+  {
+    token.trim();
+    ret.push_back(token);
+  }
+  return ret;
 }
 /** Check if a file exists
  * \fn bool InTerm()

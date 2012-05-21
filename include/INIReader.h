@@ -88,8 +88,10 @@ public:
   Flux::string LogColor;
   Flux::vector Owners;
   int LogAge;
+  int ReconnectTries;
   bool IdentOnConn;
   time_t PingTimeoutTime;
+  time_t ReconnectTime;
   size_t LogTime;
   size_t SockWait;
 private:
