@@ -167,7 +167,7 @@ void Channel::ChangeTopic(const char *fmt, ...)
   }
 }
 
-void Channel::ChangeTopic(const Flux::string &topicstr){ ircproto->topic(this->name, topicstr); }
+void Channel::ChangeTopic(const Flux::string &topicstr) { ircproto->topic(this->name, topicstr); }
 void Channel::SendMessage(const char *fmt, ...)
 {
   if(fmt)
@@ -181,7 +181,7 @@ void Channel::SendMessage(const char *fmt, ...)
   }
 }
 
-void Channel::SendMessage(const Flux::string &message){ ircproto->privmsg(this->name, message); }
+void Channel::SendMessage(const Flux::string &message) { ircproto->privmsg(this->name, message); }
 void Channel::SendAction(const char *fmt, ...)
 {
   if(fmt)

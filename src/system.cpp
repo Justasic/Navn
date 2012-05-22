@@ -545,13 +545,6 @@ void startup(int argc, char** argv, char *envp[])
 void GarbageCollect()
 {
   FOREACH_MOD(I_OnShutdown, OnShutdown());
-
-  if(sock)
-  {
-    Log(LOG_MEMORY) << "Deleting socket @" << sock;
-    delete sock;
-    sock = nullptr;
-  }
   
   ModuleHandler::UnloadAll();
   // Schedule all channels for deletion
@@ -579,6 +572,14 @@ void GarbageCollect()
     Log(LOG_MEMORY) << "Deleting ircproto @" << ircproto;
     delete ircproto;
     ircproto = nullptr;
+  }
+
+  if(sock)
+  {
+    sock->Process();
+    Log(LOG_MEMORY) << "Deleting socket @" << sock;
+    delete sock;
+    sock = nullptr;
   }
   
   // Clean the runtime last incase we wanna put some temp crap in the runtime folder for deletion.

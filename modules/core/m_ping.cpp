@@ -15,7 +15,7 @@ class PingTimer : public Timer
 {
 public:
   PingTimeoutTimer *ptt;
-  PingTimer():Timer(30, time(NULL), true) { }
+  PingTimer():Timer(30, time(NULL), true), ptt(nullptr) { }
   void Tick(time_t);
 };
 
@@ -24,12 +24,18 @@ class PingTimeoutTimer : public Timer
   PingTimer *pt;
   time_t wait;
 public:
-  PingTimeoutTimer(time_t w, PingTimer *pt2):Timer(w, time(NULL), false), wait(w) { this->pt = pt2; }
-  ~PingTimeoutTimer() { this->pt->ptt = NULL; }
+  PingTimeoutTimer(time_t w, PingTimer *pt2):Timer(w, time(NULL), false), pt(pt2), wait(w)
+  {
+    if(this->pt && this->pt->ptt)
+      return;
+    Log(LOG_DEBUG) << "Creating PingTimeoutTimer.";
+  }
+  
+  ~PingTimeoutTimer() { this->pt->ptt = nullptr; Log(LOG_DEBUG) << "Deleting PingTimeoutTimer."; }
   
   void Tick(time_t)
   {
-    sock->ThrowException(printfify("Ping Timeout: %i seconds", static_cast<int>(this->wait)));
+    sock->ThrowException(printfify("Ping Timeout: %u seconds", this->wait));
   }
 };
 
@@ -39,7 +45,7 @@ void PingTimer::Tick(time_t)
   this->ptt = new PingTimeoutTimer(Config->PingTimeoutTime, this);
 }
 
-class Ping_pong:public module
+class Ping_pong : public module
 {
   PingTimer pingtimer;
 public:
@@ -56,8 +62,11 @@ public:
   {
      Flux::string ts = params[1];
      int lag = time(NULL)-static_cast<int>(ts);
+     
      if(pingtimer.ptt)
 	delete pingtimer.ptt;
+     pingtimer.ptt = nullptr;
+     
      if(protocoldebug)
         Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
   }
@@ -66,6 +75,8 @@ public:
   {
     if(pingtimer.ptt)
       delete pingtimer.ptt;
+    
+    pingtimer.ptt = nullptr;
     send_cmd("PONG :%s\n", params[0].c_str());
   }
   
@@ -80,4 +91,5 @@ public:
      ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
   }
 };
+
 MODULE_HOOK(Ping_pong)

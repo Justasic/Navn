@@ -389,6 +389,12 @@ void process(const Flux::string &buffer)
   }
 
   /**************************************/
+  if(!c || !u)
+  {
+    Log(LOG_WARN) << "No user/channel being passed to CommandSource???";
+    return;
+  }
+  
   CommandSource Source;
   Source.u = u; //User class
   Source.c = c; //Channel class
