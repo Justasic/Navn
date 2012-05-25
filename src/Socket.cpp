@@ -69,7 +69,7 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 
 /* FIXME: please god, when will the hurting stop? This class is so
    f*cking broken it's not even funny */
-SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : server(cserver), port(cport), sockn(-1), ipv6(false), iswritable(false)
+SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : server(cserver), port(cport), sockn(-1), ipv6(false)
 {
   FD_ZERO(&ReadFD);
   FD_ZERO(&WriteFD);

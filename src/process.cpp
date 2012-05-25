@@ -285,7 +285,7 @@ void process(const Flux::string &buffer)
   
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
-  std::vector<Flux::string> params2 = ParametizeString(message, ' ');
+  Flux::vector params2 = ParametizeString(message, ' ');
   /***********************************************/
   if(command == "004" && source.search('.'))
     server_name = source;
