@@ -28,10 +28,9 @@ public:
   {
     if(this->pt && this->pt->ptt)
       return;
-    Log(LOG_DEBUG) << "Creating PingTimeoutTimer.";
   }
   
-  ~PingTimeoutTimer() { this->pt->ptt = nullptr; Log(LOG_DEBUG) << "Deleting PingTimeoutTimer."; }
+  ~PingTimeoutTimer() { this->pt->ptt = nullptr; }
   
   void Tick(time_t)
   {
@@ -67,8 +66,7 @@ public:
 	delete pingtimer.ptt;
      pingtimer.ptt = nullptr;
      
-     if(protocoldebug)
-        Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
+     Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
   }
   
   void OnPing(const Flux::vector &params)
