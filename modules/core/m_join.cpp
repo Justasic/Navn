@@ -20,28 +20,27 @@ public:
    this->SetDesc("Joins a channel");
    this->SetSyntax("\37channel\37");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     Flux::string chan = params[1];
-    if(!u->IsOwner()){
+    
+    if(!u->IsOwner())
+    {
       source.Reply(ACCESS_DENIED);
       Log(u) << "attempted to make the bot join " << chan;
       return;
     }
+    
     if(!IsValidChannel(chan))
       source.Reply(CHANNEL_X_INVALID, chan.c_str());
-    else{
+    else
+    {
       Log(u) << "made the bot join " << chan;
       Channel *c = findchannel(chan);
-      if(c){
-	c->SendJoin();
-
-	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
-	WelcomeMessage.trim();
-	if(!WelcomeMessage.empty())
-	  c->SendMessage(WelcomeMessage.c_str());
-      }else{
+      if(!c)
+      {
 	ircproto->join(chan);
 
 	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
@@ -49,8 +48,14 @@ public:
 	if(!WelcomeMessage.empty())
 	  ircproto->privmsg(chan, WelcomeMessage);
       }
+      else
+      {
+	Log(u) << "tried to make bot join " << c->name << " but we're already in that channel";
+	source.Reply("Already in \2%s\2", c->name.c_str());
+      }
     }
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -60,6 +65,7 @@ public:
     return true;
   }
 };
+
 class CommandPart : public Command
 {
 public:
@@ -101,6 +107,7 @@ public:
     return true;
   }
 };
+
 class Join : public module
 {
   CommandJoin cmdjoin;

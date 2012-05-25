@@ -39,7 +39,6 @@ private:
   Flux::string server, port, ip, LastBuf;
   int sockn;
   bool ipv6;
-  bool iswritable;
   size_t recvlen;
   std::queue<Flux::string> WriteBuffer;
 public:

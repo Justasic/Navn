@@ -233,11 +233,7 @@ void SocketIO::Process()
       buf.clear();
     }
 
-    if(!this->iswritable)
-    {
-      FD_CLR(this->GetFD(), &WriteFD);
-      this->iswritable = false;
-    }
+    FD_CLR(this->GetFD(), &WriteFD);
   }
 }
 
@@ -248,11 +244,7 @@ void SocketIO::send(const Flux::string buf)
 
   this->WriteBuffer.push(buf);
 
-  if(this->iswritable)
-  {
-    FD_SET(this->GetFD(), &WriteFD);
-    this->iswritable = true;
-  }
+  FD_SET(this->GetFD(), &WriteFD);
 }
 
 /**
@@ -267,6 +259,7 @@ bool SocketIO::Read(const Flux::string &buf) const
     FOREACH_MOD(I_OnSocketError, OnSocketError(buf));
     return false;
   }
+  
   Log(LOG_RAWIO) << "Received: " << Flux::Sanitize(buf);
   process(buf); /* Process the buffer for navn */
   return true;

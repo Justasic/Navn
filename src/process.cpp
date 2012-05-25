@@ -240,6 +240,7 @@ void process(const Flux::string &buffer)
    if(source.empty() || buf.empty())
      return;
   }
+  
   sepstream bufferseparator(buf, ' ');
   Flux::string bufferseparator_token;
   Flux::string command = buf;
@@ -274,12 +275,14 @@ void process(const Flux::string &buffer)
      for(unsigned i =0; i < params.size(); ++i)
        Log(LOG_TERMINAL) << "Params " << i << ": " << Flux::Sanitize(params[i]);
   }
+  
   /***********************************************/
   /* make local variables instead of global ones */
-  const Flux::string &receiver = params.size() > 0 ? params[0] : "";
+  const Flux::string receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
-  IsoHost h(source);
-  Flux::string nickname = h.nick, uident = h.ident, uhost = h.host, cmd;
+  const Flux::string nickname = source.isolate(':', '!'),
+  uident = source.isolate('!', '@'), uhost = source.isolate('@', ' ');
+  
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
   std::vector<Flux::string> params2 = ParametizeString(message, ' ');
@@ -389,11 +392,11 @@ void process(const Flux::string &buffer)
   }
 
   /**************************************/
-  if(!c || !u)
-  {
-    Log(LOG_WARN) << "No user/channel being passed to CommandSource???";
-    return;
-  }
+  if(!c && !nickname.search('.') && protocoldebug)
+    Log(LOG_WARN) << "No channel being passed to CommandSource???";
+
+  if(!u && !nickname.search('.') && protocoldebug)
+    Log(LOG_WARN) << "No User being passed to CommandSource???";
   
   CommandSource Source;
   Source.u = u; //User class
@@ -401,14 +404,15 @@ void process(const Flux::string &buffer)
   Source.params = params;
   Source.raw = buffer;
   /**************************************/
+  
   if(command == "352")
-  {
     ProcessJoin(Source, c->name);
-  }
 
   if(source.empty() || message.empty() || params2.empty())
     return;
 
+  if(!c && !u) // Don't bother executing commands if there's nothing to do
+    return;
+
   ProcessCommand(Source, params2, receiver, command);
-  command.clear();
 }
