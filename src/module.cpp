@@ -18,7 +18,7 @@
  * \param name Name of the module
  */
 
-module::module(const Flux::string &n) : author(""), version(""), loadtime(time(NULL)), Priority(PRIORITY_DONTCARE), permanent(false), handle(nullptr), name(n), filename(""),  filepath("")
+module::module(const Flux::string &n) : author(""), version(""), loadtime(time(NULL)), Priority(PRIORITY_DONTCARE), permanent(false), handle(NULL), name(n), filename(""),  filepath("")
 {
   SET_SEGV_LOCATION();
 

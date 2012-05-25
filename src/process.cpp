@@ -139,7 +139,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	  }
 	}
 #endif
-	LastRunModule = nullptr;
+	LastRunModule = NULL;
       }
       else
       {
@@ -188,7 +188,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	  }
 	}
 #endif
-	LastRunModule = nullptr;
+	LastRunModule = NULL;
     }
     else
     {

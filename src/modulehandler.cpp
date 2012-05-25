@@ -23,7 +23,7 @@ module *FindModule(const Flux::string &name)
   Flux::insensitive_map<module*>::iterator it = Modules.find(name);
   if(it != Modules.end())
     return it->second;
- return nullptr;
+ return NULL;
 }
 
 /**

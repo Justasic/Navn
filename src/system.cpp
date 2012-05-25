@@ -443,9 +443,9 @@ void startup(int argc, char** argv, char *envp[])
   SET_SEGV_LOCATION();
 
   InitSignals();
-  Config = nullptr;
-  ircproto = nullptr;
-  sock = nullptr;
+  Config = NULL;
+  ircproto = NULL;
+  sock = NULL;
   my_av = argv;
   my_envp = envp;
   starttime = time(NULL); //for bot uptime
@@ -571,7 +571,7 @@ void GarbageCollect()
   {
     Log(LOG_MEMORY) << "Deleting ircproto @" << ircproto;
     delete ircproto;
-    ircproto = nullptr;
+    ircproto = NULL;
   }
 
   if(sock)
@@ -579,7 +579,7 @@ void GarbageCollect()
     sock->Process();
     Log(LOG_MEMORY) << "Deleting socket @" << sock;
     delete sock;
-    sock = nullptr;
+    sock = NULL;
   }
   
   // Clean the runtime last incase we wanna put some temp crap in the runtime folder for deletion.

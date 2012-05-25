@@ -121,11 +121,11 @@ Channel *User::findchannel(const Flux::string &name)
   Flux::insensitive_map<Channel*>::iterator it1 = ChanMap.find(name);
   Channel *c = it1->second;
   if(!c)
-    return nullptr;
+    return NULL;
   CList::iterator it = ChannelList.find(c);
   if(it != ChannelList.end())
     return it->first;
-  return nullptr;
+  return NULL;
 }
 
 void User::SendMessage(const Flux::string &message)
@@ -145,7 +145,7 @@ User *finduser(const Flux::string &fnick)
   if(it != UserNickList.end())
     return it->second;
 
-  return nullptr;
+  return NULL;
 }
 
 void ListUsers(CommandSource &source)

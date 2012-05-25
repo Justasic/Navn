@@ -66,7 +66,7 @@ void Connect()
     if(sock)
     {
       delete sock;
-      sock = nullptr;
+      sock = NULL;
     }
 
     FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
@@ -92,7 +92,7 @@ void Connect()
     else
     {
       delete sock;
-      sock = nullptr;
+      sock = NULL;
       new ReconnectTimer();
     }
   }

@@ -15,7 +15,7 @@ class PingTimer : public Timer
 {
 public:
   PingTimeoutTimer *ptt;
-  PingTimer():Timer(30, time(NULL), true), ptt(nullptr) { }
+  PingTimer():Timer(30, time(NULL), true), ptt(NULL) { }
   void Tick(time_t);
 };
 
@@ -30,7 +30,7 @@ public:
       return;
   }
   
-  ~PingTimeoutTimer() { this->pt->ptt = nullptr; }
+  ~PingTimeoutTimer() { this->pt->ptt = NULL; }
   
   void Tick(time_t)
   {
@@ -61,12 +61,11 @@ public:
   {
      Flux::string ts = params[1];
      int lag = time(NULL)-static_cast<int>(ts);
+     Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
      
      if(pingtimer.ptt)
 	delete pingtimer.ptt;
-     pingtimer.ptt = nullptr;
-     
-     Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
+     pingtimer.ptt = NULL;
   }
   
   void OnPing(const Flux::vector &params)
@@ -74,7 +73,7 @@ public:
     if(pingtimer.ptt)
       delete pingtimer.ptt;
     
-    pingtimer.ptt = nullptr;
+    pingtimer.ptt = NULL;
     send_cmd("PONG :%s\n", params[0].c_str());
   }
   

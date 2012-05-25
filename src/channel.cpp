@@ -42,14 +42,14 @@ User *Channel::finduser(const Flux::string &usr)
   User *u = it1->second;
 
   if(!u)
-    return nullptr;
+    return NULL;
 
   UList::iterator it = UserList.find(u);
 
   if(it != UserList.end())
     return it->first;
 
-  return nullptr;
+  return NULL;
 }
 
 void Channel::SendJoin(){ ircproto->join(this->name); }
@@ -243,5 +243,5 @@ Channel *findchannel(const Flux::string &channel)
   Flux::map<Channel *>::iterator it = ChanMap.find(channel);
   if(it != ChanMap.end())
     return it->second;
-  return nullptr;
+  return NULL;
 }
