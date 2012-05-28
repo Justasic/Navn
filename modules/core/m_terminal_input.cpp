@@ -12,7 +12,7 @@
 
 void ProcessInput(const Flux::string &str)
 {
-  Flux::vector params = ParametizeString(str, ' ');
+  Flux::vector params = ParamitizeString(str, ' ');
   if(params.empty())
     return;
 

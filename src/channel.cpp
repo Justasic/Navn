@@ -79,8 +79,8 @@ void Channel::SendPart(const char *fmt, ...)
   }
 }
 
-void Channel::SendPart(const Flux::string &reason){ ircproto->part(this->name, reason); }
-void Channel::kick(User *u, const Flux::string &reason){ u->kick(this->name, reason); }
+void Channel::SendPart(const Flux::string &reason) { ircproto->part(this->name, reason); }
+void Channel::kick(User *u, const Flux::string &reason) { u->kick(this->name, reason); }
 void Channel::kick(User *u, const char *fmt, ...)
 {
   if(fmt)
@@ -107,7 +107,7 @@ void Channel::kick(const Flux::string &u, const char *fmt, ...)
   }
 }
 
-void Channel::kick(const Flux::string &u, const Flux::string &reason){ ircproto->kick(this->name, u, reason); }
+void Channel::kick(const Flux::string &u, const Flux::string &reason) { ircproto->kick(this->name, u, reason); }
 void Channel::SetMode(const Flux::string &mode)
 {
  if(mode[0] == '+')

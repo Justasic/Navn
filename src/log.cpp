@@ -181,7 +181,6 @@ Log::~Log()
   }
   
   Flux::string message = Flux::Sanitize(this->buffer.str()), raw = this->buffer.str();
-  std::stringstream logstream;
 
   if(this->u && !this->c)
     message = this->u->nick + " " + message;
@@ -243,27 +242,27 @@ Log::~Log()
   }
   
   try
+  {
+    CheckLogDelete(this);
+    log.open(this->filename.c_str(), std::fstream::out | std::fstream::app);
+
+    if(!log.is_open())
     {
-      CheckLogDelete(this);
-      log.open(this->filename.c_str(), std::fstream::out | std::fstream::app);
-      
-      if(!log.is_open())
-      {
-	if(!Config)
-		throw LogException("Cannot read log file from config! (is there a bot.conf?)");
-	else
-		throw LogException(Config->LogFile.empty()?"Cannot open Log File.":
-			Flux::string("Failed to open Log File "+this->filename+": "+strerror(errno)).c_str());
-      }
-      
-      log << NoTermColor(logstream.str()) << std::endl;
-      
-      if(log.is_open())
-	log.close();
+      if(!Config)
+	      throw LogException("Cannot read log file from config! (is there a bot.conf?)");
+      else
+	      throw LogException(Config->LogFile.empty()?"Cannot open Log File.":
+		      Flux::string("Failed to open Log File "+this->filename+": "+strerror(errno)).c_str());
     }
-    catch (LogException &e)
-    {
-      if(InTerm())
-	std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
-    }
+
+    log << NoTermColor(logstream.str()) << std::endl;
+
+    if(log.is_open())
+      log.close();
+  }
+  catch (LogException &e)
+  {
+    if(InTerm())
+      std::cerr << "Log Exception Caught: " << e.GetReason() << std::endl;
+  }
 }

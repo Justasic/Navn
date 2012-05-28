@@ -52,6 +52,37 @@ class TextFile;
 class XMLFile;
 struct CommandSource;
 
+/* structs */
+struct iSupport
+{
+  // Other options the server might send.
+  Flux::map<Flux::string> other;
+  // Supported chan modes
+  Flux::string ChanModes;
+  // Supported chan types
+  Flux::string ChanTypes;
+  // The IRCd version
+  Flux::string IRCdVersion;
+  // User modes
+  Flux::string UserModes;
+  // Network name
+  Flux::string Network;
+  // Servers hostname
+  Flux::string ServerHost;
+  // Max away len
+  int AwayLen;
+  // Max kick len
+  int KickLen;
+  // Max channels you can join
+  int MaxChannels;
+  // Max number of bans settable
+  int MaxBans;
+  // Max nickname length
+  int NickLen;
+  // Max Topic Length
+  int TopicLen;
+};
+
 /* Enumorations */
 enum LogType
 {
@@ -105,12 +136,13 @@ E Command *FindCommand(const Flux::string &name, CommandType);
 E SocketIO *sock;
 E IRCProto *ircproto;
 E BotConfig *Config;
+E iSupport isupport;
 E module *LastRunModule;
 E CommandMap Commandsmap;
 E CommandMap ChanCommandMap;
 E time_t starttime;
 E uint32_t usercnt, maxusercnt;
-E Flux::string binary_path, bot_bin, binary_dir, server_name, quitmsg;
+E Flux::string binary_path, bot_bin, binary_dir, quitmsg;
 E const Flux::string VERSION_LONG;
 E Flux::string ForwardResolution(const Flux::string&);
 E Flux::string getprogdir(const Flux::string&, Flux::string &bin_var1 = bot_bin);
@@ -125,7 +157,7 @@ E int randint(int x, int y);
 E bool IsValidChannel(const Flux::string&);
 E bool InTerm();
 E bool protocoldebug, IsOper, dev, nofork, quitting, started, nocolor, memdebug, istempnick;
-E Flux::vector ParametizeString(const Flux::string&, char);
+E Flux::vector ParamitizeString(const Flux::string&, char);
 E Flux::insensitive_map<module*> Modules;
 E Flux::insensitive_map<User*> UserNickList;
 E Flux::insensitive_map<Channel*> ChanMap;

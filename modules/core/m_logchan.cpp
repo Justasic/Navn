@@ -126,7 +126,9 @@ public:
     if(!c || l->type == LOG_RAWIO)
       return EVENT_CONTINUE;
 
-    c->SendMessage(TranslateColors(l->buffer.str()));
+    Flux::string message = l->logstream.str();
+    message = message.substr(message.find(']') + 2);
+    c->SendMessage(TranslateColors(message));
     return EVENT_CONTINUE;
   }
 };

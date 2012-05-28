@@ -324,10 +324,11 @@ void restart(const Flux::string &reason)
 void Rehash()
 {
   Log() << "Rehashing Configuration File";
-  try{
+  try
+  {
     const Flux::string bi_dir = Config->Binary_Dir;
     BotConfig *configtmp = Config;
-    Config = new BotConfig(bi_dir);
+    Config = new BotConfig(bi_dir, configtmp);
     delete configtmp;
 
     if(!Config)
@@ -454,7 +455,7 @@ void startup(int argc, char** argv, char *envp[])
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
 
-  Config = new BotConfig(binary_dir);
+  Config = new BotConfig(binary_dir, NULL);
   if(!Config)
     throw CoreException("Config Error.");
 

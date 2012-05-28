@@ -157,6 +157,9 @@ Added LOG_WARN for different warnings
 Rewrote how colors are stripped from the log messages
 Check if we're in the terminal before printing to stdout
 Give a warning if server sends messages as an invalid nickname
+Added a SendQ limiter
+Added iSupport support
+Renamed ParametizeString to ParamitizeString (It's more natural)
 
 Navn 2.0.0
 ==========

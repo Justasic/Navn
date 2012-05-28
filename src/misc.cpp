@@ -214,9 +214,12 @@ Flux::string make_pass()
  */
 bool IsValidChannel(const Flux::string &chan)
 {
- if (chan[0] != '#')
-    return false;
- return true;
+  for(unsigned i = 0; i < isupport.ChanTypes.size(); ++i)
+  {
+    if(chan[0] != isupport.ChanTypes[i])
+      return false;
+  }
+  return true;
 }
 
 /**
@@ -257,12 +260,12 @@ Flux::string CondenseString(const Flux::vector &p)
 }
 
 /**
- * \fn Flux::vector ParametizeString(const Flux::string &src, char delim)
+ * \fn Flux::vector ParamitizeString(const Flux::string &src, char delim)
  * \brief creates a vector that breaks down a string word-by-word using the delim as the separater
  * \param src The source string for it to break down
  * \param delim The char used to seperate the words in the source string
  */
-Flux::vector ParametizeString(const Flux::string &src, char delim)
+Flux::vector ParamitizeString(const Flux::string &src, char delim)
 {
   sepstream tok(src, delim);
   Flux::string token;

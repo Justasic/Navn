@@ -234,7 +234,13 @@ void IRCProto::part(const Flux::string &channel, const char *fmt, ...)
  */
 void IRCProto::kick(const Flux::string &chan, const Flux::string &userstr, const Flux::string &msg)
 {
-  this->Raw("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), msg.c_str());
+  Flux::string message = msg;
+  if(message.size() > static_cast<unsigned>(isupport.KickLen))
+  {
+    message.erase(isupport.KickLen - 1);
+    Log(LOG_WARN) << "Max kick length is " << isupport.KickLen << " but kick message is " << msg.size() << ", kick message is too long!";
+  }
+  this->Raw("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), message.c_str());
 }
 
 void IRCProto::pass(const Flux::string &password)
@@ -260,7 +266,13 @@ void IRCProto::part(const Flux::string &channel, const Flux::string &msg)
  */
 void IRCProto::topic(const Flux::string &chan, const Flux::string &msg)
 {
-  this->Raw("TOPIC %s :%s\n", chan.c_str(), msg.c_str());
+  Flux::string message = msg;
+  if(message.size() > static_cast<unsigned>(isupport.TopicLen))
+  {
+    message.erase(isupport.TopicLen - 1);
+    Log(LOG_WARN) << "Max topic length is " << isupport.TopicLen << " but topic is " << msg.size() << ", topic is too long!";
+  }
+  this->Raw("TOPIC %s :%s\n", chan.c_str(), message.c_str());
 }
 /**
  * \fn void command::nick(Flux::string nick)
@@ -269,7 +281,13 @@ void IRCProto::topic(const Flux::string &chan, const Flux::string &msg)
  */
 void IRCProto::nick(const Flux::string &bnick)
 {
-  this->Raw("NICK %s\n", bnick.c_str());
+  Flux::string message = bnick;
+  if(message.size() > static_cast<unsigned>(isupport.NickLen))
+  {
+    message.erase(isupport.NickLen - 1);
+    Log(LOG_WARN) << "Max nick length is " << isupport.NickLen << " but nick is " << bnick.size() << ", nick is too long!";
+  }
+  this->Raw("NICK %s\n", message.c_str());
 }
 
 void IRCProto::away(const Flux::string &message)

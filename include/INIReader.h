@@ -60,7 +60,7 @@ private:
 class CoreExport BotConfig
 {
 public:
-  BotConfig(const Flux::string &dir = binary_dir);
+  BotConfig(const Flux::string &dir = binary_dir, BotConfig *old = NULL);
   virtual ~BotConfig();
   INIReader *Parser;
   Flux::string LogFile;

@@ -454,8 +454,50 @@ public:
   }
   void OnNumeric(int i, const std::vector<Flux::string> &params)
   {
+    if((i == 5))
+    {
+      // Skip the nickname and the "are supported by this server" parts of the message
+      for(unsigned o = 1; o < params.size() - 1; ++o)
+      {
+	Flux::vector sentence = ParamitizeString(params[o], '=');
+	Flux::string word = sentence[0];
+	Flux::string param = sentence.size() > 1 ? sentence[1] : "";
+
+	if(word.equals_ci("NETWORK"))
+	  isupport.Network = param;
+
+	if(word.equals_ci("CHANTYPES"))
+	  isupport.ChanTypes = param;
+
+	if(word.equals_ci("AWAYLEN"))
+	  isupport.AwayLen = static_cast<int>(param);
+
+	if(word.equals_ci("KICKLEN"))
+	  isupport.KickLen = static_cast<int>(param);
+
+	if(word.equals_ci("MAXBANS"))
+	  isupport.MaxBans = static_cast<int>(param);
+
+	if(word.equals_ci("MAXCHANNELS"))
+	  isupport.MaxChannels = static_cast<int>(param);
+
+	if(word.equals_ci("NICKLEN"))
+	  isupport.NickLen = static_cast<int>(param);
+
+	if(word.equals_ci("TOPICLEN"))
+	  isupport.TopicLen = static_cast<int>(param);
+
+	isupport.other[word] = param;
+      }
+    }
+    
     if((i == 4))
     {
+      isupport.ServerHost = params[1];
+      isupport.IRCdVersion = params[2];
+      isupport.UserModes = params[3];
+      isupport.ChanModes = params[4];
+      
       if(params[3].search('B')) //Set bot mode if the network has it.
 	ircproto->mode(Config->BotNick, "+B");
       

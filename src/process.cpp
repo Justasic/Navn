@@ -248,7 +248,7 @@ void process(const Flux::string &buffer)
   if(bufferseparator.GetToken(bufferseparator_token))
     command = bufferseparator_token;
 
-  std::vector<Flux::string> params;
+  Flux::vector params;
 
   while(bufferseparator.GetToken(bufferseparator_token))
   {
@@ -285,11 +285,9 @@ void process(const Flux::string &buffer)
   
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
-  Flux::vector params2 = ParametizeString(message, ' ');
+  Flux::vector params2 = ParamitizeString(message, ' ');
   /***********************************************/
-  if(command == "004" && source.search('.'))
-    server_name = source;
-
+  
   if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION"))
   {
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));

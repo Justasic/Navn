@@ -205,7 +205,7 @@ long INIReader::GetInteger(const Flux::string &section, const Flux::string &name
 float INIReader::GetFloat(const Flux::string &section, const Flux::string &name, float default_value)
 {
   Flux::string valstr = Get(section, name, "");
-  float val = (float)valstr;
+  float val = static_cast<float>(valstr);
 
   return val > 0 ? val : default_value;
 }
@@ -219,7 +219,7 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
     return key;
 }
 /**************************************************************************************/
-BotConfig::BotConfig(const Flux::string &dir)
+BotConfig::BotConfig(const Flux::string &dir, BotConfig *old)
 {
  SET_SEGV_LOCATION();
  Flux::string conffile = dir + "/bot.conf";
@@ -241,7 +241,7 @@ BotConfig::BotConfig(const Flux::string &dir)
  }
  catch(const ConfigException &e)
  {
-   if (starttime == time(NULL))
+   if (!old)
      throw CoreException(printfify("Config: %s", e.GetReason()));
    else
       Log() << "Config Exception: " << e.GetReason();
@@ -256,7 +256,7 @@ void BotConfig::Read()
   SET_SEGV_LOCATION();
   this->LogFile 	= this->Parser->Get("Log","Log_File","navn.log");
   this->PingTimeoutTime = this->Parser->GetInteger("Bot", "PingTimeoutTime", 120);
-  this->Owners 		= ParametizeString(this->Parser->Get("Bot","Owners",""), ',');
+  this->Owners 		= ParamitizeString(this->Parser->Get("Bot","Owners",""), ',');
   this->Realname 	= this->Parser->Get("Connect","Realname",Flux::string("The Navn Bot "+value_cast<Flux::string>(VERSION)));
   this->Ident 		= this->Parser->Get("Connect","Ident","Navn");
   this->ReconnectTime 	= this->Parser->GetInteger("Connect", "ReconnectTime", 30);

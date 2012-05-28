@@ -22,7 +22,7 @@ public:
   Flux::string filename;
   User *u;
   Command *c;
-  std::stringstream buffer;
+  std::stringstream buffer, logstream;
   static Flux::string TimeStamp();
   explicit Log(LogType type = LOG_NORMAL);
   explicit Log(User*);
