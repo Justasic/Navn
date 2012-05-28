@@ -135,25 +135,8 @@ void SocketIO::Connect()
     // put OnConnect stuff here?
     Log(LOG_DEBUG) << "Connected to " << this->server << ":" << this->port << ' ' << '(' << this->ip << ')';
   }
-//   for(struct addrinfo *p = servinfo; p != NULL; p = p->ai_next)
-//   {
-//     sockn = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-//     if (this->GetFD() < 0)
-//       continue;
-//     connected = connect(this->GetFD(), p->ai_addr, p->ai_addrlen);
-//     if (connected == -1)
-//     {
-//       close(sockn);
-//       continue;
-//     }
-//     break;
-//   }
-// 
-//   if (connected == -1)
-//     throw SocketException("Connection Failed.");
 
   freeaddrinfo(servinfo); //Clear up used memory we don't need anymore
-//   FD_SET(this->GetFD(), &ReadFD);
 }
 
 void SocketIO::Process()
@@ -220,15 +203,17 @@ void SocketIO::Process()
       buf = this->WriteBuffer.front();
       this->WriteBuffer.pop();
 
-      int i = ::send(this->GetFD(), buf.c_str(), buf.size(), 0);
+      int i = ::send(this->GetFD(), buf.c_str(), buf.size(), MSG_NOSIGNAL);
+
+      if(i <= -1)
+	throw SocketException(printfify("Error writing \"%s\" to socket: %s", buf.c_str(), strerror(errno)));
 
       Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();
       
       this->LastBuf.clear();
       this->LastBuf = buf;
       
-      if(i <= -1)
-	throw SocketException("Error writing \"" + buf + "\" to socket");
+
 
       buf.clear();
     }
