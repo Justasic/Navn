@@ -290,8 +290,14 @@ void IRCProto::nick(const Flux::string &bnick)
   this->Raw("NICK %s\n", message.c_str());
 }
 
-void IRCProto::away(const Flux::string &message)
+void IRCProto::away(const Flux::string &msg)
 {
+  Flux::string message = msg;
+  if(message.size() > static_cast<unsigned>(isupport.AwayLen))
+  {
+    message.erase(isupport.AwayLen - 1);
+    Log(LOG_WARN) << "Max Away length is " << isupport.AwayLen << " but away message is " << msg.size() << ", away message is too long!";
+  }
   this->Raw("AWAY :%s", message.c_str());
 }
 /**
