@@ -128,7 +128,7 @@ public:
 
     Flux::string message = l->logstream.str();
     message = message.substr(message.find(']') + 2);
-    c->SendMessage(TranslateColors(message));
+    c->SendMessage(NoTermColor(message));
     return EVENT_CONTINUE;
   }
 };

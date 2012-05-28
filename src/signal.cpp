@@ -135,6 +135,10 @@ void sigact(int sig)
       signal(sig, SIG_IGN);
       Rehash();
       break;
+    case SIGPIPE:
+      signal(sig, SIG_IGN);
+      Log(LOG_DEBUG) << "Received SIGPIPE, ignoring..";
+      break;
     case SIGUSR1:
       Log(LOG_CRITICAL) << "Ran out of memory! oh noes!";
       if(ircproto)
@@ -179,6 +183,7 @@ void InitSignals()
 {
   signal(SIGTERM, sigact);
   signal(SIGUSR1, sigact);
+  signal(SIGPIPE, sigact);
   signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
   signal(SIGSEGV, sigact);
