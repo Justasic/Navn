@@ -31,8 +31,6 @@
 
 #include "extern.h"
 #include "log.h"
-const int MAXHOSTNAME = 200;
-const int MAXCONNECTIONS = 5;
 class CoreExport SocketIO
 {
 private:
@@ -51,7 +49,7 @@ public:
   inline Flux::string GetLastBuf() const { return this->LastBuf; };
   bool SetNonBlocking();
   bool SetBlocking();
-  void send(const Flux::string buf);
+  void send(const Flux::string &buf);
   void Connect();
   void Process();
   bool Read(const Flux::string&) const;

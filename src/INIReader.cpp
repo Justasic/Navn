@@ -284,5 +284,10 @@ void BotConfig::Read()
   this->WelcomeMessage 	= this->Parser->Get("Bot", "Welcome Message", "");
   this->LogAge 		= this->Parser->GetInteger("Log", "Log Age", 2);
   this->LogColor	= this->Parser->Get("Log", "Color", "\033[22;36m").replace_all_cs("\\033", "\033");
+  this->LogChan 	= this->Parser->Get("Log", "Log Channel", "");
+  this->BurstRate	= this->Parser->GetInteger("SendQ", "Burst Rate", 7);
+  this->SendQLines	= this->Parser->GetInteger("SendQ", "Lines", 5);
+  this->SendQRate	= this->Parser->GetInteger("SendQ", "Rate", 5);
+  this->SendQEnabled	= this->Parser->GetBoolean("SendQ", "Enabled", true);
 }
 

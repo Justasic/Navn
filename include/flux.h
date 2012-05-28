@@ -488,13 +488,9 @@ namespace Flux {
       for (unsigned i = pos; i < _string.length(); i++)
       {
 	if (_string[i] == e)
-	{
 	  break;
-	}
 	else
-	{
 	  to_find = to_find+_string[i];
-	}
       }
       return to_find;
     }

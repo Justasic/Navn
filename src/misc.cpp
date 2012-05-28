@@ -168,7 +168,6 @@ Flux::string Flux::Sanitize(const Flux::string &string)
    special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
  }
  special[] = {
-  special_chars("  ", " "),
   special_chars("\n",""),
   special_chars("\002",""),
   special_chars("\035",""),
@@ -237,7 +236,8 @@ Flux::string printfify(const char *fmt, ...)
     vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
     return buf;
-  }else
+  }
+  else
     return fmt;
 }
 

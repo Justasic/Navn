@@ -392,7 +392,8 @@ void process(const Flux::string &buffer)
   }
 
   /**************************************/
-  if(!c && !nickname.search('.') && protocoldebug)
+  // Make sure we have valid information being passed to the core commands and modules
+  if(!c && !nickname.search('.') && IsValidChannel(receiver) && protocoldebug)
     Log(LOG_WARN) << "No channel being passed to CommandSource???";
 
   if(!u && !nickname.search('.') && protocoldebug)

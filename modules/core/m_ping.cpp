@@ -61,7 +61,7 @@ public:
   {
      Flux::string ts = params[1];
      int lag = time(NULL)-static_cast<int>(ts);
-     Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ')';
+     Log(LOG_RAWIO) << '\0' << lag << " sec lag (" << ts << " - " << time(NULL) << ")\0";
      
      if(pingtimer.ptt)
 	delete pingtimer.ptt;

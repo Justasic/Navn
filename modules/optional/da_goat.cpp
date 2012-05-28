@@ -394,8 +394,8 @@ public:
       }
     }
     /***************************************************************************************************/
-    if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
-      c->SendMessage("NO U!");
+//     if(msg.search_ci("no u!") || msg.search_ci("no u") || msg.search_ci("no you") || msg.search_ci("no you!"))
+//       c->SendMessage("NO U!");
     if(cmd.equals_ci("!everything"))
       c->SendMessage("Yes, there is a script for everything...\007");
     /***********************End Da_Goat Functions******************************/
@@ -403,18 +403,20 @@ public:
       c->SendMessage("Report Bugs at: http://bugs.Azuru.net/");
     if(cmd.equals_ci("!git"))
       u->SendMessage("Navn git: git://github.com/Justasic/Navn.git");
-    if(msg.search_ci("the game") || msg.search_ci("won the game"))
-      c->SendMessage("YOU JUST LOST THE GAME.");
-    if(msg.search_ci("i win"))
-      c->SendMessage("YOU LOSE!");
+//     if(msg.search_ci("the game") || msg.search_ci("won the game"))
+//       c->SendMessage("YOU JUST LOST THE GAME.");
+//     if(msg.search_ci("i win"))
+//       c->SendMessage("YOU LOSE!");
     if(msg.search_ci("!navn"))
       c->SendMessage("That's my name don't wear it out!");
     if(msg.search_ci("!login"))
       c->SendMessage("Type: /login <yourpassword>");
-    if(msg.search_ci("shut up"))
-      c->SendMessage("U SHUT UP!");
-    if(msg.search_ci("shut the fuck up"))
-      c->SendMessage("U SHUT THE FUCK UP!");
+    if(msg.search_ci("brb"))
+      c->SendMessage("I miss %s", u->nick.c_str());
+//     if(msg.search_ci("shut up"))
+//       c->SendMessage("U SHUT UP!");
+//     if(msg.search_ci("shut the fuck up"))
+//       c->SendMessage("U SHUT THE FUCK UP!");
     /*if(params[0].search_ci("why") && c->name.equals_ci("#Minecraft"))
       c->SendMessage("Because you touch yourself at night!");*/
   }

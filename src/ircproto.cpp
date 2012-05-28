@@ -8,11 +8,56 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #include "ircproto.h"
+
+// An object for tracking how many lines we have sent and such
+struct SendQobject
+{
+  // The Queue of all messages, buffered;
+  std::queue<Flux::string> SendQ;
+  // Number of lines sent before burst
+  int linessent;
+  // Have we sent the burst yet?
+  inline bool HasBurst() const { return (linessent <= Config->BurstRate); }
+} sqo;
+
+// Buffer all messages except critical ones and send them in a timely manner
+class SendQTimer : public Timer
+{
+  int sent;
+public:
+  SendQTimer() : Timer(Config->SendQRate, time(NULL), true), sent(0)
+  {
+    Log(LOG_DEBUG) << "Initialized a SengQ Timer";
+    sqo.linessent = 0;
+  }
+
+  ~SendQTimer()
+  {
+    Log(LOG_DEBUG) << "Destroying SendQ Timer";
+  }
+  
+  void Tick(time_t)
+  {
+    while(!sqo.SendQ.empty() && ++sent <= Config->SendQLines)
+    {
+      if(sock)
+	sock->send(sqo.SendQ.front());
+      else
+	Log(LOG_WARN) << "Attempted to send \"" << sqo.SendQ.front() << "\" to the server but no socket exists!";
+      sqo.SendQ.pop();
+    }
+    
+    if(sqo.SendQ.empty())
+      sqo.linessent = 0;
+    sent = 0;
+  }
+};
+
 /**
  *\file  ircproto.cpp
  *\brief Contains the IRCProto class.
  */
-IRCProto::IRCProto() : o(NULL) {}
+IRCProto::IRCProto() : o(NULL) { if(Config->SendQEnabled) new SendQTimer(); }
 
 IRCProto::~IRCProto()
 {
@@ -20,6 +65,28 @@ IRCProto::~IRCProto()
     delete this->o;
   this->o = NULL;
 }
+
+void IRCProto::Raw(const char *fmt, ...)
+{
+  va_list args;
+  char buffer[BUFSIZE] = "";
+  va_start(args, fmt);
+  vsnprintf(buffer, sizeof(buffer), fmt, args);
+  if(Config->SendQEnabled)
+  {
+    if(sqo.HasBurst() && sock)
+    {
+      sqo.linessent++; // Spam for a few lines
+      sock->send(buffer);
+    }
+    else // Oh well.. fun while it lasted lol
+      sqo.SendQ.push(Flux::string(buffer));
+  }
+  else // Send Unlimited if there's no sendq enabled. Whee!
+    sock->send(buffer);
+  va_end(args);
+}
+
 /**
  * \brief Sends a IRC private message to the user or channel
  * \param Destination Where the message will go
@@ -46,7 +113,7 @@ void IRCProto::privmsg(const Flux::string &where, const Flux::string &msg)
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
-   send_cmd("PRIVMSG %s :%s\n", where.c_str(), tok.c_str());
+   this->Raw("PRIVMSG %s :%s\n", where.c_str(), tok.c_str());
 }
 /**
  * \brief Sends a IRC notice to the user or channel
@@ -74,7 +141,7 @@ void IRCProto::notice(const Flux::string &where, const Flux::string &msg)
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
-   send_cmd("NOTICE %s :%s\n", where.c_str(), tok.c_str());
+   this->Raw("NOTICE %s :%s\n", where.c_str(), tok.c_str());
 }
 /**
  * \brief Sends a IRC action (/me) to the user or channel
@@ -102,7 +169,7 @@ void IRCProto::action(const Flux::string &where, const Flux::string &msg)
  sepstream sep(msg, '\n');
  Flux::string tok;
  while(sep.GetToken(tok))
-   send_cmd("PRIVMSG %s :\001ACTION %s\001\n", where.c_str(), tok.c_str());
+   this->Raw("PRIVMSG %s :\001ACTION %s\001\n", where.c_str(), tok.c_str());
 }
 /**
  * \fn void command::kick(Flux::string Channel, Flux::string User, const char *fmt, ...)
@@ -167,12 +234,12 @@ void IRCProto::part(const Flux::string &channel, const char *fmt, ...)
  */
 void IRCProto::kick(const Flux::string &chan, const Flux::string &userstr, const Flux::string &msg)
 {
-  send_cmd("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), msg.c_str());
+  this->Raw("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), msg.c_str());
 }
 
 void IRCProto::pass(const Flux::string &password)
 {
-  send_cmd("PASS %s\n", password.c_str());
+  this->Raw("PASS %s\n", password.c_str());
 }
 /**
  * \overload void IRCProto::quit(Flux::string message)
@@ -186,14 +253,14 @@ void IRCProto::quit(const Flux::string &message)
  */
 void IRCProto::part(const Flux::string &channel, const Flux::string &msg)
 {
-  send_cmd("PART %s :%s\n", channel.c_str(), msg.c_str());
+  this->Raw("PART %s :%s\n", channel.c_str(), msg.c_str());
 }
 /**
  * \overload void command::topic(Flux::string channel, Flux::string msg)
  */
 void IRCProto::topic(const Flux::string &chan, const Flux::string &msg)
 {
-  send_cmd("TOPIC %s :%s\n", chan.c_str(), msg.c_str());
+  this->Raw("TOPIC %s :%s\n", chan.c_str(), msg.c_str());
 }
 /**
  * \fn void command::nick(Flux::string nick)
@@ -202,12 +269,12 @@ void IRCProto::topic(const Flux::string &chan, const Flux::string &msg)
  */
 void IRCProto::nick(const Flux::string &bnick)
 {
-  send_cmd("NICK %s\n", bnick.c_str());
+  this->Raw("NICK %s\n", bnick.c_str());
 }
 
 void IRCProto::away(const Flux::string &message)
 {
-  send_cmd("AWAY :%s", message.c_str());
+  this->Raw("AWAY :%s", message.c_str());
 }
 /**
  * \fn void command::oper(Flux::string oper, Flux::string password)
@@ -215,7 +282,7 @@ void IRCProto::away(const Flux::string &message)
  */
 void IRCProto::oper(const Flux::string &username, const Flux::string &password)
 {
-  send_cmd("OPER %s %s\n", username.c_str(), password.c_str());
+  this->Raw("OPER %s %s\n", username.c_str(), password.c_str());
 }
 /**
  * \fn void command::join(Flux::string chan)
@@ -224,7 +291,7 @@ void IRCProto::oper(const Flux::string &username, const Flux::string &password)
  */
 void IRCProto::join(const Flux::string &dchan)
 {
-  send_cmd("JOIN %s\n", dchan.c_str());
+  this->Raw("JOIN %s\n", dchan.c_str());
 }
 /**
  * \overload void command::part(Flux::string channel)
@@ -233,7 +300,7 @@ void IRCProto::join(const Flux::string &dchan)
  */
 void IRCProto::part(const Flux::string &fchan)
 {
-  send_cmd("PART %s\n", fchan.c_str());
+  this->Raw("PART %s\n", fchan.c_str());
 }
 /**
  * \fn void IRCProto::who(Flux::string chan)
@@ -242,7 +309,7 @@ void IRCProto::part(const Flux::string &fchan)
  */
 void IRCProto::who(const Flux::string &chan)
 {
-  send_cmd("WHO %s\n", chan.c_str());
+  this->Raw("WHO %s\n", chan.c_str());
 }
 /**
  * \fn void IRCProto::names(Flux::string &chan)
@@ -251,7 +318,7 @@ void IRCProto::who(const Flux::string &chan)
  */
 void IRCProto::names(const Flux::string &chan)
 {
-  send_cmd("NAMES %s\n", chan.c_str());
+  this->Raw("NAMES %s\n", chan.c_str());
 }
 /**
  * \fn void command::whois(Flux::string Nick)
@@ -260,7 +327,7 @@ void IRCProto::names(const Flux::string &chan)
  */
 void IRCProto::whois(const Flux::string &nickname)
 {
-  send_cmd("WHOIS %s\n", nickname.c_str());
+  this->Raw("WHOIS %s\n", nickname.c_str());
 }
 /**
  * \fn void command::mode(Flux::string nickname, Flux::string mode, Flux::string user)
@@ -270,7 +337,7 @@ void IRCProto::whois(const Flux::string &nickname)
  */
 void IRCProto::mode(const Flux::string &chan, const Flux::string &usermode, const Flux::string &usernick)
 {
-  send_cmd("MODE %s %s %s\n", chan.c_str(), usermode.c_str(), usernick.c_str());
+  this->Raw("MODE %s %s %s\n", chan.c_str(), usermode.c_str(), usernick.c_str());
 }
 /**
  * \fn void IRCProto::introduce_client(const Flux::string &nick, const Flux::string &ident, const Flux::string &realname)
@@ -300,85 +367,85 @@ void IRCProto::introduce_client(const Flux::string &nickname, const Flux::string
  */
 void IRCProto::mode(const Flux::string &dest, const Flux::string &chanmode)
 {
-  send_cmd("MODE %s %s\n", dest.c_str(), chanmode.c_str());
+  this->Raw("MODE %s %s\n", dest.c_str(), chanmode.c_str());
 }
 
 void IRCProto::invite(const Flux::string &user, const Flux::string &channel)
 {
-  send_cmd("INVITE %s %s\n", user.c_str(), channel.c_str());
+  this->Raw("INVITE %s %s\n", user.c_str(), channel.c_str());
 }
 
 void IRCProto::version(const Flux::string &server)
 {
   if(server.empty())
-    send_cmd("VERSION\n");
+    this->Raw("VERSION\n");
   else
-    send_cmd("VERSION %s\n", server.c_str());
+    this->Raw("VERSION %s\n", server.c_str());
 }
 
 void IRCProto::stats(const Flux::string &query, const Flux::string &server)
 {
   if(server.empty())
-    send_cmd("STATS %s\n", query.c_str());
+    this->Raw("STATS %s\n", query.c_str());
   else
-    send_cmd("STATS %s %s\n", query.c_str(), server.c_str());
+    this->Raw("STATS %s %s\n", query.c_str(), server.c_str());
 }
 
 void IRCProto::links(const Flux::string &remote, const Flux::string &mask)
 {
   if(remote.empty() && mask.empty())
-    send_cmd("LINKS\n");
+    this->Raw("LINKS\n");
   else if (!remote.empty() && mask.empty())
-    send_cmd("LINKS %s\n", remote.c_str());
+    this->Raw("LINKS %s\n", remote.c_str());
   else if (!remote.empty() && !mask.empty())
-    send_cmd("LINKS %s %s\n", remote.c_str(), mask.c_str());
+    this->Raw("LINKS %s %s\n", remote.c_str(), mask.c_str());
 }
 
 void IRCProto::time(const Flux::string &server)
 {
   if(server.empty())
-    send_cmd("TIME\n");
+    this->Raw("TIME\n");
   else
-    send_cmd("TIME %s\n", server.c_str());
+    this->Raw("TIME %s\n", server.c_str());
 }
 
 void IRCProto::admin(const Flux::string &server)
 {
   if(server.empty())
-    send_cmd("ADMIN\n");
+    this->Raw("ADMIN\n");
   else
-    send_cmd("ADMIN %s\n", server.c_str());
+    this->Raw("ADMIN %s\n", server.c_str());
 }
 
 void IRCProto::info(const Flux::string &server)
 {
   if(server.empty())
-    send_cmd("INFO\n");
+    this->Raw("INFO\n");
   else
-    send_cmd("INFO %s\n", server.c_str());
+    this->Raw("INFO %s\n", server.c_str());
 }
 
 void IRCProto::whowas(const Flux::string &nickname, int count, const Flux::string &server)
 {
   if(count != 0 && !server.empty())
-    send_cmd("WHOWAS %s %d %s\n", nickname.c_str(), count, server.c_str());
+    this->Raw("WHOWAS %s %d %s\n", nickname.c_str(), count, server.c_str());
   else if (count != 0 && server.empty())
-    send_cmd("WHOWAS %s %d\n", nickname.c_str());
+    this->Raw("WHOWAS %s %d\n", nickname.c_str());
   else if (count == 0 && !server.empty())
-    send_cmd("WHOWAS %s %s\n", nickname.c_str(), server.c_str());
+    this->Raw("WHOWAS %s %s\n", nickname.c_str(), server.c_str());
   else
-    send_cmd("WHOWAS %s\n", nickname.c_str());
+    this->Raw("WHOWAS %s\n", nickname.c_str());
 }
 
 void IRCProto::users(const Flux::string &server)
 {
   if(server.empty())
-    send_cmd("USERS\n");
+    this->Raw("USERS\n");
   else
-    send_cmd("USERS %s\n", server.c_str());
+    this->Raw("USERS %s\n", server.c_str());
 }
 
 void IRCProto::userhost(const Flux::string &nickname)
 {
-  send_cmd("USERHOST %s\n", nickname.c_str());
+  this->Raw("USERHOST %s\n", nickname.c_str());
 }

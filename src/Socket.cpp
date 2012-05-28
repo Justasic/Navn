@@ -237,7 +237,7 @@ void SocketIO::Process()
   }
 }
 
-void SocketIO::send(const Flux::string buf)
+void SocketIO::send(const Flux::string &buf)
 {
   if(!protocoldebug)
     Log(LOG_DEBUG) << buf;

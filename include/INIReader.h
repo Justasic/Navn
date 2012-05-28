@@ -86,10 +86,15 @@ public:
   Flux::string ServicesService;
   Flux::string WelcomeMessage;
   Flux::string LogColor;
+  Flux::string LogChan;
   Flux::vector Owners;
   int LogAge;
+  int BurstRate;
+  int SendQLines;
+  int SendQRate;
   int ReconnectTries;
   bool IdentOnConn;
+  bool SendQEnabled;
   time_t PingTimeoutTime;
   time_t ReconnectTime;
   size_t LogTime;
