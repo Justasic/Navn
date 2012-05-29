@@ -64,7 +64,7 @@ public:
     }
     else
     {
-      Flux::string wget, tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
+      Flux::string wget, tmpfile = TextFile::TempFile(binary_dir+"/runtime/navn_xml.tmp.XXXXXX");
       wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(location.is_number_only()?location:location.url_str());
       system(wget.c_str());
       XMLFile *xf = new XMLFile(tmpfile);

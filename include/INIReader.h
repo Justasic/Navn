@@ -64,7 +64,6 @@ public:
   virtual ~BotConfig();
   INIReader *Parser;
   Flux::string LogFile;
-  Flux::string Binary_Dir;
   Flux::string Realname;
   Flux::string Ident;
   Flux::string BotNick;

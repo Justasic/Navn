@@ -133,8 +133,8 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 
   Log() << "Attempting to load module [" << modname << ']';
 
-  Flux::string mdir = Config->Binary_Dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX");
-  Flux::string input = Flux::string(Config->Binary_Dir + "/" + (Config->ModuleDir.empty()?modname:Config->ModuleDir+"/"+modname) + ".so").replace_all_cs("//","/");
+  Flux::string mdir = binary_dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX");
+  Flux::string input = Flux::string(binary_dir + "/" + (Config->ModuleDir.empty()?modname:Config->ModuleDir+"/"+modname) + ".so").replace_all_cs("//","/");
 
   TextFile mod(input);
   Flux::string output = TextFile::TempFile(mdir);
@@ -150,7 +150,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   dlerror();
 
   // FIXME: Somehow the binary_dir variable is lost when this executes >:|
-  void *handle = dlopen(output.c_str(), RTLD_LAZY|RTLD_GLOBAL);
+  void *handle = dlopen(output.c_str(), RTLD_LAZY|RTLD_LOCAL);
   const char *err = dlerror();
   
   if(!handle && err && *err)
@@ -287,7 +287,7 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 void ModuleHandler::SanitizeRuntime()
 {
   Log(LOG_DEBUG) << "Cleaning up runtime directory.";
-  Flux::string dirbuf = Config->Binary_Dir+"/runtime/";
+  Flux::string dirbuf = binary_dir+"/runtime/";
 
   if(!TextFile::IsDirectory(dirbuf))
   {

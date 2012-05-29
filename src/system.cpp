@@ -326,7 +326,7 @@ void Rehash()
   Log() << "Rehashing Configuration File";
   try
   {
-    const Flux::string bi_dir = Config->Binary_Dir;
+    const Flux::string bi_dir = binary_dir;
     BotConfig *configtmp = Config;
     Config = new BotConfig(bi_dir, configtmp);
     delete configtmp;

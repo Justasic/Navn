@@ -230,7 +230,6 @@ BotConfig::BotConfig(const Flux::string &dir, BotConfig *old)
   if(!this->Parser)
 	throw ConfigException("Cannot read config parser (is the config file there?)");
 
-  this->Binary_Dir = dir;
   this->Read();
 
   if(this->Parser->ParseError() == -1)

@@ -44,7 +44,7 @@ public:
   {
     User *u = source.u;
     Channel *c = source.c;
-    Flux::string area = params[0], tmpfile = TextFile::TempFile(Config->Binary_Dir+"/runtime/navn_xml.tmp.XXXXXX");
+    Flux::string area = params[0], tmpfile = TextFile::TempFile(binary_dir+"/runtime/navn_xml.tmp.XXXXXX");
     
     if(tmpfile.empty())
     {
