@@ -71,7 +71,7 @@ Flux::string TranslateColors(const Flux::string &string)
 	Flux::string attrcode = c;
 	if(isdigit(++c))
 	  attrcode += ++c;
-	attrcolor = (int)attrcode;
+	attrcolor = static_cast<int>(attrcode);
 	continue;
       }
       
@@ -80,7 +80,7 @@ Flux::string TranslateColors(const Flux::string &string)
 	Flux::string ccode = c;
 	if(isdigit(++c))
 	  ccode += ++c;
-	colorcode = (int)ccode;
+	colorcode = static_cast<int>(ccode);
       }
       
 

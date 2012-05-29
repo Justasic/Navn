@@ -150,7 +150,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   dlerror();
 
   // FIXME: Somehow the binary_dir variable is lost when this executes >:|
-  void *handle = dlopen(output.c_str(), RTLD_NOW);
+  void *handle = dlopen(output.c_str(), RTLD_LAZY|RTLD_GLOBAL);
   const char *err = dlerror();
   
   if(!handle && err && *err)
@@ -209,7 +209,7 @@ bool ModuleHandler::DeleteModule(module *m)
   Flux::string filepath = m->filepath;
 
   dlerror();
-  void (*df)(module**) = function_cast<void (*)(module**)>(dlsym(m->handle, "ModunInit"));
+  void (*df)(module*) = function_cast<void (*)(module*)>(dlsym(m->handle, "ModunInit"));
   const char *err = dlerror();
   if (!df && err && *err)
   {
@@ -217,7 +217,7 @@ bool ModuleHandler::DeleteModule(module *m)
 	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
   }
   else
-    df(&m); /* Let the module delete it self, just in case */
+    df(m); /* Let the module delete it self, just in case */
 	  
 
   if(handle)

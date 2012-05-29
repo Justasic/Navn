@@ -212,8 +212,6 @@ void SocketIO::Process()
       
       this->LastBuf.clear();
       this->LastBuf = buf;
-      
-
 
       buf.clear();
     }

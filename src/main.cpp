@@ -28,6 +28,26 @@
  */
 #include "modules.h"
 
+#ifdef HAVE_SETJMP_H
+jmp_buf sigbuf;
+#endif
+
+// Global variables
+char **my_av, **my_envp;
+bool nofork = false, dev = false, protocoldebug = false, IsOper = false, quitting = false;
+bool started = false, nocolor = false, istempnick = false, memdebug = false;
+Flux::string binary_path, bot_bin, binary_dir, quitmsg;
+const Flux::string password = make_pass();
+char segv_location[255];
+time_t starttime = 0;
+iSupport isupport;
+
+// Global Pointers
+IRCProto *ircproto;
+SocketIO *sock;
+BotConfig *Config;
+module *LastRunModule;
+
 // used for justifying how many times the bot has run the main loop to prevent loop bombs
 unsigned int startcount, loopcount;
 E void Connect();

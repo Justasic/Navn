@@ -243,9 +243,9 @@ void IRCProto::kick(const Flux::string &chan, const Flux::string &userstr, const
   this->Raw("KICK %s %s :%s\n", chan.c_str(), userstr.c_str(), message.c_str());
 }
 
-void IRCProto::pass(const Flux::string &password)
+void IRCProto::pass(const Flux::string &servpass)
 {
-  this->Raw("PASS %s\n", password.c_str());
+  this->Raw("PASS %s\n", servpass.c_str());
 }
 /**
  * \overload void IRCProto::quit(Flux::string message)
@@ -304,9 +304,9 @@ void IRCProto::away(const Flux::string &msg)
  * \fn void command::oper(Flux::string oper, Flux::string password)
  * \brief Sends IRC command /oper
  */
-void IRCProto::oper(const Flux::string &username, const Flux::string &password)
+void IRCProto::oper(const Flux::string &username, const Flux::string &operpass)
 {
-  this->Raw("OPER %s %s\n", username.c_str(), password.c_str());
+  this->Raw("OPER %s %s\n", username.c_str(), operpass.c_str());
 }
 /**
  * \fn void command::join(Flux::string chan)

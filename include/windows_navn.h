@@ -90,7 +90,7 @@
 	extern "C" DllExport void ModunInit(x *); \
 	extern "C" Module *ModInit(const Flux::string &name) { return new x(name); } \
 	BOOLEAN WINAPI DllMain(HINSTANCE, DWORD nReason, LPVOID) { return TRUE; } \
-	extern "C" void ModunInit(x **m) { if(*m) delete *m; }
+	extern "C" void ModunInit(x *m) { if(m) delete m; }
 #else // *nix
 	//If we're compiling with C++ 11
 	#ifdef __GXX_EXPERIMENTAL_CXX0X__
@@ -103,7 +103,7 @@
 	#define Delete unlink
 	#define MODULE_HOOK(x) \
 	extern "C" module *ModInit(const Flux::string &name) { return new x(name); } \
-	extern "C" void ModunInit(x **m) { if(*m) delete *m; *m = NULL; }
+	extern "C" void ModunInit(x *m) { if(m) delete m; }
 #endif // _WIN32
 
 #endif // WINDOWS_H

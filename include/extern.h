@@ -143,6 +143,7 @@ E CommandMap ChanCommandMap;
 E time_t starttime;
 E uint32_t usercnt, maxusercnt;
 E Flux::string binary_path, bot_bin, binary_dir, quitmsg;
+E const Flux::string password;
 E const Flux::string VERSION_LONG;
 E Flux::string ForwardResolution(const Flux::string&);
 E Flux::string getprogdir(const Flux::string&, Flux::string &bin_var1 = bot_bin);
