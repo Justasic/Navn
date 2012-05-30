@@ -104,7 +104,8 @@ public:
       ircproto->quit("Restarting..");
       restart("Restarting..");
       Log(source.u, this) << " to restart the bot.";
-    }else
+    }
+    else
       source.Reply(ACCESS_DENIED);
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -215,7 +216,8 @@ public:
       Log(u) << "quit the bot with password: \"" << password << "\"";
       ircproto->quit("Requested From \2%s\17. Pass: \00320%s\017", u->nick.c_str(), password.c_str());
       quitting = true;
-    }else
+    }
+    else
     {
       source.Reply(ACCESS_DENIED);
       Log(u) << "Attempted to quit the bot";
@@ -242,6 +244,7 @@ public:
     this->SetDesc("Set the topic on a channel");
     this->SetSyntax("\37channel\37 [\37topic\37]");
   }
+  
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string tchan = params[0];
@@ -273,13 +276,15 @@ public:
     {
 	    source.Reply("Unable to write topic temp file");
 	    Log(u, this) << " in an attempt to change the topic in " << tchan << " and failed to write to temp file 'topic.tmp'";
-    }else
+    }
+    else
     {
 	    topic << "<?xml version=\"1.0\" ?><rss version=\"2.0\"><channel><topic> " << tchan << " Topic: " << msg.strip() << " </topic></channel></rss>" << std::endl;
 	    system("sh ftp.sh");
     }
     Log(u, this) << "to change " << tchan << "'s topic to \"" << msg << "\"";
   }
+  
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);

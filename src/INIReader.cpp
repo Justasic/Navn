@@ -219,32 +219,32 @@ Flux::string INIReader::MakeKey(const Flux::string &section, const Flux::string 
     return key;
 }
 /**************************************************************************************/
-BotConfig::BotConfig(const Flux::string &dir, BotConfig *old)
+BotConfig::BotConfig(BotConfig *old)
 {
- SET_SEGV_LOCATION();
- Flux::string conffile = dir + "/bot.conf";
- try
- {
-  this->Parser = new INIReader(conffile);
+  SET_SEGV_LOCATION();
+  Flux::string conffile = binary_dir + "/bot.conf";
+  try
+  {
+    this->Parser = new INIReader(conffile);
 
-  if(!this->Parser)
-	throw ConfigException("Cannot read config parser (is the config file there?)");
+    if(!this->Parser)
+	  throw ConfigException("Cannot read config parser (is the config file there?)");
 
-  this->Read();
+    this->Read();
 
-  if(this->Parser->ParseError() == -1)
-    throw ConfigException("Cannot open '"+conffile+"'");
+    if(this->Parser->ParseError() == -1)
+      throw ConfigException("Cannot open '"+conffile+"'");
 
-  if(this->Parser->ParseError() != 0)
-    throw ConfigException(printfify("Error on line %i", this->Parser->ParseError()));
+    if(this->Parser->ParseError() != 0)
+      throw ConfigException(printfify("Error on line %i", this->Parser->ParseError()));
  }
  catch(const ConfigException &e)
  {
-   if (!old)
-     throw CoreException(printfify("Config: %s", e.GetReason()));
-   else
-      Log() << "Config Exception: " << e.GetReason();
-   return;
+    if (!old)
+      throw CoreException(printfify("Config: %s", e.GetReason()));
+    else
+	Log() << "Config Exception: " << e.GetReason();
+    return;
  }
 }
 

@@ -205,7 +205,7 @@ void SocketIO::Process()
 
       int i = ::send(this->GetFD(), buf.c_str(), buf.size(), MSG_NOSIGNAL);
 
-      if(i <= -1)
+      if(i <= -1 && !quitting)
 	throw SocketException(printfify("Error writing \"%s\" to socket: %s", buf.c_str(), strerror(errno)));
 
       Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();

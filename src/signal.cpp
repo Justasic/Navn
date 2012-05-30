@@ -167,9 +167,14 @@ void sigact(int sig)
       signal(SIGHUP, SIG_IGN);
       sigstr = siginit(randint(1,20));
       quitmsg = "Received Signal: "+sigstr;
+      
       if(ircproto)
 	ircproto->quit(quitmsg);
-      quitting = true;
+      // Quit right now if we've hit ctrl+c at our root check
+      if(!Config)
+	exit(EXIT_SUCCESS);
+      else
+	quitting = true;
       break;
     default:
       Log() << "Received weird signal from terminal. Sig Number: " << sig;

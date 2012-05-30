@@ -326,9 +326,8 @@ void Rehash()
   Log() << "Rehashing Configuration File";
   try
   {
-    const Flux::string bi_dir = binary_dir;
     BotConfig *configtmp = Config;
-    Config = new BotConfig(bi_dir, configtmp);
+    Config = new BotConfig(configtmp);
     delete configtmp;
 
     if(!Config)
@@ -451,17 +450,26 @@ void startup(int argc, char** argv, char *envp[])
   my_envp = envp;
   starttime = time(NULL); //for bot uptime
 
+  if(!getuid() && !getgid())
+  {
+    // Cannot use log here because it will throw errors if we do.
+    std::cerr << Log::TimeStamp() << " \033[22;33m[WARNING]" << (Config?Config->LogColor:"\033[0m") << " DO NOT RUN NAVN AS ROOT!!!" << std::endl;
+    std::cerr << Log::TimeStamp() << " \033[22;33m[WARNING]" << (Config?Config->LogColor:"\033[0m") << " DO NOT RUN NAVN AS ROOT!!!" << std::endl;
+    std::cerr << Log::TimeStamp() << " \033[22;33m[WARNING]" << (Config?Config->LogColor:"\033[0m") << " I know that as a developer, I run lots as root, but don't follow me" << std::endl;
+    std::cerr << Log::TimeStamp() << " \033[22;33m[WARNING]" << (Config?Config->LogColor:"\033[0m") << " because I am bad! The bot will start in 5 seconds." << std::endl;
+    sleep(5);
+  }
+
   binary_dir = getprogdir(argv[0], bot_bin);
   if(binary_dir[binary_dir.length() - 1] == '.')
     binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
 
-  Config = new BotConfig(binary_dir, NULL);
+  Config = new BotConfig(NULL);
   if(!Config)
     throw CoreException("Config Error.");
 
   Flux::string dir = argv[0];
-  Flux::string::size_type n = dir.rfind('/');
-  dir = "." + dir.substr(n);
+  dir = "." + dir.substr(dir.rfind('/'));
 
   //gets the command line paramitors if any.
   CommandLineArguments args(argc, argv);
@@ -480,8 +488,8 @@ void startup(int argc, char** argv, char *envp[])
 
   if(args.HasArg("debug", 'd'))
   {
-    Log(LOG_TERMINAL) << "This mode flag does nothing for now, it will do debug levels eventually ;)";
-    Log(LOG_TERMINAL) << "note: if you're looking for the old mode -d, type --developer instead";
+    Log(LOG_WARN) << "This mode flag does nothing for now, it will do debug levels eventually ;)";
+    Log(LOG_WARN) << "note: if you're looking for the old mode -d, type --developer instead";
     exit(0);
   }
 

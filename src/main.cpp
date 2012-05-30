@@ -41,6 +41,7 @@ const Flux::string password = make_pass();
 char segv_location[255];
 time_t starttime = 0;
 iSupport isupport;
+unsigned int startcount, loopcount;
 
 // Global Pointers
 IRCProto *ircproto;
@@ -48,8 +49,6 @@ SocketIO *sock;
 BotConfig *Config;
 module *LastRunModule;
 
-// used for justifying how many times the bot has run the main loop to prevent loop bombs
-unsigned int startcount, loopcount;
 E void Connect();
 
 class ReconnectTimer : public Timer
@@ -175,7 +174,7 @@ int main (int argcx, char** argvx, char *envp[])
     }//while loop ends here
     
     GarbageCollect();
-    Log(LOG_TERMINAL) << "\033[0m";
+    Log(LOG_TERMINAL) << "Bye!\033[0m";
   }//try ends here
   catch(const CoreException& e)
   {

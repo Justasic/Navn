@@ -209,7 +209,7 @@ Log::~Log()
       logstream << "\033[22;31m" << TimeStamp() << " [CRITICAL] " << message << LogColor;
       break;
     case LOG_WARN:
-      logstream << TimeStamp() << " \033[22;33m[WARNING]" << Config->LogColor << " " << message;
+      logstream << TimeStamp() << " \033[22;33m[WARNING]" << LogColor << " " << message;
       break;
     case LOG_MEMORY:
       if(memdebug)
@@ -237,7 +237,7 @@ Log::~Log()
 
   if(this->filename.empty())
   {
-    std::cerr << "\033[22;31m" << TimeStamp() << " [CRITICAL] Cannot find log file specified!" << LogColor << std::endl;
+    std::cerr << "\033[22;31m" << TimeStamp() << " [CRITICAL] Cannot open log file!" << LogColor << std::endl;
     return; // Exit if there's no file to log to
   }
   

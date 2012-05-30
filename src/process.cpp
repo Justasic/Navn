@@ -119,6 +119,9 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
 	  return;
 	}
 #ifdef HAVE_SETJMP_H
+	// Yes, i understand this code is VERY VERY bad and can cause VERY BAD
+	// stack corruption, but it's still cool to see that it unloads modules
+	// if it segfaults and i would like to keep a system like this in place.
 	if(setjmp(sigbuf) == 0)
 	{
 #endif
