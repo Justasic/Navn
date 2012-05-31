@@ -30,12 +30,24 @@ public:
 
     // Capitalize the 1st letter of every sentence
     if(islower(params[0][0]))
-      c->SendMessage("The '%c' in \"%s\" should be capitalized.", params[0][0], params[0].c_str());
+      c->SendMessage("%s, The '%c' in \"%s\" should be capitalized.", u->nick.capwords().c_str(), params[0][0], params[0].c_str());
 
     // Make sure all sentences end with periods, short phrases shouldn't be annoying enough to correct
     char ch = sentence[sentence.size() - 1];
     if(ch != '.' && params.size() > 7 && (ch != '?' || ch != '!'))
-      c->SendMessage("Your sentence should end with a period.");
+      c->SendMessage("%s, Your sentence should end with a period.", u->nick.capwords().c_str());
+
+    // Make sure the bots nickname is capitalized.
+    if(sentence.search_ci(Config->BotNick))
+      for(unsigned i = 0; i < params.size(); i++)
+      {
+	if(params[i].search_ci(Config->BotNick) && !params[i].search(Config->BotNick))
+	{
+	  // Make sure we're not lower case or it would be ironic to say "capitalize" when we're lowercase
+	  if(!islower(Config->BotNick[0]))
+	    c->SendMessage("%s, You should've capitalized the '%c' in my nickname.", u->nick.capwords().c_str(), Config->BotNick[0]);
+	}
+      }
 
     // Common shortcuts
     if(sentence.search_ci(" u "))

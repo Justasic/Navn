@@ -44,6 +44,7 @@
 #endif
 typedef std::basic_string<char, std::char_traits<char>, std::allocator<char> > sstr;
 extern CoreExport bool protocoldebug;
+
 /**
  * \fn template<typename T, typename V> inline T value_cast(const V &y)
  * \brief A casting function which will attempt to safely cast a value into another, then force it if it fails. this cast is different from other casting operators in that it doesnt accept a pointer.
@@ -67,6 +68,8 @@ template<typename T, typename V> inline T value_cast(const V &y)
 namespace Flux{
  class string;
 }
+extern CoreExport std::vector<Flux::string> ParamitizeString(const Flux::string &src, char delim);
+Flux::string CondenseString(const std::vector<Flux::string> &p);
 /** Case insensitive map, ASCII rules.
  * That is;
  * [ != {, but A == a.
@@ -373,6 +376,14 @@ namespace Flux {
 
     inline void tolower() { std::transform(_string.begin(), _string.end(), _string.begin(), ::tolower); }
     inline void toupper() { std::transform(_string.begin(), _string.end(), _string.begin(), ::toupper); }
+    inline string capwords() const
+    {
+      std::vector<Flux::string> params = ParamitizeString(_string, ' ');
+      for(std::vector<Flux::string>::iterator it = params.begin(); it != params.end(); ++it)
+	(*it)[0] = ::toupper((*it)[0]);
+      return CondenseString(params);
+    }
+    
     inline void clear() { this->_string.clear(); }
 
     inline bool search(const string &_str) { if(_string.find(_str._string) != sstr::npos) return true; return false; }
