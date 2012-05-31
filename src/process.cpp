@@ -92,7 +92,7 @@ void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
  if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
   {
     if(!protocoldebug)
-      Log(LOG_TERMINAL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
+      Log(LOG_DEVEL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
 
     if(!IsValidChannel(receiver))
     {

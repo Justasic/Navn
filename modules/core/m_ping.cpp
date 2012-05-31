@@ -56,12 +56,19 @@ public:
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_FIRST);
   }
+
+  ~Ping_pong()
+  {
+    // make sure we don't ping-timeout after unloading the module
+    if(pingtimer.ptt)
+      delete pingtimer.ptt;
+  }
   
   void OnPong(const std::vector<Flux::string> &params)
   {
      Flux::string ts = params[1];
-     int lag = time(NULL)-static_cast<int>(ts);
-     Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ")\0";
+     int lag = time(NULL) - static_cast<int>(ts);
+     Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ")";
      
      if(pingtimer.ptt)
 	delete pingtimer.ptt;

@@ -161,6 +161,8 @@ Added a SendQ limiter
 Added iSupport support
 Renamed ParametizeString to ParamitizeString (It's more natural)
 Fixed the horrible GLIBC error
+Added root check
+Removed BotConfig's requirement of binary_dir in it's constructor
 
 Navn 2.0.0
 ==========

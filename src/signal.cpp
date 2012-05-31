@@ -167,9 +167,6 @@ void sigact(int sig)
       signal(SIGHUP, SIG_IGN);
       sigstr = siginit(randint(1,20));
       quitmsg = "Received Signal: "+sigstr;
-      
-      if(ircproto)
-	ircproto->quit(quitmsg);
       // Quit right now if we've hit ctrl+c at our root check
       if(!Config)
 	exit(EXIT_SUCCESS);

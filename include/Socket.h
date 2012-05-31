@@ -31,7 +31,7 @@
 
 #include "extern.h"
 #include "log.h"
-class CoreExport SocketIO
+class CoreExport SocketIO : public Base
 {
 private:
   Flux::string server, port, ip, LastBuf;

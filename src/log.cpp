@@ -201,6 +201,10 @@ Log::~Log()
       if(dev || protocoldebug)
 	logstream << TimeStamp() << " " << message;
       break;
+    case LOG_DEVEL:
+      if(!protocoldebug && dev)
+	logstream << message;
+      break;
     case LOG_RAWIO:
       if(protocoldebug)
 	logstream << TimeStamp() << " " << message;

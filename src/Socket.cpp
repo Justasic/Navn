@@ -90,6 +90,7 @@ SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : ser
 
 SocketIO::~SocketIO()
 {
+  this->Process();
   if(is_valid())
     close(sockn);
   

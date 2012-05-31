@@ -148,7 +148,12 @@ public:
     this->Start();
   }
   
-  ~InputThread() { Log(LOG_THREAD) << "Input Thread Exiting."; exiting = true; }
+  ~InputThread()
+  {
+    Log(LOG_THREAD) << "Input Thread Exiting.";
+    exiting = true;
+    SetExitState();
+  }
   
   void ToRun()
   {

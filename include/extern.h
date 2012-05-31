@@ -87,6 +87,7 @@ struct iSupport
 enum LogType
 {
   LOG_DEBUG,
+  LOG_DEVEL,
   LOG_MEMORY,
   LOG_NORMAL,
   LOG_RAWIO,
@@ -140,6 +141,7 @@ E iSupport isupport;
 E module *LastRunModule;
 E CommandMap Commandsmap;
 E CommandMap ChanCommandMap;
+E std::vector<Base*> BaseReferences;
 E time_t starttime;
 E uint32_t usercnt, maxusercnt;
 E Flux::string binary_path, bot_bin, binary_dir, quitmsg;
@@ -178,7 +180,7 @@ E void send_cmd(const char *fmt, ...);
 E void process(const Flux::string&);
 E void ProcessJoin(CommandSource&, const Flux::string&);
 E void ProcessCommands(CommandSource&, std::vector<Flux::string>&);
-E void ReadConfig();
+// E void ReadConfig();
 
 /* Char's */
 E char segv_location[255];

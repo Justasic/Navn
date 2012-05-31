@@ -308,17 +308,23 @@ void ModuleHandler::SanitizeRuntime()
  * \deprecated This will be removed soon.
  * This will re-read the config file values when told to do so
  */
-void ReadConfig()
+void ModuleHandler::LoadModuleList(const Flux::vector &list)
 {
-  sepstream sep(Config->Modules, ',');
-  Flux::string tok;
-
-  while(sep.GetToken(tok))
+  for(Flux::vector::const_iterator it = list.begin(); it != list.end(); ++it)
   {
-    tok.trim();
-    ModErr e = ModuleHandler::LoadModule(tok);
+    ModErr e = LoadModule(*it);
     if(e != MOD_ERR_OK)
-      Log() << "ERROR loading module " << tok << ": " << DecodeModErr(e);
+      Log() << "Error loading module " << *it << ": " << DecodeModErr(e);
   }
+//   sepstream sep(Config->Modules, ',');
+//   Flux::string tok;
+// 
+//   while(sep.GetToken(tok))
+//   {
+//     tok.trim();
+//     ModErr e = ModuleHandler::LoadModule(tok);
+//     if(e != MOD_ERR_OK)
+//       Log() << "ERROR loading module " << tok << ": " << DecodeModErr(e);
+//   }
 }
 /******************End Configuration variables********************/

@@ -107,7 +107,7 @@ public:
   static void SanitizeRuntime();
   static void UnloadAll();
   static bool Unload(module*);
-
+  static void LoadModuleList(const Flux::vector&);
   static bool Attach(Implementation i, module *mod);
   static void Attach(Implementation *i, module *mod, size_t sz);
   static bool Detach(Implementation i, module *mod);

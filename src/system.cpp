@@ -334,7 +334,7 @@ void Rehash()
       throw ConfigException("Could not read config.");
 
     FOREACH_MOD(I_OnReload, OnReload());
-    ReadConfig();
+    ModuleHandler::LoadModuleList(ParamitizeString(Config->Modules, ','));
   }
   catch(const ConfigException &ex)
   {
@@ -545,7 +545,7 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << Config->LogColor;
 
   ModuleHandler::SanitizeRuntime();
-  ReadConfig(); //load modules
+  ModuleHandler::LoadModuleList(ParamitizeString(Config->Modules, ',')); //load modules
   WritePID(); //Write the pid file
   FOREACH_MOD(I_OnStart, OnStart(argc, argv)); //announce we are starting the bot
   Fork(); //Fork to background
@@ -585,7 +585,10 @@ void GarbageCollect()
 
   if(sock)
   {
-    sock->Process();
+    if(!quitmsg.empty())
+      sock->send(printfify("QUIT :%s\n", quitmsg.c_str()));
+    else
+      sock->send("QUIT");
     Log(LOG_MEMORY) << "Deleting socket @" << sock;
     delete sock;
     sock = NULL;
@@ -593,4 +596,12 @@ void GarbageCollect()
   
   // Clean the runtime last incase we wanna put some temp crap in the runtime folder for deletion.
   ModuleHandler::SanitizeRuntime();
+
+  // We need to be careful that we don't deallocate a timer, they cause segmentation faults
+  for(std::vector<Base*>::iterator it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end; ++it)
+  {
+    Log(LOG_MEMORY) << "Deleting base reference @" << *it;
+    delete *it;
+  }
+  BaseReferences.clear();
 }

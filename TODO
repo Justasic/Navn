@@ -16,11 +16,11 @@ Navn 2.0.1
 [x] Make module system load binary files (.so files)
   [x] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
   [x] Add some kind of command handler so it can list all loaded commands from all modules
-  [X] Fix glibc crashes with this system
-  [X] Fix crash in timer system
+  [x] Fix glibc crashes with this system
+  [x] Fix crash in timer system
 
 [#] Fix CHOWN command
-[X] Fix botnick not changeable
+[x] Fix botnick not changeable
 [x] Make default channel's in the config
 [x] Make a server numeric catcher
 [x] Add timed pinging (should handle ping timeouts and connection issues)
@@ -53,13 +53,13 @@ Navn 2.0.2
   [ ] Add Personal command aliases
 
 [ ] Add more event handlers (FOREACH_MOD)
+[ ] Add a possible better event handler
 [ ] Add calculator
 [ ] Make searcher module use config for search URL's instead of hard coded ones.
-[ ] Kill automake with fire!
-[ ] Add buffer limiter (so freenode does not kill the bot)
+[x] Kill automake with fire!
+[x] Add buffer limiter (so freenode does not kill the bot)
 [ ] Better config format
-[ ] Better startup switch management
-[ ] Add Oper Protocol modules
+[x] Better startup switch management
 [ ] Better terminal Commands Parsing
 [ ] Add a flags system like channel/user modes
 [ ] Add !forecast
@@ -70,4 +70,5 @@ Future
 [x] Move to CMake
 [ ] Add support for GETTEXT so it allows for the program to be translated
 [+] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
-[ ] Add python support
+[+] Add python support
+[ ] Add Oper Protocol modules?

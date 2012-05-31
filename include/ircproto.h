@@ -13,7 +13,7 @@
 #include "includes.h"
 #include "command.h"
 
-class CoreExport IRCProto
+class CoreExport IRCProto : public Base
 {
 public:
   Oper *o;
