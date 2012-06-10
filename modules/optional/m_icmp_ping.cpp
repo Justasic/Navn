@@ -97,6 +97,7 @@ void PingThread::SendPing()
   struct iphdr* ip;
   struct iphdr* ip_reply;
   struct icmphdr* icmp;
+  struct protoent *proto;
   struct sockaddr_in connection;
   char* packet;
   char* buffer;
@@ -124,6 +125,12 @@ void PingThread::SendPing()
   
   ip = reinterpret_cast<struct iphdr*>(packet);
   icmp = reinterpret_cast<struct icmphdr*>(packet + sizeof(struct iphdr));
+
+  if ((proto = getprotobyname("icmp")) == NULL) {
+    Log(LOG_WARN) << "[m_icmp_ping]: unknown protocol \"ICMP\"";
+    source.Reply("Internal Error: ICMP protocol is unknown");
+    return;
+  }
   
   /*
    *  here the ip packet is set up except checksum
@@ -134,12 +141,14 @@ void PingThread::SendPing()
   ip->tot_len      = sizeof(struct iphdr) + sizeof(struct icmphdr);
   ip->id           = htons(random());
   ip->ttl          = 255;
-  ip->protocol     = IPPROTO_ICMP;
+  ip->protocol     = proto->p_proto;
   ip->saddr        = inet_addr(hostnameip.c_str());
   ip->daddr        = inet_addr(address.c_str());
+
+
   
   
-  if ((sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) == -1)
+  if ((sockfd = socket(AF_INET, SOCK_RAW, proto->p_proto)) < 0)
   {
     source.Reply("Failed ping: %s", strerror(errno));
     return;
