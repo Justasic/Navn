@@ -49,7 +49,7 @@ public:
   EventResult OnLog(Log *l)
   {
     Channel *c = findchannel(Config->LogChan);
-    if(!c || l->type == LOG_RAWIO)
+    if(!c)
       return EVENT_CONTINUE;
 
     std::stringstream logstream;
@@ -78,9 +78,7 @@ public:
 	  logstream << message;
 	break;
       case LOG_RAWIO:
-	if(protocoldebug)
-	  logstream << message;
-	break;
+	return EVENT_CONTINUE;
       case LOG_CRITICAL:
 	logstream << "\0034[CRITICAL] " << message << "\017";
 	break;
