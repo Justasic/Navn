@@ -15,6 +15,8 @@
 #include "Socket.h"
 #include <fcntl.h>
 #include <iostream>
+#include <sys/select.h>
+
 bool throwex;
 Flux::string throwmsg;
 fd_set ReadFD, WriteFD, ExceptFD;

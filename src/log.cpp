@@ -98,7 +98,7 @@ void CheckLogDelete(Log *log)
     if(TextFile::IsFile(file))
     {
       Flux::string t = file.isolate('-', ' ').strip('-');
-      int timestamp = (int)t;
+      int timestamp = static_cast<int>(t);
 
       if(timestamp > (time(NULL) - 86400 * Config->LogAge) && timestamp != starttime)
       {

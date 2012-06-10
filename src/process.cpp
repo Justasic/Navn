@@ -338,7 +338,7 @@ void process(const Flux::string &buffer)
 
   if(command.is_pos_number_only())
   {
-    FOREACH_MOD(I_OnNumeric, OnNumeric((int)command, params));
+    FOREACH_MOD(I_OnNumeric, OnNumeric(static_cast<int>(command), params));
   }
 
   // Various events we need to pay attention to.
