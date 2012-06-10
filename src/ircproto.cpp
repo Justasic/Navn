@@ -34,6 +34,8 @@ public:
   ~SendQTimer()
   {
     Log(LOG_DEBUG) << "Destroying SendQ Timer";
+    while(!sqo.SendQ.empty())
+      sqo.SendQ.pop();
   }
   
   void Tick(time_t)
@@ -46,6 +48,8 @@ public:
 	Log(LOG_WARN) << "Attempted to send \"" << sqo.SendQ.front() << "\" to the server but no socket exists!";
       sqo.SendQ.pop();
     }
+    if(!sqo.SendQ.empty())
+      Log(LOG_RAWIO) << "SendQ buffer size: " << sqo.SendQ.size();
     
     if(sqo.SendQ.empty())
       sqo.linessent = 0;

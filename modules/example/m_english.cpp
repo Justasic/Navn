@@ -26,7 +26,6 @@ public:
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string sentence = CondenseString(params);
-    Log(LOG_TERMINAL) << "SENTENCE: " << sentence;
 
     // Capitalize the 1st letter of every sentence
     if(islower(params[0][0]))

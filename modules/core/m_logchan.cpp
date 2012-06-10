@@ -33,80 +33,6 @@ Flux::string NoTermColor(const Flux::string &ret)
   return str;
 }
 
-Flux::string TranslateColors(const Flux::string &string)
-{
-  Flux::string str = string;
-  int attrcolor = 0;
-  int colorcode = 0;
-  size_t substrpos = 0;
-  size_t substrposend = 0;
-  bool in_term_color = false;
-
-  str = str.replace_all_cs("\033[0m", "\017");
-  str = str.replace_all_cs("\033[0;0m", "\017");
-  
-  for(unsigned i=0; i < str.length(); ++i)
-  {
-    char c = str[i];
-    if(c == '\033')
-    {
-      substrpos = i;
-      continue;
-
-      if(c == 'm')
-      {
-	in_term_color = false;
-	substrposend = i;
-	continue;
-      }
-      
-      if(c == '[')
-      {
-	in_term_color = true;
-	continue;
-      }
-
-      if(in_term_color && c-- == '[' && isdigit(c))
-      {
-	Flux::string attrcode = c;
-	if(isdigit(++c))
-	  attrcode += ++c;
-	attrcolor = static_cast<int>(attrcode);
-	continue;
-      }
-      
-      if(in_term_color && c-- == ';' && isdigit(c))
-      {
-	Flux::string ccode = c;
-	if(isdigit(++c))
-	  ccode += ++c;
-	colorcode = static_cast<int>(ccode);
-      }
-      
-
-    }
-  }
-
-  Flux::string build;
-  // decode all the attribute codes we can.
-  switch(attrcolor)
-  {
-    case 0:
-      break;
-    case 1: // Bold
-      build += '\002';
-    case 4:
-      build += '\037';
-    default:
-      break;
-  }
-
-  // convert colors to irc formatting
-  build += "\003" + colorcode;
-  str = str.substr(0, substrpos) + build + str.substr(substrposend);
-  return NoTermColor(str);
-}
-
 class LogChan : public module
 {
 public:
@@ -126,9 +52,46 @@ public:
     if(!c || l->type == LOG_RAWIO)
       return EVENT_CONTINUE;
 
-    Flux::string message = l->logstream.str();
-    message = message.substr(message.find(']') + 2);
-    c->SendMessage(NoTermColor(message));
+    std::stringstream logstream;
+    Flux::string message = Flux::Sanitize(l->buffer.str());
+    
+    if(l->u && !l->c)
+      message = l->u->nick + " " + message;
+    if(l->u && l->c)
+      message = l->u->nick + " used " + l->c->name + " " + message;
+    
+    switch(l->type)
+    {
+      case LOG_NORMAL:
+	logstream << message;
+	break;
+      case LOG_THREAD:
+	if(protocoldebug)
+	  logstream << "[THREAD] " << message;
+	break;
+      case LOG_DEBUG:
+	if(dev || protocoldebug)
+	  logstream << message;
+	break;
+      case LOG_DEVEL:
+	if(!protocoldebug && dev)
+	  logstream << message;
+	break;
+      case LOG_RAWIO:
+	if(protocoldebug)
+	  logstream << message;
+	break;
+      case LOG_CRITICAL:
+	logstream << "\0034[CRITICAL] " << message << "\017";
+	break;
+      case LOG_WARN:
+	logstream << "\0037[WARNING]\017 " << message;
+	break;
+      default:
+	break;
+    }
+    
+    c->SendMessage(NoTermColor(logstream.str()));
     return EVENT_CONTINUE;
   }
 };

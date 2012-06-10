@@ -36,7 +36,7 @@ Flux::string ForwardResolution(const Flux::string &hostname)
   {
     struct sockaddr *haddr;
     haddr = res->ai_addr;
-    char address[INET6_ADDRSTRLEN + 1] = "";
+    char address[INET6_ADDRSTRLEN + 1] = "\0";
     switch(haddr->sa_family)
     {
       case AF_INET:
@@ -209,7 +209,7 @@ void SocketIO::Process()
       if(i <= -1 && !quitting)
 	throw SocketException(printfify("Error writing \"%s\" to socket: %s", buf.c_str(), strerror(errno)));
 
-      Log(LOG_RAWIO) << "Sent: " << buf << " | Size: " << buf.size();
+      Log(LOG_RAWIO) << "Sent: " << buf << " | " << buf.size() << " bytes";
       
       this->LastBuf.clear();
       this->LastBuf = buf;
