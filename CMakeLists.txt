@@ -179,7 +179,7 @@ else(MSVC)
   if(UNIX)
     set(CXXFLAGS "${CXXFLAGS} -ansi -pedantic")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-      set(CXXFLAGS "${CXXFLAGS} -fno-leading-underscore -Woverloaded-virtual -Wunused-function")
+      set(CXXFLAGS "${CXXFLAGS} -fno-leading-underscore -Woverloaded-virtual -Wunused-function -Wold-style-cast")
     endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   # If we aren't on a *nix system, we are using MinGW
   else(UNIX)
