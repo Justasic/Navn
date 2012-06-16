@@ -198,12 +198,12 @@ Log::~Log()
 	logstream << TimeStamp() << " [THREAD] " << message;
       break;
     case LOG_DEBUG:
-      if(dev || protocoldebug)
+      if(protocoldebug)
 	logstream << TimeStamp() << " " << message;
       break;
     case LOG_DEVEL:
       if(!protocoldebug && dev)
-	logstream << message;
+	logstream << message.replace_all_cs("  ", " ");
       break;
     case LOG_RAWIO:
       if(protocoldebug)
@@ -234,10 +234,10 @@ Log::~Log()
     return;
   
   if((type != LOG_SILENT || type != LOG_CRITICAL) && InTerm())
-    std::cout << (nocolor?NoTermColor(logstream.str()):logstream.str()) << std::endl;
+    std::cout << (nocolor ? NoTermColor(logstream.str()) : logstream.str()) << std::endl;
 
   if(type == LOG_CRITICAL && InTerm()) // Log to stderr instead of stdout
-    std::cerr << (nocolor?NoTermColor(logstream.str()):logstream.str()) << std::endl;
+    std::cerr << (nocolor ? NoTermColor(logstream.str()) : logstream.str()) << std::endl;
 
   if(this->filename.empty())
   {

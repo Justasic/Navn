@@ -425,7 +425,7 @@ public:
 
     for(Flux::map<Flux::string>::iterator it = this->Arguments.begin(); it != this->Arguments.end(); ++it)
     {
-      if(it->first.equals_ci(name) || it->first[0] == shortname)
+      if(it->first.equals_ci(name) || (it->first.size() == 1 && it->first[0] == shortname))
       {
 	args = it->second;
 	return true;
@@ -490,7 +490,7 @@ void startup(int argc, char** argv, char *envp[])
   {
     Log(LOG_WARN) << "This mode flag does nothing for now, it will do debug levels eventually ;)";
     Log(LOG_WARN) << "note: if you're looking for the old mode -d, type --developer instead";
-    exit(0);
+    exit(EXIT_FAILURE);
   }
 
   if(args.HasArg("nofork", 'n'))
@@ -600,6 +600,12 @@ void GarbageCollect()
   // We need to be careful that we don't deallocate a timer, they cause segmentation faults
   for(std::vector<Base*>::iterator it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end; ++it)
   {
+    // Timers can cause errors.
+    if(typeid(*it) == typeid(Timer))
+    {
+      Log(LOG_WARN) << "Leftover timer: @" << *it;
+      continue;
+    }
     Log(LOG_MEMORY) << "Deleting base reference @" << *it;
     delete *it;
   }
