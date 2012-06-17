@@ -163,6 +163,11 @@ Renamed ParametizeString to ParamitizeString (It's more natural)
 Fixed the horrible GLIBC error
 Added root check
 Removed BotConfig's requirement of binary_dir in it's constructor
+Added m_english module
+Added new Flux::string::capwords() which capitalizes the 1st letter of every word in a sentence
+Protocol debug messages now say "%i bytes" instead of "Size: %i" when sending out the socket
+Added m_icmp_ping module for ICMP pings, this requires the bot to be run as root
+Rewrote logging to fix --developer
 
 Navn 2.0.0
 ==========

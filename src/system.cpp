@@ -598,16 +598,17 @@ void GarbageCollect()
   ModuleHandler::SanitizeRuntime();
 
   // We need to be careful that we don't deallocate a timer, they cause segmentation faults
-  for(std::vector<Base*>::iterator it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end; ++it)
+  for(std::vector<Base*>::iterator it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end;)
   {
+    Base *b = *++it;
     // Timers can cause errors.
-    if(typeid(*it) == typeid(Timer))
-    {
-      Log(LOG_WARN) << "Leftover timer: @" << *it;
-      continue;
-    }
-    Log(LOG_MEMORY) << "Deleting base reference @" << *it;
-    delete *it;
+//     if(typeid(b) == typeid(Timer))
+//     {
+//       Log(LOG_WARN) << "Leftover timer: @" << b;
+//       continue;
+//     }
+    Log(LOG_MEMORY) << "Deleting base reference @" << b;
+    delete b;
   }
   BaseReferences.clear();
 }

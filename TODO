@@ -32,6 +32,7 @@ Navn 2.0.1
 Navn 2.0.2
 ----------
 [ ] Multisocket the socket engine
+  [ ] Use cpp-linux-networking for the socket engine
   [ ] Multi-Network handling
   [ ] Possible webserver type module for stats, etc.
 

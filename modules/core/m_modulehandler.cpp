@@ -308,7 +308,7 @@ public:
     for(unsigned i=0; i < CurrentModuleList.size(); ++i)
     {
       CurrentModuleList[i].trim();
-      printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
+//       printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
     }
   }
 

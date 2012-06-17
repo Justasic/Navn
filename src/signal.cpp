@@ -76,8 +76,8 @@ havecxx11 = true;
 
    strftime(tbuf, sizeof(tbuf), "[%b %d %H:%M:%S %Y]", localtime(&now));
    slog << "====================== Segmentation Fault ======================" << std::endl;
-   slog << "Please report this bug to http://bugs.Azuru.net and submit a bug report." << std::endl;
-   slog << "Please note that the Flux-Net developers may ask you to re-run this under gdb!" << std::endl;
+   slog << "Please report this bug to http://bugs.Azuru.net/ and submit a bug report." << std::endl;
+   slog << "Please note that the Azuru developers may ask you to re-run this under gdb!" << std::endl;
    slog << "Time of crash: " << tbuf << std::endl;
    slog << "Navn version: " << VERSION_FULL << std::endl;
    slog << "System info: " << uts.sysname << " " << uts.nodename << " " <<  uts.release << " " << uts.machine << std::endl;
@@ -117,8 +117,8 @@ havecxx11 = true;
    Log(LOG_SILENT) << "Segmentation Fault";
    printf("\033[0mOh no! A Segmentation Fault has occurred!\n");
    printf("This system does not support backtracing, please use gdb or a similar debugger!\n");
-   printf("Please follow these instructions on how to file a bug report of Flux-Net:\n");
-   printf("1) type \"gdb navn\"\n2) type \"r -n --protocoldebug\"\n3) Cause the program to crash\n4) Type \"bt full\" and copy and paste the output to http://www.pastebin.com/\n5) File a bug report at http://flux-net.net/bugs/\n");
+   printf("Please follow these instructions on how to file a bug report of Azuru:\n");
+   printf("1) type \"gdb navn\"\n2) type \"r -n --protocoldebug\"\n3) Cause the program to crash\n4) Type \"bt full\" and copy and paste the output to http://www.pastebin.com/\n5) File a bug report at http://bugs.Azuru.net/\n");
 #endif
 }
 /** Terminal Signal Handler
@@ -145,8 +145,8 @@ void sigact(int sig)
 	ircproto->quit("Out of memory!");
       throw CoreException("Ran out of memory!");
     case SIGSEGV:
-      /* this is where the module stack needs to be */
       #ifdef HAVE_SETJMP_H
+      // If we crashed because of a module, unload it and restore the stack
       if(LastRunModule)
       {
 	HandleSegfault(LastRunModule);
@@ -157,6 +157,7 @@ void sigact(int sig)
       	break;
       }
       #endif
+      // Oh no, core crash, report it and exit
       HandleSegfault(NULL);
       exit(sig);
       break;
