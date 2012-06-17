@@ -73,10 +73,10 @@ public:
 	if(dev || protocoldebug)
 	  logstream << message;
 	break;
-      case LOG_DEVEL:
-	if(!protocoldebug && dev)
-	  logstream << message;
-	break;
+//       case LOG_DEVEL:
+// 	if(!protocoldebug && dev)
+// 	  logstream << message;
+// 	break;
       case LOG_RAWIO:
 	return EVENT_CONTINUE;
       case LOG_CRITICAL:

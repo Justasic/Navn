@@ -17,12 +17,13 @@ class CoreExport Log
 {
 protected:
   std::fstream log;
+  void ToFile(const std::stringstream&);
 public:
   LogType type;
   Flux::string filename;
   User *u;
   Command *c;
-  std::stringstream buffer, logstream;
+  std::stringstream buffer;
   static Flux::string TimeStamp();
   explicit Log(LogType type = LOG_NORMAL);
   explicit Log(User*);
