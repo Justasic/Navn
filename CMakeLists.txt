@@ -25,8 +25,8 @@ include(navn)
 # Project version
 SET(${PROJECT_NAME}_MAJOR_VERSION 2)
 SET(${PROJECT_NAME}_MINOR_VERSION 0)
-SET(${PROJECT_NAME}_PATCH_LEVEL 1)
-SET(${PROJECT_NAME}_VERSION_EXTRA -with-netflix-and-chicken)
+SET(${PROJECT_NAME}_PATCH_LEVEL 2)
+SET(${PROJECT_NAME}_VERSION_EXTRA -with-rainbows-and-unicorns)
 
 # Get the git revision location for the branch we're on
 if(EXISTS "${navn_SOURCE_DIR}/.git/HEAD")

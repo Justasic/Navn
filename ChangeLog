@@ -1,6 +1,9 @@
 Code by Justasic, Lordofsraam, and DeathBlade
 Changes For Navn
 
+Navn 2.0.2
+==========
+
 Navn 2.0.1
 ==========
 Fixed SendMessage using sepstream incorrectly
@@ -168,6 +171,7 @@ Added new Flux::string::capwords() which capitalizes the 1st letter of every wor
 Protocol debug messages now say "%i bytes" instead of "Size: %i" when sending out the socket
 Added m_icmp_ping module for ICMP pings, this requires the bot to be run as root
 Rewrote logging to fix --developer
+----------
 
 Navn 2.0.0
 ==========

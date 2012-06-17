@@ -5,30 +5,6 @@ Legend:
 	$ = half completed
 	# = Scraped
 
-
-Navn 2.0.1
-----------
-[x] Fix --help message showing full execution directory
-[x] Rewrite the config system (Burn INIreader with fire!)
-[x] Do away with the damn flux_net_irc namespace
-[x] timer function
-[x] Case Insensitivity
-[x] Make module system load binary files (.so files)
-  [x] Add OnJoin, OnKick, OnKill, OnNick, etc to a class and make use of it in modules
-  [x] Add some kind of command handler so it can list all loaded commands from all modules
-  [x] Fix glibc crashes with this system
-  [x] Fix crash in timer system
-
-[#] Fix CHOWN command
-[x] Fix botnick not changeable
-[x] Make default channel's in the config
-[x] Make a server numeric catcher
-[x] Add timed pinging (should handle ping timeouts and connection issues)
-[x] Add better error handling instead of a throw or a error code in some places
-[x] Add some sort of buffer processor for the socket engine (make lines process correctly instead of printing the raw buffer)
-[x] Add Select() multiplexing to stop high cpu usage
-
-
 Navn 2.0.2
 ----------
 [ ] Multisocket the socket engine
