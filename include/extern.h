@@ -194,7 +194,7 @@ E char **my_av, **my_envp;
 if(true) \
 { \
     EventsVector::iterator safei; \
-    for (auto _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+    for (EventsVector::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
     { \
        safei = _i; \
        ++safei; \
@@ -275,7 +275,7 @@ else \
 if(true) \
 { \
     EventsVector::iterator safei; \
-    for (auto _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+    for (EventsVector::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
     { \
        safei = _i; \
        ++safei; \
