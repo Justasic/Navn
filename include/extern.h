@@ -188,11 +188,94 @@ E char **my_av, **my_envp;
 
 /**************************************************************/
 /* This is the only #define allowed at the bottom of the file */
+#ifdef HAVE_SETJMP_H
+// We have setjmp, try and recover from Segmentation Faults
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
-    std::vector<module*>::iterator safei; \
-    for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+    EventsVector::iterator safei; \
+    for (auto _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+    { \
+       safei = _i; \
+       ++safei; \
+       try \
+       { \
+	  SET_SEGV_LOCATION(); \
+	  if(setjmp(sigbuf) == 0) \
+	  { \
+	    LastRunModule = *_i; \
+	    (*_i)->x ; \
+	  } \
+	  else \
+	  {\
+	    throw ModuleException(printfify("%s failed to run an event. Segmentation fault occured.", LastRunModule->name.c_str())); \
+	    for(unsigned i = 0; i < Config->Owners.size(); ++i) \
+	    { \
+	      User *ou = finduser(Config->Owners[i]); \
+	      if(ou) \
+		ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str()); \
+	    } \
+	  } \
+       } \
+       catch (const ModuleException &modexcept) \
+       { \
+	  Log() << "Exception caught: " << modexcept.GetReason(); \
+       } \
+        _i = safei; \
+    } \
+} \
+else \
+      static_cast<void>(0)
+
+#define FOREACH_RESULT(y, x, v) \
+if (true) \
+{ \
+  EventsVector::iterator safei; \
+  v = EVENT_CONTINUE; \
+  for (EventsVector::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
+    { \
+      safei = _i; \
+      ++safei; \
+      try \
+      { \
+	if(setjmp(sigbuf) == 0) \
+	{ \
+	  SET_SEGV_LOCATION(); \
+	  EventResult res = (*_i)->x ; \
+	  if (res != EVENT_CONTINUE) \
+	  { \
+	    v = res; \
+	    break; \
+	  } \
+	} \
+	else \
+	{ \
+	  throw ModuleException(printfify("%s failed to run an event. Segmentation fault occured.", LastRunModule->name.c_str())); \
+	  for(unsigned i = 0; i < Config->Owners.size(); ++i) \
+	  { \
+	    User *ou = finduser(Config->Owners[i]); \
+	    if(ou) \
+	      ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str()); \
+	  } \
+	} \
+      } \
+      catch (const ModuleException &modexcept) \
+      { \
+	Log() << "Exception caught: " << modexcept.GetReason(); \
+      } \
+      _i = safei; \
+    } \
+} \
+else \
+  static_cast<void>(0)
+
+#else // HAVE_SETJMP_H
+// We don't have setjmp
+#define FOREACH_MOD(y, x) \
+if(true) \
+{ \
+    EventsVector::iterator safei; \
+    for (auto _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
     { \
        safei = _i; \
        ++safei; \
@@ -214,30 +297,32 @@ else \
 #define FOREACH_RESULT(y, x, v) \
 if (true) \
 { \
-  std::vector<module*>::iterator safei; \
+  EventsVector::iterator safei; \
   v = EVENT_CONTINUE; \
-  for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
-  { \
-    safei = _i; \
-    ++safei; \
-    try \
+  for (EventsVector::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
     { \
-      SET_SEGV_LOCATION(); \
-      EventResult res = (*_i)->x ; \
-      if (res != EVENT_CONTINUE) { \
-	v = res; \
-	break; \
+      safei = _i; \
+      ++safei; \
+      try \
+      { \
+	SET_SEGV_LOCATION(); \
+	EventResult res = (*_i)->x ; \
+	if (res != EVENT_CONTINUE) { \
+	  v = res; \
+	  break; \
+	} \
       } \
+      catch (const ModuleException &modexcept) \
+      { \
+	Log() << "Exception caught: " << modexcept.GetReason(); \
+      } \
+      _i = safei; \
     } \
-    catch (const ModuleException &modexcept) \
-    { \
-      Log() << "Exception caught: " << modexcept.GetReason(); \
-    } \
-    _i = safei; \
-  } \
 } \
 else \
   static_cast<void>(0)
+
+#endif // HAVE_SETJMP_H
 
 
 #endif

@@ -48,11 +48,11 @@ public:
 	Log(LOG_WARN) << "Attempted to send \"" << sqo.SendQ.front() << "\" to the server but no socket exists!";
       sqo.SendQ.pop();
     }
-    if(!sqo.SendQ.empty())
-      Log(LOG_RAWIO) << "SendQ buffer size: " << sqo.SendQ.size();
     
     if(sqo.SendQ.empty())
       sqo.linessent = 0;
+    else
+      Log(LOG_RAWIO) << "SendQ buffer size: " << sqo.SendQ.size();
     sent = 0;
   }
 };
