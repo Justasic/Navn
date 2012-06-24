@@ -140,6 +140,7 @@ Flux::string Log::TimeStamp()
   return Flux::Sanitize(tbuf);
 }
 
+// Where is paul bunyan?
 /**
  * \fn Log::Log(LogType t) : type(t), u(NULL), c(NULL)
  * \brief Logging class used for generating log files and messages

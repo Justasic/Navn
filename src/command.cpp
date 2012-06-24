@@ -322,6 +322,6 @@ void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcomman
 {
  this->SendSyntax(source);
  CommandMap::iterator it = ChanCommandMap.find(this->name);
- if((it->second != NULL)){}else // GCC being weird here, dont ask. you think you can fix it, go ahead.
+ if((it->second != NULL)){}else // good god what the fuck work around is this?
     source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
 }

@@ -49,7 +49,7 @@ class CoreExport Channel : public Base
 {
 public:
   Channel(const Flux::string&, time_t ts = time(NULL));
-  ~Channel();
+  virtual ~Channel();
   UList UserList;
   User *finduser(const Flux::string&);
   //some day we will have a mode manager here :P
@@ -76,11 +76,11 @@ public:
   void RemoveMode(User *u, const Flux::string &mode);
   void ChangeTopic(const Flux::string&);
   void ChangeTopic(const char *fmt, ...);
-  void SendMessage(const Flux::string&);
+  virtual void SendMessage(const Flux::string&);
   void SendMessage(const char*, ...);
-  void SendAction(const Flux::string&);
+  virtual void SendAction(const Flux::string&);
   void SendAction(const char*, ...);
-  void SendNotice(const Flux::string&);
+  virtual void SendNotice(const Flux::string&);
   void SendNotice(const char*, ...);
 };
 #endif

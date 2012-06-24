@@ -10,129 +10,86 @@
 
 #include "modules.h"
 
+// Fake user so we can use any command loaded into Navn
+class CliUser : public User
+{
+  inline bool IsEven(unsigned int num) { return !(num & 1); }
+
+  // Correct color codes when sending to the terminal
+  Flux::string FixColors(const Flux::string &string)
+  {
+    Flux::string actualstring = string;
+    unsigned found_bold = 0;
+    unsigned found_under = 0;
+    for(unsigned i = 0; i < actualstring.size(); ++i)
+    {
+      char c = actualstring[i];
+
+      if(c == '\002')
+      {
+	i++;
+	if(IsEven(++found_bold))
+	  actualstring.insert(i, "\033[0m"+Config->LogColor);
+	else
+	  actualstring.insert(i, "\033[1m");
+      }
+
+      if(c == '\037')
+      {
+	i++;
+	if(IsEven(++found_under))
+	  actualstring.insert(i, "\033[0m"+Config->LogColor);
+	else
+	  actualstring.insert(i, "\033[4m");
+      }
+    }
+    return Flux::Sanitize(actualstring);
+  }
+  
+public:
+  CliUser() : User("Console", "Konsole", "magic.location", "Touch my body, feel me on the floor", "127.0.0.1")
+  {
+    // is there anything I am forgetting?
+  }
+
+  // We're the console, no Access Denied crap
+  bool IsOwner()
+  {
+    return true;
+  }
+
+  // forward messages to the console, not IRC
+  void SendMessage(const Flux::string &message)
+  {
+    Log(LOG_TERMINAL) << FixColors(message);
+  }
+};
+
+static CliUser *DeathBlade;
+
+// Parse the command entered.
 void ProcessInput(const Flux::string &str)
 {
-  Flux::vector params = ParamitizeString(str, ' ');
-  if(params.empty())
-    return;
+  Flux::string Justasic = str;
+  Justasic.trim();
+  Flux::vector Lordofsraam = ParamitizeString(Justasic, ' ');
+  Flux::string command = Lordofsraam.size() > 0 ? Lordofsraam[0] : "";
+  command.trim();
 
-  if(params[0].equals_ci("QUIT"))
+  if(command[0] == '!')
   {
-	quitting = true;
-	send_cmd("%s\n", str.c_str());
+    DeathBlade->SendMessage("Commands cannot be prefixed with !");
+    return;
   }
-  else if(params[0].equals_ci("MSG"))
-  {
-    if(str.size() > 4)
-      send_cmd("PRIVMSG %s\n", str.substr(4).c_str());
-  }
-  else if(params[0].equals_ci("NICK"))
-  {
-    if(str.size() > 5)
-      send_cmd("NICK %s\n", str.substr(5).c_str());
-  }
-  else if(params[0].equals_ci("MODRELOAD"))
-  {
-    if(params.size() >= 2)
-    {
-      module *m = FindModule(params[1]);
-      if(m)
-      {
-	Log(LOG_TERMINAL) << "Reloading module " << params[1];
-	
-	if(!ModuleHandler::Unload(m))
-	  Log(LOG_TERMINAL) << "Failed to unload module " << params[1];
-	
-	ModErr e = ModuleHandler::LoadModule(params[1]);
-	
-	if(e != MOD_ERR_OK)
-	  Log(LOG_TERMINAL) << "Failed to reload module " << params[1] << ": " << DecodeModErr(e);
-	else
-	  Log(LOG_TERMINAL) << "Successfuly reloaded " << params[1];
-      }
-      else
-	Log(LOG_TERMINAL) << "Module " << params[1] << " does not exist!";
-    }
-    else
-      Log(LOG_TERMINAL) << "Syntax: MODUNLOAD modulename";
-  }
-  else if(params[0].equals_ci("MODUNLOAD"))
-  {
-    if(params.size() >= 2)
-    {
-      module *m = FindModule(params[1]);
-      if(m)
-      {
-	if(!ModuleHandler::Unload(m))
-	  Log(LOG_TERMINAL) << "Failed to unload module " << params[1];
-      }
-      else
-	Log(LOG_TERMINAL) << "Module " << params[1] << " does not exist!";
-    }
-    else
-      Log(LOG_TERMINAL) << "Syntax: MODUNLOAD modulename";
-  }
-  else if(params[0].equals_ci("MODLOAD"))
-  {
-    if(params.size() >= 2)
-    {
-      ModErr e = ModuleHandler::LoadModule(params[1]);
-      
-      if(e != MOD_ERR_OK)
-	Log(LOG_TERMINAL) << "Failed to load module " << params[1] << ": " << DecodeModErr(e);
-      else
-	Log(LOG_TERMINAL) << "Successfuly loaded module " << params[1];
-    }
-  }
-  else if(params[0].equals_ci("MODLIST"))
-  {
-    const Flux::string priority = params.size() == 2?params[1]:"";
-    int c=0;
-    
-    if(priority.empty())
-    {
-      for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
-      {
-	printf("%-16s %s [%s]\n", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-	  ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
-	  ++c;
-      }
-    }
-    else
-    {
-      // There is probably a WAY easier way of doing this but whatever
-      for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
-      {
-	if(priority.equals_ci("LAST") || priority == '1')
-	{
-	  printf("%-16s %s [%s]\n", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-		      ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
-	  ++c;
-	}
-	else if(priority.equals_ci("NORMAL") || priority == '2')
-	{
-	  printf("%-16s %s [%s]\n", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-		      ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
-	  ++c;
-	}
-	else if(priority.equals_ci("FIRST") || priority == '3')
-	{
-	  printf("%-16s %s [%s]\n", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-		      ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
-	  ++c;
-	}
-      }
-    }
-    printf("Total of %i Modules\n", c);
-  }
-  else if(params[0].equals_ci("RESTART"))
-  {
-    Flux::string reason = params.size() > 2?str.substr(8):"No Reason";
-    reason.trim();
-    restart(reason);
-  }
-  else
-    send_cmd("%s\n", str.c_str());
+  
+  CommandSource source;
+  source.u = DeathBlade;
+  source.c = NULL;
+  source.params = Lordofsraam;
+  source.raw = Justasic;
+
+  // The core can handle it now!
+  ProcessCommand(source, Lordofsraam, "Console", "PRIVMSG");
 }
 
 /** \class InputThread
@@ -174,11 +131,14 @@ public:
       
       if(!buf.empty())
 	ProcessInput(buf);
+      else
+	DeathBlade->SendMessage("Please enter a command.");
     }
     SetExitState();
   }
 };
 
+// Module class
 class ModTerminalInput : public module
 {
   Thread *t;
@@ -189,12 +149,21 @@ public:
     this->SetAuthor("Justasic");
     if(nofork && InTerm())
     {
+      DeathBlade = new CliUser();
       t = new InputThread();
     }
     else
       throw ModuleException("Cannot run m_terminal_input when fork'ed");
   }
-  ~ModTerminalInput() { if(t) delete t; }
+  
+  ~ModTerminalInput()
+  {
+    if(t)
+      delete t;
+
+    if(DeathBlade)
+      delete DeathBlade;
+  }
 };
 
 MODULE_HOOK(ModTerminalInput)

@@ -29,15 +29,15 @@ public:
   void kick(const Flux::string&, const Flux::string&);
   void kick(Channel*, const Flux::string&);
   void kill(const Flux::string&);
-  bool IsOwner();
+  virtual bool IsOwner();
   void AddChan(Channel*);
   void DelChan(Channel*);
   Channel *findchannel(const Flux::string&);
   void SetNewNick(const Flux::string&);
   void SendWho();
-  void SendMessage(const Flux::string&);
+  virtual void SendMessage(const Flux::string&);
+  virtual void SendPrivmsg(const Flux::string&);
   void SendMessage(const char*, ...);
-  void SendPrivmsg(const Flux::string&);
   void SendPrivmsg(const char*, ...);
 };
 #endif

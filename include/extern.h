@@ -180,6 +180,9 @@ E void send_cmd(const char *fmt, ...);
 E void process(const Flux::string&);
 E void ProcessJoin(CommandSource&, const Flux::string&);
 E void ProcessCommands(CommandSource&, std::vector<Flux::string>&);
+// This will process any command through the core.
+E void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::string &receiver,
+		      const Flux::string &command);
 // E void ReadConfig();
 
 /* Char's */
@@ -193,8 +196,8 @@ E char **my_av, **my_envp;
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
-    EventsVector::iterator safei; \
-    for (EventsVector::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+    std::vector<module*>::iterator safei; \
+    for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
     { \
        safei = _i; \
        ++safei; \
@@ -209,11 +212,11 @@ if(true) \
 	  else \
 	  {\
 	    throw ModuleException(printfify("%s failed to run an event. Segmentation fault occured.", LastRunModule->name.c_str())); \
-	    for(unsigned i = 0; i < Config->Owners.size(); ++i) \
+	    for(unsigned _o = 0; _o < Config->Owners.size(); ++_o) \
 	    { \
-	      User *ou = finduser(Config->Owners[i]); \
+	      User *ou = finduser(Config->Owners[_o]); \
 	      if(ou) \
-		ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str()); \
+		ou->SendMessage("Module \2%s\2 has crashed when running an event!", LastRunModule->name.c_str()); \
 	    } \
 	  } \
        } \
@@ -230,9 +233,9 @@ else \
 #define FOREACH_RESULT(y, x, v) \
 if (true) \
 { \
-  EventsVector::iterator safei; \
+  std::vector<module*>::iterator safei; \
   v = EVENT_CONTINUE; \
-  for (EventsVector::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
+  for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
     { \
       safei = _i; \
       ++safei; \
@@ -251,11 +254,11 @@ if (true) \
 	else \
 	{ \
 	  throw ModuleException(printfify("%s failed to run an event. Segmentation fault occured.", LastRunModule->name.c_str())); \
-	  for(unsigned i = 0; i < Config->Owners.size(); ++i) \
+	  for(unsigned _o = 0; _o < Config->Owners.size(); ++_o) \
 	  { \
-	    User *ou = finduser(Config->Owners[i]); \
+	    User *ou = finduser(Config->Owners[_o]); \
 	    if(ou) \
-	      ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str()); \
+	      ou->SendMessage("Module \2%s\2 has crashed when running an event!", LastRunModule->name.c_str()); \
 	  } \
 	} \
       } \

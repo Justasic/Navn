@@ -8,6 +8,9 @@
  * Based on the original code of Anope by The Anope Team.
  */
 
+// Abandon all hope, ye who enter here!
+// below here be scary parsing related things!
+
 #include "user.h"
 #include "module.h"
 
@@ -80,8 +83,8 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
  * \param Flux::string receiver
  * \param Flux::string Command sent to the bot in raw form
  */
-void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2,
-		    const Flux::string &receiver, const Flux::string &command)
+void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::string &receiver,
+		    const Flux::string &command)
 {
   SET_SEGV_LOCATION();
   User *u = Source.u;
