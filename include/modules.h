@@ -21,7 +21,7 @@
  */
 
 /**
- * \file modules.h
+ * \file Modules.h
  * List the constants used throughout the script.
  * If you wanna edit the server, channel, nick, etc that the bot
  * connects to, do so here, NOT in the main code.

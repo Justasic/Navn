@@ -88,7 +88,7 @@ struct CoreExport CommandSource
 /**
  * \class Command
  * \brief A wrapper class for Module commands
- * Contains methods and properties for handling/getting information from module commands.
+ * Contains methods and properties for handling/getting information from Module commands.
  */
 class CoreExport Command : public Base
 {
@@ -99,8 +99,8 @@ public:
   size_t MaxParams;
   size_t MinParams;
   Flux::string name;
-  module *mod;
-  Command(module*, const Flux::string &sname, CommandType, size_t min_params=0, size_t max_params=0);
+  Module *mod;
+  Command(Module*, const Flux::string &sname, CommandType, size_t min_params=0, size_t max_params=0);
   virtual ~Command();
 protected:
   void SetDesc(const Flux::string&);

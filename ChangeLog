@@ -3,6 +3,9 @@ Changes For Navn
 
 Navn 2.0.2
 ==========
+FOREACH_MOD and FOREACH_RESULT now use setjmp for crashes inside modules when setjmp is available
+Terminal input module now accepts any IRC /msg usable command
+Renamed module class to Module (capitalized it)
 
 Navn 2.0.1
 ==========

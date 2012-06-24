@@ -1,4 +1,4 @@
-/* Navn IRC bot -- IRC help module
+/* Navn IRC bot -- IRC help Module
  *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -15,9 +15,9 @@
 
 /**
  * \defgroup helpM Help Module
- * This is the module for the help_m function.
+ * This is the Module for the help_m function.
  * Returns help information about controlling Navn.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection help Private message: help
  * Send a private message saying \a help to get information.
  * @{
@@ -31,7 +31,7 @@
 class CommandHelp : public Command
 {
 public:
-  CommandHelp(module *m):Command(m, "HELP", C_PRIVATE, 0, 1)
+  CommandHelp(Module *m):Command(m, "HELP", C_PRIVATE, 0, 1)
   {
    this->SetDesc("Displays help messages");
   }
@@ -73,7 +73,7 @@ public:
 class CommandCHelp : public Command
 {
 public:
-  CommandCHelp(module *m):Command(m, "!HELP", C_CHANNEL, 0,1)
+  CommandCHelp(Module *m):Command(m, "!HELP", C_CHANNEL, 0,1)
   {
    this->SetDesc("Displays Channel help messages");
   }
@@ -109,12 +109,12 @@ public:
     }
   }
 };
-class help_m:public module
+class help_m:public Module
 {
   CommandHelp help;
   CommandCHelp chelp;
 public:
-  help_m(const Flux::string &Name):module(Name), help(this), chelp(this)
+  help_m(const Flux::string &Name):Module(Name), help(this), chelp(this)
   {
     this->SetVersion(VERSION);
     this->SetPriority(PRIORITY_FIRST);

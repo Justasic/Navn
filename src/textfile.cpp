@@ -108,7 +108,7 @@ bool TextFile::Empty()
  * \return error code (LastError will also be set)
  * \param Flux::string The destination
  */
-//This function is REQUIRED by the bot to load modules, !! DO NOT MODIFY !!
+//This function is REQUIRED by the bot to load Modules, !! DO NOT MODIFY !!
 FileIOErrors TextFile::Copy(const Flux::string &dest)
 {
   if(dest.empty() || this->filename.empty())

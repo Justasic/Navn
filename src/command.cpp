@@ -204,15 +204,15 @@ Command *FindCommand(const Flux::string &name, CommandType type)
 }
 
 /**
- * \class Command A class which most private message commands inside of modules work in.
- * \fn Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params)
+ * \class Command A class which most private message commands inside of Modules work in.
+ * \fn Command::Command(Module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params)
  * \param Flux::string command name
  * \param size_t the minimum size of the buffer the command vector gets
  * \param size_t the maximum size the vector gets, the rest is a string
  * \param CommandType The type of command this command is
- * \param module The module that this command belongs to
+ * \param Module The Module that this command belongs to
  */
-Command::Command(module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params): type(t), MaxParams(max_params), MinParams(min_params), name(sname), mod(m)
+Command::Command(Module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params): type(t), MaxParams(max_params), MinParams(min_params), name(sname), mod(m)
 {
   for(unsigned i=0; i < sname.size(); ++i) //commands with spaces can screw up the command handler
     if(isspace(sname[i]))
@@ -265,7 +265,7 @@ void Command::SetDesc(const Flux::string &d){ this->desc = d; }
  */
 void Command::SetSyntax(const Flux::string &s){ this->syntax.push_back(s); }
 /**
- * \brief Sends the syntax ONLY from the module, cannot be executed from outside the module
+ * \brief Sends the syntax ONLY from the Module, cannot be executed from outside the Module
  * \fn void Command::SendSyntax(CommandSource &source)
  * \param CommandSource The source for which the command was executed with.
  */

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Clock module
+/* Navn IRC bot -- Clock Module
  * 
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -17,23 +17,23 @@
 
 /**
  * \defgroup world_clockM World Clock Module
- * This is the module for the world clock function.
+ * This is the Module for the world clock function.
  * For a better description see the function description.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection time !time
  * Say \a !time to see the current time, the GMT, and the times in New York, California, Beijing, and Sydney.
  * @{
  */
 
 /**
- * \fn class world_clock(bool a):module("World Clock", a, PRIORITY_DONTCARE){ this->SetDesc("Shows time for your area or for the preset ones"); }
+ * \fn class world_clock(bool a):Module("World Clock", a, PRIORITY_DONTCARE){ this->SetDesc("Shows time for your area or for the preset ones"); }
  * \brief Tells the world time.
  * Uses C++ time functions to tell the time around the world.
  */
 class CommandCWClock: public Command
 {
 public:
-  CommandCWClock(module *m):Command(m, "!TIME", C_CHANNEL, 0, 1)
+  CommandCWClock(Module *m):Command(m, "!TIME", C_CHANNEL, 0, 1)
   {
    this->SetDesc("Shows the time in the channel");
    this->SetSyntax("\37location\37");
@@ -90,10 +90,10 @@ public:
     return true;
   }
 };
-class world_clock:public module{
+class world_clock:public Module{
   CommandCWClock clock;
 public:
-  world_clock(const Flux::string &Name):module(Name), clock(this)
+  world_clock(const Flux::string &Name):Module(Name), clock(this)
   {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);

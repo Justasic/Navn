@@ -33,10 +33,10 @@ Flux::string NoTermColor(const Flux::string &ret)
   return str;
 }
 
-class LogChan : public module
+class LogChan : public Module
 {
 public:
-  LogChan(const Flux::string &Name):module(Name)
+  LogChan(const Flux::string &Name):Module(Name)
   {
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");

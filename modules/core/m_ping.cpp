@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Ping module
+/* Navn IRC bot -- Ping Module
  * 
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -44,11 +44,11 @@ void PingTimer::Tick(time_t)
   this->ptt = new PingTimeoutTimer(Config->PingTimeoutTime, this);
 }
 
-class Ping_pong : public module
+class Ping_pong : public Module
 {
   PingTimer pingtimer;
 public:
-  Ping_pong(const Flux::string &Name):module(Name)
+  Ping_pong(const Flux::string &Name):Module(Name)
   {
     Implementation i[] = { I_OnNumeric, I_OnPong, I_OnPing };
     ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
@@ -59,7 +59,7 @@ public:
 
   ~Ping_pong()
   {
-    // make sure we don't ping-timeout after unloading the module
+    // make sure we don't ping-timeout after unloading the Module
     if(pingtimer.ptt)
       delete pingtimer.ptt;
   }

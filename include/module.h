@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Module header
+/* Navn IRC bot -- module.header
  *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -17,7 +17,7 @@
 # ifdef HAVE_FCNTL_H
 #  include <dlfcn.h>
 # else
-#  error dlfcn.h is required by navn to compile modules!
+#  error dlfcn.h is required by navn to compile Modules!
 # endif
 #endif
 enum Implementation
@@ -41,7 +41,7 @@ enum ModulePriority
   PRIORITY_LAST
 };
 
-class CoreExport module : public Base
+class CoreExport Module : public Base
 {
   Flux::string author, version;
   time_t loadtime;
@@ -60,9 +60,9 @@ public:
   bool GetPermanent();
   ModulePriority GetPriority();
   time_t GetLoadTime();
-  module(const Flux::string&);
+  Module(const Flux::string&);
 
-  virtual ~module();
+  virtual ~Module();
   virtual EventResult OnPreReceiveMessage(const Flux::string&) { return EVENT_CONTINUE; }
   virtual void OnPrivmsg(User*, const std::vector<Flux::string>&) {}
   virtual void OnPrivmsgChannel(User*, Channel*, const std::vector<Flux::string>&) {}
@@ -73,10 +73,10 @@ public:
   virtual void OnPong(const std::vector<Flux::string>&) {}
   virtual void OnArgument(int, const Flux::string&) {}
   virtual EventResult OnLog(Log*) { return EVENT_CONTINUE; }
-  virtual void OnModuleLoad(module*) {}
+  virtual void OnModuleLoad(Module*) {}
   virtual void OnFork(int) {}
   virtual void OnSocketError(const Flux::string&) {}
-  virtual void OnModuleUnload(module*){}
+  virtual void OnModuleUnload(Module*){}
   virtual void OnRestart(const Flux::string&) {}
   virtual void OnShutdown() {}
   virtual void OnNickChange(User*, const Flux::string&) {}
@@ -101,18 +101,18 @@ public:
 class CoreExport ModuleHandler
 {
 public:
-  static std::vector<module*> EventHandlers[I_END];
+  static std::vector<Module*> EventHandlers[I_END];
   static ModErr LoadModule(const Flux::string&);
   static Flux::string DecodePriority(ModulePriority);
   static void SanitizeRuntime();
   static void UnloadAll();
-  static bool Unload(module*);
+  static bool Unload(Module*);
   static void LoadModuleList(const Flux::vector&);
-  static bool Attach(Implementation i, module *mod);
-  static void Attach(Implementation *i, module *mod, size_t sz);
-  static bool Detach(Implementation i, module *mod);
-  static void DetachAll(module*);
+  static bool Attach(Implementation i, Module *mod);
+  static void Attach(Implementation *i, Module *mod, size_t sz);
+  static bool Detach(Implementation i, Module *mod);
+  static void DetachAll(Module*);
 private:
-  static bool DeleteModule(module*);
+  static bool DeleteModule(Module*);
 };
 #endif

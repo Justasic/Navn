@@ -18,11 +18,11 @@
  */
 
 /**
- * \defgroup dnsM DNS module
- * This is the module for the DNS functions.
+ * \defgroup dnsM DNS Module
+ * This is the Module for the DNS functions.
  * Resolves a DNS hostname or Reverse DNS resolve a ip address to a hostname
  * For a better description see the function description.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection dns !dns
  * Say \a !dns with a hostname and it will return the resolved IP address
  * \subsection rdns !rdns
@@ -36,7 +36,7 @@
  * \fn void dns(SendMessage *Send, Flux::string dest, Flux::string host){
  * \fn void rdns(SendMessage *Send, Flux::string dest, Flux::string host){
  * \fn void alldns(SendMessage *Send, Flux::string host, Flux::string dest){
- * \fn class dns_m(bool a):module("DNS Resolver", a, PRIORITY_DONTCARE){ this->SetDesc("Reverse DNS or Forward DNS resolve an address"); }
+ * \fn class dns_m(bool a):Module("DNS Resolver", a, PRIORITY_DONTCARE){ this->SetDesc("Reverse DNS or Forward DNS resolve an address"); }
  * \brief Resolve DNS queries
  * Resolves a DNS hostname or Reverse DNS resolve a ip address to a hostname
  */
@@ -48,7 +48,7 @@
 class CommandCDNS : public Command
 {
 public:
-  CommandCDNS(module *m):Command(m, "!DNS", C_CHANNEL, 1, 1)
+  CommandCDNS(Module *m):Command(m, "!DNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays a resolved hostname");
     this->SetSyntax("hostname"); 
@@ -76,7 +76,7 @@ public:
 class CommandCADNS : public Command
 {
 public:
-  CommandCADNS(module *m):Command(m, "!ADNS", C_CHANNEL, 1, 1)
+  CommandCADNS(Module *m):Command(m, "!ADNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays ALL resolved ip addresses from hostnames");
     this->SetSyntax("hostname");
@@ -153,7 +153,7 @@ public:
 class CommandCRDNS : public Command
 {
 public:
-  CommandCRDNS(module *m):Command(m, "!RDNS", C_CHANNEL, 1, 1)
+  CommandCRDNS(Module *m):Command(m, "!RDNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays a reversely resolved DNS IP Address");
     this->SetSyntax("ipaddress"); 
@@ -199,7 +199,7 @@ public:
 class CommandCARDNS : public Command
 {
 public:
-  CommandCARDNS(module *m):Command(m, "!ARDNS", C_CHANNEL, 1, 1)
+  CommandCARDNS(Module *m):Command(m, "!ARDNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays ALL reverse DNS ip addresses");
     this->SetSyntax("ipaddress"); 
@@ -251,14 +251,14 @@ public:
   }
 };
 
-class dns_m:public module
+class dns_m:public Module
 {
   CommandCARDNS ardns;
   CommandCRDNS rdns;
   CommandCDNS dns;
   CommandCADNS adns;
 public:
-  dns_m(const Flux::string &Name):module(Name), ardns(this), rdns(this), dns(this), adns(this)
+  dns_m(const Flux::string &Name):Module(Name), ardns(this), rdns(this), dns(this), adns(this)
   { 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);

@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Example module
+/* Navn IRC bot -- Example Module
  *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -13,7 +13,7 @@
 class CommandSimple : public Command
 {
 public:
-  CommandSimple(module *m):Command(m, "HI", C_PRIVATE)
+  CommandSimple(Module *m):Command(m, "HI", C_PRIVATE)
   {
     this->SetDesc("Says Hi");
   }
@@ -25,17 +25,17 @@ public:
   {
     this->SendSyntax(source);
     source.Reply(" ");
-    source.Reply("This is the help for the simple module\n"
-		 "This is line 2 of the help in the simple module");
+    source.Reply("This is the help for the simple Module\n"
+		 "This is line 2 of the help in the simple Module");
     return true;
   }
 };
 
-class SimpleMod : public module
+class SimpleMod : public Module
 {
   CommandSimple s;
 public:
-  SimpleMod(const Flux::string &Name):module(Name), s(this)
+  SimpleMod(const Flux::string &Name):Module(Name), s(this)
   {
     this->SetVersion("1.0");
     this->SetAuthor("Justasic & Lordofsraam");

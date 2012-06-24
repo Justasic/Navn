@@ -34,7 +34,7 @@
 # pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 # define DEPRECATED(func) func
 #endif
-/* stupid windows class crap for the modules */
+/* stupid windows class crap for the Modules */
 #ifdef _WIN32
 # define CoreExport __declspec(dllimport)
 # define DllExport __declspec(dllexport)

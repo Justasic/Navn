@@ -13,12 +13,12 @@
 //Move on and call me an idiot later.
 
 /**
- * \fn module::module(Flux::string n)
+ * \fn Module::Module(Flux::string n)
  * \brief Module Constructor
- * \param name Name of the module
+ * \param name Name of the Module
  */
 
-module::module(const Flux::string &n) : author(""), version(""), loadtime(time(NULL)), Priority(PRIORITY_DONTCARE), permanent(false), handle(NULL), name(n), filename(""),  filepath("")
+Module::Module(const Flux::string &n) : author(""), version(""), loadtime(time(NULL)), Priority(PRIORITY_DONTCARE), permanent(false), handle(NULL), name(n), filename(""),  filepath("")
 {
   SET_SEGV_LOCATION();
 
@@ -27,69 +27,69 @@ module::module(const Flux::string &n) : author(""), version(""), loadtime(time(N
 
   Modules[this->name] = this;
   if(InTerm())
-    Log() << "Loaded module " << n;
+    Log() << "Loaded Module " << n;
 }
 
 /**
- * \fn module::~module()
+ * \fn Module::~Module()
  * \brief Module destructor
  */
-module::~module()
+Module::~Module()
 {
   SET_SEGV_LOCATION();
-  Log(LOG_DEBUG) << "Unloading module " << this->name;
+  Log(LOG_DEBUG) << "Unloading Module " << this->name;
   ModuleHandler::DetachAll(this);
   Modules.erase(this->name);
 }
 
 /**
- * \fn void module::SetAuthor(const Flux::string &person)
- * \brief Sets the module author, can only be set by the module its self
+ * \fn void Module::SetAuthor(const Flux::string &person)
+ * \brief Sets the Module author, can only be set by the Module its self
  * \param Author the name of the author(s) to be set
  */
-void module::SetAuthor(const Flux::string &person) { this->author = person; }
+void Module::SetAuthor(const Flux::string &person) { this->author = person; }
 
 /**
- * \fn void module::SetVersion(const Flux::string &ver)
- * \brief Sets the module version, can only be set by the module its self
- * \param Version the module version
+ * \fn void Module::SetVersion(const Flux::string &ver)
+ * \brief Sets the Module version, can only be set by the Module its self
+ * \param Version the Module version
  */
-void module::SetVersion(const Flux::string &ver) { this->version = ver; }
+void Module::SetVersion(const Flux::string &ver) { this->version = ver; }
 
 /**
- * \fn void module::SetAuthor(const Flux::string &person)
- * \brief Sets the module priority, can only be set by the module its self
- * \param Priority sets the priority of the module
+ * \fn void Module::SetAuthor(const Flux::string &person)
+ * \brief Sets the Module priority, can only be set by the Module its self
+ * \param Priority sets the priority of the Module
  */
-void module::SetPriority(ModulePriority p) { this->Priority = p; }
+void Module::SetPriority(ModulePriority p) { this->Priority = p; }
 
-void module::SetPermanent(bool value) { this->permanent = value; }
+void Module::SetPermanent(bool value) { this->permanent = value; }
 
-bool module::GetPermanent() { return this->permanent; }
+bool Module::GetPermanent() { return this->permanent; }
 /**
- * \fn Flux::string module::GetVersion()
- * \brief Gets the string of the modules version
- * \return The modules version
+ * \fn Flux::string Module::GetVersion()
+ * \brief Gets the string of the Modules version
+ * \return The Modules version
  */
-Flux::string module::GetVersion() { return this->version; }
-
-/**
- * \fn time_t module::GetLoadTime()
- * \brief Gets the time the module was loaded
- * \return load time of the module
- */
-time_t module::GetLoadTime() { return this->loadtime; }
+Flux::string Module::GetVersion() { return this->version; }
 
 /**
- * \fn Flux::string module::GetAuthor()
- * \brief Gets the module author(s)
- * \return The modules author string
+ * \fn time_t Module::GetLoadTime()
+ * \brief Gets the time the Module was loaded
+ * \return load time of the Module
  */
-Flux::string module::GetAuthor() { return this->author; }
+time_t Module::GetLoadTime() { return this->loadtime; }
 
 /**
- * \fn ModulePriority module::GetPriority()
- * \brief Gets the module priority
- * \return Priority of the module
+ * \fn Flux::string Module::GetAuthor()
+ * \brief Gets the Module author(s)
+ * \return The Modules author string
  */
-ModulePriority module::GetPriority() { return this->Priority; }
+Flux::string Module::GetAuthor() { return this->author; }
+
+/**
+ * \fn ModulePriority Module::GetPriority()
+ * \brief Gets the Module priority
+ * \return Priority of the Module
+ */
+ModulePriority Module::GetPriority() { return this->Priority; }

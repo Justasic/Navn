@@ -17,9 +17,9 @@
 
 /**
  * \defgroup da_goatM Da Goat Module
- * This is the module for the Da Goat.
+ * This is the Module for the Da Goat.
  * For a better description see the function description.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection poke !poke
  * Say \a !poke to poke Da Goat!
  * \subsection info !info
@@ -48,7 +48,7 @@
  */
 
 /**
- * \fn class Da_Goat(bool a):module("Da_Goat", a, PRIORITY_DONTCARE){ this->SetDesc("Da_Goat bot"); }
+ * \fn class Da_Goat(bool a):Module("Da_Goat", a, PRIORITY_DONTCARE){ this->SetDesc("Da_Goat bot"); }
  * \brief Runs Da_Goat
  * Da Goat is used to repeat a lot of things we got tired of saying, like teaching new people how to do thigns and what the
  * rules of the server were.
@@ -56,7 +56,7 @@
 class CommandCVersion: public Command
 {
 public:
-  CommandCVersion(module *m):Command(m, "!VERSION", C_CHANNEL)
+  CommandCVersion(Module *m):Command(m, "!VERSION", C_CHANNEL)
   {
     this->SetDesc("Displays the bots version info into the channel");
   }
@@ -86,7 +86,7 @@ public:
 class CommandCSpam: public Command
 {
 public:
-  CommandCSpam(module *m):Command(m, "!SPAM", C_CHANNEL)
+  CommandCSpam(Module *m):Command(m, "!SPAM", C_CHANNEL)
   {
     this->SetDesc("Displays the spam warning");
   }
@@ -110,7 +110,7 @@ public:
 class CommandCASK: public Command
 {
 public:
-  CommandCASK(module *m):Command(m, "!ASK", C_CHANNEL)
+  CommandCASK(Module *m):Command(m, "!ASK", C_CHANNEL)
   {
     this->SetDesc("Displays the Ask protocol");
   }
@@ -133,7 +133,7 @@ public:
 class CommandCRules: public Command
 {
 public:
-  CommandCRules(module *m):Command(m, "!RULES", C_CHANNEL)
+  CommandCRules(Module *m):Command(m, "!RULES", C_CHANNEL)
   {
     this->SetDesc("Displays the rules of the chatroom");
   }
@@ -164,7 +164,7 @@ class CommandCUptime: public Command
 {
   struct sysinfo sys_info;
 public:
-  CommandCUptime(module *m):Command(m, "!UPTIME", C_CHANNEL)
+  CommandCUptime(Module *m):Command(m, "!UPTIME", C_CHANNEL)
   {
     this->SetDesc("Prints Syatem Uptime in the channel");
   }
@@ -205,7 +205,7 @@ public:
 class CommandCSocialInfo: public Command
 {
 public:
-  CommandCSocialInfo(module *m):Command(m, "!SOCIALINFO", C_CHANNEL)
+  CommandCSocialInfo(Module *m):Command(m, "!SOCIALINFO", C_CHANNEL)
   {
     this->SetDesc("Displays Azuru's Social Information");
   }
@@ -234,7 +234,7 @@ public:
 class CommandCRegister: public Command
 {
 public:
-  CommandCRegister(module *m):Command(m, "!REGISTER", C_CHANNEL)
+  CommandCRegister(Module *m):Command(m, "!REGISTER", C_CHANNEL)
   {
     this->SetDesc("Displays how to register your nickname");
   }
@@ -265,7 +265,7 @@ public:
 class CommandCRename: public Command
 {
 public:
-  CommandCRename(module *m):Command(m, "!RENAME", C_CHANNEL)
+  CommandCRename(Module *m):Command(m, "!RENAME", C_CHANNEL)
   {
     this->SetDesc("Displays how to rename");
   }
@@ -295,7 +295,7 @@ public:
 class CommandCInfo : public Command
 {
 public:
-  CommandCInfo(module *m):Command(m, "!INFO", C_CHANNEL)
+  CommandCInfo(Module *m):Command(m, "!INFO", C_CHANNEL)
   {
     this->SetDesc("General Da_Goat info");
   }
@@ -321,7 +321,7 @@ public:
   
 };
 
-class Da_Goat : public module
+class Da_Goat : public Module
 {
   CommandCInfo info;
   CommandCRename rename;
@@ -333,7 +333,7 @@ class Da_Goat : public module
   CommandCVersion ver;
   CommandCASK ask;
 public:
-  Da_Goat(const Flux::string &Name):module(Name), info(this), rename(this), reg(this), sinfo(this), uptime(this), rules(this), spam(this), ver(this), ask(this)
+  Da_Goat(const Flux::string &Name):Module(Name), info(this), rename(this), reg(this), sinfo(this), uptime(this), rules(this), spam(this), ver(this), ask(this)
   {
     this->SetAuthor("Justasic & Lordofsraam");
     this->SetVersion(VERSION);

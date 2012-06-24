@@ -1,4 +1,4 @@
-/* Navn IRC bot -- User information module
+/* Navn IRC bot -- User information Module
  *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -15,11 +15,11 @@
 
 /**
  * \defgroup about_meM About Me Module
- * This is the module for the about me function. \n
- * This module was originally a test/example module that grew. \n
- * The module just tells you about you and your hostname in IRC (nickname, channel it was said in, hostname, etc.) \n
+ * This is the Module for the about me function. \n
+ * This Module was originally a test/example Module that grew. \n
+ * The Module just tells you about you and your hostname in IRC (nickname, channel it was said in, hostname, etc.) \n
  * For a better description see the function description.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection about_me about me
  * Say \a about \a me to see your various host information that navn can see and decode.
  * \subsection decodehost !decodehost
@@ -29,7 +29,7 @@
 class CommandDecodeHost : public Command
 {
 public:
-  CommandDecodeHost(module *m):Command(m, "!DECODEHOST", C_CHANNEL, 1, 1)
+  CommandDecodeHost(Module *m):Command(m, "!DECODEHOST", C_CHANNEL, 1, 1)
   {
    this->SetDesc("Decodes a hostname");
    this->SetSyntax("\37fullhost\37");
@@ -56,15 +56,15 @@ public:
 };
 
 /**
- * \fn class about_me(bool a):module("About Me", a, PRIORITY_DONTCARE){ this->SetDesc("Returns the information about yourself"); }
+ * \fn class about_me(bool a):Module("About Me", a, PRIORITY_DONTCARE){ this->SetDesc("Returns the information about yourself"); }
  * \brief Tells you about youself (ie. Host, ident, etc.).
  * Uses irc_string and IsoHost to decode the message you said.
  */
-class about_me : public module
+class about_me : public Module
 {
   CommandDecodeHost host;
 public:
-  about_me(const Flux::string &Name):module(Name), host(this)
+  about_me(const Flux::string &Name):Module(Name), host(this)
   {
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);

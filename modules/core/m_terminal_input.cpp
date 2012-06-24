@@ -139,11 +139,11 @@ public:
 };
 
 // Module class
-class ModTerminalInput : public module
+class ModTerminalInput : public Module
 {
   Thread *t;
 public:
-  ModTerminalInput(const Flux::string &Name):module(Name)
+  ModTerminalInput(const Flux::string &Name):Module(Name)
   {
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");

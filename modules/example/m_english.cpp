@@ -8,15 +8,15 @@
  * Based on the original code of Anope by The Anope Team.
  */
 
-// I wrote this module mostly because I am disappointed by the lack of
+// I wrote this Module mostly because I am disappointed by the lack of
 // proper and correct English. Mastering proper English is NOT HARD and
 // people should learn to not take shortcuts.
 #include "modules.h"
 
-class English : public module
+class English : public Module
 {
 public:
-  English(const Flux::string &Name):module(Name)
+  English(const Flux::string &Name):Module(Name)
   {
     this->SetAuthor("Justasic"); //Set the author
     this->SetVersion(VERSION);

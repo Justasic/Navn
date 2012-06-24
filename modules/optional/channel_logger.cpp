@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Channel Logging module
+/* Navn IRC bot -- Channel Logging Module
  * 
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -16,19 +16,19 @@
 
 /**
  * \defgroup chanlogM Channel Log Module
- * This is the module for the Channel Logger function. \n
+ * This is the Module for the Channel Logger function. \n
  * The channel logger function logs what was said in the channel
  * to a file specified in the config file for navn \n
  * NOTE: Channel name is caps sensitive \n
  * For a better description see the function description.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection none none
- * This module has no user interactive function
+ * This module.has no user interactive function
  * @{
  */
 
 /**
- * \fn class Chanlog(bool a):module("Channel Logger", a, PRIORITY_LAST){ this->SetDesc("Logs what is said in the channel"); }
+ * \fn class Chanlog(bool a):Module("Channel Logger", a, PRIORITY_LAST){ this->SetDesc("Logs what is said in the channel"); }
  * \fn void CLog(const char *fmt, ...)
  * \brief Logs channel messages
  * Logs what is said in the channel to a specified file.
@@ -66,10 +66,10 @@ void CLog(const char *fmt, ...)
   clog.close();
 }
 
-class Chanlog : public module
+class Chanlog : public Module
 {
 public:
-  Chanlog(const Flux::string &Name):module(Name)
+  Chanlog(const Flux::string &Name):Module(Name)
   { 
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);

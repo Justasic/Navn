@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Internet Control Message Protocol (ICMP) "ECHO" ping module
+/* Navn IRC bot -- Internet Control Message Protocol (ICMP) "ECHO" ping Module
  *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -8,8 +8,8 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #include "modules.h"
-// NOTE: This module is based on source from http://cboard.cprogramming.com/networking-device-communication/41635-ping-program.html
-// NOTE: This module requires the bot to run as root!
+// NOTE: This Module is based on source from http://cboard.cprogramming.com/networking-device-communication/41635-ping-program.html
+// NOTE: This Module requires the bot to run as root!
 
 #include <linux/ip.h>
 #include <linux/icmp.h>
@@ -206,7 +206,7 @@ class CommandPing : public Command
 {
   PingThread *thread;
 public:
-  CommandPing(module *m) : Command(m, "!PING", C_CHANNEL, 1, 2)
+  CommandPing(Module *m) : Command(m, "!PING", C_CHANNEL, 1, 2)
   {
     this->SetDesc("Sends an ICMP ping to a hostname or ipaddress");
     this->SetSyntax("\37[hostname|ipaddress]\37 times");
@@ -239,11 +239,11 @@ public:
   }
 };
 
-class m_icmp_ping : public module
+class m_icmp_ping : public Module
 {
   CommandPing commandping;
 public:
-  m_icmp_ping(const Flux::string &Name) : module(Name), commandping(this)
+  m_icmp_ping(const Flux::string &Name) : Module(Name), commandping(this)
   {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);

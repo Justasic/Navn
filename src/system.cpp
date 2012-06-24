@@ -100,9 +100,9 @@ public:
   /**
    * \fn Flux::string params(int i)
    * \brief Returns individual words from the message of a reply
-   * \deprecated use module parameter vectors instead
+   * \deprecated use Module parameter vectors instead
    * Because \a toks is private, this is its "get" function.
-   * We made this so someone writing a module doesn't try to go out
+   * We made this so someone writing a Module doesn't try to go out
    * of bounds while accessing an array.
    * \param i An integer value.
    * \return A Flux::string with the single specified word.
@@ -193,7 +193,7 @@ public:
  * \brief Removes a command from a Flux::string.
  * \param command String to be taken out.
  * \param s Original Flux::string.
- * \deprecated use module parameters system instead
+ * \deprecated use Module parameters system instead
  * This takes out \a command from \a s and returns \a s without \a command It's very useful when you want
  * to use the rest of a Flux::string as an argument for a command.
  * \return A Flux::string \a s without \a command.
@@ -545,7 +545,7 @@ void startup(int argc, char** argv, char *envp[])
     Log(LOG_TERMINAL) << Config->LogColor;
 
   ModuleHandler::SanitizeRuntime();
-  ModuleHandler::LoadModuleList(ParamitizeString(Config->Modules, ',')); //load modules
+  ModuleHandler::LoadModuleList(ParamitizeString(Config->Modules, ',')); //load Modules
   WritePID(); //Write the pid file
   FOREACH_MOD(I_OnStart, OnStart(argc, argv)); //announce we are starting the bot
   Fork(); //Fork to background

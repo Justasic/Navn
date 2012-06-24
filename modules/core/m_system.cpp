@@ -15,7 +15,7 @@ struct sysinfo sys_info;
 class CommandRehash : public Command
 {
 public:
-  CommandRehash(module *m):Command(m, "REHASH", C_PRIVATE, 0, 0)
+  CommandRehash(Module *m):Command(m, "REHASH", C_PRIVATE, 0, 0)
   {
     this->SetDesc("Rehashes the config file");
   }
@@ -49,7 +49,7 @@ public:
 class CommandNick : public Command
 {
 public:
-  CommandNick(module *m):Command(m, "NICK", C_PRIVATE, 1, 1)
+  CommandNick(Module *m):Command(m, "NICK", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Change the bots nickname");
     this->SetSyntax("\37nickname\37");
@@ -92,7 +92,7 @@ public:
 class CommandRestart : public Command
 {
 public:
-  CommandRestart(module *m):Command(m, "RESTART", C_PRIVATE, 0, 1)
+  CommandRestart(Module *m):Command(m, "RESTART", C_PRIVATE, 0, 1)
   {
    this->SetDesc("Restarts the bot");
    this->SetSyntax("\37reason\37");
@@ -124,7 +124,7 @@ public:
 class CommandKick : public Command
 {
 public:
-  CommandKick(module *m):Command(m, "KICK", C_PRIVATE, 2, 3)
+  CommandKick(Module *m):Command(m, "KICK", C_PRIVATE, 2, 3)
   {
     this->SetDesc("Kick a user from the channel");
     this->SetSyntax("channel \37nick\15");
@@ -176,7 +176,7 @@ public:
 class CommandChown : public Command
 {
 public:
-  CommandChown(module *m):Command(m, "CHOWN", C_PRIVATE, 1, 1)
+  CommandChown(Module *m):Command(m, "CHOWN", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Change ownership over the bot");
     this->SetSyntax("\37owner\37");
@@ -200,7 +200,7 @@ public:
 class CommandQuit : public Command
 {
 public:
-  CommandQuit(module *m):Command(m, "QUIT", C_PRIVATE, 1, 1)
+  CommandQuit(Module *m):Command(m, "QUIT", C_PRIVATE, 1, 1)
   {
     this->SetDesc("Quits the bot from IRC");
     this->SetSyntax("\37randompass\37");
@@ -239,7 +239,7 @@ public:
 class CommandTopic: public Command
 {
 public:
-  CommandTopic(module *m):Command(m, "TOPIC", C_PRIVATE, 2, 2)
+  CommandTopic(Module *m):Command(m, "TOPIC", C_PRIVATE, 2, 2)
   {
     this->SetDesc("Set the topic on a channel");
     this->SetSyntax("\37channel\37 [\37topic\37]");
@@ -300,7 +300,7 @@ public:
 class CommandPID: public Command
 {
 public:
-  CommandPID(module *m):Command(m, "PID", C_PRIVATE)
+  CommandPID(Module *m):Command(m, "PID", C_PRIVATE)
   {
     this->SetDesc("Gets the bots Process ID");
   }
@@ -331,7 +331,7 @@ public:
 class CommandPass: public Command
 {
 public:
-  CommandPass(module *m):Command(m, "PASS", C_PRIVATE)
+  CommandPass(Module *m):Command(m, "PASS", C_PRIVATE)
   {
     this->SetDesc("Gets the bots Random Password");
   }
@@ -365,7 +365,7 @@ public:
 class CommandStats: public Command
 {
 public:
-  CommandStats(module *m):Command(m, "STATS", C_PRIVATE)
+  CommandStats(Module *m):Command(m, "STATS", C_PRIVATE)
   {
     this->SetDesc("Shows system stats");
   }
@@ -432,7 +432,7 @@ public:
   }
 };
 
-class m_system : public module
+class m_system : public Module
 {
   CommandChown cmdchown;//So many commands! .-.
   CommandKick cmdkick;
@@ -447,7 +447,7 @@ class m_system : public module
 private:
   Flux::string orig;
 public:
-  m_system(const Flux::string &Name):module(Name), cmdchown(this), cmdkick(this), cmdrehash(this), cmdquit(this), cmdrestart(this),
+  m_system(const Flux::string &Name):Module(Name), cmdchown(this), cmdkick(this), cmdrehash(this), cmdquit(this), cmdrestart(this),
   topic(this), stats(this), nick(this), pid(this), pass(this)
   {
     Implementation i[] = { I_OnNumeric, I_OnJoin, I_OnKick, I_OnNotice, I_OnChannelOp };

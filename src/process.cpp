@@ -18,7 +18,7 @@
  * \file  process.cpp
  * \brief Contains IRC buffer processing functions
  * This file has functions which process the raw buffer from the
- * socket engine and then continues to process module events
+ * socket engine and then continues to process Module events
  * and commands which depend on this processing system.
  * This system also implements the "Parameters system" which
  * allows for strings to be split by spaces and placed into a
@@ -122,7 +122,7 @@ void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::st
 	}
 #ifdef HAVE_SETJMP_H
 	// Yes, i understand this code is VERY VERY bad and can cause VERY BAD
-	// stack corruption, but it's still cool to see that it unloads modules
+	// stack corruption, but it's still cool to see that it unloads Modules
 	// if it segfaults and i would like to keep a system like this in place.
 	if(setjmp(sigbuf) == 0)
 	{
@@ -395,7 +395,7 @@ void process(const Flux::string &buffer)
   }
 
   /**************************************/
-  // Make sure we have valid information being passed to the core commands and modules
+  // Make sure we have valid information being passed to the core commands and Modules
   if(!c && !nickname.search('.') && IsValidChannel(receiver) && protocoldebug)
     Log(LOG_WARN) << "No channel being passed to CommandSource???";
 

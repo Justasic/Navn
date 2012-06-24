@@ -45,11 +45,11 @@ Flux::string siginit(int sigstring)
   return message;
 }
 /** Segmentation Fault Handler
- * \fn void HandleSegfault(module *m)
+ * \fn void HandleSegfault(Module *m)
  * \brief A segfault handler to report what happened and where it happened.
- * \param module the module class in which the segfault happened include
+ * \param Module the Module class in which the segfault happened include
  */
-void HandleSegfault(module *m)
+void HandleSegfault(Module *m)
 {
 #ifdef HAVE_BACKTRACE
 bool havecxx11 = false; //Check if we compiled with C++11
@@ -94,7 +94,7 @@ havecxx11 = true;
      slog << "Module Version: " << m->GetVersion() << std::endl;
      slog << "Module Author: " << m->GetAuthor() << std::endl;
    }
-   for(Flux::insensitive_map<module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
+   for(Flux::insensitive_map<Module*>::iterator it = Modules.begin(); it != Modules.end(); ++it)
      mbuf += it->second->name+" ";
    mbuf.trim();
    slog << "Modules Loaded: " << (mbuf.empty()?"None":mbuf) << std::endl;
@@ -108,7 +108,7 @@ havecxx11 = true;
    std::cout << slog.str(); //Write to terminal.
    std::cout.flush(); //Clear output
    if(m)
-     Log() << "Segmentation Fault in module " << m->name << ", please review SEGFAULT.log";
+     Log() << "Segmentation Fault in Module " << m->name << ", please review SEGFAULT.log";
    else
      Log(LOG_SILENT) << "\033[0mSegmentation Fault, Please read SEGFAULT.log";
  }else
@@ -146,7 +146,7 @@ void sigact(int sig)
       throw CoreException("Ran out of memory!");
     case SIGSEGV:
       #ifdef HAVE_SETJMP_H
-      // If we crashed because of a module, unload it and restore the stack
+      // If we crashed because of a Module, unload it and restore the stack
       if(LastRunModule)
       {
 	HandleSegfault(LastRunModule);

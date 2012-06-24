@@ -9,13 +9,13 @@
  */
 #include "modules.h"
 
-/*This module setup needs serious work!
- * Justasic will work on it but its going to be hard with los's module class.
+/*This Module setup needs serious work!
+ * Justasic will work on it but its going to be hard with los's Module class.
  */
 class CommandJoin : public Command
 {
 public:
-  CommandJoin(module *m) : Command(m, "JOIN", C_PRIVATE, 1, 1)
+  CommandJoin(Module *m) : Command(m, "JOIN", C_PRIVATE, 1, 1)
   {
    this->SetDesc("Joins a channel");
    this->SetSyntax("\37channel\37");
@@ -69,7 +69,7 @@ public:
 class CommandPart : public Command
 {
 public:
-  CommandPart(module *m):Command(m, "PART", C_PRIVATE, 1,1)
+  CommandPart(Module *m):Command(m, "PART", C_PRIVATE, 1,1)
   {
     this->SetDesc("Part a channel");
     this->SetSyntax("\37channel\37");
@@ -108,12 +108,12 @@ public:
   }
 };
 
-class Join : public module
+class Join : public Module
 {
   CommandJoin cmdjoin;
   CommandPart cmdpart;
 public:
-  Join(const Flux::string &Name):module(Name), cmdjoin(this), cmdpart(this)
+  Join(const Flux::string &Name):Module(Name), cmdjoin(this), cmdpart(this)
   {
     this->SetVersion(VERSION);
     this->SetAuthor("Justasic");

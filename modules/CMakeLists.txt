@@ -10,7 +10,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
     file(GLOB MODULES_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${MODULE_FOLDER}/*.cpp")
     sort_list(MODULES_SRCS)
 
-    # Set all the files to use C++ as well as set their compile flags (use the module-specific compile flags, though)
+    # Set all the files to use C++ as well as set their compile flags (use the Module-specific compile flags, though)
     set_source_files_properties(${MODULES_SRCS} PROPERTIES LANGUAGE CXX COMPILE_FLAGS "${CXXFLAGS}")
 
     # Create an empty list to store extra include directories
@@ -54,7 +54,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
         set(HAS_FUNCTION)
         # Check the function dependencies for the given source file
         check_functions(${SRC} HAS_FUNCTION)
-        # Only continue if this module has all of the required functions
+        # Only continue if this module.has all of the required functions
         if(HAS_FUNCTION)
           # For Visual Studio only, include win32_memory static library, required to override Visual Studio's overrides of the new/delete operators
           if(MSVC)
@@ -62,7 +62,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
           else(MSVC)
             set(WIN32_MEMORY)
           endif(MSVC)
-          # Generate the module and set it's linker flags, also set it to depend on the main Navn executable to be built beforehand
+          # Generate the Module and set it's linker flags, also set it to depend on the main Navn executable to be built beforehand
           add_library(${SO} MODULE ${SRC})
           # Windows requires this because it's weird
           if(WIN32)
@@ -72,14 +72,14 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
           endif(WIN32)
           set_target_properties(${SO} PROPERTIES LINKER_LANGUAGE CXX PREFIX "" SUFFIX "" LINK_FLAGS "${TEMP_LDFLAGS} ${WIN32_NO_LIBS}")
           add_dependencies(${SO} ${PROGRAM_NAME})
-          # For Windows only, have the module link to the export library of Navn as well as the wsock32 library (most of the modules probably don't need this, but this is to be on the safe side), also set it's version
+          # For Windows only, have the Module link to the export library of Navn as well as the wsock32 library (most of the Modules probably don't need this, but this is to be on the safe side), also set it's version
           if(WIN32)
             target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 ${WIN32_MEMORY} ${TEMP_DEPENDENCIES})
             set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION_SIMPLE}")
           endif(WIN32)
-          # Set the module to be installed to the module directory under the data directory
+          # Set the Module to be installed to the Module directory under the data directory
           install(TARGETS ${SO}
-            DESTINATION modules
+            DESTINATION Modules
           )
         endif(HAS_FUNCTION)
       else(NOT SKIP_DEPENDS AND NOT SKIP_LIBRARIES)
@@ -87,7 +87,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
       endif(NOT SKIP_DEPENDS AND NOT SKIP_LIBRARIES)
     endforeach(SRC)
 
-    # Get a list of ALL files and directories within this modules directory
+    # Get a list of ALL files and directories within this Modules directory
     file(GLOB SUBMODULE_DIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${MODULE_FOLDER}/*")
     remove_item_from_list(SUBMODULE_DIRS "CMakeFiles")
 
@@ -96,7 +96,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
         file(GLOB MODULES_SUBDIR_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${SUBDIR}/*.cpp")
         sort_list(MODULES_SUBDIR_SRCS)
 
-        # Set all the files to use C++ as well as set their compile flags (use the module-specific compile flags, though)
+        # Set all the files to use C++ as well as set their compile flags (use the Module-specific compile flags, though)
         set_source_files_properties(${MODULES_SUBDIR_SRCS} PROPERTIES LANGUAGE CXX COMPILE_FLAGS "${CXXFLAGS}")
 
         # Get the length of this subdir
@@ -105,7 +105,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
         math(EXPR FILE_LEN "${SUBDIR_LEN} - ${FOLDER_LEN}")
         # Extract this subfolders name to use to generate the .so file
         string(SUBSTRING ${SUBDIR} ${FOLDER_LEN} ${FILE_LEN} SUBDIR_REALNAME)
-        # Add .so to the end of the directory name, this will be the module's name
+        # Add .so to the end of the directory name, this will be the Module's name
         set(SO "${SUBDIR_REALNAME}.so")
 
         # Temporary linker flags for this subdirectory
@@ -158,18 +158,18 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
           endif(SUBDIR_EXTRA_DEPENDS)
 
 
-          # Generate the module and set it's linker flags, also set it to depend on the main Navn executable to be built beforehand
+          # Generate the Module and set it's linker flags, also set it to depend on the main Navn executable to be built beforehand
           add_library(${SO} MODULE ${MODULES_SUBDIR_SRCS})
           set_target_properties(${SO} PROPERTIES LINKER_LANGUAGE CXX PREFIX "" SUFFIX "" LINK_FLAGS "${SUBDIR_LDFLAGS}")
           add_dependencies(${SO} ${PROGRAM_NAME})
-          # For Windows only, have the module link to the export library of Navn as well as the wsock32 library (most of the modules probably don't need this, but this is to be on the safe side), also set it's version
+          # For Windows only, have the Module link to the export library of Navn as well as the wsock32 library (most of the Modules probably don't need this, but this is to be on the safe side), also set it's version
           if(WIN32)
              target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 ${WIN32_MEMORY} ${SUBDIR_EXTRA_DEPENDS})
              set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION_SIMPLE}")
           endif(WIN32)
-          # Set the module to be installed to the module directory under the data directory
+          # Set the Module to be installed to the Module directory under the data directory
           install(TARGETS ${SO}
-            DESTINATION data/modules
+            DESTINATION data/Modules
           )
         else(NOT SKIP_DEPENDS AND NOT SKIP_LIBRARIES AND HAS_FUNCTION)
           message("  This is not a fatal error - ${SUBDIR} will not be built.")

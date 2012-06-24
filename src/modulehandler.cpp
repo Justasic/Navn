@@ -10,29 +10,29 @@
 
 #include "module.h"
 
-Flux::insensitive_map<module*> Modules;
-std::vector<module *> ModuleHandler::EventHandlers[I_END];
+Flux::insensitive_map<Module*> Modules;
+std::vector<Module *> ModuleHandler::EventHandlers[I_END];
 
 /**
- * \fn module *FindModule(const Flux::string &name)
- * \brief Find a module in the module list
- * \param name A string containing the module name you're looking for
+ * \fn Module *FindModule(const Flux::string &name)
+ * \brief Find a Module in the Module list
+ * \param name A string containing the Module name you're looking for
  */
-module *FindModule(const Flux::string &name)
+Module *FindModule(const Flux::string &name)
 {
-  Flux::insensitive_map<module*>::iterator it = Modules.find(name);
+  Flux::insensitive_map<Module*>::iterator it = Modules.find(name);
   if(it != Modules.end())
     return it->second;
  return NULL;
 }
 
 /**
- * \fn bool ModuleHandler::Attach(Implementation i, module *mod)
- * \brief Module hook for the FOREACH_MOD events
- * \param Implementation The Implementation of the call list you want your module to have
- * \param Module the module the Implementation is on
+ * \fn bool ModuleHandler::Attach(Implementation i, Module *mod)
+ * \brief module.hook for the FOREACH_MOD events
+ * \param Implementation The Implementation of the call list you want your Module to have
+ * \param Module the Module the Implementation is on
  */
-bool ModuleHandler::Attach(Implementation i, module *mod)
+bool ModuleHandler::Attach(Implementation i, Module *mod)
 {
   if(std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod) != EventHandlers[i].end())
     return false;
@@ -40,8 +40,8 @@ bool ModuleHandler::Attach(Implementation i, module *mod)
   return true;
 }
 
-/// \overload void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
-void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
+/// \overload void ModuleHandler::Attach(Implementation *i, Module *mod, size_t sz)
+void ModuleHandler::Attach(Implementation *i, Module *mod, size_t sz)
 {
  for(size_t n = 0; n < sz; ++n)
    Attach(i[n], mod);
@@ -49,7 +49,7 @@ void ModuleHandler::Attach(Implementation *i, module *mod, size_t sz)
 
 /**
  * \fn Flux::string DecodeModErr(ModErr err)
- * \brief Decodes module errors into a useful string to use in user-end functions
+ * \brief Decodes Module errors into a useful string to use in user-end functions
  * \param Error The error to decode
  */
 Flux::string DecodeModErr(ModErr err)
@@ -92,14 +92,14 @@ template<class TYPE> TYPE function_cast(void *symbol)
 }
 
 /**
- * \fn bool ModuleHandler::Detach(Implementation i, module *mod)
- * \brief Unhook for the module hook ModuleHandler::Attach()
- * \param Implementation The Implementation of the call list you want your module to detach
- * \param Module the module the Implementation is on
+ * \fn bool ModuleHandler::Detach(Implementation i, Module *mod)
+ * \brief Unhook for the module.hook ModuleHandler::Attach()
+ * \param Implementation The Implementation of the call list you want your Module to detach
+ * \param Module the Module the Implementation is on
  */
-bool ModuleHandler::Detach(Implementation i, module *mod)
+bool ModuleHandler::Detach(Implementation i, Module *mod)
 {
-  std::vector<module*>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
+  std::vector<Module*>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
   if(x == EventHandlers[i].end())
     return false;
   EventHandlers[i].erase(x);
@@ -107,11 +107,11 @@ bool ModuleHandler::Detach(Implementation i, module *mod)
 }
 
 /**
- * \fn void ModuleHandler::DetachAll(module *m)
- * \brief Remove all event lists from the module
- * \param Module the module the Implementation is on
+ * \fn void ModuleHandler::DetachAll(Module *m)
+ * \brief Remove all event lists from the Module
+ * \param Module the Module the Implementation is on
  */
-void ModuleHandler::DetachAll(module *m)
+void ModuleHandler::DetachAll(Module *m)
 {
  for(size_t n = I_BEGIN+1; n != I_END; ++n)
    Detach(static_cast<Implementation>(n), m);
@@ -119,8 +119,8 @@ void ModuleHandler::DetachAll(module *m)
 
 /**
  * \fn ModErr ModuleHandler::LoadModule(const Flux::string &modname)
- * \brief Load a module into the bot
- * \param Module the module to load
+ * \brief Load a Module into the bot
+ * \param Module the Module to load
  */
 ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
@@ -131,14 +131,14 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   if(FindModule(modname))
     return MOD_ERR_EXISTS;
 
-  Log() << "Attempting to load module [" << modname << ']';
+  Log() << "Attempting to load Module [" << modname << ']';
 
   Flux::string mdir = binary_dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX");
   Flux::string input = Flux::string(binary_dir + "/" + (Config->ModuleDir.empty()?modname:Config->ModuleDir+"/"+modname) + ".so").replace_all_cs("//","/");
 
   TextFile mod(input);
   Flux::string output = TextFile::TempFile(mdir);
-  Log(LOG_RAWIO) << "Runtime module location: " << output;
+  Log(LOG_RAWIO) << "Runtime Module location: " << output;
   mod.Copy(output);
 
   if(mod.GetLastError() != FILE_IO_OK)
@@ -160,20 +160,20 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   }
 
   dlerror();
-  module *(*f)(const Flux::string&) = function_cast<module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
+  Module *(*f)(const Flux::string&) = function_cast<Module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
   err = dlerror();
 
   if(!f && err && *err)
   {
-    Log() << "No module init function, moving on.";
+    Log() << "No Module init function, moving on.";
     dlclose(handle);
     return MOD_ERR_NOLOAD;
   }
 
   if(!f)
-    throw CoreException("Can't find module constructor, yet no moderr?");
+    throw CoreException("Can't find Module constructor, yet no moderr?");
 
-  module *m;
+  Module *m;
   try
   {
     m = f(modname);
@@ -195,11 +195,11 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 }
 
 /**
- * \fn bool ModuleHandler::DeleteModule(module *m)
- * \brief Delete the module from module lists and unload it from navn completely
- * \param Module the module to be removed
+ * \fn bool ModuleHandler::DeleteModule(Module *m)
+ * \brief Delete the Module from Module lists and unload it from navn completely
+ * \param Module the Module to be removed
  */
-bool ModuleHandler::DeleteModule(module *m)
+bool ModuleHandler::DeleteModule(Module *m)
 {
   SET_SEGV_LOCATION();
   if (!m || !m->handle)
@@ -209,7 +209,7 @@ bool ModuleHandler::DeleteModule(module *m)
   Flux::string filepath = m->filepath;
 
   dlerror();
-  void (*df)(module*) = function_cast<void (*)(module*)>(dlsym(m->handle, "ModunInit"));
+  void (*df)(Module*) = function_cast<void (*)(Module*)>(dlsym(m->handle, "ModunInit"));
   const char *err = dlerror();
   if (!df && err && *err)
   {
@@ -217,7 +217,7 @@ bool ModuleHandler::DeleteModule(module *m)
 	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
   }
   else
-    df(m); /* Let the module delete it self, just in case */
+    df(m); /* Let the Module delete it self, just in case */
 	  
 
   if(handle)
@@ -231,11 +231,11 @@ bool ModuleHandler::DeleteModule(module *m)
 }
 
 /**
- * \fn bool ModuleHandler::Unload(module *m)
- * \brief Unloads the module safely and announces the module unload event
- * \param Module the module to be unloaded
+ * \fn bool ModuleHandler::Unload(Module *m)
+ * \brief Unloads the Module safely and announces the Module unload event
+ * \param Module the Module to be unloaded
  */
-bool ModuleHandler::Unload(module *m)
+bool ModuleHandler::Unload(Module *m)
 {
   if(!m || m->GetPermanent())
     return false;
@@ -245,13 +245,13 @@ bool ModuleHandler::Unload(module *m)
 
 /**
  * \fn void ModuleHandler::UnloadAll()
- * \brief Safely unloads ALL modules from navn
+ * \brief Safely unloads ALL Modules from navn
  */
 void ModuleHandler::UnloadAll()
 {
-  for(Flux::insensitive_map<module*>::iterator it = Modules.begin(), it_end = Modules.end(); it != it_end;)
+  for(Flux::insensitive_map<Module*>::iterator it = Modules.begin(), it_end = Modules.end(); it != it_end;)
   {
-    module *m = it->second;
+    Module *m = it->second;
     ++it;
     FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
     DeleteModule(m);
@@ -261,7 +261,7 @@ void ModuleHandler::UnloadAll()
 
 /**
  * \fn Flux::string ModuleHandler::DecodePriority(ModulePriority p)
- * \brief Decodes the module priority to a string used in user-end functions
+ * \brief Decodes the Module priority to a string used in user-end functions
  * \param Priority The priority to decode
  */
 Flux::string ModuleHandler::DecodePriority(ModulePriority p)
@@ -314,7 +314,7 @@ void ModuleHandler::LoadModuleList(const Flux::vector &list)
   {
     ModErr e = LoadModule(*it);
     if(e != MOD_ERR_OK)
-      Log() << "Error loading module " << *it << ": " << DecodeModErr(e);
+      Log() << "Error loading Module " << *it << ": " << DecodeModErr(e);
   }
 //   sepstream sep(Config->Modules, ',');
 //   Flux::string tok;
@@ -324,7 +324,7 @@ void ModuleHandler::LoadModuleList(const Flux::vector &list)
 //     tok.trim();
 //     ModErr e = ModuleHandler::LoadModule(tok);
 //     if(e != MOD_ERR_OK)
-//       Log() << "ERROR loading module " << tok << ": " << DecodeModErr(e);
+//       Log() << "ERROR loading Module " << tok << ": " << DecodeModErr(e);
 //   }
 }
 /******************End Configuration variables********************/

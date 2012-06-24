@@ -23,8 +23,8 @@
  * Navn is always growing and getting better. If you would like to help, contact Justasic or Lordofsraam.
  * \subsection mods Module Development
  * If you think the system stuff is too complicated, but you would still like to code for Navn to make more special
- * feature available, we have made it as easy as possible to make modules.
- * See the examples tab for an example module.
+ * feature available, we have made it as easy as possible to make Modules.
+ * See the examples tab for an example Module.
  */
 #include "modules.h"
 
@@ -47,7 +47,7 @@ unsigned int startcount, loopcount;
 IRCProto *ircproto;
 SocketIO *sock;
 BotConfig *Config;
-module *LastRunModule;
+Module *LastRunModule;
 
 E void Connect();
 

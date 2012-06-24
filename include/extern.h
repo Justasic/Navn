@@ -41,7 +41,7 @@ class Commands;
 class Command;
 class Oper;
 class Thread;
-class module;
+class Module;
 class IRCProto;
 class ModuleHandler;
 class INIReader;
@@ -130,7 +130,7 @@ typedef std::map<Flux::string, Command*, ci::less> CommandMap;
 /*  Class pointer finder definitions */
 E Channel *findchannel(const Flux::string&);
 E User *finduser(const Flux::string &nick);
-E module *FindModule(const Flux::string &name);
+E Module *FindModule(const Flux::string &name);
 E Command *FindCommand(const Flux::string &name, CommandType);
 
 /* extern's */
@@ -138,7 +138,7 @@ E SocketIO *sock;
 E IRCProto *ircproto;
 E BotConfig *Config;
 E iSupport isupport;
-E module *LastRunModule;
+E Module *LastRunModule;
 E CommandMap Commandsmap;
 E CommandMap ChanCommandMap;
 E std::vector<Base*> BaseReferences;
@@ -161,7 +161,7 @@ E bool IsValidChannel(const Flux::string&);
 E bool InTerm();
 E bool protocoldebug, IsOper, dev, nofork, quitting, started, nocolor, memdebug, istempnick;
 // E Flux::vector ParamitizeString(const Flux::string&, char);
-E Flux::insensitive_map<module*> Modules;
+E Flux::insensitive_map<Module*> Modules;
 E Flux::insensitive_map<User*> UserNickList;
 E Flux::insensitive_map<Channel*> ChanMap;
 
@@ -172,7 +172,7 @@ E void QuitUser(User*);
 E void Fork();
 E void sigact(int);
 E void InitSignals();
-E void HandleSegfault(module*);
+E void HandleSegfault(Module*);
 E void restart(const Flux::string&);
 E void ListChans(CommandSource &source);
 E void ListUsers(CommandSource &source);
@@ -196,8 +196,8 @@ E char **my_av, **my_envp;
 #define FOREACH_MOD(y, x) \
 if(true) \
 { \
-    std::vector<module*>::iterator safei; \
-    for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+    std::vector<Module*>::iterator safei; \
+    for (std::vector<Module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
     { \
        safei = _i; \
        ++safei; \
@@ -233,9 +233,9 @@ else \
 #define FOREACH_RESULT(y, x, v) \
 if (true) \
 { \
-  std::vector<module*>::iterator safei; \
+  std::vector<Module*>::iterator safei; \
   v = EVENT_CONTINUE; \
-  for (std::vector<module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
+  for (std::vector<Module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end();) \
     { \
       safei = _i; \
       ++safei; \

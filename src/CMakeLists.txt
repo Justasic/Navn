@@ -9,7 +9,7 @@ endif(WIN32)
 
 sort_list(SRC_SRCS)
 
-# Set all the files to use C++ as well as set their compile flags (use the module-specific compile flags, though)
+# Set all the files to use C++ as well as set their compile flags (use the Module-specific compile flags, though)
 set_source_files_properties(${SRC_SRCS} PROPERTIES LANGUAGE CXX COMPILE_FLAGS "${CXXFLAGS}")
 
 # Create an empty list to store extra include directories
@@ -62,7 +62,7 @@ else(MSVC)
   set(WIN32_MEMORY)
 endif(MSVC)
 
-# Generate the Navn executable and set it's linker flags, also set it to export it's symbols even though it's not a module
+# Generate the Navn executable and set it's linker flags, also set it to export it's symbols even though it's not a Module
 add_executable(${PROGRAM_NAME} ${SRC_SRCS})
 set_target_properties(${PROGRAM_NAME} PROPERTIES LINKER_LANGUAGE CXX LINK_FLAGS "${LDFLAGS}" ENABLE_EXPORTS ON)
 # On Windows, also link Navn to the wsock32 and Ws2_32 library, as well as set the version

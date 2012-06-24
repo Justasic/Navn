@@ -12,10 +12,10 @@
 
 XMLFile * xf = new XMLFile("myxml.xml");
 
-class QuickReply : public module
+class QuickReply : public Module
 {
 public:
-  QuickReply(const Flux::string &Name):module(Name)
+  QuickReply(const Flux::string &Name):Module(Name)
   {
     this->SetVersion("1.0");
     this->SetAuthor("Lordofsraam");

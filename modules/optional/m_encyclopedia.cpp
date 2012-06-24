@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Encyclopedia lookup module
+/* Navn IRC bot -- Encyclopedia lookup Module
  *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -20,7 +20,7 @@ public:
   }
 };
 
-class encyclopedia : public module
+class encyclopedia : public Module
 {
   cooldowntimer cdt; //Make a cool down timer so we don't request too many too fast and get us banned from wikipedia!
 private:
@@ -100,7 +100,7 @@ private:
   }
 
 public:
-  encyclopedia(const Flux::string &Name):module(Name)
+  encyclopedia(const Flux::string &Name):Module(Name)
   {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);

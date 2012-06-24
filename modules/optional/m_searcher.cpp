@@ -16,9 +16,9 @@
 
 /**
  * \defgroup searcherM Search Engine Module
- * This is the module for the searcher function.
+ * This is the Module for the searcher function.
  * This allows you to get search links for different sites inside IRC.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection google !google
  * Say \a !google to get a search link for the rest of the message.
  * For example the message "!google hot footed waffle scooter" will give you the link to a google search for "hot footed waffle scooter"
@@ -69,7 +69,7 @@ Flux::string search(const Flux::string &text, const Flux::string &command)
 class CommandCGoogle : public Command
 {
 public:
-  CommandCGoogle(module *m):Command(m, "!GOOGLE", C_CHANNEL, 1,1)
+  CommandCGoogle(Module *m):Command(m, "!GOOGLE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Google search url");
     this->SetSyntax("\37message\37");
@@ -93,7 +93,7 @@ public:
 class CommandCYoutube : public Command
 {
 public:
-  CommandCYoutube(module *m):Command(m, "!YOUTUBE", C_CHANNEL, 1,1)
+  CommandCYoutube(Module *m):Command(m, "!YOUTUBE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a youtube search url");
     this->SetSyntax("\37message\37");
@@ -117,7 +117,7 @@ public:
 class CommandCPirateBay : public Command
 {
 public:
-  CommandCPirateBay(module *m):Command(m, "!TPB", C_CHANNEL, 1,1)
+  CommandCPirateBay(Module *m):Command(m, "!TPB", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Pirate Bay search url");
     this->SetSyntax("\37message\37");
@@ -141,7 +141,7 @@ public:
 class CommandCDefine : public Command
 {
 public:
-  CommandCDefine(module *m):Command(m, "!DEFINE", C_CHANNEL, 1,1)
+  CommandCDefine(Module *m):Command(m, "!DEFINE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Dictionary search url");
     this->SetSyntax("\37message\37");
@@ -165,7 +165,7 @@ public:
 class CommandCUrban : public Command
 {
 public:
-  CommandCUrban(module *m):Command(m, "!URBAN", C_CHANNEL, 1,1)
+  CommandCUrban(Module *m):Command(m, "!URBAN", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Urban Dictionary search url");
     this->SetSyntax("\37message\37");
@@ -189,7 +189,7 @@ public:
 class CommandCMovie : public Command
 {
 public:
-  CommandCMovie(module *m):Command(m, "!MOVIE", C_CHANNEL, 1,1)
+  CommandCMovie(Module *m):Command(m, "!MOVIE", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a movie search url");
     this->SetSyntax("\37message\37");
@@ -213,7 +213,7 @@ public:
 class CommandCWiki : public Command
 {
 public:
-  CommandCWiki(module *m):Command(m, "!WIKI", C_CHANNEL, 1,1)
+  CommandCWiki(Module *m):Command(m, "!WIKI", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a wikipedia search url");
     this->SetSyntax("\37message\37");
@@ -237,7 +237,7 @@ public:
 class CommandCMusic : public Command
 {
 public:
-  CommandCMusic(module *m):Command(m, "!MUSIC", C_CHANNEL, 1,1)
+  CommandCMusic(Module *m):Command(m, "!MUSIC", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a music search url");
     this->SetSyntax("\37message\37");
@@ -261,7 +261,7 @@ public:
 class CommandClmgtfy : public Command
 {
 public:
-  CommandClmgtfy(module *m):Command(m, "!LMGTFY", C_CHANNEL, 1,1)
+  CommandClmgtfy(Module *m):Command(m, "!LMGTFY", C_CHANNEL, 1,1)
   {
     this->SetDesc("Generate a Let me google that for you search url");
     this->SetSyntax("\37message\37");
@@ -283,11 +283,11 @@ public:
 };
 
 /**
- * \fn class searcher(bool a):module("Searcher Handler", a, PRIORITY_DONTCARE){ this->SetDesc("Search Module used to search for stuff"); }
+ * \fn class searcher(bool a):Module("Searcher Handler", a, PRIORITY_DONTCARE){ this->SetDesc("Search Module used to search for stuff"); }
  * \brief Returns search links for different sites.
  * Searches for the search command, then uses the \a search function from \a flux_net_irc to return search links.
  */
-class searcher:public module
+class searcher:public Module
 {
   CommandCGoogle google;
   CommandCYoutube yt;
@@ -299,7 +299,7 @@ class searcher:public module
   CommandCMusic music;
   CommandClmgtfy lmgtfy;
 public:
-  searcher(const Flux::string &Name):module(Name), google(this), yt(this), tpb(this), d(this), urban(this),
+  searcher(const Flux::string &Name):Module(Name), google(this), yt(this), tpb(this), d(this), urban(this),
   movie(this), wiki(this), music(this), lmgtfy(this)
   {
     this->SetAuthor("Lordofsraam");

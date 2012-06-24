@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Clock functions for weather module
+/* Navn IRC bot -- Clock functions for weather Module
  *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net

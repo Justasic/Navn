@@ -64,7 +64,7 @@ class CoreException : public std::exception
 	 */
 	virtual ~CoreException() throw() { };
 	/** Returns the reason for the exception.
-	 * The module should probably put something informative here as the user will see this upon failure.
+	 * The Module should probably put something informative here as the user will see this upon failure.
 	 */
 	virtual const char* GetReason() const
 	{

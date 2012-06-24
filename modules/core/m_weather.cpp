@@ -1,4 +1,4 @@
-/* Navn IRC bot -- Weather module
+/* Navn IRC bot -- Weather Module
  * 
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
@@ -16,16 +16,16 @@
 
 /**
  * \defgroup weatherM Weather Module
- * This is the module for the weather function.
+ * This is the Module for the weather function.
  * For a better description see the function description.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection weather !weather
  * Follow \a !weather with either a U.S. postal code or a city name and country/state name.
  * @{
  */
 
 /**
- * \fn weather(bool act):module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
+ * \fn weather(bool act):Module("Weather", act, PRIORITY_DONTCARE){ this->SetDesc("Shows the weather for your location"); }
  * \brief Says the weather.
  * This is a good example of how to use the xml pseudo-parser we have in the \a flux_net_irc namespace.
  * If \a !weather is said then it takes whatever follows that and uses wget to get an xml file from
@@ -35,7 +35,7 @@
 class CommandCWeather : public Command
 {
 public:
-  CommandCWeather(module *m):Command(m, "!WEATHER", C_CHANNEL, 1, 1)
+  CommandCWeather(Module *m):Command(m, "!WEATHER", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays the weather");
     this->SetSyntax("\2location\2");
@@ -90,10 +90,10 @@ public:
     return true;
   }
 };
-class weather:public module{
+class weather:public Module{
   CommandCWeather rainy;
 public:
-  weather(const Flux::string &Name):module(Name), rainy(this)
+  weather(const Flux::string &Name):Module(Name), rainy(this)
   {
     this->SetAuthor("Lordofsraam");
     this->SetVersion(VERSION);

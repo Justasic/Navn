@@ -16,24 +16,24 @@
 
 /**
  * \defgroup ctcpM CTCP Module
- * This is the module for the CTCP functions.
+ * This is the Module for the CTCP functions.
  * It houses the CTCP replies when someone versions it or asks for the time
  * For a better description see the function description.
- * \section commands Commands associated with this module.
+ * \section commands Commands associated with this Module.
  * \subsection none none
- * This module has no user interactive function
+ * This module.has no user interactive function
  * @{
  */
 
 /**
- * \fn class ctcp(bool a):module("CTCP", a, PRIORITY_FIRST){ this->SetDesc("CTCP Handler"); }
+ * \fn class ctcp(bool a):Module("CTCP", a, PRIORITY_FIRST){ this->SetDesc("CTCP Handler"); }
  * \brief Replies to CTCPs
  * Replies to CTCP requests in IRC
  */
-class ctcp : public module
+class ctcp : public Module
 {
 public:
-  ctcp(const Flux::string &Name):module(Name)
+  ctcp(const Flux::string &Name):Module(Name)
   {
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
