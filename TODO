@@ -29,21 +29,34 @@ Navn 2.0.2
   [ ] Add information on those users (what chans are they op in? are they an IRCop? etc.)
   [ ] Add Personal command aliases
 
+[ ] Scripting
+  [ ] Perl
+  [+] Python
+  [ ] PHP
+  [ ] Ruby
+  [ ] Nu (?)
+  [ ] LUA
+  [ ] BASIC (Is this possible?)
+  [ ] Common Lisp (?)
+  [ ] JavaScript
+  [ ] TCL
+  [ ] ActionScript (?)
+
 [ ] Add more event handlers (FOREACH_MOD)
 [ ] Add a possible better event handler
 [ ] Add calculator
 [ ] Redo fantasy commands
+[ ] Allow modules to depend on other modules
 [ ] Make searcher module use config for search URL's instead of hard coded ones.
 [x] Add buffer limiter (so freenode does not kill the bot)
 [ ] Better config format
-[ ] Better terminal Commands Parsing
+[x] Better terminal Commands Parsing
 [ ] Add a flags system like channel/user modes
 [ ] Add !forecast
 
 
 Future
 ------
-[x] Move to CMake
 [ ] Add support for GETTEXT so it allows for the program to be translated
 [+] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
 [+] Add python support
