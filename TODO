@@ -13,16 +13,14 @@ Navn 2.0.2
   [ ] Possible webserver type module for stats, etc.
 
 [ ] Add Mode Handler
-  [ ] Parse 005 Numeric for modes and server support stuff, take action on it
-  [ ] Add u->IsOp()
-
+[x] Parse 005 Numeric for modes and server support stuff, take action on it
 [ ] Add Ban Manager
 [ ] Add Database/User accounts type system for metadata
   [ ] Add IDENTIFY type command
   [ ] Add Bot Administrators
   [ ] Add E-Mail handling
   [ ] Add Message handling (ie. memo's')
-  [ ] Add Op status management
+  [ ] Add Op status management and tracking
   [ ] Add Mode Locks
   [ ] Add Greetings
   [ ] Add lists of networks, channels, etc.
@@ -35,14 +33,17 @@ Navn 2.0.2
   [ ] PHP
   [ ] Ruby
   [ ] Nu (?)
+  [ ] Shell (?)
   [ ] LUA
   [ ] BASIC (Is this possible?)
   [ ] Common Lisp (?)
   [ ] JavaScript
   [ ] TCL
+  [ ] CoffeeScript (?)
   [ ] ActionScript (?)
+  [ ] Java interface (dear god kill me for mentioning it)
 
-[ ] Add more event handlers (FOREACH_MOD)
+[ ] Add more event handlers (FOREACH_MOD) or better event handling
 [ ] Add a possible better event handler
 [ ] Add calculator
 [ ] Redo fantasy commands
@@ -59,5 +60,4 @@ Future
 ------
 [ ] Add support for GETTEXT so it allows for the program to be translated
 [+] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
-[+] Add python support
-[ ] Add Oper Protocol modules?
+[#] Add Oper Protocol modules?
