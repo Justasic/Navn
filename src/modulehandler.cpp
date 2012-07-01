@@ -187,7 +187,6 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   m->filepath = output;
   m->filename = (modname.search(".so")?modname:modname+".so");
   m->handle = handle;
-  m->OnLoad();
 
   FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
 

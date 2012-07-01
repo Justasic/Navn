@@ -85,7 +85,7 @@
 	dirent *readdir(DIR*);
 	int closedir(DIR*);
 
-	#define MODULE_INIT(x) \
+	#define MODULE_HOOK(x) \
 	extern "C" DllExport Module *ModInit(const Flux::string&); \
 	extern "C" DllExport void ModunInit(x *); \
 	extern "C" Module *ModInit(const Flux::string &name) { return new x(name); } \

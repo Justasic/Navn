@@ -2,10 +2,16 @@ file(GLOB MODULES_FOLDERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*")
 remove_item_from_list(MODULES_FOLDERS "CMakeFiles")
 #Remove kate's stupid temp files
 remove_item_from_list(MODULE_FOLDERS "*~")
-
 # Iterate through the directories
 foreach(MODULE_FOLDER ${MODULES_FOLDERS})
   if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FOLDER}")
+
+    # if a cmake list file exists, we need to extend the build instead of treating it like a module
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FOLDER}/CMakeLists.txt)
+      # include the file
+      include(${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FOLDER}/CMakeLists.txt)
+    else(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FOLDER}/CMakeLists.txt)
+
     # Get a list of all .cpp files in this directory
     file(GLOB MODULES_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${MODULE_FOLDER}/*.cpp")
     sort_list(MODULES_SRCS)
@@ -176,6 +182,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
         endif(NOT SKIP_DEPENDS AND NOT SKIP_LIBRARIES AND HAS_FUNCTION)
       endif(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${SUBDIR}")
     endforeach(SUBDIR)
+   endif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FOLDER}/CMakeLists.txt)
   endif(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FOLDER}")
 endforeach(MODULE_FOLDER)
 
