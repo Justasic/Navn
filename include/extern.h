@@ -69,10 +69,12 @@ struct iSupport
   Flux::string Network;
   // Servers hostname
   Flux::string ServerHost;
-  // Max away len
+  // Max away length
   int AwayLen;
-  // Max kick len
+  // Max kick length
   int KickLen;
+  // Max channel length
+  int MaxChannelLen;
   // Max channels you can join
   int MaxChannels;
   // Max number of bans settable

@@ -486,6 +486,9 @@ public:
 	if(word.equals_ci("MAXCHANNELS"))
 	  isupport.MaxChannels = static_cast<int>(param);
 
+	if(word.equals_ci("CHANNELLEN"))
+	  isupport.MaxChannelLen = static_cast<int>(param);
+
 	if(word.equals_ci("NICKLEN"))
 	  isupport.NickLen = static_cast<int>(param);
 
