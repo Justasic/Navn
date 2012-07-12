@@ -73,7 +73,7 @@ public:
 class CommandCHelp : public Command
 {
 public:
-  CommandCHelp(Module *m):Command(m, "!HELP", C_CHANNEL, 0,1)
+  CommandCHelp(Module *m):Command(m, "HELP", C_CHANNEL, 0,1)
   {
    this->SetDesc("Displays Channel help messages");
   }

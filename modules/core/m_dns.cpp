@@ -1,5 +1,5 @@
 /* Navn IRC bot -- DNS lookup tools for IRC
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -48,15 +48,15 @@
 class CommandCDNS : public Command
 {
 public:
-  CommandCDNS(Module *m):Command(m, "!DNS", C_CHANNEL, 1, 1)
+  CommandCDNS(Module *m):Command(m, "DNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays a resolved hostname");
-    this->SetSyntax("hostname"); 
+    this->SetSyntax("hostname");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string ip = ForwardResolution(params[1]);
-    
+
     if (ip.empty())
 	source.c->SendMessage("\0034[DNS]\017 Error");
     else
@@ -76,7 +76,7 @@ public:
 class CommandCADNS : public Command
 {
 public:
-  CommandCADNS(Module *m):Command(m, "!ADNS", C_CHANNEL, 1, 1)
+  CommandCADNS(Module *m):Command(m, "ADNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays ALL resolved ip addresses from hostnames");
     this->SetSyntax("hostname");
@@ -86,21 +86,21 @@ public:
     Flux::string hostname = params[1];
     struct addrinfo *result, *res;
     int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
-    
+
     if(err != 0)
     {
       source.c->SendMessage("\0034[ADNS]\017 Failed to resolve %s: %s", hostname.c_str(), gai_strerror(err));
       return;
     }
-    
+
     Flux::string ret = hostname, laststr;
     int c = 0;
-    
+
     for(res = result; res != NULL; res = res->ai_next)
     {
       struct sockaddr *haddr = res->ai_addr;
       char address[INET6_ADDRSTRLEN + 1] = "";
-      
+
       switch(haddr->sa_family)
       {
 	case AF_INET:
@@ -122,7 +122,7 @@ public:
 	  }
 	  break;
       }
-      
+
       ret = address;
       if(!laststr.equals_cs(ret))
       {
@@ -153,32 +153,32 @@ public:
 class CommandCRDNS : public Command
 {
 public:
-  CommandCRDNS(Module *m):Command(m, "!RDNS", C_CHANNEL, 1, 1)
+  CommandCRDNS(Module *m):Command(m, "RDNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays a reversely resolved DNS IP Address");
-    this->SetSyntax("ipaddress"); 
+    this->SetSyntax("ipaddress");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     struct addrinfo *result;
     struct addrinfo *res;
     int error;
-    
+
     error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
     if (error != 0)
-      source.c->SendMessage("\0034[rDNS]\017 Error: %s\n", gai_strerror(error)); 
+      source.c->SendMessage("\0034[rDNS]\017 Error: %s\n", gai_strerror(error));
     else
     {
       char hostname[NI_MAXHOST] = "";
       res = result;
       error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
-      
+
       if(error != 0)
 	source.c->SendMessage("\0034[rDNS]\017 Error: %s", gai_strerror(error));
       if(*hostname != '\0')
 	source.c->SendMessage("\0034[rDNS]\017 %s", hostname);
-      
+
       freeaddrinfo(result);
     }
   }
@@ -199,10 +199,10 @@ public:
 class CommandCARDNS : public Command
 {
 public:
-  CommandCARDNS(Module *m):Command(m, "!ARDNS", C_CHANNEL, 1, 1)
+  CommandCARDNS(Module *m):Command(m, "ARDNS", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays ALL reverse DNS ip addresses");
-    this->SetSyntax("ipaddress"); 
+    this->SetSyntax("ipaddress");
   }
   void Run(CommandSource &source, const Flux::vector &params)
   {
@@ -210,9 +210,9 @@ public:
     struct addrinfo *res;
     int error;
     int count = 0;
-    
+
     error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
-    if (error != 0) 
+    if (error != 0)
       source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error));
     else
     {
@@ -235,7 +235,7 @@ public:
 	  count++;
 	}
       }
-    
+
       source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostname%s.", count, count > 1?"s":"");
       freeaddrinfo(result);
     }
@@ -259,7 +259,7 @@ class dns_m:public Module
   CommandCADNS adns;
 public:
   dns_m(const Flux::string &Name):Module(Name), ardns(this), rdns(this), dns(this), adns(this)
-  { 
+  {
     this->SetAuthor("Justasic");
     this->SetVersion(VERSION);
   }

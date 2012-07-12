@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Ping Module
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -29,9 +29,9 @@ public:
     if(this->pt && this->pt->ptt)
       return;
   }
-  
+
   ~PingTimeoutTimer() { this->pt->ptt = NULL; }
-  
+
   void Tick(time_t)
   {
     sock->ThrowException(printfify("Ping Timeout: %u seconds", this->wait));
@@ -63,32 +63,32 @@ public:
     if(pingtimer.ptt)
       delete pingtimer.ptt;
   }
-  
+
   void OnPong(const std::vector<Flux::string> &params)
   {
      Flux::string ts = params[1];
      int lag = time(NULL) - static_cast<int>(ts);
      Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ")";
-     
+
      if(pingtimer.ptt)
 	delete pingtimer.ptt;
      pingtimer.ptt = NULL;
   }
-  
+
   void OnPing(const Flux::vector &params)
   {
     if(pingtimer.ptt)
       delete pingtimer.ptt;
-    
+
     pingtimer.ptt = NULL;
     send_cmd("PONG :%s\n", params[0].c_str());
   }
-  
+
   void OnConnectionError(const Flux::string &buffer)
   {
     throw CoreException(buffer.c_str());
   }
-  
+
   void OnNumeric(int i, const std::vector<Flux::string> &params)
   {
    if((i == 451))

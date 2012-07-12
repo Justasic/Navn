@@ -322,7 +322,7 @@ public:
     }
     return false;
   }
-  
+
   void OnReload()
   {
     Flux::vector updatedmodlist = ParamitizeString(Config->Modules, ',');

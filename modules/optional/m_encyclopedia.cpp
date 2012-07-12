@@ -14,7 +14,8 @@ class cooldowntimer : public Timer
 public:
   int requested;
   cooldowntimer():Timer(300, time(NULL), true){ }
-  void Tick(time_t){
+  void Tick(time_t)
+  {
     Log(LOG_TERMINAL) << Log::TimeStamp() << " Requests reset";
     requested = 0;
   }

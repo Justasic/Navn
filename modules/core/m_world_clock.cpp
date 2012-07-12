@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Clock Module
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -33,7 +33,7 @@
 class CommandCWClock: public Command
 {
 public:
-  CommandCWClock(Module *m):Command(m, "!TIME", C_CHANNEL, 0, 1)
+  CommandCWClock(Module *m):Command(m, "TIME", C_CHANNEL, 0, 1)
   {
    this->SetDesc("Shows the time in the channel");
    this->SetSyntax("\37location\37");
@@ -68,16 +68,17 @@ public:
       wget = "wget -q -O "+tmpfile+" - http://www.google.com/ig/api?weather="+(location.is_number_only()?location:location.url_str());
       system(wget.c_str());
       XMLFile *xf = new XMLFile(tmpfile);
-      
+
       Flux::string city = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["city"].Attributes["data"].Value;
       Flux::string time = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["current_date_time"].Attributes["data"].Value;
       delete xf;
-      
+
       c->SendMessage("The current time in %s is %s", city.c_str(), time.c_str());
       Delete(tmpfile.c_str());
       Log(source.u, this) << "to get time for " << location;
     }
   }
+
   bool OnHelp(CommandSource &source, const Flux::string&)
   {
     this->SendSyntax(source);
@@ -90,6 +91,7 @@ public:
     return true;
   }
 };
+
 class world_clock:public Module{
   CommandCWClock clock;
 public:
@@ -99,6 +101,7 @@ public:
     this->SetVersion(VERSION);
   }
 };
+
 MODULE_HOOK(world_clock)
 /**
  * @}

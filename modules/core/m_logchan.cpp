@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Channel for logging
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -54,12 +54,12 @@ public:
 
     std::stringstream logstream;
     Flux::string message = Flux::Sanitize(l->buffer.str());
-    
+
     if(l->u && !l->c)
       message = l->u->nick + " " + message;
     if(l->u && l->c)
       message = l->u->nick + " used " + l->c->name + " " + message;
-    
+
     switch(l->type)
     {
       case LOG_NORMAL:
@@ -88,7 +88,7 @@ public:
       default:
 	break;
     }
-    
+
     c->SendMessage(NoTermColor(logstream.str()));
     return EVENT_CONTINUE;
   }

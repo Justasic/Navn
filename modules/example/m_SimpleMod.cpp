@@ -17,10 +17,12 @@ public:
   {
     this->SetDesc("Says Hi");
   }
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     source.Reply("HI!");
   }
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -43,25 +45,21 @@ public:
     Implementation i[] = { I_OnPrivmsg, I_OnNotice };
     ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
   }
+
   void OnPrivmsg(User *u, const Flux::vector &params)
   {
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i] +' ';
+    Flux::string msg = CondenseString(params);
+
     if(msg.search("I am a very long command"))
-    {
       Log(LOG_TERMINAL) << "PRIVMSG: " << msg;
-    }
   }
+
   void OnNotice(User *u, const Flux::vector &params)
   {
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i] +' ';
+    Flux::string msg = CondenseString(params);
+
     if(msg.search("I am a very long notice"))
-    {
       Log(LOG_TERMINAL) << "NOTICE: " << msg;
-    }
   }
 };
 MODULE_HOOK(SimpleMod)

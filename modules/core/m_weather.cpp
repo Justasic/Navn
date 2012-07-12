@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Weather Module
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -35,7 +35,7 @@
 class CommandCWeather : public Command
 {
 public:
-  CommandCWeather(Module *m):Command(m, "!WEATHER", C_CHANNEL, 1, 1)
+  CommandCWeather(Module *m):Command(m, "WEATHER", C_CHANNEL, 1, 1)
   {
     this->SetDesc("Displays the weather");
     this->SetSyntax("\2location\2");
@@ -45,7 +45,7 @@ public:
     User *u = source.u;
     Channel *c = source.c;
     Flux::string area = params[0], tmpfile = TextFile::TempFile(binary_dir+"/runtime/navn_xml.tmp.XXXXXX");
-    
+
     if(tmpfile.empty())
     {
       Log() << "Failed to get temp file";
@@ -68,7 +68,7 @@ public:
     Flux::string windy = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["wind_condition"].Attributes["data"].Value;
 
     delete xf;
-    
+
     if(city.strip().empty())
     {
       source.Reply("Weather information for \2%s\2 not found.", area.c_str());
@@ -76,7 +76,7 @@ public:
     }
     int temp_k = static_cast<int>(temp_c) + 273; // Calculate degrees kelvin from degrees celsius
     c->SendMessage("%s Current Condition: %s, %s, %s, %s %cF %s %cC %iK", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), 0x00B0, temp_c.c_str(), 0x00B0, temp_k);
-    
+
     Log(u, this) << "to get weather for area '" << area << "'";
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)

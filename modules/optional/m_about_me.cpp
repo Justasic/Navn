@@ -29,7 +29,7 @@
 class CommandDecodeHost : public Command
 {
 public:
-  CommandDecodeHost(Module *m):Command(m, "!DECODEHOST", C_CHANNEL, 1, 1)
+  CommandDecodeHost(Module *m):Command(m, "DECODEHOST", C_CHANNEL, 1, 1)
   {
    this->SetDesc("Decodes a hostname");
    this->SetSyntax("\37fullhost\37");

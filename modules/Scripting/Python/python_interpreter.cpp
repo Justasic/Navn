@@ -369,7 +369,7 @@ public:
       file = params[1];
     else
       file = Config->Binary_Dir + Config->pydir + params[1];
-    
+
     if(!u->IsOwner())
     {
       source.Reply(ACCESS_DENIED);
@@ -404,7 +404,7 @@ class PyInterp_mod : public Module
 {
   CommandLoadPy cmdloadpy;
 public:
-  PyInterp_mod():Module(), cmdloadpy(this) 
+  PyInterp_mod():Module(), cmdloadpy(this)
   {
     // Load our Python API
     Py_Initialize();

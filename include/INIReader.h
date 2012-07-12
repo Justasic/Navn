@@ -86,6 +86,7 @@ public:
   Flux::string WelcomeMessage;
   Flux::string LogColor;
   Flux::string LogChan;
+  Flux::string FantasyPrefix;
   Flux::vector Owners;
   int LogAge;
   int BurstRate;

@@ -29,9 +29,9 @@ namespace BattleField
 class Join : public Command
 {
 public:
-  Join(Module *m):Command(m, "!joinPvP", C_PRIVATE)
+  Join(Module *m):Command(m, "joinPvP", C_PRIVATE)
   {
-    this->SetDesc("Say !joinPvP to join the PvP game.");
+    this->SetDesc("Say "+Config->FantasyPrefix+"joinPvP to join the PvP game.");
   }
   void Run(CommandSource &Source, const std::vector<Flux::string> &params)
   {
@@ -47,9 +47,9 @@ public:
 class Info : public Command
 {
 public:
-  Info(Module *m):Command(m, "!PvPInfo", C_CHANNEL)
+  Info(Module *m):Command(m, "PvPInfo", C_CHANNEL)
   {
-    this->SetDesc("Say !PvPInfo to get information about the game.");
+    this->SetDesc("Say "+Config->FantasyPrefix+"PvPInfo to get information about the game.");
   }
   void Run(CommandSource &Source, const std::vector<Flux::string> &params)
   {
@@ -68,9 +68,9 @@ public:
 class Stab : public Command
 {
 public:
-  Stab(Module *m):Command(m, "!stab", C_CHANNEL)
+  Stab(Module *m):Command(m, "stab", C_CHANNEL)
   {
-    this->SetDesc("Say !stab <victim> to stab someone! (Uses 5 energy).");
+    this->SetDesc("Say "+Config->FantasyPrefix+"stab <victim> to stab someone! (Uses 5 energy).");
   }
   void Run(CommandSource &Source, const std::vector<Flux::string> &params)
   {

@@ -84,7 +84,7 @@ public:
     source.Reply("Sent \2%i\2 ping%s to \2%s\2", times, times <= 1 ? "" : "s", address.c_str());
     SetExitState();
   }
-  
+
   void SendPing();
 };
 
@@ -109,10 +109,10 @@ void PingThread::SendPing()
   char ipbuffer[256];
   gethostname(ipbuffer, 256);
   Flux::string hostnameip = ForwardResolution(ipbuffer);
-  
+
   Log(LOG_DEBUG) << "Source address: " << ipbuffer << " (" << hostnameip << ')';
   Log(LOG_DEBUG) << "Destination address: " << address << " (" << ipaddress << ')';
-  
+
   /*
    * allocate all necessary memory
    */
@@ -122,7 +122,7 @@ void PingThread::SendPing()
   packet = reinterpret_cast<char*>(malloc(sizeof(struct iphdr) + sizeof(struct icmphdr)));
   buffer = reinterpret_cast<char*>(malloc(sizeof(struct iphdr) + sizeof(struct icmphdr)));
   /****************************************************************/
-  
+
   ip = reinterpret_cast<struct iphdr*>(packet);
   icmp = reinterpret_cast<struct icmphdr*>(packet + sizeof(struct iphdr));
 
@@ -131,7 +131,7 @@ void PingThread::SendPing()
     source.Reply("Internal Error: ICMP protocol is unknown");
     return;
   }
-  
+
   /*
    *  here the ip packet is set up except checksum
    */
@@ -146,22 +146,22 @@ void PingThread::SendPing()
   ip->daddr        = inet_addr(address.c_str());
 
 
-  
-  
+
+
   if ((sockfd = socket(AF_INET, SOCK_RAW, proto->p_proto)) < 0)
   {
     source.Reply("Failed ping: %s", strerror(errno));
     return;
   }
-  
+
   /*
    *  IP_HDRINCL must be set on the socket so that
    *  the kernel does not attempt to automatically add
    *  a default ip header to the packet
    */
-  
+
   setsockopt(sockfd, IPPROTO_IP, IP_HDRINCL, &optval, sizeof(int));
-  
+
   /*
    *  here the icmp packet is created
    *  also the ip checksum is generated
@@ -172,20 +172,20 @@ void PingThread::SendPing()
   icmp->un.echo.sequence   = 0;
   icmp->checksum       = 0;
   icmp-> checksum      = in_cksum(reinterpret_cast<unsigned short *>(icmp), sizeof(struct icmphdr));
-  
+
   ip->check            = in_cksum(reinterpret_cast<unsigned short *>(ip), sizeof(struct iphdr));
-  
+
   connection.sin_family = AF_INET;
   connection.sin_addr.s_addr = inet_addr(address.c_str());
-  
+
   /*
    *  now the packet is sent
    */
-  
+
   sendto(sockfd, packet, ip->tot_len, 0, reinterpret_cast<struct sockaddr *>(&connection), sizeof(struct sockaddr));
   Log(LOG_DEBUG) << "Sent " << sizeof(packet) << " byte packet to " << address;
   c->SendMessage("Sent %i byte packet to %s (%s)", sizeof(packet), address.c_str(), ipaddress.c_str());
-  
+
   /*
    *  now we listen for responses
    */
@@ -206,7 +206,7 @@ class CommandPing : public Command
 {
   PingThread *thread;
 public:
-  CommandPing(Module *m) : Command(m, "!PING", C_CHANNEL, 1, 2)
+  CommandPing(Module *m) : Command(m, "PING", C_CHANNEL, 1, 2)
   {
     this->SetDesc("Sends an ICMP ping to a hostname or ipaddress");
     this->SetSyntax("\37[hostname|ipaddress]\37 times");

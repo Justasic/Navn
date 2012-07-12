@@ -267,6 +267,7 @@ void BotConfig::Read()
   this->LogChannel	= this->Parser->Get("Modules", "LogChannel","");
   this->PidFile 	= this->Parser->Get("Bot","PID File","navn.pid");
   this->UserPass 	= this->Parser->Get("Bot","Password","Navn");
+  this->FantasyPrefix  = this->Parser->Get("Bot", "FantasyPrefix", "!");
   this->OperatorAccount = this->Parser->Get("Oper","Oper_Username","");
   this->OperatorPass 	= this->Parser->Get("Oper","Oper_Password","");
   this->ModuleDir 	= Parser->Get("Modules", "ModuleDir", "");

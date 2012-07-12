@@ -10,7 +10,7 @@ Removed Channel::SendPart(), it's replaced by Channel::SendPart(const Flux::stri
 Actually track set topic times, topic setters, channel modes, channel creation times and the topic
 Removed
 Removed ListUsers and ListChannels because it's useless
-
+Rewrote the command processor to allow for non-hard coded fantasy prefixes
 
 Navn 2.0.1
 ==========

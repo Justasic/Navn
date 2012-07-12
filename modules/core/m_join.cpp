@@ -20,19 +20,19 @@ public:
    this->SetDesc("Joins a channel");
    this->SetSyntax("\37channel\37");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
     Flux::string chan = params[1];
-    
+
     if(!u->IsOwner())
     {
       source.Reply(ACCESS_DENIED);
       Log(u) << "attempted to make the bot join " << chan;
       return;
     }
-    
+
     if(!IsValidChannel(chan))
       source.Reply(CHANNEL_X_INVALID, chan.c_str());
     else
@@ -55,7 +55,7 @@ public:
       }
     }
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);

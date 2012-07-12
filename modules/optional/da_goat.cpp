@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Da_Goat script in C++
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Dev@Azuru.net
  *
@@ -56,11 +56,11 @@
 class CommandCVersion: public Command
 {
 public:
-  CommandCVersion(Module *m):Command(m, "!VERSION", C_CHANNEL)
+  CommandCVersion(Module *m):Command(m, "VERSION", C_CHANNEL)
   {
     this->SetDesc("Displays the bots version info into the channel");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
@@ -71,7 +71,7 @@ public:
     c->SendMessage("%s is managed by: \2%s\2", Config->BotNick.c_str(), CondenseString(Config->Owners).c_str());
     Log(u, this) << "command in " << c->name;
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -86,17 +86,17 @@ public:
 class CommandCSpam: public Command
 {
 public:
-  CommandCSpam(Module *m):Command(m, "!SPAM", C_CHANNEL)
+  CommandCSpam(Module *m):Command(m, "SPAM", C_CHANNEL)
   {
     this->SetDesc("Displays the spam warning");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Log(source.u, this) << "command in " << source.c->name;
     source.c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -110,17 +110,17 @@ public:
 class CommandCASK: public Command
 {
 public:
-  CommandCASK(Module *m):Command(m, "!ASK", C_CHANNEL)
+  CommandCASK(Module *m):Command(m, "ASK", C_CHANNEL)
   {
     this->SetDesc("Displays the Ask protocol");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Log(source.u, this) << "command in " << source.c->name;
     source.c->SendMessage("The Ask To Ask protocol wastes more bandwidth than any version of the Ask protocol, so just ask your question. (Read: don't ask to ask a question, just ask your question)");
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -133,7 +133,7 @@ public:
 class CommandCRules: public Command
 {
 public:
-  CommandCRules(Module *m):Command(m, "!RULES", C_CHANNEL)
+  CommandCRules(Module *m):Command(m, "RULES", C_CHANNEL)
   {
     this->SetDesc("Displays the rules of the chatroom");
   }
@@ -164,11 +164,11 @@ class CommandCUptime: public Command
 {
   struct sysinfo sys_info;
 public:
-  CommandCUptime(Module *m):Command(m, "!UPTIME", C_CHANNEL)
+  CommandCUptime(Module *m):Command(m, "UPTIME", C_CHANNEL)
   {
     this->SetDesc("Prints Syatem Uptime in the channel");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -189,7 +189,7 @@ public:
 #endif
       Log(u, this) << "command in " << c->name;
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -205,11 +205,11 @@ public:
 class CommandCSocialInfo: public Command
 {
 public:
-  CommandCSocialInfo(Module *m):Command(m, "!SOCIALINFO", C_CHANNEL)
+  CommandCSocialInfo(Module *m):Command(m, "SOCIALINFO", C_CHANNEL)
   {
     this->SetDesc("Displays Azuru's Social Information");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -219,7 +219,7 @@ public:
     c->SendMessage("The Azuru TeamSpeak 3 server is:\002Pulsar.Azuru.net:9987\002");
     Log(u, this) << "command in " << c->name;
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -234,11 +234,11 @@ public:
 class CommandCRegister: public Command
 {
 public:
-  CommandCRegister(Module *m):Command(m, "!REGISTER", C_CHANNEL)
+  CommandCRegister(Module *m):Command(m, "REGISTER", C_CHANNEL)
   {
     this->SetDesc("Displays how to register your nickname");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -247,7 +247,7 @@ public:
     c->SendMessage("REMEMBER THIS PASSWORD! YOU WILL USE IT EVERY TIME YOU JOIN!");
     Log(u, this) << "command in " << c->name;
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -259,17 +259,17 @@ public:
     );
     return true;
   }
-  
+
 };
 
 class CommandCRename: public Command
 {
 public:
-  CommandCRename(Module *m):Command(m, "!RENAME", C_CHANNEL)
+  CommandCRename(Module *m):Command(m, "RENAME", C_CHANNEL)
   {
     this->SetDesc("Displays how to rename");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -278,7 +278,7 @@ public:
     c->SendMessage("To change your nickname type (without quotes) '/nick MyNewNickname' to change your nickname. (replacing MyNewNickname with a personal nickname).");
     Log(u, this) << "command in " << c->name;
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -289,17 +289,17 @@ public:
     );
     return true;
   }
-  
+
 };
 
 class CommandCInfo : public Command
 {
 public:
-  CommandCInfo(Module *m):Command(m, "!INFO", C_CHANNEL)
+  CommandCInfo(Module *m):Command(m, "INFO", C_CHANNEL)
   {
     this->SetDesc("General Da_Goat info");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Channel *c = source.c;
@@ -309,7 +309,7 @@ public:
     c->SendMessage("FTP server \002178.63.127.231\002 login anonymous \002-no password-\002, Files in dir \002/ftp/pub\002");
     Log(u, this) << "command in " << c->name;
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -318,7 +318,7 @@ public:
 		 "information, such as the forums url");
     return true;
   }
-  
+
 };
 
 class Da_Goat : public Module
@@ -339,7 +339,7 @@ public:
     this->SetVersion(VERSION);
     ModuleHandler::Attach(I_OnPrivmsgChannel, this);
   }
-  
+
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
     Flux::string cmd = params.empty()?"":params[0], msg = CondenseString(params);
@@ -349,7 +349,7 @@ public:
       Flux::string person = params.size() == 2?params[1]:"";
       person.trim();
       User *u2 = finduser(person);
-      
+
       if(u2 && u2->IsOwner())
       {
 	c->SendMessage("why would I wanna kick my master!?");
@@ -366,7 +366,7 @@ public:
 	c->SendAction("is angry at %s", u2->nick.c_str());
 	c->kick(u2, "\002\00315Don't poke me!\017");
 	Log(u) << "used Da_Goats !poke command in " << c->name << "to poke " << u2->nick;
-      } 
+      }
     }
     /****************************************slap command*******************************************/
     if(cmd.equals_ci("!slap"))

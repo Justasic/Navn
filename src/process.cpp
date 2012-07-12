@@ -75,6 +75,117 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
       c->AddUser(u);
 }
 /*********************************************************************************/
+// Process Channel Commands.
+
+void ProcessChannelCommand(CommandSource &Source, const Flux::vector &params)
+{
+  Flux::vector params2 = params;
+  Command *ccom = FindCommand(params2[0], C_CHANNEL);
+  if(ccom)
+  {
+    Source.command = ccom->name;
+    params2.erase(params2.begin());
+
+    while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
+    {
+      params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
+      params2.erase(params2.begin() + ccom->MaxParams);
+    }
+
+    if(params2.size() < ccom->MinParams)
+    {
+      ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+      return;
+    }
+    #ifdef HAVE_SETJMP_H
+    // Yes, i understand this code is VERY VERY bad and can cause VERY BAD
+    // stack corruption, but it's still cool to see that it unloads Modules
+    // if it segfaults and i would like to keep a system like this in place.
+    if(setjmp(sigbuf) == 0)
+    {
+    #endif
+      LastRunModule = ccom->mod;
+      ccom->Run(Source, params2);
+    #ifdef HAVE_SETJMP_H
+    }
+    else
+    {
+      Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
+      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
+
+      for(unsigned i = 0; i < Config->Owners.size(); ++i)
+      {
+	User *ou = finduser(Config->Owners[i]);
+	if(ou)
+	  ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
+      }
+    }
+    #endif
+    LastRunModule = NULL;
+  }
+  else
+  {
+    //This will one day be a actual function for channel only messages..
+    FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(Source.u, Source.c, params2));
+  }
+}
+
+/*********************************************************************************/
+
+void ProcessPrivateCommand(CommandSource &Source, const Flux::vector &params)
+{
+  // Cast away const (although I am not sure why it's const in the 1st place)
+  Flux::vector params2 = params;
+  Command *com = FindCommand(params2[0], C_PRIVATE);
+  if(com)
+  {
+    Source.command = com->name;
+    params2.erase(params2.begin()); //Remove the command from the params
+
+    while(com->MaxParams > 0 && params2.size() > com->MaxParams)
+    { // Trim the command separation, then paste the rest unmodified as the last param.
+	params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
+	params2.erase(params2.begin() + com->MaxParams);
+    }
+
+    if(params2.size() < com->MinParams)
+    { // Insufficent params
+      com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+      return;
+    }
+
+#ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
+    if(setjmp(sigbuf) == 0)
+    {
+#endif
+      LastRunModule = com->mod;
+      com->Run(Source, params2);
+#ifdef HAVE_SETJMP_H
+    }
+    else
+    { //Module segfaulted.
+      Log() << "Command " << com->name << " failed to execute. Stack Restored.";
+      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
+
+      for(unsigned i = 0; i < Config->Owners.size(); ++i)
+      {
+	User *ou = finduser(Config->Owners[i]);
+	if(ou)
+	  ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
+      }
+    }
+#endif
+      LastRunModule = NULL;
+    }
+    else
+    {
+      //This receives ALL server commands sent to the bot..
+      if(!protocoldebug)
+	Log(LOG_DEBUG) << Flux::Sanitize(Source.raw);
+    }
+}
+
+/*********************************************************************************/
 /**
  * \fn void ProcessCommand(CommandSource &Source, std::vector<Flux::string> &params2, const Flux::string &receiver, const Flux::string &command)
  * \brief Processes the Command class commands, this should only be used in Process() unless its for something special
@@ -83,123 +194,42 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
  * \param Flux::string receiver
  * \param Flux::string Command sent to the bot in raw form
  */
-void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::string &receiver,
-		    const Flux::string &command)
+void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::string &receiver, const Flux::string &command)
 {
   SET_SEGV_LOCATION();
   User *u = Source.u;
-  Channel *c = Source.c;
 
-  if(!command.is_pos_number_only()) { FOREACH_MOD(I_OnCommand, OnCommand(command, params2)); }
+  if(!command.is_pos_number_only())
+  {
+    FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
+  }
 
- if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
+  if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
   {
     Log(LOG_DEVEL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
 
     if(!IsValidChannel(receiver))
-    {
+    { // Make sure we reply to a private message command if there is no command
       Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
       FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
     }
     else
     {
-      Command *ccom = FindCommand(params2[0], C_CHANNEL);
-      if(ccom)
+      if(params2[0].search(Config->FantasyPrefix))
       {
-	Source.command = ccom->name;
-	params2.erase(params2.begin());
-
-	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
+	Flux::string blah = params2[0].substr(0, Config->FantasyPrefix.size());
+	if(blah.equals_cs(Config->FantasyPrefix))
 	{
-	  params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
-	  params2.erase(params2.begin() + ccom->MaxParams);
+	  params2[0] = params2[0].substr(Config->FantasyPrefix.size());
+	  ProcessChannelCommand(Source, params2);
 	}
-
-	if(params2.size() < ccom->MinParams)
-	{
-	  ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
-	  return;
-	}
-#ifdef HAVE_SETJMP_H
-	// Yes, i understand this code is VERY VERY bad and can cause VERY BAD
-	// stack corruption, but it's still cool to see that it unloads Modules
-	// if it segfaults and i would like to keep a system like this in place.
-	if(setjmp(sigbuf) == 0)
-	{
-#endif
-	  LastRunModule = ccom->mod;
-	  ccom->Run(Source, params2);
-#ifdef HAVE_SETJMP_H
-	}
-	else
-	{
-	  Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
-	  Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
-
-	  for(unsigned i = 0; i < Config->Owners.size(); ++i)
-	  {
-	    User *ou = finduser(Config->Owners[i]);
-	    if(ou)
-	      ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
-	  }
-	}
-#endif
-	LastRunModule = NULL;
-      }
-      else
-      {
-	//This will one day be a actual function for channel only messages..
-	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(u, c, params2));
       }
     }
   }
   else
   {
-    Command *com = FindCommand(params2[0], C_PRIVATE);
-    if(com && !IsValidChannel(receiver) && command == "PRIVMSG")
-    {
-      Source.command = com->name;
-      params2.erase(params2.begin()); //Remove the command from the params
-
-      while(com->MaxParams > 0 && params2.size() > com->MaxParams)
-      { // Trim the command separation, then paste the rest unmodified as the last param.
-	 params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
-	 params2.erase(params2.begin() + com->MaxParams);
-      }
-
-      if(params2.size() < com->MinParams)
-      { // Insufficent params
-	com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
-	return;
-      }
-#ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
-	if(setjmp(sigbuf) == 0)
-	{
-#endif
-	  LastRunModule = com->mod;
-	  com->Run(Source, params2);
-#ifdef HAVE_SETJMP_H
-	}
-	else
-	{ //Module segfaulted.
-	  Log() << "Command " << com->name << " failed to execute. Stack Restored.";
-	  Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
-
-	  for(unsigned i = 0; i < Config->Owners.size(); ++i)
-	  {
-	    User *ou = finduser(Config->Owners[i]);
-	    if(ou)
-	      ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
-	  }
-	}
-#endif
-	LastRunModule = NULL;
-    }
-    else
-    {
-      if(!protocoldebug)
-	Log(LOG_DEBUG) << Flux::Sanitize(Source.raw); //This receives ALL server commands sent to the bot..
-    }
+    if(FindCommand(params2[0], C_PRIVATE) && !IsValidChannel(receiver) && command.equals_ci("PRIVMSG"))
+      ProcessPrivateCommand(Source, params2);
   }
 }
 
