@@ -6,6 +6,11 @@ Navn 2.0.2
 FOREACH_MOD and FOREACH_RESULT now use setjmp for crashes inside modules when setjmp is available
 Terminal input module now accepts any IRC /msg usable command
 Renamed module class to Module (capitalized it)
+Removed Channel::SendPart(), it's replaced by Channel::SendPart(const Flux::string& = "")
+Actually track set topic times, topic setters, channel modes, channel creation times and the topic
+Removed
+Removed ListUsers and ListChannels because it's useless
+
 
 Navn 2.0.1
 ==========
@@ -255,7 +260,7 @@ Added Australia to the !time command
 Fixed welcome message
 Modulized most of the functions to their own files
 Added google image search (!image)
-Added module example 'dummy.h' 
+Added module example 'dummy.h'
 Added part of Jk_yangs Flux_S3rvices bot
 Added part of a topic function (similar to Da_Goats)
 Added oper and topic stream functions (like privmsg(), notice(), etc.)

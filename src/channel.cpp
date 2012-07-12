@@ -7,17 +7,19 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-#include <channel.h>
+#include "channel.h"
 
 Flux::insensitive_map<Channel*> ChanMap;
-Channel::Channel(const Flux::string &nname, time_t ts) : name(nname), topic_time(0), creation_time(ts)
+
+Channel::Channel(const Flux::string &nname) : name(nname), topic_time(0), creation_time(time(NULL))
 {
   if(this->name.empty())
-    throw CoreException("I don't like empty channel names in my channel constructor >:d");
+    throw CoreException("Empty channel name passed to channel constructor");
   if(!IsValidChannel(this->name))
-    throw CoreException("An Invalid channel was passed into the Channel constructor :<");
+    throw CoreException("Invalid channel name passed to channel constructor");
 
   this->SendWho();
+  send_cmd("MODE %s\n", this->name.c_str());
   ChanMap[this->name] = this;
   Log(LOG_DEBUG) << "Created new channel: " << nname;
 }
@@ -31,7 +33,7 @@ Channel::~Channel()
     if(it->first)
       it->first->DelChan(this);
   UserList.clear();
-  
+
   Log(LOG_DEBUG) << "Deleted channel " << this->name;
   ChanMap.erase(this->name);
 }
@@ -52,14 +54,22 @@ User *Channel::finduser(const Flux::string &usr)
   return NULL;
 }
 
-void Channel::SendJoin(){ ircproto->join(this->name); }
-void Channel::SendPart(){ ircproto->part(this->name); }
-void Channel::AddUser(User *u) { if(u) this->UserList[u] = this; }
+void Channel::SendJoin()
+{
+  ircproto->join(this->name);
+}
+
+void Channel::AddUser(User *u)
+{
+  if(u)
+    this->UserList[u] = this;
+}
+
 void Channel::DelUser(User *u)
 {
   if(!sock)
     return;
-  
+
   UList::iterator it = UserList.find(u);
 
   if(it != UserList.end())
@@ -79,8 +89,17 @@ void Channel::SendPart(const char *fmt, ...)
   }
 }
 
-void Channel::SendPart(const Flux::string &reason) { ircproto->part(this->name, reason); }
-void Channel::kick(User *u, const Flux::string &reason) { u->kick(this->name, reason); }
+void Channel::SendPart(const Flux::string &reason)
+{
+  ircproto->part(this->name, reason);
+}
+
+void Channel::kick(User *u, const Flux::string &reason)
+{
+  if(u)
+    u->kick(this->name, reason);
+}
+
 void Channel::kick(User *u, const char *fmt, ...)
 {
   if(fmt)
@@ -107,7 +126,11 @@ void Channel::kick(const Flux::string &u, const char *fmt, ...)
   }
 }
 
-void Channel::kick(const Flux::string &u, const Flux::string &reason) { ircproto->kick(this->name, u, reason); }
+void Channel::kick(const Flux::string &u, const Flux::string &reason)
+{
+  ircproto->kick(this->name, u, reason);
+}
+
 void Channel::SetMode(const Flux::string &mode)
 {
  if(mode[0] == '+')
@@ -144,9 +167,7 @@ void Channel::RemoveMode(const Flux::string &mode)
 void Channel::RemoveMode(User *u, const Flux::string &mode)
 {
   if(mode[0] == '-')
-  {
     ircproto->mode(this->name, mode, u->nick);
-  }
   else
   {
     mode == '-' + mode;
@@ -167,7 +188,11 @@ void Channel::ChangeTopic(const char *fmt, ...)
   }
 }
 
-void Channel::ChangeTopic(const Flux::string &topicstr) { ircproto->topic(this->name, topicstr); }
+void Channel::ChangeTopic(const Flux::string &topicstr)
+{
+  ircproto->topic(this->name, topicstr);
+}
+
 void Channel::SendMessage(const char *fmt, ...)
 {
   if(fmt)
@@ -181,10 +206,14 @@ void Channel::SendMessage(const char *fmt, ...)
   }
 }
 
-void Channel::SendMessage(const Flux::string &message) { ircproto->privmsg(this->name, message); }
+void Channel::SendMessage(const Flux::string &message)
+{
+  ircproto->privmsg(this->name, message);
+}
+
 void Channel::SendAction(const char *fmt, ...)
 {
-  if(fmt)
+  if (fmt)
   {
     char buffer[BUFSIZE] = "";
     va_list args;
@@ -195,10 +224,14 @@ void Channel::SendAction(const char *fmt, ...)
   }
 }
 
-void Channel::SendAction(const Flux::string &message) { ircproto->action(this->name, message); }
+void Channel::SendAction(const Flux::string &message)
+{
+  ircproto->action(this->name, message);
+}
+
 void Channel::SendNotice(const char *fmt, ...)
 {
-  if(fmt)
+  if (fmt)
   {
     char buffer[BUFSIZE] = "";
     va_list args;
@@ -209,39 +242,35 @@ void Channel::SendNotice(const char *fmt, ...)
   }
 }
 
-void Channel::SendNotice(const Flux::string &message){ ircproto->notice(this->name, message); }
-void Channel::SendWho(){ ircproto->who(this->name); }
+void Channel::SendNotice(const Flux::string &message)
+{
+  ircproto->notice(this->name, message);
+}
+
+void Channel::SendWho()
+{
+  ircproto->who(this->name);
+}
+
 /****************************************************************/
 void QuitUser(User *u)
 {
-  if(!u)
+  if (!u)
     return;
 
-  for(Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
-    for(UList::iterator it1 = it->second->UserList.begin(), it1_end = it->second->UserList.end(); it1 != it1_end; ++it1)
+  for (Flux::insensitive_map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
+    for (UList::iterator it1 = it->second->UserList.begin(), it1_end = it->second->UserList.end(); it1 != it1_end; ++it1)
     {
-      if(it1->first == u)
+      if (it1->first == u)
 	it1->second->DelUser(u);
     }
     delete u;
 }
 
-void ListChans(CommandSource &source)
-{
-  Flux::string channels;
-  for(Flux::map<Channel*>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
-  {
-    Channel *ch = it->second;
-    channels += ch->name+' ';
-  }
-  channels.trim();
-  source.Reply("Channels: %s\n", channels.c_str());
-}
-
 Channel *findchannel(const Flux::string &channel)
 {
   Flux::map<Channel *>::iterator it = ChanMap.find(channel);
-  if(it != ChanMap.end())
+  if (it != ChanMap.end())
     return it->second;
   return NULL;
 }

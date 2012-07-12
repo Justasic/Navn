@@ -37,7 +37,7 @@ public:
     while(!sqo.SendQ.empty())
       sqo.SendQ.pop();
   }
-  
+
   void Tick(time_t)
   {
     while(!sqo.SendQ.empty() && ++sent <= Config->SendQLines)
@@ -48,7 +48,7 @@ public:
 	Log(LOG_WARN) << "Attempted to send \"" << sqo.SendQ.front() << "\" to the server but no socket exists!";
       sqo.SendQ.pop();
     }
-    
+
     if(sqo.SendQ.empty())
       sqo.linessent = 0;
     else
@@ -263,7 +263,10 @@ void IRCProto::quit(const Flux::string &message)
  */
 void IRCProto::part(const Flux::string &channel, const Flux::string &msg)
 {
-  this->Raw("PART %s :%s\n", channel.c_str(), msg.c_str());
+  if(msg.empty())
+    this->Raw("PART %s\n", channel.c_str());
+  else
+    this->Raw("PART %s :%s\n", channel.c_str(), msg.c_str());
 }
 /**
  * \overload void command::topic(Flux::string channel, Flux::string msg)
@@ -322,15 +325,6 @@ void IRCProto::join(const Flux::string &dchan)
   this->Raw("JOIN %s\n", dchan.c_str());
 }
 /**
- * \overload void command::part(Flux::string channel)
- * \brief Parts channel w/o reason.
- * \param channel Channel to part from.
- */
-void IRCProto::part(const Flux::string &fchan)
-{
-  this->Raw("PART %s\n", fchan.c_str());
-}
-/**
  * \fn void IRCProto::who(Flux::string chan)
  * \brief Sends a /who to the channel
  * \param chan A Flux::string with the channel you want to /who.
@@ -379,7 +373,7 @@ void IRCProto::introduce_client(const Flux::string &nickname, const Flux::string
   // Get our hostname of our system
   char hostname[256];
   gethostname(hostname, 256);
-  
+
   send_cmd("NICK %s\n", nickname.c_str());
   send_cmd("USER %s %s %s :%s\n", ident.c_str(), hostname, Config->Server.c_str(), realname.c_str());
 

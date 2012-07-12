@@ -28,7 +28,7 @@ public:
   void action(const Flux::string &where, const char *fmt, ...);
   void action(const Flux::string &where, const Flux::string &msg);
   void quit(const char *fmt, ...);
-  
+
   void invite(const Flux::string&, const Flux::string&);
   void version(const Flux::string &server = "");
   void stats(const Flux::string&, const Flux::string &server = "");
@@ -39,20 +39,19 @@ public:
   void whowas(const Flux::string&, int count = 0, const Flux::string &server = "");
   void users(const Flux::string &server = "");
   void userhost(const Flux::string&);
-  
+
   void kick(const Flux::string&, const Flux::string&, const char *fmt, ...);
   void topic(const Flux::string&, const char *fmt, ...);
   void part(const Flux::string&, const char *fmt, ...);
   void kick(const Flux::string&, const Flux::string&, const Flux::string&);
   void mode(const Flux::string&, const Flux::string&, const Flux::string&);
   void topic(const Flux::string&, const Flux::string&);
-  void part(const Flux::string&, const Flux::string&);
+  void part(const Flux::string&, const Flux::string& = "");
   void oper(const Flux::string&, const Flux::string&);
   void mode(const Flux::string&, const Flux::string&);
   void who(const Flux::string&);
   void quit(const Flux::string&);
   void nick(const Flux::string&);
-  void part(const Flux::string&);
   void join(const Flux::string&);
   void whois(const Flux::string&);
   void names(const Flux::string&);

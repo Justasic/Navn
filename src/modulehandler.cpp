@@ -152,7 +152,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
   // FIXME: Somehow the binary_dir variable is lost when this executes >:|
   void *handle = dlopen(output.c_str(), RTLD_LAZY|RTLD_LOCAL);
   const char *err = dlerror();
-  
+
   if(!handle && err && *err)
   {
     Log() << '[' << modname << "] " << err;
@@ -217,7 +217,7 @@ bool ModuleHandler::DeleteModule(Module *m)
   }
   else
     df(m); /* Let the Module delete it self, just in case */
-	  
+
 
   if(handle)
     if(dlclose(handle))
@@ -317,7 +317,7 @@ void ModuleHandler::LoadModuleList(const Flux::vector &list)
   }
 //   sepstream sep(Config->Modules, ',');
 //   Flux::string tok;
-// 
+//
 //   while(sep.GetToken(tok))
 //   {
 //     tok.trim();

@@ -48,13 +48,12 @@ typedef std::map<User*, Channel*> UList;
 class CoreExport Channel : public Base
 {
 public:
-  Channel(const Flux::string&, time_t ts = time(NULL));
+  Channel(const Flux::string&);
   virtual ~Channel();
   UList UserList;
   User *finduser(const Flux::string&);
-  //some day we will have a mode manager here :P
-  //some day we will also have a user finder for a channel ;P
   Flux::string name;
+  Flux::string modes;
   Flux::string topic;
   Flux::string topic_setter;
   time_t topic_time;
@@ -62,8 +61,7 @@ public:
   void AddUser(User*);
   void DelUser(User*);
   void SendJoin();
-  void SendPart();
-  void SendPart(const Flux::string&);
+  void SendPart(const Flux::string& = "");
   void SendPart(const char*, ...);
   void SendWho();
   void kick(User*, const Flux::string&);

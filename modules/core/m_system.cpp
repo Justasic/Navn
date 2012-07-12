@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Generic Bot management functions
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -22,7 +22,7 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    
+
    if(!u->IsOwner())
       source.Reply(ACCESS_DENIED);
    else
@@ -32,7 +32,7 @@ public:
      Rehash();
    }
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -58,7 +58,7 @@ public:
   {
     User *u = source.u;
     Flux::string newnick = params[1];
-    
+
     if(newnick.empty())
     {
      this->SendSyntax(source);
@@ -137,26 +137,26 @@ public:
       Flux::string kickchan = params[0];
       Flux::string kickee = params[1];
       Flux::string msg = params[2];
-      
+
       if(kickee.empty() || kickchan.empty())
       {
 	this->SendSyntax(source);
 	return;
       }
-      
+
       if(!IsValidChannel(kickchan))
       {
-	source.Reply(CHANNEL_X_INVALID, kickchan.c_str()); 
+	source.Reply(CHANNEL_X_INVALID, kickchan.c_str());
 	return;
       }
-      
+
       Channel *c = findchannel(kickchan);
       if(!c)
       {
 	source.Reply("I am not in channel \2%s\2", kickchan.c_str());
 	return;
       }
-      
+
       c->kick(kickee, "%s(%s)", u->nick.c_str(), msg.empty()?msg.c_str():"No message");
     }else
       source.Reply(ACCESS_DENIED);
@@ -209,7 +209,7 @@ public:
   {
     User *u = source.u;
     Flux::string pass = params[1];
-    
+
     if(pass == password || pass == Config->UserPass)
     {
       source.Reply("Quitting..");
@@ -244,14 +244,14 @@ public:
     this->SetDesc("Set the topic on a channel");
     this->SetSyntax("\37channel\37 [\37topic\37]");
   }
-  
+
   void Run(CommandSource &source, const Flux::vector &params)
   {
     Flux::string tchan = params[0];
     Flux::string msg = params[1];
     User *u = source.u;
     Channel *ch = findchannel(tchan);
-    
+
     if(!u->IsOwner())
     {
       source.Reply(ACCESS_DENIED);
@@ -267,11 +267,11 @@ public:
       source.Reply("I am not in channel \2%s\2", tchan.c_str());
       return;
     }
-    
+
     ch->ChangeTopic(msg);
     std::fstream topic;
     topic.open("topic.tmp", std::fstream::in | std::fstream::out | std::fstream::app);
-    
+
     if(!topic.is_open())
     {
 	    source.Reply("Unable to write topic temp file");
@@ -284,7 +284,7 @@ public:
     }
     Log(u, this) << "to change " << tchan << "'s topic to \"" << msg << "\"";
   }
-  
+
   bool OnHelp(CommandSource &source, const Flux::string &nill)
   {
     this->SendSyntax(source);
@@ -307,7 +307,7 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    
+
     if(u->IsOwner())
     {
       source.Reply("My PID is: \2%i\2", static_cast<int>(getpid()));
@@ -338,7 +338,7 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     User *u = source.u;
-    
+
     if (u->IsOwner())
     {
       source.Reply("The password is:\2 %s", password.c_str());
@@ -391,7 +391,7 @@ public:
     source.Reply("System Uptime: %d days, %d hours, %d minutes, %ld seconds",
 	  days, hours, mins, sys_info.uptime % 60);
     source.Reply("Bot Uptime: %s", duration(time(NULL) - starttime).c_str());
-    
+
     // Load Averages for 1,5 and 15 minutes
     source.Reply("Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
 		    sys_info.loads[0], sys_info.loads[1], sys_info.loads[2]);
@@ -498,32 +498,32 @@ public:
 	isupport.other[word] = param;
       }
     }
-    
+
     if((i == 4))
     {
       isupport.ServerHost = params[1];
       isupport.IRCdVersion = params[2];
       isupport.UserModes = params[3];
       isupport.ChanModes = params[4];
-      
+
       if(params[3].search('B')) //Set bot mode if the network has it.
 	ircproto->mode(Config->BotNick, "+B");
-      
+
       sepstream cs(Config->Channel, ',');
       Flux::string tok;
-      
+
       while(cs.GetToken(tok))
       {
 	tok.trim();
 	Channel *c = new Channel(tok);
 	c->SendJoin();
-	
+
 	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
 	WelcomeMessage.trim();
 	if(!WelcomeMessage.empty())
 	  c->SendMessage(WelcomeMessage.c_str());
       }
-      
+
       if(!Config->OperatorAccount.empty() || !Config->OperatorPass.empty())
       {
 	ircproto->oper(Config->OperatorAccount, Config->OperatorPass);
@@ -532,14 +532,14 @@ public:
       }
       Log() << "Successfully connected to the server \"" << Config->Server+":"+Config->Port << "\" Master Channel(s): " << Config->Channel;
     }
-    
+
     if((i == 433))
     {
       Config->BotNick.push_back(Flux::RandomNickString(5));
       ircproto->nick(Config->BotNick);
       istempnick = true;
     }
-    
+
     if((i == 376))
     {
       Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << Config->LogColor;
@@ -563,7 +563,7 @@ public:
       }
     }
   }
-  
+
   void OnJoin(User *u, Channel *c)
   {
     u->SendMessage("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(),
@@ -576,14 +576,14 @@ public:
      if(kickee && kickee->nick.equals_ci(Config->BotNick))
      {
        Log(u) << "kicked me from " << c->name << '(' << reason << ')';
-	c->SendJoin(); 
+	c->SendJoin();
      }
   }
 
   void OnNotice(User *u, const Flux::vector &params)
   {
     Flux::string msg = CondenseString(params);
-      
+
     // Auto-Identify
     if(msg.search(Config->AutoIdentString))
     {

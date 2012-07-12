@@ -24,7 +24,7 @@ int INIReader::Parse(const Flux::string &filename)
   std::ifstream file(filename.c_str());
   int linenum = 0;
   Flux::string line, section, name, value;
-  
+
   if(file.is_open())
   {
    while(file.good())
@@ -120,10 +120,10 @@ int INIReader::Parse(const Flux::string &filename)
     else
       throw ConfigException(printfify("Undefined data: %i", linenum));
    }
-   
+
    if(in_comment)
      throw ConfigException(printfify("Unterminated comment: %i", linenum));
-   
+
    file.close();
   }
   else

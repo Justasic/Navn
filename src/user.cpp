@@ -36,7 +36,7 @@ User::~User()
     if(it->first)
       it->first->DelUser(this);
   ChannelList.clear();
-  
+
   Log() << "Deleting user " << this->nick << '!' << this->ident << '@' << this->host << (this->realname.empty()?"":" :"+this->realname);
   UserNickList.erase(this->nick);
 }
@@ -146,16 +146,4 @@ User *finduser(const Flux::string &fnick)
     return it->second;
 
   return NULL;
-}
-
-void ListUsers(CommandSource &source)
-{
-  Flux::string users;
-  for(Flux::map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end; ++it)
-  {
-    User *u2 = it->second;
-    users += u2->nick+' ';
-  }
-  users.trim();
-  source.Reply("Users: %s\n", users.c_str());
 }

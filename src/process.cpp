@@ -245,7 +245,7 @@ void process(const Flux::string &buffer)
    if(source.empty() || buf.empty())
      return;
   }
-  
+
   sepstream bufferseparator(buf, ' ');
   Flux::string bufferseparator_token;
   Flux::string command = buf;
@@ -278,21 +278,21 @@ void process(const Flux::string &buffer)
      Log(LOG_TERMINAL) << "No Params";
    else
      for(unsigned i =0; i < params.size(); ++i)
-       Log(LOG_TERMINAL) << "Params " << i << ": " << Flux::Sanitize(params[i]);
+       Log(LOG_TERMINAL) << "Params[" << i << "]: " << Flux::Sanitize(params[i]);
   }
-  
+
   /***********************************************/
   /* make local variables instead of global ones */
   const Flux::string receiver = params.size() > 0 ? params[0] : "";
   Flux::string message = params.size() > 1? params[1] : "";
   const Flux::string nickname = source.isolate(':', '!'),
   uident = source.isolate('!', '@'), uhost = source.isolate('@', ' ');
-  
+
   User *u = finduser(nickname);
   Channel *c = findchannel(receiver);
   Flux::vector params2 = ParamitizeString(message, ' ');
   /***********************************************/
-  
+
   if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION"))
   {
     FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));
@@ -395,20 +395,57 @@ void process(const Flux::string &buffer)
   }
 
   /**************************************/
+
+  // Get channel timestamp and modes with the below numerics
+  if(command == "329")
+  {
+    Channel *chan = findchannel(params[1]);
+    if(chan)
+      chan->creation_time = static_cast<long>(params[2]);
+  }
+
+  if(command == "324")
+  {
+    // NOTE: This *only* does the modes with + in front of them
+    Channel *chan = findchannel(params[1]);
+    if(chan)
+      chan->modes = params[2];
+  }
+
+  // Get the actual topic
+  if(command == "332")
+  {
+    Channel *chan = findchannel(params[1]);
+    if(chan)
+      chan->topic = params[2];
+  }
+
+  // Get the topic setter and timestamp
+  if(command == "333")
+  {
+    Channel *chan = findchannel(params[1]);
+    if(chan)
+    {
+      chan->topic_time = static_cast<long>(params[3]);
+      chan->topic_setter = params[2];
+    }
+  }
+
+  /**************************************/
   // Make sure we have valid information being passed to the core commands and Modules
   if(!c && !nickname.search('.') && IsValidChannel(receiver) && protocoldebug)
     Log(LOG_WARN) << "No channel being passed to CommandSource???";
 
   if(!u && !nickname.search('.') && protocoldebug)
     Log(LOG_WARN) << "No User being passed to CommandSource???";
-  
+
   CommandSource Source;
   Source.u = u; //User class
   Source.c = c; //Channel class
   Source.params = params;
   Source.raw = buffer;
   /**************************************/
-  
+
   if(command == "352")
     ProcessJoin(Source, c->name);
 
