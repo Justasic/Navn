@@ -168,31 +168,31 @@ void Log::ToFile(const std::stringstream &logstream)
   // Make sure we have the log file
   this->filename = Config ? CreateLogName(Config->LogFile, starttime) : "";
   Flux::string LogColor = Config ? Config->LogColor : "\033[0m";
-  
+
   // Log to terminal
   if((type != LOG_SILENT || type != LOG_CRITICAL) && InTerm())
     std::cout << (nocolor ? NoTermColor(logstream.str()) : logstream.str()) << std::endl;
-  
+
   if(type == LOG_CRITICAL && InTerm()) // Log to stderr instead of stdout
     std::cerr << (nocolor ? NoTermColor(logstream.str()) : logstream.str()) << std::endl;
-  
+
   if(this->filename.empty())
   {
     std::cerr << "\033[22;31m" << TimeStamp() << " [CRITICAL] Cannot open log file!" << LogColor << std::endl;
     return; // Exit if there's no file to log to
   }
-  
+
   try
   {
     CheckLogDelete(this);
     log.open(this->filename.c_str(), std::fstream::out | std::fstream::app);
-    
+
     if(!log.is_open())
 	throw LogException(Config->LogFile.empty()?"Cannot open Log File.":
 	Flux::string("Failed to open Log File "+this->filename+": "+strerror(errno)).c_str());
-    
+
     log << NoTermColor(logstream.str()) << std::endl;
-    
+
     if(log.is_open())
       log.close();
   }
@@ -223,7 +223,7 @@ Log::~Log()
   FOREACH_RESULT(I_OnLog, OnLog(this), result);
   if(result != EVENT_CONTINUE)
     return;
-  
+
   switch(type)
   {
     case LOG_SILENT:

@@ -56,11 +56,11 @@ protected:
 public:
   void *handle;
   Flux::string name, filename, filepath;
-  Flux::string GetAuthor();
-  Flux::string GetVersion();
-  bool GetPermanent();
-  ModulePriority GetPriority();
-  time_t GetLoadTime();
+  inline Flux::string GetAuthor() { return this->author; }
+  inline Flux::string GetVersion() { return this->version; }
+  inline bool GetPermanent() { return this->permanent; }
+  inline ModulePriority GetPriority() { return this->Priority; }
+  inline time_t GetLoadTime() { return this->loadtime; }
   Module(const Flux::string&);
 
   virtual ~Module();

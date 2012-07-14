@@ -65,9 +65,13 @@ template<typename T, typename V> inline T value_cast(const V &y)
   return x;
 }
 
-namespace Flux{
+namespace Flux
+{
  class string;
+ typedef std::vector<string> vector;
+ Flux::string ConcatinateVector(const vector &p);
 }
+
 extern CoreExport std::vector<Flux::string> ParamitizeString(const Flux::string &src, char delim);
 Flux::string CondenseString(const std::vector<Flux::string> &p);
 /** Case insensitive map, ASCII rules.
@@ -252,7 +256,8 @@ inline bool operator!=(const sstr &leftval, const ci::string &rightval)
  * most function programming for the string class goes to The Anope development team but
  * a lot (casting operator for example) is done by Justasic
  */
-namespace Flux {
+namespace Flux
+{
   /** This class was ported from Anope IRC services to work with Navn
    * most function programming credit goes to The Anope Team
    * See http://tinyurl.com/6btqne4
@@ -276,6 +281,7 @@ namespace Flux {
     explicit string(double d) : _string() { _string = value_cast<sstr>(d); }
     explicit string(int i) : _string() { _string = value_cast<sstr>(i); }
     string(char chr) : _string() { _string = chr; }
+    string(const Flux::vector &params) : _string() { _string = value_cast<sstr>(ConcatinateVector(params)); }
     string(const char *_str) : _string(_str) { }
     string(const sstr &_str) : _string(_str) { }
     string(const ci::string &_str) : _string(_str.c_str()) { }
@@ -284,6 +290,7 @@ namespace Flux {
     template <class InputIterator> string(InputIterator first, InputIterator last) : _string(first, last) { }
 
     inline string &operator=(char chr) { this->_string = chr; return *this; }
+    inline string &operator=(const Flux::vector &params) { this->_string = value_cast<sstr>(ConcatinateVector(params)); return *this; }
     inline string &operator=(const char *_str) { this->_string = _str; return *this; }
     inline string &operator=(const sstr &_str) { this->_string = _str; return *this; }
     inline string &operator=(const ci::string &_str) { this->_string = _str.c_str(); return *this; }
@@ -310,18 +317,21 @@ namespace Flux {
     inline bool operator!=(const string &_str) const { return !operator==(_str); }
 
     inline string &operator+=(char chr) { this->_string += chr; return *this; }
+    inline string &operator+=(const Flux::vector &params) { this->_string += value_cast<sstr>(ConcatinateVector(params)); return *this; }
     inline string &operator+=(const char *_str) { this->_string += _str; return *this; }
     inline string &operator+=(const sstr &_str) { this->_string += _str; return *this; }
     inline string &operator+=(const ci::string &_str) { this->_string += _str.c_str(); return *this; }
     inline string &operator+=(const string &_str) { if (this != &_str) this->_string += _str._string; return *this; }
 
     inline const string operator+(char chr) const { return string(*this) += chr; }
+    inline const string operator+(const Flux::vector &params) const { return string(*this) += ConcatinateVector(params); }
     inline const string operator+(const char *_str) const { return string(*this) += _str; }
     inline const string operator+(const sstr &_str) const { return string(*this) += _str; }
     inline const string operator+(const ci::string &_str) const { return string(*this) += _str; }
     inline const string operator+(const string &_str) const { return string(*this) += _str; }
 
     friend const string operator+(char chr, const string &str);
+    friend const string operator+(const Flux::vector &params);
     friend const string operator+(const char *_str, const string &str);
     friend const string operator+(const sstr &_str, const string &str);
     friend const string operator+(const ci::string &_str, const string &str);
@@ -383,7 +393,7 @@ namespace Flux {
 	(*it)[0] = ::toupper((*it)[0]);
       return CondenseString(params);
     }
-    
+
     inline void clear() { this->_string.clear(); }
 
     inline bool search(const string &_str) { if(_string.find(_str._string) != sstr::npos) return true; return false; }
@@ -444,6 +454,7 @@ namespace Flux {
     template<class InputIterator> inline void insert(iterator p, InputIterator first, InputIterator last) { return this->_string.insert(p, first, last); }
 
     inline string assign(const string &str) { return this->_string.assign(str._string); }
+    inline string assign(const Flux::vector &params) { return this->_string.assign(value_cast<sstr>(ConcatinateVector(params))); }
     inline string assign(const string &str, size_t pos, size_t n) { return this->_string.assign(str._string, pos, n); }
     inline string assign(const char* s, size_t n) { return this->_string.assign(s, n); }
     inline string assign(const char* s) { return this->_string.assign(s); }
@@ -656,19 +667,19 @@ namespace Flux {
     friend std::ostream &operator<<(std::ostream &os, const string &_str);
     friend std::istream &operator>>(std::istream &os, string &_str);
   }; //end of string class
+
   template<typename T> class map : public std::map<string, T> { };
   template<typename T> class insensitive_map : public std::map<string, T, ci::less> { };
-  typedef std::vector<string> vector;
   extern CoreExport Flux::string Sanitize(const Flux::string&);
   extern CoreExport Flux::string RandomString(size_t);
   extern CoreExport Flux::string RandomNickString(size_t);
   inline std::ostream &operator<<(std::ostream &os, const string &_str) { return os << _str._string; }
   inline std::istream &operator>>(std::istream &os, string &_str) { return os >> _str._string; }
   inline const string operator+(char chr, const string &str) { string tmp(chr); tmp += str; return tmp; }
+//   inline const string operator+(const Flux::vector &params) { string tmp; temp += ConcatinateVector(params); return tmp; }
   inline const string operator+(const char *_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
   inline const string operator+(const sstr &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
   inline const string operator+(const ci::string &_str, const string &str) { string tmp(_str); tmp += str; return tmp; }
-
 }//end of namespace
 
 class CoreExport sepstream

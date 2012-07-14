@@ -111,7 +111,7 @@ void ProcessChannelCommand(CommandSource &Source, const Flux::vector &params)
     else
     {
       Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
-      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
+      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
 
       for(unsigned i = 0; i < Config->Owners.size(); ++i)
       {
@@ -165,7 +165,7 @@ void ProcessPrivateCommand(CommandSource &Source, const Flux::vector &params)
     else
     { //Module segfaulted.
       Log() << "Command " << com->name << " failed to execute. Stack Restored.";
-      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", CondenseString(Config->Owners).c_str());
+      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
 
       for(unsigned i = 0; i < Config->Owners.size(); ++i)
       {

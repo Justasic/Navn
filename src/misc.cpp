@@ -246,11 +246,11 @@ Flux::string printfify(const char *fmt, ...)
 }
 
 /**
- * \fn Flux::string VectorString(const Flux::vector &params)
- * \brief Returns a condensed string of a Flux::vector
+ * \fn Flux::string ConcatinateVector(const Flux::vector &params)
+ * \brief Returns a concatinated string of a Flux::vector
  * \param Flux::string A string of a Flux::vector condensed
  */
-Flux::string CondenseString(const Flux::vector &p)
+Flux::string Flux::ConcatinateVector(const Flux::vector &p)
 {
   Flux::vector params = *const_cast<Flux::vector*>(&(p)); //Why is this so complex?
   Flux::string ret;

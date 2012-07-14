@@ -11,6 +11,9 @@ Actually track set topic times, topic setters, channel modes, channel creation t
 Removed
 Removed ListUsers and ListChannels because it's useless
 Rewrote the command processor to allow for non-hard coded fantasy prefixes
+Renamed CondenseString to ConcatinateVector and moved it to the Flux namespace
+ConcatinateVector is now part of Flux::string, allowing Flux::vector to be easily turned into a Flux::string
+Simple module functions are now inline
 
 Navn 2.0.1
 ==========

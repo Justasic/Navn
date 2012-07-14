@@ -64,32 +64,3 @@ void Module::SetVersion(const Flux::string &ver) { this->version = ver; }
 void Module::SetPriority(ModulePriority p) { this->Priority = p; }
 
 void Module::SetPermanent(bool value) { this->permanent = value; }
-
-bool Module::GetPermanent() { return this->permanent; }
-/**
- * \fn Flux::string Module::GetVersion()
- * \brief Gets the string of the Modules version
- * \return The Modules version
- */
-Flux::string Module::GetVersion() { return this->version; }
-
-/**
- * \fn time_t Module::GetLoadTime()
- * \brief Gets the time the Module was loaded
- * \return load time of the Module
- */
-time_t Module::GetLoadTime() { return this->loadtime; }
-
-/**
- * \fn Flux::string Module::GetAuthor()
- * \brief Gets the Module author(s)
- * \return The Modules author string
- */
-Flux::string Module::GetAuthor() { return this->author; }
-
-/**
- * \fn ModulePriority Module::GetPriority()
- * \brief Gets the Module priority
- * \return Priority of the Module
- */
-ModulePriority Module::GetPriority() { return this->Priority; }
