@@ -28,11 +28,8 @@
  */
 
 // Module Global Classes/Functions
-class irc_string;
 class CommandLineArguments;
 E Flux::string getprogdir(const Flux::string&);
-E DEPRECATED(Flux::string removeCommand(Flux::string command, Flux::string s));
-E DEPRECATED(Flux::string urlify(const Flux::string &received));
 E Flux::string execute(const char*);
 E void restart(const Flux::string&);
 E void Rehash();

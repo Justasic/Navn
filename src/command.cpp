@@ -297,6 +297,11 @@ const Flux::string &Command::GetDesc() const
  return this->desc;
 }
 
+CommandType Command::GetType() const
+{
+  return this->type;
+}
+
 /**
  * \brief Returns the help for the command if available
  * \fn bool Command::OnHelp(CommandSource &source, const Flux::string &subcommand)

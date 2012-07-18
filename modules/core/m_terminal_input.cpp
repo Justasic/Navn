@@ -1,5 +1,5 @@
 /* Navn IRC bot -- Commandline interface
- * 
+ *
  * (C) 2011-2012 Azuru
  * Contact us at Development@Azuru.net
  *
@@ -45,7 +45,7 @@ class CliUser : public User
     }
     return Flux::Sanitize(actualstring);
   }
-  
+
 public:
   CliUser() : User("Console", "Konsole", "magic.location", "Touch my body, feel me on the floor", "127.0.0.1")
   {
@@ -81,7 +81,7 @@ void ProcessInput(const Flux::string &str)
     DeathBlade->SendMessage("Commands cannot be prefixed with !");
     return;
   }
-  
+
   CommandSource source;
   source.u = DeathBlade;
   source.c = NULL;
@@ -95,7 +95,7 @@ void ProcessInput(const Flux::string &str)
 /** \class InputThread
  * This thread allows for user input to be possible, this is activated when the nofork option is specified.
  */
-class InputThread : public Thread 
+class InputThread : public Thread
 {
 public:
   bool exiting;
@@ -104,14 +104,14 @@ public:
     Log(LOG_THREAD) << "Input Thread Initializing.";
     this->Start();
   }
-  
+
   ~InputThread()
   {
     Log(LOG_THREAD) << "Input Thread Exiting.";
     exiting = true;
     SetExitState();
   }
-  
+
   void ToRun()
   {
     int nobomb = 0, last_run = time(NULL);
@@ -128,7 +128,7 @@ public:
       Flux::string buf;
       std::getline(std::cin, buf.std_str());
       buf.trim();
-      
+
       if(!buf.empty())
 	ProcessInput(buf);
       else
@@ -155,7 +155,7 @@ public:
     else
       throw ModuleException("Cannot run m_terminal_input when fork'ed");
   }
-  
+
   ~ModTerminalInput()
   {
     if(t)

@@ -99,6 +99,7 @@ public:
   time_t ReconnectTime;
   size_t LogTime;
   size_t SockWait;
+  size_t MaxMessageLen;
 private:
   void Read();
 };

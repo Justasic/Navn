@@ -217,7 +217,7 @@ Log::~Log()
   if(this->u && !this->c)
     message = this->u->nick + " " + message;
   if(this->u && this->c)
-    message = this->u->nick + " used " + this->c->name + " " + message;
+    message = this->u->nick + " used " + (this->c->GetType() != C_PRIVATE ? "fantasy" : "") + " " + this->c->name + " " + message;
 
   EventResult result;
   FOREACH_RESULT(I_OnLog, OnLog(this), result);

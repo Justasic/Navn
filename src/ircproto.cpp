@@ -57,6 +57,24 @@ public:
   }
 };
 
+void CorrectMessageLength(Flux::string &message)
+{
+  Flux::vector params = ParamitizeString(message, '\n');
+
+  for(unsigned i = 0; i < params.size(); ++i)
+  {
+    Flux::string msg = params[i];
+    if(msg.size() >= Config->MaxMessageLen)
+    {
+      Log(LOG_WARN) << "Message length of " << msg.size() << " exceeds max length of " << Config->MaxMessageLen << "! Splitting messages..";
+      msg.insert(Config->MaxMessageLen, '\n');
+      params[i] = msg;
+    }
+  }
+
+  message = params;
+}
+
 /**
  *\file  ircproto.cpp
  *\brief Contains the IRCProto class.
@@ -114,10 +132,13 @@ void IRCProto::privmsg(const Flux::string &where, const char *fmt, ...)
  */
 void IRCProto::privmsg(const Flux::string &where, const Flux::string &msg)
 {
- sepstream sep(msg, '\n');
- Flux::string tok;
- while(sep.GetToken(tok))
-   this->Raw("PRIVMSG %s :%s\n", where.c_str(), tok.c_str());
+  sepstream sep(msg, '\n');
+  Flux::string tok;
+  while(sep.GetToken(tok))
+  {
+    CorrectMessageLength(tok);
+    this->Raw("PRIVMSG %s :%s\n", where.c_str(), tok.c_str());
+  }
 }
 /**
  * \brief Sends a IRC notice to the user or channel
@@ -142,10 +163,13 @@ void IRCProto::notice(const Flux::string &where, const char *fmt, ...)
  */
 void IRCProto::notice(const Flux::string &where, const Flux::string &msg)
 {
- sepstream sep(msg, '\n');
- Flux::string tok;
- while(sep.GetToken(tok))
-   this->Raw("NOTICE %s :%s\n", where.c_str(), tok.c_str());
+  sepstream sep(msg, '\n');
+  Flux::string tok;
+  while(sep.GetToken(tok))
+  {
+    CorrectMessageLength(tok);
+    this->Raw("NOTICE %s :%s\n", where.c_str(), tok.c_str());
+  }
 }
 /**
  * \brief Sends a IRC action (/me) to the user or channel
