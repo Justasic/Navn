@@ -48,7 +48,7 @@ public:
 
   void OnPrivmsg(User *u, const Flux::vector &params)
   {
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = params;
 
     if(msg.search("I am a very long command"))
       Log(LOG_TERMINAL) << "PRIVMSG: " << msg;
@@ -56,10 +56,11 @@ public:
 
   void OnNotice(User *u, const Flux::vector &params)
   {
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = params;
 
     if(msg.search("I am a very long notice"))
       Log(LOG_TERMINAL) << "NOTICE: " << msg;
   }
 };
+
 MODULE_HOOK(SimpleMod)

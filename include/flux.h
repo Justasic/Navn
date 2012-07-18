@@ -73,7 +73,6 @@ namespace Flux
 }
 
 extern CoreExport std::vector<Flux::string> ParamitizeString(const Flux::string &src, char delim);
-Flux::string CondenseString(const std::vector<Flux::string> &p);
 /** Case insensitive map, ASCII rules.
  * That is;
  * [ != {, but A == a.
@@ -391,7 +390,7 @@ namespace Flux
       std::vector<Flux::string> params = ParamitizeString(_string, ' ');
       for(std::vector<Flux::string>::iterator it = params.begin(); it != params.end(); ++it)
 	(*it)[0] = ::toupper((*it)[0]);
-      return CondenseString(params);
+      return params;
     }
 
     inline void clear() { this->_string.clear(); }

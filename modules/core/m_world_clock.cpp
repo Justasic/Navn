@@ -46,12 +46,14 @@ public:
     if(location.empty())
     {
       Clock * wclock = new Clock();
+
       c->SendMessage("Current time around the World:");
       c->SendMessage("GMT == %s", wclock->UTC().c_str());
       c->SendMessage("New York (USA) == %s", wclock->EST().c_str());
       c->SendMessage("California (USA) == %s", wclock->PST().c_str());
       c->SendMessage("Beijing (China) == %s", wclock->CCT().c_str());
       c->SendMessage("Sydney (Australia) == %s", wclock->AUS().c_str());
+
       tm *ptm;
       time_t rawtime;
       time(&rawtime);
@@ -60,7 +62,7 @@ public:
       strftime(buf,100,"Navn's Time: %Z %c",ptm);
       c->SendMessage(buf);
       Log(source.u, this) << "command in " << c->name;
-      return;
+
     }
     else
     {
@@ -92,7 +94,8 @@ public:
   }
 };
 
-class world_clock:public Module{
+class world_clock : public Module
+{
   CommandCWClock clock;
 public:
   world_clock(const Flux::string &Name):Module(Name), clock(this)

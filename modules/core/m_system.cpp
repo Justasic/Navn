@@ -582,7 +582,7 @@ public:
 
   void OnNotice(User *u, const Flux::vector &params)
   {
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = params;
 
     // Auto-Identify
     if(msg.search(Config->AutoIdentString))

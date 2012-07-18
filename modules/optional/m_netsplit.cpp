@@ -9,6 +9,8 @@
  */
 #include "modules.h"
 
+#if 0
+
 class NetsplitModule : public Module
 {
   std::map<time_t, std::map<User*, message> > SplitUsers;
@@ -26,6 +28,7 @@ public:
     std::map<User*, const Flux::string> quituser;
     quituser[u] = message;
     SplitUsers[time(NULL)] = quituser;
+    Flux::map<User*> LostUsers;
 
     for(std::map<time_t, std::map<User*, message> >::iterator it = SplitUsers.begin(), it_end = SplitUsers.end(); it != it_end; ++it)
     {
@@ -34,6 +37,14 @@ public:
 	return;
       else
       {
+	for(std::map<User*, const Flux::string>::iterator it2 = it->second.begin(), it2_end = it->second.end(); it2 != it2_end; ++it2)
+	{
+	  User *u = it2->first;
+	  const Flux::string msg = it2->second;
+
+	  LostUsers[msg] = u;
+	}
+
 	Log(LOG_TERMINAL) << "Netsplt, lost " << it->second.size() << " users.";
       }
     }
@@ -47,3 +58,4 @@ public:
 };
 
 MODULE_HOOK(NetsplitModule)
+#endif

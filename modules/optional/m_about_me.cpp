@@ -74,17 +74,17 @@ public:
 
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = params;
     if(msg.equals_ci("about me"))
     {
-	  u->SendMessage("Raw: %s", sock->GetLastBuf().c_str());
-	  u->SendMessage("Message: %s", msg.c_str());
-	  u->SendMessage("Nickname: %s", u->nick.c_str());
-	  u->SendMessage("Ident: %s", u->ident.c_str());
-	  u->SendMessage("Host: %s", u->host.c_str());
-	  u->SendMessage("Channel: %s", c->name.c_str());
-	  u->SendMessage("Fullhost: %s", u->fullhost.c_str());
-	  Log() << u->nick << " requested information about themself";
+      u->SendMessage("Raw: %s", sock->GetLastBuf().c_str());
+      u->SendMessage("Message: %s", msg.c_str());
+      u->SendMessage("Nickname: %s", u->nick.c_str());
+      u->SendMessage("Ident: %s", u->ident.c_str());
+      u->SendMessage("Host: %s", u->host.c_str());
+      u->SendMessage("Channel: %s", c->name.c_str());
+      u->SendMessage("Fullhost: %s", u->fullhost.c_str());
+      Log() << u->nick << " requested information about themself";
     }
  }
 };

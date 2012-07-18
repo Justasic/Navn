@@ -33,7 +33,7 @@
 #include "log.h"
 class CoreExport SocketIO : public Base
 {
-private:
+protected:
   Flux::string server, port, ip, LastBuf;
   int sockn;
   bool ipv6;

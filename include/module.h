@@ -31,7 +31,7 @@ enum Implementation
 	I_OnNotice, I_OnNickChange, I_OnChannelMode, I_OnUserMode,
 	I_OnChannelOp, I_OnPart, I_OnInvite, I_OnArgument, I_OnFork,
 	I_OnSocketError, I_OnPing, I_OnPong, I_OnPreReceiveMessage,
-	I_OnPrivmsgChannel, I_OnNoticeChannel, I_OnLog,
+	I_OnPrivmsgChannel, I_OnNoticeChannel, I_OnLog, I_OnGarbageCollect,
   I_END
 };
 
@@ -73,6 +73,7 @@ public:
   virtual void OnPing(const std::vector<Flux::string>&) {}
   virtual void OnPong(const std::vector<Flux::string>&) {}
   virtual void OnArgument(int, const Flux::string&) {}
+  virtual void OnGarbageCollect() {}
   virtual EventResult OnLog(Log*) { return EVENT_CONTINUE; }
   virtual void OnModuleLoad(Module*) {}
   virtual void OnFork(int) {}

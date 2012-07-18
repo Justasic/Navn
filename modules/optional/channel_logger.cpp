@@ -86,7 +86,7 @@ public:
     if(c->name != Config->LogChannel)
       return;
 
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = params;
 
     if(nolog != "#nl" && u)
     {
@@ -107,11 +107,8 @@ public:
     if(c->name != Config->LogChannel)
       return;
 
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i]+' ';
+    Flux::string msg = params;
 
-    msg.trim();
     Flux::string nolog = params.size() == 2?params[1]:"";
     if(nolog != "#nl" && u)
       CLog("-Notice- %s: %s", u->nick.c_str(), Flux::Sanitize(msg).c_str());

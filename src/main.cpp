@@ -40,7 +40,7 @@ Flux::string binary_path, bot_bin, binary_dir, quitmsg;
 const Flux::string password = make_pass();
 char segv_location[255];
 iSupport isupport;
-unsigned int loopcount;
+time_t starttime;
 
 // Global Pointers
 IRCProto *ircproto;
@@ -99,11 +99,11 @@ public:
 	return;
 
       startcount++;
-      Log() << "Connecting to server '" << this->Server << ":" << this->Port << "'";
+      Log() << "Connecting to server '" << this->server << ":" << this->port << "'";
 
-      if(Config->Server.empty())
+      if(this->server.empty())
 	throw SocketException("No Server Specified.");
-      if(Config->Port.empty())
+      if(this->port.empty())
 	throw SocketException("No Port Specified.");
 
       FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
@@ -146,7 +146,7 @@ int main (int argcx, char** argvx, char *envp[])
 {
   SET_SEGV_LOCATION();
   unsigned int loopcount = 0;
-  time_t last_check = time(NULL);
+  time_t last_check = starttime = time(NULL);
   try
   {
     startup(argcx, argvx, envp);

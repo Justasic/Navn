@@ -25,9 +25,7 @@ public:
   }
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
-    Flux::string msg;
-    for(unsigned i=0; i < params.size(); ++i)
-      msg += params[i] +' ';
+    Flux::string msg = params;
     if (msg.search_ci("!rehash"))
     {
       u->SendMessage("Rehashing xml file...");
