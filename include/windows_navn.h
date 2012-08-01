@@ -56,9 +56,9 @@
 	#define O_CREAT _O_CREAT
 	#define S_IREAD _S_IREAD
 	#define S_IWRITE _S_IWRITE
-	#define snprintf    _snprintf 
-	#define vsnprintf   _vsnprintf 
-	#define strcasecmp  _stricmp 
+	#define snprintf    _snprintf
+	#define vsnprintf   _vsnprintf
+	#define strcasecmp  _stricmp
 	#define strncasecmp _strnicmp
 	#define execve _execve
 	#define Delete _unlink
@@ -83,7 +83,7 @@
 	#define EINPROGRESS WSAEWOULDBLOCK
 
 	// System info stuff
-	struct CoreExport sysinfo 
+	struct CoreExport sysinfo
 	{
 		long uptime;             /* Seconds since boot */
 		unsigned long loads[3];  /* 1, 5, and 15 minute load averages */
@@ -193,6 +193,7 @@
 	#include <sys/time.h>
 	#include <alloca.h>
 	#include <sys/select.h>
+	#include "flux.h"
 
 	#define SET_SEGV_LOCATION() snprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 
