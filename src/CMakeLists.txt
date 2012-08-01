@@ -2,10 +2,11 @@
 file(GLOB SRC_SRCS_CPP RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
 set(SRC_SRCS ${SRC_SRCS_C} ${SRC_SRCS_CPP})
 
-# If using Windows, add the windows.cpp, the win32 threading engine, and the socket engine to the list
-#if(WIN32)
-#  append_to_list(SRC_SRCS src/windows.cpp)
-#endif(WIN32)
+# If using Windows, add the windows specific sources
+if(WIN32)
+  file(GLOB WINDOWS_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "windows/*.cpp")
+  append_to_list(SRC_SRCS ${WINDOWS_SRCS})
+endif(WIN32)
 
 sort_list(SRC_SRCS)
 
@@ -55,8 +56,8 @@ endif(EXTRA_INCLUDES)
 
 # If compiling with Visual Studio, create a static library out of win32/win32_memory.cpp to be included with everything else, needed to override its override of new/delete operators
 if(MSVC)
-  set_source_files_properties(win32_memory.cpp PROPERTIES LANGUAGE CXX COMPILE_FLAGS "${CXXFLAGS}")
-  add_library(win32_memory STATIC win32_memory.cpp)
+  set_source_files_properties(windows/win32_memory.cpp PROPERTIES LANGUAGE CXX COMPILE_FLAGS "${CXXFLAGS}")
+  add_library(win32_memory STATIC windows/win32_memory.cpp)
   set(WIN32_MEMORY win32_memory)
 else(MSVC)
   set(WIN32_MEMORY)

@@ -196,6 +196,7 @@ endif(CMAKE244_OR_BETTER)
 # Make sure we have windows defined in C++ so we know wtf is happening
 if(WIN32)
   add_definitions(-D_WIN32)
+  include_directories(src/windows)
 endif(WIN32)
 
 # If using Visual Studio, set the C++ flags accordingly
