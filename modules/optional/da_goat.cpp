@@ -68,7 +68,7 @@ public:
     c->SendMessage("The Current Navn Bot Version is \002\0037v%s\017", VERSION);
     c->SendMessage("Navn's code can be found at \002git://gitorious.org/navn/navn.git");
     c->SendMessage("Report all bugs at: \2http://bugs.Azuru.net\2");
-    c->SendMessage("%s is managed by: \2%s\2", Config->BotNick.c_str(), CondenseString(Config->Owners).c_str());
+    c->SendMessage("%s is managed by: \2%s\2", Config->BotNick.c_str(), ConcatinateVector(Config->Owners).c_str());
     Log(u, this) << "command in " << c->name;
   }
 
@@ -342,7 +342,7 @@ public:
 
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
-    Flux::string cmd = params.empty()?"":params[0], msg = CondenseString(params);
+    Flux::string cmd = params.empty()?"":params[0], msg = ConcatinateVector(params);
     /******************************Easter Eggs*********************************/
     if(cmd.equals_ci("!poke"))
     { //Easter egg ;P

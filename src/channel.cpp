@@ -269,7 +269,7 @@ void QuitUser(User *u)
 
 Channel *findchannel(const Flux::string &channel)
 {
-  Flux::map<Channel *>::iterator it = ChanMap.find(channel);
+  Flux::insensitive_map<Channel *>::iterator it = ChanMap.find(channel);
   if (it != ChanMap.end())
     return it->second;
   return NULL;

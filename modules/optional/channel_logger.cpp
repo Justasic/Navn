@@ -86,7 +86,7 @@ public:
     if(c->name != Config->LogChannel)
       return;
 
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = ConcatinateVector(params);
 
     if(nolog != "#nl" && u)
     {

@@ -25,16 +25,8 @@
 #include "INIReader.h"
 #include <utility>
 #include <stdint.h>
-#include <arpa/nameser.h>
-#include <resolv.h>
-#include <dirent.h>
 #include <csignal>
-#include <unistd.h>
 #include <cstdlib>
-#include <sys/sysinfo.h>
-#include <sys/utsname.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 #include <cmath>
-#include <alloca.h>
 #endif

@@ -52,8 +52,9 @@ public:
       if(uname(&uts) < 0)
 	      throw CoreException("uname() Error");
 
-	ircproto->notice(source, "\001VERSION Navn-%s %s %s\001",VERSION_FULL, uts.sysname, uts.machine);
+	ircproto->notice(source, "\001VERSION Navn-%s %s %s\001", VERSION_FULL, uts.sysname, uts.machine);
     }
+
     if(cmd == "\001TIME\001")
     { // for CTCP TIME reply
 	ircproto->notice(source,"\001TIME %s\001", do_strftime(time(NULL), true).c_str());

@@ -307,7 +307,7 @@ void restart(const Flux::string &reason)
   }
 
   chdir(CurrentPath);
-  int execvpret = execvp(my_av[0], my_av);
+  int execvpret = execve(bot_bin.c_str(), my_av, my_envp);
 
   if(execvpret > 0)
     throw CoreException("Restart Failed, Exiting");
@@ -450,6 +450,7 @@ void startup(int argc, char** argv, char *envp[])
   my_envp = envp;
   starttime = time(NULL); //for bot uptime
 
+#ifndef _WIN32
   if(!getuid() && !getgid())
   {
     // Cannot use log here because it will throw errors if we do.
@@ -459,6 +460,7 @@ void startup(int argc, char** argv, char *envp[])
     std::cerr << Log::TimeStamp() << " \033[22;33m[WARNING]" << (Config?Config->LogColor:"\033[0m") << " because I am bad! The bot will start in 5 seconds." << std::endl;
     sleep(5);
   }
+#endif
 
   binary_dir = getprogdir(argv[0], bot_bin);
   if(binary_dir[binary_dir.length() - 1] == '.')

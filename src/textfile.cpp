@@ -9,6 +9,7 @@
  */
 
 #include "textfile.h"
+#include "windows_navn.h"
 
 /** TextFile parser
  * \class TextFile A File I/O wrapper for C++
@@ -199,12 +200,13 @@ bool TextFile::IsFile(const Flux::string &filename)
 Flux::vector TextFile::DirectoryListing(const Flux::string &directory)
 {
   Flux::vector nil;
+  DIR *dp = NULL;
   if(!TextFile::IsDirectory(directory))
     return nil;
 
-  DIR *dp;
+  //DIR *dp = opendir(directory.c_str());
   struct dirent *drip;
-  if((dp = opendir(directory.c_str())) == NULL)
+  if(!(dp = opendir(directory.c_str())))
     return nil;
 
   Flux::vector files;
@@ -267,7 +269,7 @@ Flux::string TextFile::SingleLine() { return SingleLineBuffer; }
  * \fn Flux::string TextFile::Extension()
  * \return File Extension
  */
-Flux::string TextFile::Extension()
+Flux::string TextFile::FileExtension()
 {
   if (filename.search('.'))
   {

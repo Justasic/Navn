@@ -54,6 +54,10 @@ SET(VERSION_FULL "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSI
 # because some of this is copypasta we set this var here
 SET(PROGRAM_NAME ${PROJECT_NAME})
 
+message(STATUS "Generating ${PROJECT_NAME} version ${VERSION_FULL}")
+message(STATUS "Build system is ${CMAKE_GENERATOR} with CMake ${CMAKE_VERSION}")
+message(STATUS "System is running ${CMAKE_SYSTEM} on an ${CMAKE_SYSTEM_PROCESSOR} processor")
+
 # Start with empty defaults for library and include directories, to be used by GNU compilers only
 set(DEFAULT_LIBRARY_DIRS)
 set(DEFAULT_INCLUDE_DIRS)
@@ -125,6 +129,37 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   endif(DEFAULT_INCLUDE_DIRS)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
+# If we are using Visual Studio, locate the path of the Windows Server 2008 SDK or Windows Server 2003 Platform SDK, depending on which is installed
+if(MSVC)
+  # If the path comes up as "/registry" from any of these, the path wasn't found, otherwise, we'll set WSDK_PATH to the corresponding path
+  # Look for the 2008 SDK under HKLM first
+  get_filename_component(WSDK2008_PATH "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows;CurrentInstallFolder]" ABSOLUTE CACHE)
+  if(WSDK2008_PATH STREQUAL "/registry")
+    # If not found, look for the 2003 SDK under HKLM
+    get_filename_component(WSDK2003_PATH "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\MicrosoftSDK\\InstalledSDKs\\D2FF9F89-8AA2-4373-8A31-C838BF4DBBE1;Install Dir]" ABSOLUTE CACHE)
+    if(WSDK2003_PATH STREQUAL "/registry")
+      # If not found, look for the 2008 SDK under HKCU
+      get_filename_component(WSDK2008_PATH "[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows;CurrentInstallFolder]" ABSOLUTE CACHE)
+      if(WSDK2008_PATH STREQUAL "/registry")
+        # If not found, look for the 2003 SDK under HKCU
+        get_filename_component(WSDK2003_PATH "[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\MicrosoftSDK\\InstalledSDKs\\D2FF9F89-8AA2-4373-8A31-C838BF4DBBE1;Install Dir]" ABSOLUTE CACHE)
+        if(WSDK2003_PATH STREQUAL "/regsitry")
+          # The SDK was never found, set the path to nothing
+          set(WSDK_PATH "")
+        else(WSDK2003_PATH STREQUAL "/regsitry")
+          set(WSDK_PATH "${WSDK2003_PATH}")
+        endif(WSDK2003_PATH STREQUAL "/regsitry")
+      else(WSDK2008_PATH STREQUAL "/registry")
+        set(WSDK_PATH "${WSDK2008_PATH}")
+      endif(WSDK2008_PATH STREQUAL "/registry")
+    else(WSDK2003_PATH STREQUAL "/registry")
+      set(WSDK_PATH "${WSDK2003_PATH}")
+    endif(WSDK2003_PATH STREQUAL "/registry")
+  else(WSDK2008_PATH STREQUAL "/registry")
+    set(WSDK_PATH "${WSDK2008_PATH}")
+  endif(WSDK2008_PATH STREQUAL "/registry")
+endif(MSVC)
+
 # If the user specifies -DCMAKE_BUILD_TYPE on the command line, take their definition
 # and dump it in the cache along with proper documentation, otherwise set CMAKE_BUILD_TYPE
 # to Debug
@@ -158,6 +193,7 @@ else(CMAKE244_OR_BETTER)
   include(TestCXXAcceptsFlag)
 endif(CMAKE244_OR_BETTER)
 
+# Make sure we have windows defined in C++ so we know wtf is happening
 if(WIN32)
   add_definitions(-D_WIN32)
 endif(WIN32)
@@ -169,7 +205,7 @@ if(MSVC)
   string(REPLACE "/GX " "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
   string(REPLACE "/W3 " "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
   # Set the compile flags to have warnings on the max setting (but disable a few annoying ones), exception handling turned on, the proper defines
-  set(CXXFLAGS "${CXXFLAGS} /W4 /wd4100 /wd4251 /wd4706 /wd4800 /wd4996 /EHs")
+  set(CXXFLAGS "${CXXFLAGS} /W4 /wd4100 /wd4127 /wd4250 /wd4251 /wd4355 /wd4706 /wd4800 /wd4996 /EHs")
   add_definitions(-DMSVCPP -D_CRT_SECURE_NO_WARNINGS)
 # Otherwise, we're not using Visual Studio
 else(MSVC)
@@ -289,7 +325,6 @@ find_program(GREP grep)
 find_program(SH sh)
 find_program(PERL perl)
 
-
 # Strip the leading and trailing spaces from the compile flags
 if(CXXFLAGS)
   strip_string(${CXXFLAGS} CXXFLAGS)
@@ -312,8 +347,8 @@ else(INSTDIR)
   set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/navn")
 endif(INSTDIR)
 
-ADD_SUBDIRECTORY(modules)
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(modules)
 
 set(CONFIG_INSTALL bot.example.conf ftp.sh brain.py README)
 install(FILES ${CONFIG_INSTALL}

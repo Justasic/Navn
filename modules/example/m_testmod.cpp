@@ -72,7 +72,7 @@ public:
   }
   virtual void OnPrivmsgChanenl(User *u, Channel *c, const Flux::vector &params)
   {
-    Flux::string s = CondenseString(params);
+    Flux::string s = ConcatinateVector(params);
     if(s.search_ci("Blah Blah"))
       u->SendMessage("Derp DERp");
    if(params[0].equals_ci("!userlist"))

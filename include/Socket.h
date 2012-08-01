@@ -12,14 +12,10 @@
  *\brief Socket header for Socket.cpp
  */
 #pragma once
-#ifndef SOCKET
-#define SOCKET
-
+#ifndef SOCKET_H
+#define SOCKET_H
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <unistd.h>
+
 #include <errno.h>
 #include <fstream>
 #include <iostream>
@@ -27,7 +23,6 @@
 #include <cstdarg>
 #include <ostream>
 #include <queue>
-#include <arpa/inet.h>
 
 #include "extern.h"
 #include "log.h"

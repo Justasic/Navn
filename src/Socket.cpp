@@ -15,7 +15,13 @@
 #include "Socket.h"
 #include <fcntl.h>
 #include <iostream>
-#include <sys/select.h>
+
+#ifdef _WIN32
+# define close windows_close
+# define accept windows_accept
+# define inet_pton windows_inet_pton
+# define inet_ntop windows_inet_ntop
+#endif
 
 bool throwex;
 Flux::string throwmsg;
@@ -76,6 +82,10 @@ SocketIO::SocketIO(const Flux::string &cserver, const Flux::string &cport) : ser
   FD_ZERO(&ReadFD);
   FD_ZERO(&WriteFD);
   FD_ZERO(&ExceptFD);
+
+#ifdef _WIN32
+  new WSAInitialization();
+#endif
 
   this->ip = ForwardResolution(cserver);
   throwex = false;

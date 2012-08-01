@@ -372,15 +372,18 @@ public:
   void Run(CommandSource &source, const Flux::vector &params)
   {
     int days, hours, mins;
-#ifndef _WIN32
-    if(sysinfo(&sys_info) != 0){//now here Justasic got pissed because c strings suck ass
-      Flux::string fuckingshit = Flux::string("sys_info Error: ") + Flux::string(strerror(errno));
-      throw ModuleException(fuckingshit.c_str());
+//#ifndef _WIN32
+    if(sysinfo(&sys_info) != 0)
+	{
+		//now here Justasic got pissed because c strings suck ass
+		Flux::string fuckingshit = Flux::string("sys_info Error: ") + Flux::string(strerror(errno));
+		throw ModuleException(fuckingshit.c_str());
     }
     struct utsname uts;
-    if(uname(&uts) < 0){
-      Flux::string fuckingshit = Flux::string("uname() Error: ") + Flux::string(strerror(errno));
-      throw ModuleException(fuckingshit.c_str());
+    if(uname(&uts) < 0)
+	{
+		Flux::string fuckingshit = Flux::string("uname() Error: ") + Flux::string(strerror(errno));
+		throw ModuleException(fuckingshit.c_str());
     }
 
     // Uptime
@@ -412,12 +415,13 @@ public:
     source.Reply("");
     source.Reply("System Name: %s\tRelease: %s %s\tMachine: %s", uts.nodename, uts.sysname, uts.release, uts.machine);
     source.Reply("System Version: %s", uts.version);
-
+#ifndef _WIN32
     source.Reply(execute("grep 'model name' /proc/cpuinfo").strip());
     source.Reply("CPUs: %s", execute("grep 'model name' /proc/cpuinfo | wc -l").c_str());
-#else
-    source.Reply("This is currently not available on windows syetems, sorry.");
 #endif
+//#else
+//    source.Reply("This is currently not available on windows syetems, sorry.");
+//#endif
     Log(source.u, this) << "command";
   }
   bool OnHelp(CommandSource &source, const Flux::string &nill)
@@ -582,7 +586,7 @@ public:
 
   void OnNotice(User *u, const Flux::vector &params)
   {
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = ConcatinateVector(params);
 
     // Auto-Identify
     if(msg.search(Config->AutoIdentString))

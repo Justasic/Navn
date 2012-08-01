@@ -11,8 +11,20 @@
 // NOTE: This Module is based on source from http://cboard.cprogramming.com/networking-device-communication/41635-ping-program.html
 // NOTE: This Module requires the bot to run as root!
 
-#include <linux/ip.h>
-#include <linux/icmp.h>
+#ifndef _WIN32
+# include <linux/ip.h>
+# include <linux/icmp.h>
+#else
+# include "iphdr.h"
+# include <stdlib.h>
+long int random(void)
+{
+	struct timeval tv;
+	gettimeofday(&tv, static_cast<void*>(0));
+	srand(tv.tv_sec + tv.tv_usec);
+	return rand();
+}
+#endif
 
 /*
  * in_cksum --
@@ -126,7 +138,8 @@ void PingThread::SendPing()
   ip = reinterpret_cast<struct iphdr*>(packet);
   icmp = reinterpret_cast<struct icmphdr*>(packet + sizeof(struct iphdr));
 
-  if ((proto = getprotobyname("icmp")) == NULL) {
+  if ((proto = getprotobyname("icmp")) == NULL)
+  {
     Log(LOG_WARN) << "[m_icmp_ping]: unknown protocol \"ICMP\"";
     source.Reply("Internal Error: ICMP protocol is unknown");
     return;
@@ -145,9 +158,6 @@ void PingThread::SendPing()
   ip->saddr        = inet_addr(hostnameip.c_str());
   ip->daddr        = inet_addr(address.c_str());
 
-
-
-
   if ((sockfd = socket(AF_INET, SOCK_RAW, proto->p_proto)) < 0)
   {
     source.Reply("Failed ping: %s", strerror(errno));
@@ -160,7 +170,7 @@ void PingThread::SendPing()
    *  a default ip header to the packet
    */
 
-  setsockopt(sockfd, IPPROTO_IP, IP_HDRINCL, &optval, sizeof(int));
+  setsockopt(sockfd, IPPROTO_IP, IP_HDRINCL, reinterpret_cast<const char*>(&optval), sizeof(int));
 
   /*
    *  here the icmp packet is created
@@ -171,7 +181,7 @@ void PingThread::SendPing()
   icmp->un.echo.id     = 0;
   icmp->un.echo.sequence   = 0;
   icmp->checksum       = 0;
-  icmp-> checksum      = in_cksum(reinterpret_cast<unsigned short *>(icmp), sizeof(struct icmphdr));
+  icmp->checksum       = in_cksum(reinterpret_cast<unsigned short *>(icmp), sizeof(struct icmphdr));
 
   ip->check            = in_cksum(reinterpret_cast<unsigned short *>(ip), sizeof(struct iphdr));
 

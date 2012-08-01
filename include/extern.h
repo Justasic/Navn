@@ -11,7 +11,6 @@
 #ifndef EXTERN_H
 #define EXTERN_H
 
-#include "flux.h"
 #include <list> //for std::list
 /* Prototypes and external variable declarations only */
 
@@ -25,7 +24,6 @@
 #define isalphibetic(c) (((c) >= '\x41' && (c) <= '\x5A') || ((c) >= '\x61' && (c) <= '\x7A'))
 #define isalphibeticnum(c) ( isalnum(c) || ((c) >= '\x41' && (c) <= '\x5A') || ((c) >= '\x61' && (c) <= '\x7A'))
 #define ACCESS_DENIED "Access is Denied."
-#define SET_SEGV_LOCATION() snprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __PRETTY_FUNCTION__);
 #define CLEAR_SEGV_LOCATION() segv_location[0]='\0';
 
 #ifdef HAVE_SETJMP_H
@@ -53,7 +51,7 @@ class XMLFile;
 struct CommandSource;
 
 /* structs */
-struct iSupport
+struct CoreExport iSupport
 {
   // Other options the server might send.
   Flux::map<Flux::string> other;
@@ -154,10 +152,11 @@ E Flux::string getprogdir(const Flux::string&, Flux::string &bin_var1 = bot_bin)
 E Flux::string DecodeModErr(ModErr err);
 E Flux::string isolate(char begin, char end, const Flux::string &msg);
 E Flux::string make_pass();
+E Flux::string execute(const char*);
 E Flux::string do_strftime(const time_t &t, bool short_output = false);
 E Flux::string duration(const time_t &t);
 E Flux::string printfify(const char*, ...);
-// E Flux::string CondenseString(const Flux::vector&);
+E Flux::string getprogdir(const Flux::string&);
 E int randint(int x, int y);
 E bool IsValidChannel(const Flux::string&);
 E bool InTerm();

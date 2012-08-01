@@ -32,6 +32,7 @@ void *EntryPoint(void *parameter)
   thread->ToRun();
   thread->SetExitState();
   pthread_exit(0);
+  return 0;
 }
 
 void Thread::SetExitState()

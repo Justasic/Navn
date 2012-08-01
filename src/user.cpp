@@ -140,7 +140,7 @@ void User::SendPrivmsg(const Flux::string &message)
 
 User *finduser(const Flux::string &fnick)
 {
-  Flux::map<User *>::iterator it = UserNickList.find(fnick);
+  Flux::insensitive_map<User *>::iterator it = UserNickList.find(fnick);
 
   if(it != UserNickList.end())
     return it->second;

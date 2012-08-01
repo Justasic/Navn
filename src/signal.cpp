@@ -11,6 +11,13 @@
 #include "includes.h"
 #include "module.h"
 
+#ifdef _WIN32
+# define SIGHUP -1
+# define SIGUSR1 -2
+# define SIGPIPE -3
+# define SIGKILL -4
+#endif
+
 /** Random Quit message selector
  * \fn Flux::string siginit(int sigstring)
  * \brief this selects a quit message out of 20, this should be used with a random number between 1 and 20.
@@ -184,10 +191,13 @@ void sigact(int sig)
  */
 void InitSignals()
 {
-  signal(SIGTERM, sigact);
+#ifndef _WIN32
   signal(SIGUSR1, sigact);
   signal(SIGPIPE, sigact);
-  signal(SIGINT, sigact);
   signal(SIGHUP, sigact);
+  signal(SIGKILL, sigact);
+#endif
+  signal(SIGINT, sigact);
+  signal(SIGTERM, sigact);
   signal(SIGSEGV, sigact);
 }

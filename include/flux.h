@@ -34,14 +34,21 @@
 # pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 # define DEPRECATED(func) func
 #endif
+
 /* stupid windows class crap for the Modules */
 #ifdef _WIN32
-# define CoreExport __declspec(dllimport)
-# define DllExport __declspec(dllexport)
+# ifdef MODULE_COMPILE
+#  define CoreExport __declspec(dllimport)
+#  define DllExport __declspec(dllexport)
+# else
+#  define CoreExport __declspec(dllexport)
+#  define DllExport __declspec(dllimport)
+# endif
 #else
 # define CoreExport
 # define DllExport
 #endif
+
 typedef std::basic_string<char, std::char_traits<char>, std::allocator<char> > sstr;
 extern CoreExport bool protocoldebug;
 
@@ -52,15 +59,22 @@ extern CoreExport bool protocoldebug;
  * \param expression What's to be casted
  * \return the casted value
  */
-template<typename T, typename V> inline T value_cast(const V &y)
+template<typename T, typename V> inline CoreExport T value_cast(const V &y)
 {
   std::stringstream stream; //Try safe casting with a stringstream.
-  T x;
+  T x = T();
+  T failed = T();
   if(!(stream << std::setprecision(800) << y)) //we use setprecision so scientific notation does not get in the way.
     throw;
 
-  if(!(stream >> x)) //If stringstream fails, force the cast.
-    x = *reinterpret_cast<T*>(const_cast<V*>(&(y)));
+  if(!(stream >> x))
+  {
+	  if(protocoldebug)
+	  {
+		  printf("Failed to cast \"%s\" to \"%s\"", typeid(V).name(), typeid(T).name());
+		  return failed;
+	  }
+  }
 
   return x;
 }
@@ -69,11 +83,10 @@ namespace Flux
 {
  class string;
  typedef std::vector<string> vector;
- Flux::string ConcatinateVector(const vector &p);
+ extern CoreExport Flux::string ConcatinateVector(const vector &p);
 }
 
 extern CoreExport std::vector<Flux::string> ParamitizeString(const Flux::string &src, char delim);
-Flux::string CondenseString(const std::vector<Flux::string> &p);
 /** Case insensitive map, ASCII rules.
  * That is;
  * [ != {, but A == a.
@@ -127,7 +140,7 @@ namespace ci
 	 * This class is used to implement ci::string, a case-insensitive, ASCII-
 	 * comparing string class.
 	 */
-	struct ci_char_traits : std::char_traits<char>
+	struct CoreExport ci_char_traits : std::char_traits<char>
 	{
 		/** Check if two chars match.
 		 * @param c1st First character
@@ -172,7 +185,7 @@ namespace ci
 	 */
 	typedef std::basic_string<char, ci_char_traits, std::allocator<char> > string;
 
-	struct less
+	struct CoreExport less
 	{
 	  /** Compare two Flux::strings as ci::strings and find which one is less
 	   * @param s1 The first string
@@ -390,8 +403,8 @@ namespace Flux
     {
       std::vector<Flux::string> params = ParamitizeString(_string, ' ');
       for(std::vector<Flux::string>::iterator it = params.begin(); it != params.end(); ++it)
-	(*it)[0] = ::toupper((*it)[0]);
-      return CondenseString(params);
+	(*it)[0] = static_cast<char>(::toupper((*it)[0]));
+      return ConcatinateVector(params);
     }
 
     inline void clear() { this->_string.clear(); }

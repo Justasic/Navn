@@ -290,8 +290,13 @@ void ModuleHandler::SanitizeRuntime()
 
   if(!TextFile::IsDirectory(dirbuf))
   {
+#ifndef _WIN32
     if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0)
       throw CoreException(printfify("Error making new runtime directory: %s", strerror(errno)));
+#else
+	  if(!CreateDirectory(dirbuf.c_str(), NULL))
+		  throw CoreException(printfify("Error making runtime new directory: %s", strerror(errno)));
+#endif
   }
   else
   {

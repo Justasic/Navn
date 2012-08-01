@@ -58,7 +58,7 @@ public:
  * \brief Wrapper for an irc host
  * This was written by Justasic to break up the parts of a messages host for easier use.
  */
-class CoreExport IsoHost:Flux::string
+class CoreExport IsoHost
 {
 public:
   IsoHost(const Flux::string&);

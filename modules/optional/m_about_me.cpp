@@ -74,7 +74,7 @@ public:
 
   void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
   {
-    Flux::string msg = CondenseString(params);
+    Flux::string msg = ConcatinateVector(params);
     if(msg.equals_ci("about me"))
     {
 	  u->SendMessage("Raw: %s", sock->GetLastBuf().c_str());

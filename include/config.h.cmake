@@ -119,7 +119,8 @@ typedef unsigned long uint32;
 # endif
 #endif
 
-#ifdef _WIN32
+/*
+# ifdef _WIN32
 # ifdef MSVCPP
 #  define snprintf _snprintf
 # endif
@@ -135,6 +136,7 @@ typedef unsigned long uint32;
 #  define strcasecmp stricmp
 # endif
 # define sleep(x) Sleep(x * 1000)
-#endif
+# endif
+*/
 
 #endif

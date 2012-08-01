@@ -2,6 +2,12 @@ file(GLOB MODULES_FOLDERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*")
 remove_item_from_list(MODULES_FOLDERS "CMakeFiles")
 #Remove kate's stupid temp files
 remove_item_from_list(MODULE_FOLDERS "*~")
+
+# if we're on windows, tell it to do MODULE_COMPILE define so CoreExport can reverse for dll's and such
+if(WIN32)
+  add_definitions(-DMODULE_COMPILE)
+endif(WIN32)
+
 # Iterate through the directories
 foreach(MODULE_FOLDER ${MODULES_FOLDERS})
   if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_FOLDER}")
@@ -36,7 +42,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
       # Get the real name of the source file now
       string(SUBSTRING ${SRC} ${FOLDER_LEN} ${FILE_LEN} SRC_REALNAME)
       # Convert the real source file extension to have a .so extension
-      string(REGEX REPLACE "\\.cpp$" ".so" SO ${SRC_REALNAME})
+      string(REGEX REPLACE "\\.cpp$" "${CMAKE_SHARED_LIBRARY_SUFFIX}" SO ${SRC_REALNAME})
       # Reset skip_depends
       set(SKIP_DEPENDS)
       # Temporary variable for the current source's include directories
@@ -80,7 +86,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
           add_dependencies(${SO} ${PROGRAM_NAME})
           # For Windows only, have the Module link to the export library of Navn as well as the wsock32 library (most of the Modules probably don't need this, but this is to be on the safe side), also set it's version
           if(WIN32)
-            target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 ${WIN32_MEMORY} ${TEMP_DEPENDENCIES})
+            target_link_libraries(${SO} ${PROGRAM_NAME} wsock32 Ws2_32 ${WIN32_MEMORY} ${TEMP_DEPENDENCIES})
             set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION_SIMPLE}")
           endif(WIN32)
           # Set the Module to be installed to the Module directory under the data directory
@@ -112,7 +118,7 @@ foreach(MODULE_FOLDER ${MODULES_FOLDERS})
         # Extract this subfolders name to use to generate the .so file
         string(SUBSTRING ${SUBDIR} ${FOLDER_LEN} ${FILE_LEN} SUBDIR_REALNAME)
         # Add .so to the end of the directory name, this will be the Module's name
-        set(SO "${SUBDIR_REALNAME}.so")
+        set(SO "${SUBDIR_REALNAME}${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
         # Temporary linker flags for this subdirectory
         set(SUBDIR_LDFLAGS "${LDFLAGS}")

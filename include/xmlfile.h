@@ -13,12 +13,13 @@
 
 #include "module.h"
 
-class CoreExport XMLFile : public TextFile {
+class CoreExport XMLFile : public TextFile 
+{
 private:
-  class Tag
+  class CoreExport Tag
   {
   public:
-    class Attribute
+    class CoreExport Attribute
     {
     private:
     public:

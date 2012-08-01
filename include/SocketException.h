@@ -14,6 +14,7 @@
 #pragma once
 #ifndef SOCKET_EXCEPTION_H
 #define SOCKET_EXCEPTION_H
+#include <exception>
 #include "flux.h"
 /** SocketExceptions are to be thrown with anything Socket related
  * Throws Socket Exception
@@ -53,7 +54,7 @@ class CoreException : public std::exception
 	CoreException() : err("Core threw an exception"), source("The core") { }
 	/** This constructor can be used to specify an error message before throwing.
 	 */
-	explicit CoreException(const Flux::string &message) : err(message), source("The core") { }
+	CoreException(const Flux::string &message) : err(message), source("The core") { }
 	/** This constructor can be used to specify an error message before throwing,
 	 * and to specify the source of the exception.
 	 */

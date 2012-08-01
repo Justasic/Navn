@@ -10,26 +10,85 @@
 
 #ifdef _WIN32
 #include "windows_navn.h"
-static WSADATA wsa;
-
-void OnStart(int, char**)
-{
-	if(WSAStartup(MAKEWORD(2, 0), &wsa))
-		throw CoreException("Failed to initialize WinSock library");
-}
-
-void OnShutdown()
-{
-	WSACleanup();
-}
+#include <io.h>
+#include <tlhelp32.h>
+extern Flux::string printfify(const char*, ...);
 
 int gettimeofday(timeval *tv, void*)
 {
 	SYSTEMTIME st;
 	GetSystemTime(&st);
 
-	tv->tv_sec = time(NULL);
+	tv->tv_sec = st.wSecond;
 	tv->tv_usec = st.wMilliseconds;
+	return 0;
+}
+
+// Since windows doesn't seem to have a simple "Number of current processes" available
+// we'll just have to make our own >:(
+inline int GetProcessList()
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+	long Processes = 0;
+
+	// Snapshot the current processes and make sure it's valid
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if(hProcessSnap == INVALID_HANDLE_VALUE)
+		return Processes;
+
+	// Set the size of the structure before using it.
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	// Retrieve information about the first process,
+	// and exit if unsuccessful
+	if(!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);          // clean the snapshot object
+		return Processes;
+	}
+
+	// Count the total number of processes
+	do
+	{
+		Processes++;
+	}
+	while(Process32Next(hProcessSnap, &pe32));
+	CloseHandle(hProcessSnap);
+
+	return Processes;
+}
+
+int sysinfo(struct sysinfo *info)
+{
+	SYSTEM_INFO si;
+	MEMORYSTATUSEX statex;
+
+	ZeroMemory(&si, sizeof(SYSTEM_INFO));
+	statex.dwLength = sizeof (statex);
+	GetSystemInfo(&si);
+
+	if(!GlobalMemoryStatusEx(&statex))
+		return -1;
+
+	// System Uptime
+	info->uptime = GetTickCount64() / 1000 % 60;
+
+	// Load times - windows does not have this so say -1 or 0 or nothing basically
+	info->loads[0] = -1;
+	info->loads[1] = -1;
+	info->loads[2] = -1;
+
+	// Ram usages - note that these may not be exact to what linux has
+	info->freeram = statex.ullAvailPhys;
+	info->freeswap = statex.ullAvailVirtual;
+	info->sharedram = 0;
+	info->totalram = statex.ullTotalPhys;
+	info->bufferram = statex.ullTotalPageFile;
+	info->totalswap = statex.ullTotalVirtual;
+
+	// Processes
+	info->procs = GetProcessList();
 	return 0;
 }
 
@@ -152,14 +211,58 @@ Flux::string GetWindowsVersion()
 	return buf;
 }
 
+// posix uname emulator for windows
+int uname(struct utsname *info)
+{
+	// get the system information.
+	OSVERSIONINFOEX wininfo;
+	SYSTEM_INFO si;
+	Flux::string WindowsVer = GetWindowsVersion();
+	Flux::string cputype;
+	char hostname[256] = "\0";
+	ZeroMemory(&wininfo, sizeof(OSVERSIONINFOEX));
+	ZeroMemory(&si, sizeof(SYSTEM_INFO));
+	wininfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+
+	if(!GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&wininfo)))
+		return -1;
+
+	GetSystemInfo(&si);
+	
+	// Get the hostname
+	if(gethostname(hostname, sizeof(hostname)) == SOCKET_ERROR)
+		return -1;
+
+	if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+		cputype = "64-bit";
+	else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL)
+		cputype = "32-bit";
+	else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+		cputype = "Itanium 64-bit";
+
+	// Fill the utsname struct with the windows system info
+	strcpy(info->sysname, "Windows");
+	strcpy(info->nodename, hostname);
+	strcpy(info->release, WindowsVer.c_str());
+	strcpy(info->version, printfify("%ld.%ld-%ld", wininfo.dwMajorVersion, wininfo.dwMinorVersion, wininfo.dwBuildNumber).c_str());
+	strcpy(info->machine, cputype.c_str());
+
+	// Null-Terminate
+	info->nodename[strlen(info->nodename) - 1] = '\0';
+	info->sysname[strlen(info->sysname) - 1] = '\0';
+	info->release[strlen(info->sysname) - 1] = '\0';
+	info->version[strlen(info->version) - 1] = '\0';
+	info->machine[strlen(info->machine) - 1] = '\0';
+}
+
 int setenv(const char *name, const char *value, int overwrite)
 {
-	return SetEnviornmentVariable(name, value);
+	return SetEnvironmentVariable(name, value);
 }
 
 int unsetenv(const char *name)
 {
-	return SetEnviornmentVariable(name, NULL);
+	return SetEnvironmentVariable(name, NULL);
 }
 
 int mkstemp(char *input)
@@ -175,19 +278,14 @@ int mkstemp(char *input)
 	return fd;
 }
 
-void getcwd(char *buf, size_t sz)
-{
-	GetCurrentDirectory(sz, buf);
-}
-
-const char *decodeerrno(int err)
+const char *decodeerrno(int)
 {
 	char errbuf[513];
 	DWORD err = GetLastError();
 	if(!err)
 		return "";
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, err, 0,  errbuf, 512, NULL);
-	return value_cast<const char*>(errbuf);
+	return errbuf;
 }
 
 /***********************************************************************/
@@ -199,7 +297,7 @@ void *dlopen(const char *filename, int)
 
 char *dlerror(void)
 {
-	static Flux::string err = Anope::LastError();
+	static Flux::string err = decodeerrno(errno);
 	SetLastError(0);
 	return err.empty() ? NULL : const_cast<char *>(err.c_str());
 }
@@ -220,7 +318,7 @@ inline static bool is_socket(int fd)
 {
 	int optval;
 	socklen_t optlen = sizeof(optval);
-	return getsockopt(fd, SOLSOCKET, SO_TYPE, reinterpret_cast<char*>(&optval), &optlen) = 0;
+	return getsockopt(fd, SOL_SOCKET, SO_TYPE, reinterpret_cast<char*>(&optval), &optlen) == 0;
 }
 
 int read(int fd, char *buf, size_t len)
@@ -280,7 +378,7 @@ int windows_inet_pton(int af, const char *src, void *dst)
 		return -1;
 	}
 
-	if(!WSAStringToAddress(static_cast<LPSTR>(const_cast<char *>(src)), af, NULL, reinterpret_cast<LPSOCKADDR>(&sa), &address_length)
+	if(!WSAStringToAddress(static_cast<LPSTR>(const_cast<char *>(src)), af, NULL, reinterpret_cast<LPSOCKADDR>(&sa), &address_length))
 	{
 		switch(af)
 		{
@@ -288,7 +386,7 @@ int windows_inet_pton(int af, const char *src, void *dst)
 			memcpy(dst, &sin->sin_addr, sizeof(in_addr));
 			break;
 		case AF_INET6:
-			memcpy(dst, &sin->sin6_addr, sizeof(in6_addr));
+			memcpy(dst, &sin6->sin6_addr, sizeof(in6_addr));
 			break;
 		}
 		return -1;
@@ -359,7 +457,7 @@ int fcntl(int fd, int cmd, int arg)
 }
 /**************************************************************************************/
 
-DIR *operdir(const char *path)
+DIR *opendir(const char *path)
 {
 	char real_path[MAX_PATH];
 	_snprintf(real_path, sizeof(real_path), "%s/*", path);

@@ -38,8 +38,11 @@ IsoHost::IsoHost(const Flux::string &fullhost)
  * \fn void Fork()
  * \brief This is a simple start-up function which justifies whether we fork to background or not.
  */
+
+
 void Fork()
 {
+#ifndef _WIN32
   if (!nofork && InTerm())
   {
     int i = fork();
@@ -63,6 +66,9 @@ void Fork()
   }
   else
     Log() << Config->BotNick << " Started, PID: " << getpid() << Config->LogColor;
+#else
+  FreeConsole();
+#endif
 }
 
 /**
