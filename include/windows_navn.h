@@ -11,6 +11,7 @@
 #pragma once
 #ifndef WINDOWS_NAVN_H
 #define WINDOWS_NAVN_H
+#include <fcntl.h>
 #ifdef _WIN32
 	/* include the various windows libraries for compile */
  	// Don't include half the development libraries into the bot, they're not needed
@@ -25,7 +26,6 @@
 	#include <io.h>
 	#include <wchar.h>
 	#include <process.h>
-	#include <fcntl.h>
  	#include <sys/timeb.h>
 	#include <sys/stat.h>
 	#include <direct.h>
@@ -61,9 +61,9 @@
 	#define O_CREAT      _O_CREAT
 	#define S_IREAD      _S_IREAD
 	#define S_IWRITE     _S_IWRITE
-	#define snprintf     _snprintf 
-	#define vsnprintf    _vsnprintf 
-	#define strcasecmp   _stricmp 
+	#define snprintf     _snprintf
+	#define vsnprintf    _vsnprintf
+	#define strcasecmp   _stricmp
 	#define strncasecmp  _strnicmp
 	#define execve       _execve
 	#define Delete       _unlink
