@@ -13,6 +13,8 @@
 #include "flux.h"
 #include "log.h"
 #include "extern.h"
+#include <new>
+
 /**
  * \file  Sepstream.cpp
  * \brief Contains the Seperator Stream class.
@@ -128,13 +130,13 @@ std::vector<Base*> BaseReferences;
 
 Base::Base()
 {
-  Log(LOG_MEMORY) << "Base::+ @" << this;
+//   Log(LOG_MEMORY) << "Base::+ @" << this;
   BaseReferences.push_back(this);
 }
 
 Base::~Base()
 {
-  Log(LOG_MEMORY) << "Base::- @" << this;
+//   Log(LOG_MEMORY) << "Base::- @" << this;
   for(std::set<dynamic_reference_base*>::iterator it = this->References.begin(), it_end = this->References.end(); it != it_end; ++it)
     (*it)->Invalidate();
 
@@ -142,5 +144,64 @@ Base::~Base()
     if((*it) == this)
       BaseReferences.erase(it);
 }
+
+Flux::string CalculateByteSizes(size_t bytes)
+{
+  Flux::string sizes[] = { "Bytes", "KB", "MB", "GB", "TB" };
+  double number = 0;
+  int i;
+  for(i = 0; static_cast<int>(bytes / 1024) > 0; i++, bytes /= 1024)
+    number = bytes / 1024.0;
+
+  return printfify("%f %s", static_cast<float>(number), sizes[i].c_str());
+}
+
+void ReportMemUsage()
+{
+  Log(LOG_MEMORY) << "Total memory allocated: " << CalculateByteSizes(memused);
+  Log(LOG_MEMORY) << "Total memory allocated in bytes: " << memused;
+  Log(LOG_MEMORY) << "Total objects allocated: " << memobjects;
+  Log(LOG_MEMORY) << "Calls to new: " << newcalls;
+  Log(LOG_MEMORY) << "Calls to delete: " << deletecalls;
+}
+
+// Overload the new and delete operators so we can track what's going on
+void operator delete (void *ptr) throw ()
+{
+  if(!ptr)
+  {
+    std::cout << "[MEMORY] Warning: deletion of empty pointer!" << std::endl;
+    return;
+  }
+
+  int *p = reinterpret_cast<int*>(ptr);
+  memobjects--;
+  deletecalls++;
+  memused -= *p;
+
+  free(ptr);
+}
+
+void * operator new (size_t size) throw (std::bad_alloc)
+{
+  // It is not safe to use Log() or any other function which uses strings
+  // because the STL uses the new operator which will cause a infinite loop
+  memused += size;
+  memobjects++;
+  newcalls++;
+  void *ptr = malloc(size);
+
+  if(!ptr)
+  {
+    std::cout << "[MEMORY] Unable to allocate " << size << " bytes!!";
+    throw std::bad_alloc();
+  }
+
+  return ptr;
+}
+
+
+
+
 void Base::AddReference(dynamic_reference_base *r) { this->References.insert(r); }
 void Base::DelReference(dynamic_reference_base *r) { this->References.erase(r); }

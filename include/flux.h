@@ -701,6 +701,8 @@ class CoreExport Base
   std::set<dynamic_reference_base*> References;
 public:
   Base();
+//   void *operator new(size_t) throw (std::bad_alloc);
+//   void operator delete(void*) throw ();
   virtual ~Base();
   void AddReference(dynamic_reference_base*);
   void DelReference(dynamic_reference_base*);

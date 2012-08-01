@@ -147,6 +147,7 @@ E std::vector<Base*> BaseReferences;
 E time_t starttime;
 E uint32_t usercnt, maxusercnt;
 E Flux::string binary_path, bot_bin, binary_dir, quitmsg;
+E size_t memused, memobjects, newcalls, deletecalls;
 E const Flux::string password;
 E const Flux::string VERSION_LONG;
 E Flux::string ForwardResolution(const Flux::string&);
@@ -189,6 +190,14 @@ E void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::
 /* Char's */
 E char segv_location[255];
 E char **my_av, **my_envp;
+
+// This nifty little function deletes and zeros a pointer
+template<typename T> void DeleteZero(T *&t)
+{
+  T *p = t;
+  delete p;
+  t = NULL;
+}
 
 /**************************************************************/
 /* This is the only #define allowed at the bottom of the file */

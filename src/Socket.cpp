@@ -25,13 +25,13 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 {
   struct addrinfo *result, *res;
   int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
-  
+
   if(err != 0)
   {
     Log(LOG_TERMINAL) << "Failed to resolve " << hostname << ": " << gai_strerror(err);
     return "";
   }
-  
+
   bool gothost = false;
   Flux::string ret = hostname;
   for(res = result; res != NULL && !gothost; res = res->ai_next)
@@ -60,11 +60,11 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 	}
 	break;
     }
-    
+
     ret = address;
     gothost = true;
   }
-  
+
   freeaddrinfo(result);
   return ret;
 }
@@ -95,7 +95,7 @@ SocketIO::~SocketIO()
   this->Process();
   if(is_valid())
     close(sockn);
-  
+
   FD_CLR(this->GetFD(), &ReadFD);
   FD_CLR(this->GetFD(), &WriteFD);
 }
@@ -117,7 +117,7 @@ bool SocketIO::SetBlocking()
 void SocketIO::Connect()
 {
   SET_SEGV_LOCATION();
-  
+
   struct addrinfo *servinfo;
   int rv = 0;
   if((rv = getaddrinfo(this->ip.c_str(), this->port.c_str(), NULL, &servinfo)) != 0)
@@ -176,15 +176,15 @@ void SocketIO::Process()
     FOREACH_MOD(I_OnSocketError, OnSocketError(optval ? strerror(errno) : "Unknown socket error"));
     throw SocketException("Socket error");
   }
-  
+
   if(has_read)
   {
     char tbuf[BUFSIZE + 1] = "\0";
     size_t i = recv(this->GetFD(), tbuf, BUFSIZE, 0);
-    
+
     if(i <= 0)
       throw SocketException(printfify("Socket Error: %s", strerror(errno)));
-    
+
     sepstream sep(tbuf, '\n');
     Flux::string buf;
     while(sep.GetToken(buf))
@@ -212,7 +212,7 @@ void SocketIO::Process()
 	throw SocketException(printfify("Error writing \"%s\" to socket: %s", buf.c_str(), strerror(errno)));
 
       Log(LOG_RAWIO) << "Sent: " << buf << " | " << buf.size() << " bytes";
-      
+
       this->LastBuf.clear();
       this->LastBuf = buf;
 
@@ -245,7 +245,7 @@ bool SocketIO::Read(const Flux::string &buf) const
     FOREACH_MOD(I_OnSocketError, OnSocketError(buf));
     return false;
   }
-  
+
   Log(LOG_RAWIO) << "Received: " << Flux::Sanitize(buf);
   process(buf); /* Process the buffer for navn */
   return true;

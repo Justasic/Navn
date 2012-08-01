@@ -41,23 +41,26 @@ const Flux::string password = make_pass();
 char segv_location[255];
 iSupport isupport;
 time_t starttime;
+size_t memused = 0, memobjects = 0, newcalls = 0, deletecalls = 0;
 
 // Global Pointers
 IRCProto *ircproto;
 SocketIO *sock;
 BotConfig *Config;
 Module *LastRunModule;
+E void ReportMemUsage();
+class Main;
+static Main *m;
 
 // Generic class for the socket processing and such
-class Main : public Timer, public SocketIO
+class Main : public Timer
 {
   bool NeedsReconnect;
   int startcount;
 public:
-  Main() : Timer(Config->ReconnectTime, time(NULL), true), SocketIO(Config->Server, Config->Port), NeedsReconnect(false), startcount(0)
+  Main() : Timer(Config->ReconnectTime, time(NULL), true), NeedsReconnect(false), startcount(0)
   {
     Log() << "Connecting to server in " << Config->ReconnectTime << " seconds.";
-    sock = this;
     ircproto = new IRCProto();
   }
 
@@ -83,6 +86,12 @@ public:
     this->NeedsReconnect = status;
   }
 
+  // Get the reconnect status
+  inline bool GetReconnect() const
+  {
+    return this->NeedsReconnect;
+  }
+
   // Run garbage collector for modules
   inline void RunGarbageCollect()
   {
@@ -99,36 +108,33 @@ public:
 	return;
 
       startcount++;
-      Log() << "Connecting to server '" << this->server << ":" << this->port << "'";
+      Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
 
-      if(this->server.empty())
+      if(Config->Server.empty())
 	throw SocketException("No Server Specified.");
-      if(this->port.empty())
+      if(Config->Port.empty())
 	throw SocketException("No Port Specified.");
 
       FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
 
-      this->Connect();
-
-      if(!ircproto)
-      {
-	Log(LOG_WARN) << "IRCProto was not created or initialized!!";
-	ircproto = new IRCProto();
-      }
+      sock = new SocketIO(Config->Server, Config->Port);
+      sock->Connect();
 
       ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
 
       FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+      sock->Process();
       this->SetReconnect(false);
     }
     catch (SocketException &e)
     {
       Log() << "Socket Exception Caught: " << e.description();
-      if(startcount >= Config->ReconnectTries)
+      if(startcount > Config->ReconnectTries)
 	throw CoreException("Cannot connect to server!");
       else
       {
 	Log() << "Reconnecting to server in " << Config->ReconnectTime << " seconds.";
+	DeleteZero(sock);
 	this->SetReconnect(true);
       }
     }
@@ -142,7 +148,7 @@ public:
  * \param argv the args in a c-string array provided by the system
  * \param envp[] Environment variables (deprecated)
  */
-int main (int argcx, char** argvx, char *envp[])
+int main(int argcx, char** argvx, char *envp[])
 {
   SET_SEGV_LOCATION();
   unsigned int loopcount = 0;
@@ -150,12 +156,35 @@ int main (int argcx, char** argvx, char *envp[])
   try
   {
     startup(argcx, argvx, envp);
-    Main *m = new Main();
-    m->EstablishConnection();
+    try
+    {
+      m = new Main();
+      m->EstablishConnection();
+    }
+    catch(SocketException &e)
+    {
+      Log(LOG_WARN) << "SocketException: " << e.description();
+    }
 
     while(!quitting)
     {
+      // Sleep until normal tick time happens allowing a reconnect
+      // if the socket needs to reconnect
+      while(m->GetReconnect() && !quitting)
+      {
+	try
+	{
+	  sleep(Config->SockWait);
+	  TimerManager::TickTimers(time(NULL));
+	}
+	catch(SocketException &e)
+	{
+	  Log(LOG_TERMINAL) << "SocketException: " << e.description();
+	}
+      }
+
       Log(LOG_RAWIO) << "Top of main loop";
+      ReportMemUsage();
 
       if(++loopcount >= 50)
 	raise(SIGSEGV); //prevent loop bombs, raise a SIGSEGV to handle elsewhere.
@@ -185,6 +214,8 @@ int main (int argcx, char** argvx, char *envp[])
       }
     } //while loop ends here
     delete m;
+    ReportMemUsage();
+    Log(LOG_MEMORY) << "memory used at exit.";
   }//try ends here
   catch(const CoreException& e)
   {
