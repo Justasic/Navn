@@ -15,8 +15,6 @@
 # include <linux/ip.h>
 # include <linux/icmp.h>
 #else
-# include "iphdr.h"
-# include <stdlib.h>
 long int random(void)
 {
 	struct timeval tv;

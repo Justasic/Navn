@@ -13,7 +13,6 @@
  */
 #include "SocketException.h"
 #include "Socket.h"
-#include <fcntl.h>
 #include <iostream>
 
 #ifdef _WIN32

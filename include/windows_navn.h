@@ -9,8 +9,8 @@
  */
 
 #pragma once
-#ifndef WINDOWS_H
-#define WINDOWS_H
+#ifndef WINDOWS_NAVN_H
+#define WINDOWS_NAVN_H
 #ifdef _WIN32
 	/* include the various windows libraries for compile */
  	// Don't include half the development libraries into the bot, they're not needed
@@ -36,6 +36,12 @@
  	#include "flux.h"
  	#include "SocketException.h"
 
+ 	// other includes to fix issues
+ 	#include "sysinfo.h"
+ 	#include "iphdr.h"
+ 	#include "windows_socket.h"
+ 	#include "uname.h"
+
 	/* we have our own read and write */
 	#define read read_not_used
 	#define write write_not_used
@@ -43,29 +49,29 @@
 	#undef write
 
 	/* redefine some functions and variables because microsoft has their own standards */
-	//#define DEPRECATED(x) x
-	#define RTLD_LAZY 0
-	#define RTLD_LOCAL 0
-	#define F_GETFL 0
-	#define F_SETFL 1
-	#define O_NONBLOCK 1
+	#define RTLD_LAZY    0
+	#define RTLD_LOCAL   0
+	#define F_GETFL      0
+	#define F_SETFL      1
+	#define O_NONBLOCK   1
 	#define MSG_NOSIGNAL 0
-	#define popen _popen
-	#define pclose _pclose
-	#define O_WRONLY _O_WRONLY
-	#define O_CREAT _O_CREAT
-	#define S_IREAD _S_IREAD
-	#define S_IWRITE _S_IWRITE
-	#define snprintf    _snprintf
-	#define vsnprintf   _vsnprintf
-	#define strcasecmp  _stricmp
-	#define strncasecmp _strnicmp
-	#define execve _execve
-	#define Delete _unlink
-	#define getpid GetCurrentProcessId
-	#define S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
+	#define popen        _popen
+	#define pclose       _pclose
+	#define O_WRONLY     _O_WRONLY
+	#define O_CREAT      _O_CREAT
+	#define S_IREAD      _S_IREAD
+	#define S_IWRITE     _S_IWRITE
+	#define snprintf     _snprintf 
+	#define vsnprintf    _vsnprintf 
+	#define strcasecmp   _stricmp 
+	#define strncasecmp  _strnicmp
+	#define execve       _execve
+	#define Delete       _unlink
+	#define getpid       GetCurrentProcessId
+ 	#define sleep(x)     Sleep(x * 1000)
+ 	#define S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
+
  	#define S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
- 	#define sleep(x) Sleep(x * 1000)
 	#define GetCurrentDir(x, y) GetCurrentDirectory(y, x)
  	#define getcwd(x, y) GetCurrentDirectory(y, x)
 
@@ -82,66 +88,16 @@
 	#endif
 	#define EINPROGRESS WSAEWOULDBLOCK
 
-	// System info stuff
-	struct CoreExport sysinfo
-	{
-		long uptime;             /* Seconds since boot */
-		unsigned long loads[3];  /* 1, 5, and 15 minute load averages */
-		unsigned long totalram;  /* Total usable main memory size */
-		unsigned long freeram;   /* Available memory size */
-		unsigned long sharedram; /* Amount of shared memory */
-		unsigned long bufferram; /* Memory used by buffers */
-		unsigned long totalswap; /* Total swap space size */
-		unsigned long freeswap;  /* swap space still available */
-		unsigned short procs;    /* Number of current processes */
-		char _f[22];             /* Pads structure to 64 bytes */
-	};
-
-	struct CoreExport utsname
-	{
-		// why is this an incomplete type but machine is not?
-		char sysname[2048];    /* Operating system name (e.g., "Linux") */
-		char nodename[2048];   /* Name within "some implementation-defined network" */
-		char release[2048];    /* OS release (e.g., "2.6.28") */
-		char version[2048];    /* OS version */
-		char machine[];    /* Hardware identifier */
-	};
-
 	/* reinvent some functions as they don't exist in windows */
 	extern void *dlopen(const char*, int);
 	extern char *dlerror(void);
 	extern void *dlsym(void*, const char*);
 	extern int dlclose(void*);
+	extern CoreExport Flux::string GetWindowsVersion();
 	extern CoreExport int setenv(const char *name, const char *value, int overwrite);
 	extern CoreExport int unsetenv(const char *name);
 	extern CoreExport int gettimeofday(timeval *tv, void*);
-	extern CoreExport int sysinfo(struct sysinfo *);
-	extern CoreExport int uname(struct utsname *);
 	extern CoreExport int mkstemp(char *input);
-	extern CoreExport int read(int, char*, size_t);
-	extern CoreExport int write(int, const char*, size_t);
-	extern CoreExport int windows_close(int);
-	extern CoreExport int windows_accept(int, struct sockaddr*, int*);
-	extern CoreExport int windows_inet_pton(int, const char*, void*);
-	extern CoreExport const char *windows_inet_ntop(int, const void*, char*, size_t);
-	extern CoreExport int fcntl(int, int, int);
-
-	// Windows socket bullshit
-	class CoreExport WSAInitialization : public Base
-	{
-	public:
-		WSADATA wsa;
-		WSAInitialization()
-		{
-			if(WSAStartup(MAKEWORD(2, 0), &wsa))
-				throw CoreException("Failed to initialize WinSock library");
-		}
-
-		~WSAInitialization()
-		{
-			WSACleanup();
-		}
-	};
 
 	#define SET_SEGV_LOCATION() snprintf(segv_location, sizeof(segv_location), "%s %d %s", __FILE__, __LINE__, __FUNCTION__);
 
