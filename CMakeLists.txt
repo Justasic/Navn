@@ -216,7 +216,19 @@ else(MSVC)
   if(UNIX)
     set(CXXFLAGS "${CXXFLAGS} -ansi -pedantic")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-      set(CXXFLAGS "${CXXFLAGS} -fno-leading-underscore -Woverloaded-virtual -Wunused-function")
+	set(CXXFLAGS "${CXXFLAGS} -fno-leading-underscore -Woverloaded-virtual -Wunused-function")
+
+	# GCC 4.8 added clang++ style error messages which include a caret showing what's wrong,
+	# personally I hate this so I am disabling it.
+	if(CMAKE244_OR_BETTER)
+	    check_cxx_compiler_flag(-fno-diagnostics-show-caret HAVE_NO_DIAGNOSTICS_CARET)
+	else(CMAKE244_OR_BETTER)
+	    check_cxx_accepts_flag(-fno-diagnostics-show-caret HAVE_NO_DIAGNOSTICS_CARET)
+	endif(CMAKE244_OR_BETTER)
+
+	if(HAVE_NO_DIAGNOSTICS_CARET)
+	    set(CXXFLAGS "${CXXFLAGS} -fno-diagnostics-show-caret")
+	endif(HAVE_NO_DIAGNOSTICS_CARET)
     endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   # If we aren't on a *nix system, we are using MinGW
   else(UNIX)
