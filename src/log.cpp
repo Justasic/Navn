@@ -17,26 +17,26 @@
  */
 Flux::string NoTermColor(const Flux::string &ret)
 {
-  Flux::string str;
-  bool in_term_color = false;
-  for(unsigned i=0; i < ret.length(); ++i)
-  {
-    char c = ret[i];
-    if(in_term_color)
+    Flux::string str;
+    bool in_term_color = false;
+    for(unsigned i=0; i < ret.length(); ++i)
     {
-      if(c == 'm')
-	in_term_color = false;
-      continue;
+	char c = ret[i];
+	if(in_term_color)
+	{
+	    if(c == 'm')
+		in_term_color = false;
+	    continue;
+	}
+	if(c == '\033')
+	{
+	    in_term_color = true;
+	    continue;
+	}
+	if(!in_term_color)
+	    str += c;
     }
-    if(c == '\033')
-    {
-      in_term_color = true;
-      continue;
-    }
-    if(!in_term_color)
-      str += c;
-  }
-  return str;
+    return str;
 }
 
 /**

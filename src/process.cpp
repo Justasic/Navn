@@ -46,7 +46,7 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
 {
     std::vector<Flux::string> &params = source.params;
     if(params.size() < 7)
-      return;
+	return;
     Flux::string channel = params[1];
     Flux::string Ident = params[2];
     Flux::string Host = params[3];
@@ -56,133 +56,137 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
     Flux::string realname = params[7].erase(0,2);
     /*******************************************************/
     User *u = finduser(Nickname);
+    Channel *c = findchannel(channel);
+    
     if(!u)
     {
       if(!Host.empty() || !Nickname.empty() || !Ident.empty())
 	u = new User(Nickname, Ident, Host, realname, Server);
     }
-    Channel *c = findchannel(channel);
+    
     if(!c)
     {
-     if(!channel.empty() && IsValidChannel(channel))
-       c = new Channel(channel);
-     else
-       Log(LOG_DEBUG) << "Invalid channel " << channel << " in processing channels from numeric 352!";
+	if(!channel.empty() && IsValidChannel(channel))
+	c = new Channel(channel);
+	else
+	Log(LOG_DEBUG) << "Invalid channel " << channel << " in processing channels from numeric 352!";
     }
+    
     if(u)
-      u->AddChan(c);
+	u->AddChan(c);
+    
     if(c)
-      c->AddUser(u);
+	c->AddUser(u);
 }
 /*********************************************************************************/
 // Process Channel Commands.
 
 void ProcessChannelCommand(CommandSource &Source, const Flux::vector &params)
 {
-  Flux::vector params2 = params;
-  Command *ccom = FindCommand(params2[0], C_CHANNEL);
-  if(ccom)
-  {
-    Source.command = ccom->name;
-    params2.erase(params2.begin());
+    Flux::vector params2 = params;
+    Command *ccom = FindCommand(params2[0], C_CHANNEL);
+    if(ccom)
+    {
+	Source.command = ccom->name;
+	params2.erase(params2.begin());
 
-    while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
-    {
-      params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
-      params2.erase(params2.begin() + ccom->MaxParams);
-    }
+	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
+	{
+	    params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
+	    params2.erase(params2.begin() + ccom->MaxParams);
+	}
 
-    if(params2.size() < ccom->MinParams)
-    {
-      ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
-      return;
-    }
-    #ifdef HAVE_SETJMP_H
-    // Yes, i understand this code is VERY VERY bad and can cause VERY BAD
-    // stack corruption, but it's still cool to see that it unloads Modules
-    // if it segfaults and i would like to keep a system like this in place.
-    if(setjmp(sigbuf) == 0)
-    {
-    #endif
-      LastRunModule = ccom->mod;
-      ccom->Run(Source, params2);
-    #ifdef HAVE_SETJMP_H
+	if(params2.size() < ccom->MinParams)
+	{
+	    ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+	    return;
+	}
+	#ifdef HAVE_SETJMP_H
+	// Yes, i understand this code is VERY VERY bad and can cause VERY BAD
+	// stack corruption, but it's still cool to see that it unloads Modules
+	// if it segfaults and i would like to keep a system like this in place.
+	if(setjmp(sigbuf) == 0)
+	{
+	#endif
+	    LastRunModule = ccom->mod;
+	    ccom->Run(Source, params2);
+	#ifdef HAVE_SETJMP_H
+	}
+	else
+	{
+	    Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
+	    Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
+
+	    for(unsigned i = 0; i < Config->Owners.size(); ++i)
+	    {
+		User *ou = finduser(Config->Owners[i]);
+		if(ou)
+		ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
+	    }
+	}
+	#endif
+	LastRunModule = NULL;
     }
     else
     {
-      Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
-      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
-
-      for(unsigned i = 0; i < Config->Owners.size(); ++i)
-      {
-	User *ou = finduser(Config->Owners[i]);
-	if(ou)
-	  ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
-      }
+	//This will one day be a actual function for channel only messages..
+	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(Source.u, Source.c, params2));
     }
-    #endif
-    LastRunModule = NULL;
-  }
-  else
-  {
-    //This will one day be a actual function for channel only messages..
-    FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(Source.u, Source.c, params2));
-  }
 }
 
 /*********************************************************************************/
 
 void ProcessPrivateCommand(CommandSource &Source, const Flux::vector &params)
 {
-  // Cast away const (although I am not sure why it's const in the 1st place)
-  Flux::vector params2 = params;
-  Command *com = FindCommand(params2[0], C_PRIVATE);
-  if(com)
-  {
-    Source.command = com->name;
-    params2.erase(params2.begin()); //Remove the command from the params
-
-    while(com->MaxParams > 0 && params2.size() > com->MaxParams)
-    { // Trim the command separation, then paste the rest unmodified as the last param.
-	params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
-	params2.erase(params2.begin() + com->MaxParams);
-    }
-
-    if(params2.size() < com->MinParams)
-    { // Insufficent params
-      com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
-      return;
-    }
-
-#ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
-    if(setjmp(sigbuf) == 0)
+    // Cast away const (although I am not sure why it's const in the 1st place)
+    Flux::vector params2 = params;
+    Command *com = FindCommand(params2[0], C_PRIVATE);
+    if(com)
     {
-#endif
-      LastRunModule = com->mod;
-      com->Run(Source, params2);
-#ifdef HAVE_SETJMP_H
-    }
-    else
-    { //Module segfaulted.
-      Log() << "Command " << com->name << " failed to execute. Stack Restored.";
-      Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
+	    Source.command = com->name;
+	    params2.erase(params2.begin()); //Remove the command from the params
 
-      for(unsigned i = 0; i < Config->Owners.size(); ++i)
-      {
-	User *ou = finduser(Config->Owners[i]);
-	if(ou)
-	  ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
-      }
-    }
-#endif
-      LastRunModule = NULL;
-    }
-    else
-    {
-      //This receives ALL server commands sent to the bot..
-      if(!protocoldebug)
-	Log(LOG_DEBUG) << Flux::Sanitize(Source.raw);
-    }
+	    while(com->MaxParams > 0 && params2.size() > com->MaxParams)
+	    { // Trim the command separation, then paste the rest unmodified as the last param.
+		params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
+		params2.erase(params2.begin() + com->MaxParams);
+	    }
+
+	    if(params2.size() < com->MinParams)
+	    { // Insufficent params
+		com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+		return;
+	    }
+
+	    #ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
+	    if(setjmp(sigbuf) == 0)
+	    {
+	    #endif
+		LastRunModule = com->mod;
+		com->Run(Source, params2);
+	    #ifdef HAVE_SETJMP_H
+	    }
+	    else
+	    { //Module segfaulted.
+		Log() << "Command " << com->name << " failed to execute. Stack Restored.";
+		Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
+
+		for(unsigned i = 0; i < Config->Owners.size(); ++i)
+		{
+		    User *ou = finduser(Config->Owners[i]);
+		    if(ou)
+			ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
+		}
+	    }
+	    #endif
+		LastRunModule = NULL;
+	}
+	else
+	{
+	    //This receives ALL server commands sent to the bot..
+	    if(!protocoldebug)
+		Log(LOG_DEBUG) << Flux::Sanitize(Source.raw);
+	}
 }
 
 /*********************************************************************************/
@@ -264,16 +268,16 @@ void process(const Flux::string &buffer)
   Flux::string source;
   if(buf[0] == ':')
   {
-   size_t space = buf.find_first_of(" ");
+    size_t space = buf.find_first_of(" ");
 
-   if(space == Flux::string::npos)
-     return;
+    if(space == Flux::string::npos)
+	return;
 
-   source = buf.substr(1, space - 1);
-   buf = buf.substr(space + 1);
+    source = buf.substr(1, space - 1);
+    buf = buf.substr(space + 1);
 
-   if(source.empty() || buf.empty())
-     return;
+    if(source.empty() || buf.empty())
+	return;
   }
 
   sepstream bufferseparator(buf, ' ');
@@ -440,7 +444,7 @@ void process(const Flux::string &buffer)
     Channel *chan = findchannel(params[1]);
     if(chan)
       chan->modes = params[2];
-  }
+}
 
   // Get the actual topic
   if(command == "332")
