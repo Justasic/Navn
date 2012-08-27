@@ -10,7 +10,6 @@ Navn 2.0.2
 [+] Multisocket the socket engine
   [+] Use cpp-linux-networking for the socket engine
   [ ] Multi-Network handling
-  [ ] Possible webserver type module for stats, etc.
 
 [ ] Add Mode Handler
 [x] Parse 005 Numeric for modes and server support stuff, take action on it
@@ -38,18 +37,23 @@ Navn 2.0.2
   [ ] Java interface (dear god kill me for mentioning it)
 
 [ ] Add more event handlers (FOREACH_MOD) or better event handling
-[ ] Add a possible better event handler
 [ ] Add calculator
+[ ] Correct thread engine to use mutex
 [ ] Redo [fantasy] commands
 [ ] Allow modules to depend on other modules
 [#] Make searcher module use config for search URL's instead of hard coded ones.
 [x] Add buffer limiter (so freenode does not kill the bot)
 [ ] Better config format
 [x] Better terminal Commands Parsing
-[ ] Add a flags system like channel/user modes
-[ ] Add !forecast
 [+] Windows support (Feature request: http://Azuru.net/bugs/view.php?id=9)
 
+
+Navn 2.0.3
+----------
+[ ] Add a flags system like channel/user modes
+[ ] Add !forecast
+[ ] Add a possible better event handler
+[ ] Possible webserver type module for stats, etc.
 
 Future
 ------
