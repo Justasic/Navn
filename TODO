@@ -7,8 +7,8 @@ Legend:
 
 Navn 2.0.2
 ----------
-[ ] Multisocket the socket engine
-  [ ] Use cpp-linux-networking for the socket engine
+[+] Multisocket the socket engine
+  [+] Use cpp-linux-networking for the socket engine
   [ ] Multi-Network handling
   [ ] Possible webserver type module for stats, etc.
 
@@ -32,32 +32,26 @@ Navn 2.0.2
   [+] Python
   [ ] PHP
   [ ] Ruby
-  [ ] Nu (?)
-  [ ] Shell (?)
   [ ] LUA
-  [ ] BASIC (Is this possible?)
-  [ ] Common Lisp (?)
   [ ] JavaScript
   [ ] TCL
-  [ ] CoffeeScript (?)
-  [ ] ActionScript (?)
   [ ] Java interface (dear god kill me for mentioning it)
 
 [ ] Add more event handlers (FOREACH_MOD) or better event handling
 [ ] Add a possible better event handler
 [ ] Add calculator
-[ ] Redo fantasy commands
+[ ] Redo [fantasy] commands
 [ ] Allow modules to depend on other modules
-[ ] Make searcher module use config for search URL's instead of hard coded ones.
+[#] Make searcher module use config for search URL's instead of hard coded ones.
 [x] Add buffer limiter (so freenode does not kill the bot)
 [ ] Better config format
 [x] Better terminal Commands Parsing
 [ ] Add a flags system like channel/user modes
 [ ] Add !forecast
+[+] Windows support (Feature request: http://Azuru.net/bugs/view.php?id=9)
 
 
 Future
 ------
 [ ] Add support for GETTEXT so it allows for the program to be translated
-[+] Add Windows support (Fearure request: http://flux-net.net/bugs/view.php?id=9)
 [#] Add Oper Protocol modules?
