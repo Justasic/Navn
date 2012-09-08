@@ -60,16 +60,16 @@ void ProcessJoin(CommandSource &source, const Flux::string &chan)
     
     if(!u)
     {
-      if(!Host.empty() || !Nickname.empty() || !Ident.empty())
-	u = new User(Nickname, Ident, Host, realname, Server);
+	if(!Host.empty() || !Nickname.empty() || !Ident.empty())
+	    u = new User(Nickname, Ident, Host, realname, Server);
     }
     
     if(!c)
     {
 	if(!channel.empty() && IsValidChannel(channel))
-	c = new Channel(channel);
+	    c = new Channel(channel);
 	else
-	Log(LOG_DEBUG) << "Invalid channel " << channel << " in processing channels from numeric 352!";
+	    Log(LOG_DEBUG) << "Invalid channel " << channel << " in processing channels from numeric 352!";
     }
     
     if(u)
@@ -180,13 +180,13 @@ void ProcessPrivateCommand(CommandSource &Source, const Flux::vector &params)
 	    }
 	    #endif
 		LastRunModule = NULL;
-	}
-	else
-	{
-	    //This receives ALL server commands sent to the bot..
-	    if(!protocoldebug)
-		Log(LOG_DEBUG) << Flux::Sanitize(Source.raw);
-	}
+    }
+    else
+    {
+	//This receives ALL server commands sent to the bot..
+	if(!protocoldebug)
+	    Log(LOG_DEBUG) << Flux::Sanitize(Source.raw);
+    }
 }
 
 /*********************************************************************************/
@@ -200,41 +200,41 @@ void ProcessPrivateCommand(CommandSource &Source, const Flux::vector &params)
  */
 void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::string &receiver, const Flux::string &command)
 {
-  SET_SEGV_LOCATION();
-  User *u = Source.u;
+    SET_SEGV_LOCATION();
+    User *u = Source.u;
 
-  if(!command.is_pos_number_only())
-  {
-    FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
-  }
+    if(!command.is_pos_number_only())
+    {
+	FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
+    }
 
-  if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
-  {
-    Log(LOG_DEVEL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
+    if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
+    {
+	Log(LOG_DEVEL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
 
-    if(!IsValidChannel(receiver))
-    { // Make sure we reply to a private message command if there is no command
-      Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
-      FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
+	if(!IsValidChannel(receiver))
+	{ // Make sure we reply to a private message command if there is no command
+	    Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
+	    FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
+	}
+	else
+	{
+	    if(params2[0].search(Config->FantasyPrefix))
+	    {
+		Flux::string blah = params2[0].substr(0, Config->FantasyPrefix.size());
+		if(blah.equals_cs(Config->FantasyPrefix))
+		{
+		    params2[0] = params2[0].substr(Config->FantasyPrefix.size());
+		    ProcessChannelCommand(Source, params2);
+		}
+	    }
+	}
     }
     else
     {
-      if(params2[0].search(Config->FantasyPrefix))
-      {
-	Flux::string blah = params2[0].substr(0, Config->FantasyPrefix.size());
-	if(blah.equals_cs(Config->FantasyPrefix))
-	{
-	  params2[0] = params2[0].substr(Config->FantasyPrefix.size());
-	  ProcessChannelCommand(Source, params2);
-	}
-      }
+	if(FindCommand(params2[0], C_PRIVATE) && !IsValidChannel(receiver) && command.equals_ci("PRIVMSG"))
+	    ProcessPrivateCommand(Source, params2);
     }
-  }
-  else
-  {
-    if(FindCommand(params2[0], C_PRIVATE) && !IsValidChannel(receiver) && command.equals_ci("PRIVMSG"))
-      ProcessPrivateCommand(Source, params2);
-  }
 }
 
 /*********************************************************************************/

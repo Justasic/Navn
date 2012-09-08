@@ -42,10 +42,11 @@ public:
   {
     while(!sqo.SendQ.empty() && ++sent <= Config->SendQLines)
     {
-      if(sock)
-	sock->send(sqo.SendQ.front());
-      else
-	Log(LOG_WARN) << "Attempted to send \"" << sqo.SendQ.front() << "\" to the server but no socket exists!";
+	send_cmd("%s", sqo.SendQ.front().c_str());
+//       if(sock)
+// 	sock->send(sqo.SendQ.front());
+//       else
+// 	Log(LOG_WARN) << "Attempted to send \"" << sqo.SendQ.front() << "\" to the server but no socket exists!";
       sqo.SendQ.pop();
     }
 
@@ -78,16 +79,18 @@ void IRCProto::Raw(const char *fmt, ...)
   vsnprintf(buffer, sizeof(buffer), fmt, args);
   if(Config->SendQEnabled)
   {
-    if(sqo.HasBurst() && sock)
+    if(sqo.HasBurst())
     {
       sqo.linessent++; // Spam for a few lines
-      sock->send(buffer);
+      send_cmd("%s", buffer);
+      //sock->send(buffer);
     }
     else // Oh well.. fun while it lasted lol
       sqo.SendQ.push(Flux::string(buffer));
   }
   else // Send Unlimited if there's no sendq enabled. Whee!
-    sock->send(buffer);
+    send_cmd("%s", buffer);
+    //sock->send(buffer);
   va_end(args);
 }
 

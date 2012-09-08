@@ -34,7 +34,6 @@ E jmp_buf sigbuf;
 class Channel;
 class Log;
 class User;
-class SocketIO;
 class Commands;
 class Command;
 class Oper;
@@ -48,6 +47,9 @@ class IsoHost;
 class Clock;
 class TextFile;
 class XMLFile;
+class ConnectionSocket;
+class Socket;
+class TCPClient;
 struct CommandSource;
 
 /* structs */
@@ -86,29 +88,29 @@ struct CoreExport iSupport
 /* Enumorations */
 enum LogType
 {
-  LOG_DEBUG,
-  LOG_DEVEL,
-  LOG_MEMORY,
-  LOG_NORMAL,
-  LOG_RAWIO,
-  LOG_TERMINAL,
-  LOG_WARN,
-  LOG_CRITICAL,
-  LOG_THREAD,
-  LOG_SILENT
+    LOG_DEBUG    = 0x00000001,
+    LOG_DEVEL    = 0x00000002,
+    LOG_MEMORY   = 0x00000004,
+    LOG_NORMAL   = 0x00000008,
+    LOG_RAWIO    = 0x00000010,
+    LOG_TERMINAL = 0x00000020,
+    LOG_WARN     = 0x00000040,
+    LOG_CRITICAL = 0x00000080,
+    LOG_THREAD   = 0x00000100,
+    LOG_SILENT   = 0x00000200
 };
 
 enum EventResult
 {
-  EVENT_CONTINUE,
-  EVENT_STOP
+    EVENT_CONTINUE,
+    EVENT_STOP
 };
 
 enum CommandType
 {
-  C_NULL,
-  C_CHANNEL,
-  C_PRIVATE
+    C_NULL,
+    C_CHANNEL = 0x00000001,
+    C_PRIVATE = 0x00000002
 };
 
 enum ModErr
@@ -134,7 +136,6 @@ E Module *FindModule(const Flux::string &name);
 E Command *FindCommand(const Flux::string &name, CommandType);
 
 /* extern's */
-E SocketIO *sock;
 E IRCProto *ircproto;
 E BotConfig *Config;
 E iSupport isupport;

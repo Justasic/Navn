@@ -138,6 +138,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 
   TextFile mod(input);
   Flux::string output = TextFile::TempFile(mdir);
+  Log(LOG_RAWIO) << "Original Module location: " << input;
   Log(LOG_RAWIO) << "Runtime Module location: " << output;
   mod.Copy(output);
 

@@ -2,10 +2,35 @@
 file(GLOB SRC_SRCS_CPP RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
 set(SRC_SRCS ${SRC_SRCS_C} ${SRC_SRCS_CPP})
 
-# If using Windows, add the windows specific sources
+# If using Windows, add the windows specific sources. Otherwise, choose the best socket engine for the system
 if(WIN32)
   file(GLOB WINDOWS_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "windows/*.cpp")
   append_to_list(SRC_SRCS ${WINDOWS_SRCS})
+
+#   if(HAVE_WFMO)
+#       append_to_list(SRC_SRCS SocketEngine/Windows_Engine.cpp)
+#   else(HAVE_WFMO)
+    if(HAVE_POLL)
+	append_to_list(SRC_SRCS SocketEngine/Poll_Engine.cpp)
+    else(HAVE_POLL)
+	append_to_list(SRC_SRCS SocketEngine/Select_Engine.cpp)
+    endif(HAVE_POLL)
+#   endif(HAVE_WFMO)
+
+else(WIN32)
+    if(HAVE_EPOLL)
+	append_to_list(SRC_SRCS SocketEngine/Epoll_Engine.cpp)
+    else(HAVE_EPOLL)
+	if(HAVE_KQUEUE)
+	    append_to_list(SRC_SRCS SocketEngine/Kqueue_Engine.cpp)
+	else(HAVE_KQUEUE)
+	    if(HAVE_POLL)
+		append_to_list(SRC_SRCS SocketEngine/Poll_Engine.cpp)
+	    else(HAVE_POLL)
+		append_to_list(SRC_SRCS SocketEngine/Select_Engine.cpp)
+	    endif(HAVE_POLL)
+	endif(HAVE_KQUEUE)
+    endif(HAVE_EPOLL)
 endif(WIN32)
 
 sort_list(SRC_SRCS)

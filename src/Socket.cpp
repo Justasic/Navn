@@ -260,20 +260,3 @@ bool SocketIO::Read(const Flux::string &buf) const
   return true;
 }
 
-/** \fn void send_cmd(const char *fmt, ...)
- * \brief Sends something directly out the socket after being processed by vsnprintf
- * \param char* a string of what to send to the server including printf style format
- * \param va_list all the variables to be replaced with the printf style variables
- */
-void send_cmd(const char *fmt, ...)
-{
-  char buffer[BUFSIZE] = "";
-  va_list args;
-  va_start(args, fmt);
-  vsnprintf(buffer, sizeof(buffer), fmt, args);
-  if(sock)
-    sock->send(buffer);
-  else
-    Log(LOG_WARN) << "Attempted to send \"" << buffer << "\" to the server but no socket exists!";
-  va_end(args);
-}

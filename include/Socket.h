@@ -25,7 +25,9 @@
 #include <queue>
 
 #include "extern.h"
-#include "log.h"
+// #include "log.h"
+#include "Networking.h"
+
 class CoreExport SocketIO : public Base
 {
 private:

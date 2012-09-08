@@ -10,6 +10,7 @@
 
 #include "modules.h"
 
+E ConnectionSocket *sock;
 class PingTimeoutTimer;
 class PingTimer : public Timer
 {
@@ -34,7 +35,8 @@ public:
 
   void Tick(time_t)
   {
-    sock->ThrowException(printfify("Ping Timeout: %u seconds", this->wait));
+      //sock->SetDead(true);
+    //sock->ThrowException(printfify("Ping Timeout: %u seconds", this->wait));
   }
 };
 

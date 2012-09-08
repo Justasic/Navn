@@ -668,6 +668,8 @@ namespace Flux
     }
     /* Cast into an integer */
     inline operator int() { return value_cast<int>(this->_string); }
+    /* Cast into a short integer */
+    inline operator short() { return value_cast<short>(this->_string); }
     /* Cast into a float */
     inline operator float() { return value_cast<float>(this->_string); }
     /* Cast into a double */

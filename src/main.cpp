@@ -42,79 +42,109 @@ char segv_location[255];
 time_t starttime = 0;
 iSupport isupport;
 unsigned int startcount, loopcount;
+class ConnectionSocket;
+class ReconnectTimer;
 
 // Global Pointers
 IRCProto *ircproto;
-SocketIO *sock;
+ConnectionSocket *sock;
 BotConfig *Config;
 Module *LastRunModule;
-
-E void Connect();
+extern ReconnectTimer *timer;
 
 class ReconnectTimer : public Timer
 {
 public:
-  ReconnectTimer() : Timer(Config->ReconnectTime)
-  {
-    Log() << "Reconnecting to server in " << Config->ReconnectTime << " seconds.";
-  }
-  void Tick(time_t) { Connect(); }
+    ReconnectTimer() : Timer(Config->ReconnectTime)
+    {
+	Log() << "Reconnecting to server in " << Config->ReconnectTime << " seconds.";
+	timer = this;
+    }
+
+    ~ReconnectTimer()
+    {
+	timer = NULL;
+    }
+
+    void Tick(time_t);
 };
 
-/**
- * \fn bool SocketIO::Read(const Flux::string &buf) const
- * \brief Read from a socket for the IRC processor
- * \param buffer Raw socket buffer
- */
-void Connect()
+ReconnectTimer *timer;
+
+class ConnectionSocket : public TCPSocket
 {
-  try
-  {
-    if(quitting)
-      return;
-    
-    ++startcount;
-    Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
+public:
+    // Connect to a specific address
+    ConnectionSocket() : TCPSocket(Config->Server, static_cast<short>(Config->Port))
+    {
+	Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "' -> " << this->resolver->GetIP();
+	FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+    }
 
-    FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+    ~ConnectionSocket()
+    {
+	new ReconnectTimer();
+	sock = NULL;
+    }
 
-    if(Config->Server.empty())
-      throw SocketException("No Server Specified.");
-    if(Config->Port.empty())
-      throw SocketException("No Port Specified.");
+    void ProcessError()
+    {
+	// TODO: This.
+    }
+
+    void ConnectNotify()
+    {
+	if(ircproto)
+	    ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
+
+	FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+    }
+
+    // What was actually read from the socket.
+    bool Read(const Flux::string &received)
+    {
+	process(received);
+	return true;
+    }
+};
+
+void ReconnectTimer::Tick(time_t)
+{
+    try
+    {
+	sock = new ConnectionSocket();
+	sock->Connect();
+    }
+    catch(const SocketException &ex)
+    {
+	ex.Print();
+    }
+
+}
+
+/** \fn void send_cmd(const char *fmt, ...)
+ * \brief Sends something directly out the socket after being processed by vsnprintf
+ * \param char* a string of what to send to the server including printf style format
+ * \param va_list all the variables to be replaced with the printf style variables
+ */
+void send_cmd(const char *fmt, ...)
+{
+    char buffer[BUFSIZE] = "";
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
     if(sock)
-    {
-      delete sock;
-      sock = NULL;
-    }
-
-    FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
-
-    sock = new SocketIO(Config->Server, Config->Port);
-    sock->Connect();
-
-    if(!sock)
-      throw SocketException("Cannot create socket!");
-    else
-      startcount = 0;
-
-    if(ircproto)
-      ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
-
-    FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
-  }
-  catch (SocketException &e)
-  {
-    Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
-    if(static_cast<int>(startcount) >= Config->ReconnectTries)
-      throw CoreException("Cannot connect to server!");
+	sock->Send(buffer);
     else
     {
-      delete sock;
-      sock = NULL;
-      new ReconnectTimer();
+	Log(LOG_WARN) << "Attempted to send \"" << buffer << "\" to the server but no socket exists!";
+	// Something is fucko, don't use the socket and try again.
+	if(sock)
+	    delete sock;
+
+	new ReconnectTimer();
     }
-  }
+    va_end(args);
 }
 
 /**
@@ -122,71 +152,72 @@ void Connect()
  * \brief Main Entry point for the bot
  * \param argc the number of args provided by the system
  * \param argv the args in a c-string array provided by the system
- * \param envp[] Not quite sure what this is lol
+ * \param envp[] Environment variables (deprecated, only used to re-execute the bot)
  */
 int main (int argcx, char** argvx, char *envp[])
 {
-  SET_SEGV_LOCATION();
-  startcount = 0;
-  try
-  {
-    startup(argcx, argvx, envp);
-    Connect();
-
-    ircproto = new IRCProto();
-    time_t last_check = time(NULL);
-
-    // Introduce ourselves to the IRC server
-    ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
-
-    FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
-
-    while(!quitting)
+    SET_SEGV_LOCATION();
+    startcount = 0;
+    try
     {
-      Log(LOG_RAWIO) << "Top of main loop";
-      
-      if(++loopcount >= 50)
-	raise(SIGSEGV); //prevent loop bombs, raise a SIGSEGV to handle elsewhere.
+	startup(argcx, argvx, envp);
+	try
+	{
+	    sock = new ConnectionSocket();
+	    sock->Connect();
+	} catch(const SocketException &ex)
+	{
+	    ex.Print();
+	}
+	//Connect();
 
-      /* Process the socket engine */
-      try
-      {
-	if(sock)
-	  sock->Process();
-	else
-	  throw SocketException("No socket to read from!");
-      }
-      catch(SocketException &exc)
-      {
-	Log() << "Socket Exception: " << exc.description();
-	Connect();
-      }
-      
-      /* Process Timers */
-      /***********************************/
-      if(time(NULL) - last_check >= 3)
-      {
-	loopcount = 0;
-	TimerManager::TickTimers(time(NULL));
-	last_check = time(NULL);
-      }
-      /***********************************/
-    }//while loop ends here
-    
-    GarbageCollect();
-    Log(LOG_TERMINAL) << "Bye!\033[0m";
-  }//try ends here
-  catch(const CoreException& e)
-  {
-    /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
-    Log(LOG_CRITICAL) << "\033[0mCore Exception Caught: " << e.GetReason();
-    return EXIT_FAILURE;
-  }
-  catch(std::exception &ex)
-  {
-    Log(LOG_CRITICAL) << "\033[0mStandard Exception Caught: " << ex.what();
-    return EXIT_FAILURE;
-  }
-  return EXIT_SUCCESS;
+	ircproto = new IRCProto();
+	time_t last_check = time(NULL);
+
+	// Introduce ourselves to the IRC server
+	ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
+
+	FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+
+	while(!quitting)
+	{
+	    Log(LOG_RAWIO) << "Top of main loop";
+
+	    if(++loopcount >= 50)
+		raise(SIGSEGV); //prevent loop bombs, raise a SIGSEGV to handle elsewhere.
+
+	    if(!sock && !timer)
+		new ReconnectTimer();
+
+	    /* Process the socket engine */
+	    SocketHandler::ProcessSockets();
+
+	    /* Process Timers */
+	    /***********************************/
+	    if(time(NULL) - last_check >= 3)
+	    {
+		loopcount = 0;
+		TimerManager::TickTimers(time(NULL));
+		last_check = time(NULL);
+	    }
+	    /***********************************/
+	}//while loop ends here
+
+	GarbageCollect();
+	Log(LOG_TERMINAL) << "Bye!\033[0m";
+    }//try ends here
+    catch(const CoreException& ex)
+    {
+	/* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
+	//Log(LOG_CRITICAL) << "\033[0mCore Exception Caught: " << e.GetReason();
+	ex.Print();
+	return EXIT_FAILURE;
+    }
+    catch(std::exception &ex)
+    {
+	Log(LOG_CRITICAL) << "\033[0mStandard Exception Caught: " << ex.what();
+	return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }
 

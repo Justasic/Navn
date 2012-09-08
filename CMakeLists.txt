@@ -318,6 +318,13 @@ check_function_exists(strlcpy HAVE_STRLCPY)
 check_function_exists(umask HAVE_UMASK)
 check_function_exists(backtrace HAVE_BACKTRACE)
 check_function_exists(eventfd HAVE_EVENTFD)
+check_function_exists(epoll_wait HAVE_EPOLL)
+check_function_exists(poll HAVE_POLL)
+check_function_exists(kqueue HAVE_KQUEUE)
+# Window's API is too fucking long so I abbreviated it. - Justasic
+check_function_exists(WSAWaitForMultipleObjects HAVE_WFMO)
+check_function_exists(WSAWaitForMultipleEvents HAVE_WFME)
+
 
 check_type_size(uint8_t UINT8_T)
 check_type_size(u_int8_t U_INT8_T)

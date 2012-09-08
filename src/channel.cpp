@@ -67,8 +67,8 @@ void Channel::AddUser(User *u)
 
 void Channel::DelUser(User *u)
 {
-  if(!sock)
-    return;
+//   if(!sock)
+//     return;
 
   UList::iterator it = UserList.find(u);
 
