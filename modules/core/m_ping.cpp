@@ -14,86 +14,90 @@ class PingTimeoutTimer;
 class PingTimer : public Timer
 {
 public:
-  PingTimeoutTimer *ptt;
-  PingTimer():Timer(30, time(NULL), true), ptt(NULL) { }
-  void Tick(time_t);
+	PingTimeoutTimer *ptt;
+	PingTimer(): Timer(30, time(NULL), true), ptt(NULL) { }
+	void Tick(time_t);
 };
 
 class PingTimeoutTimer : public Timer
 {
-  PingTimer *pt;
-  time_t wait;
+	PingTimer *pt;
+	time_t wait;
 public:
-  PingTimeoutTimer(time_t w, PingTimer *pt2):Timer(w, time(NULL), false), pt(pt2), wait(w)
-  {
-    if(this->pt && this->pt->ptt)
-      return;
-  }
+	PingTimeoutTimer(time_t w, PingTimer *pt2): Timer(w, time(NULL), false), pt(pt2), wait(w)
+	{
+		if(this->pt && this->pt->ptt)
+			return;
+	}
 
-  ~PingTimeoutTimer() { this->pt->ptt = NULL; }
+	~PingTimeoutTimer()
+	{
+		this->pt->ptt = NULL;
+	}
 
-  void Tick(time_t)
-  {
-    sock->ThrowException(printfify("Ping Timeout: %u seconds", this->wait));
-  }
+	void Tick(time_t)
+	{
+		sock->ThrowException(printfify("Ping Timeout: %u seconds", this->wait));
+	}
 };
 
 void PingTimer::Tick(time_t)
 {
-  send_cmd("PING :%i\n", time(NULL));
-  this->ptt = new PingTimeoutTimer(Config->PingTimeoutTime, this);
+	send_cmd("PING :%i\n", time(NULL));
+	this->ptt = new PingTimeoutTimer(Config->PingTimeoutTime, this);
 }
 
 class Ping_pong : public Module
 {
-  PingTimer pingtimer;
+	PingTimer pingtimer;
 public:
-  Ping_pong(const Flux::string &Name):Module(Name)
-  {
-    Implementation i[] = { I_OnNumeric, I_OnPong, I_OnPing };
-    ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
-    this->SetAuthor("Justasic");
-    this->SetVersion(VERSION);
-    this->SetPriority(PRIORITY_FIRST);
-  }
+	Ping_pong(const Flux::string &Name): Module(Name)
+	{
+		Implementation i[] = { I_OnNumeric, I_OnPong, I_OnPing };
+		ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
+		this->SetAuthor("Justasic");
+		this->SetVersion(VERSION);
+		this->SetPriority(PRIORITY_FIRST);
+	}
 
-  ~Ping_pong()
-  {
-    // make sure we don't ping-timeout after unloading the Module
-    if(pingtimer.ptt)
-      delete pingtimer.ptt;
-  }
+	~Ping_pong()
+	{
+		// make sure we don't ping-timeout after unloading the Module
+		if(pingtimer.ptt)
+			delete pingtimer.ptt;
+	}
 
-  void OnPong(const std::vector<Flux::string> &params)
-  {
-     Flux::string ts = params[1];
-     int lag = time(NULL) - static_cast<int>(ts);
-     Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ")";
+	void OnPong(const std::vector<Flux::string> &params)
+	{
+		Flux::string ts = params[1];
+		int lag = time(NULL) - static_cast<int>(ts);
+		Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ")";
 
-     if(pingtimer.ptt)
-	delete pingtimer.ptt;
-     pingtimer.ptt = NULL;
-  }
+		if(pingtimer.ptt)
+			delete pingtimer.ptt;
 
-  void OnPing(const Flux::vector &params)
-  {
-    if(pingtimer.ptt)
-      delete pingtimer.ptt;
+		pingtimer.ptt = NULL;
+	}
 
-    pingtimer.ptt = NULL;
-    send_cmd("PONG :%s\n", params[0].c_str());
-  }
+	void OnPing(const Flux::vector &params)
+	{
+		if(pingtimer.ptt)
+			delete pingtimer.ptt;
 
-  void OnConnectionError(const Flux::string &buffer)
-  {
-    throw CoreException(buffer.c_str());
-  }
+		pingtimer.ptt = NULL;
+		send_cmd("PONG :%s\n", params[0].c_str());
+	}
 
-  void OnNumeric(int i, const std::vector<Flux::string> &params)
-  {
-   if((i == 451))
-     ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
-  }
+	void OnConnectionError(const Flux::string &buffer)
+	{
+		throw CoreException(buffer.c_str());
+	}
+
+	void OnNumeric(int i, const std::vector<Flux::string> &params)
+	{
+		if((i == 451))
+			ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
+	}
 };
 
 MODULE_HOOK(Ping_pong)

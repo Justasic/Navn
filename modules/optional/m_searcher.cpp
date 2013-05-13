@@ -43,244 +43,245 @@
  */
 Flux::string search(const Flux::string &text, const Flux::string &command)
 {
-  Flux::string searchstring = text.url_str();
-  if (searchstring.empty())
-    return "Empty searchstring.";
-  else
-  {
-    if(command.equals_ci("google"))
-      return "http://www.google.com/search?q="+searchstring;
-    else if(command.equals_ci("youtube"))
-      return "http://www.youtube.com/results?search_query="+searchstring;
-    else if(command.equals_ci("tpb"))
-      return "http://thepiratebay.org/search/"+searchstring;
-    else if(command.equals_ci("define"))
-      return "http://dictionary.reference.com/browse/"+searchstring;
-    else if(command.equals_ci("urban"))
-      return "http://www.urbandictionary.com/define.php?term="+searchstring;
-    else if(command.equals_ci("movie"))
-      return "www.letmewatchthis.ch/index.php?search_keywords="+searchstring;
-    else if(command.equals_ci("lmgtfy"))
-      return "http://lmgtfy.com/?q="+searchstring;
-    else
-      return "http://www.google.com/search?q="+searchstring;
-  }
+	Flux::string searchstring = text.url_str();
+
+	if(searchstring.empty())
+		return "Empty searchstring.";
+	else
+	{
+		if(command.equals_ci("google"))
+			return "http://www.google.com/search?q=" + searchstring;
+		else if(command.equals_ci("youtube"))
+			return "http://www.youtube.com/results?search_query=" + searchstring;
+		else if(command.equals_ci("tpb"))
+			return "http://thepiratebay.org/search/" + searchstring;
+		else if(command.equals_ci("define"))
+			return "http://dictionary.reference.com/browse/" + searchstring;
+		else if(command.equals_ci("urban"))
+			return "http://www.urbandictionary.com/define.php?term=" + searchstring;
+		else if(command.equals_ci("movie"))
+			return "www.letmewatchthis.ch/index.php?search_keywords=" + searchstring;
+		else if(command.equals_ci("lmgtfy"))
+			return "http://lmgtfy.com/?q=" + searchstring;
+		else
+			return "http://www.google.com/search?q=" + searchstring;
+	}
 }
 
 class CommandCGoogle : public Command
 {
 public:
-  CommandCGoogle(Module *m):Command(m, "GOOGLE", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a Google search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel Google Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a google search link\n"
-		 "for the requested text");
-    return true;
-  }
+	CommandCGoogle(Module *m): Command(m, "GOOGLE", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a Google search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel Google Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a google search link\n"
+		             "for the requested text");
+		return true;
+	}
 };
 
 class CommandCYoutube : public Command
 {
 public:
-  CommandCYoutube(Module *m):Command(m, "YOUTUBE", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a youtube search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel youtube Search from " << source.u->nick << "\"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a youtube search link\n"
-		 "for the requested text");
-    return true;
-  }
+	CommandCYoutube(Module *m): Command(m, "YOUTUBE", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a youtube search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel youtube Search from " << source.u->nick << "\"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a youtube search link\n"
+		             "for the requested text");
+		return true;
+	}
 };
 
 class CommandCPirateBay : public Command
 {
 public:
-  CommandCPirateBay(Module *m):Command(m, "TPB", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a Pirate Bay search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel The Pirate Bay Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a 'The Pirate Bay' search link\n"
-		 "for the requested text");
-    return true;
-  }
+	CommandCPirateBay(Module *m): Command(m, "TPB", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a Pirate Bay search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel The Pirate Bay Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a 'The Pirate Bay' search link\n"
+		             "for the requested text");
+		return true;
+	}
 };
 
 class CommandCDefine : public Command
 {
 public:
-  CommandCDefine(Module *m):Command(m, "DEFINE", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a Dictionary search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel define Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a Dictionary.com search link\n"
-		 "for the requested text");
-    return true;
-  }
+	CommandCDefine(Module *m): Command(m, "DEFINE", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a Dictionary search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel define Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a Dictionary.com search link\n"
+		             "for the requested text");
+		return true;
+	}
 };
 
 class CommandCUrban : public Command
 {
 public:
-  CommandCUrban(Module *m):Command(m, "URBAN", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a Urban Dictionary search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel urban dictionary Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a Urban Dictionary search link\n"
-		 "for the requested text");
-    return true;
-  }
+	CommandCUrban(Module *m): Command(m, "URBAN", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a Urban Dictionary search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel urban dictionary Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a Urban Dictionary search link\n"
+		             "for the requested text");
+		return true;
+	}
 };
 
 class CommandCMovie : public Command
 {
 public:
-  CommandCMovie(Module *m):Command(m, "MOVIE", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a movie search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel movie Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a Internet Movie Database (imdb)\n"
-		 "search link for the requested text");
-    return true;
-  }
+	CommandCMovie(Module *m): Command(m, "MOVIE", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a movie search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel movie Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a Internet Movie Database (imdb)\n"
+		             "search link for the requested text");
+		return true;
+	}
 };
 
 class CommandCWiki : public Command
 {
 public:
-  CommandCWiki(Module *m):Command(m, "WIKI", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a wikipedia search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel Wikipedia Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a Wikipedia search link\n"
-		 "for the requested text");
-    return true;
-  }
+	CommandCWiki(Module *m): Command(m, "WIKI", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a wikipedia search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel Wikipedia Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a Wikipedia search link\n"
+		             "for the requested text");
+		return true;
+	}
 };
 
 class CommandCMusic : public Command
 {
 public:
-  CommandCMusic(Module *m):Command(m, "MUSIC", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a music search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a music search link\n"
-		 "for the requested text");
-    return true;
-  }
+	CommandCMusic(Module *m): Command(m, "MUSIC", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a music search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a music search link\n"
+		             "for the requested text");
+		return true;
+	}
 };
 
 class CommandClmgtfy : public Command
 {
 public:
-  CommandClmgtfy(Module *m):Command(m, "LMGTFY", C_CHANNEL, 1,1)
-  {
-    this->SetDesc("Generate a Let me google that for you search url");
-    this->SetSyntax("\37message\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string str = search(params[0], this->name);
-    source.c->SendMessage(str);
-    Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command generates a Let me google that for you\n"
-    "search link for the requested text");
-    return true;
-  }
+	CommandClmgtfy(Module *m): Command(m, "LMGTFY", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Generate a Let me google that for you search url");
+		this->SetSyntax("\37message\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string str = search(params[0], this->name);
+		source.c->SendMessage(str);
+		Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command generates a Let me google that for you\n"
+		             "search link for the requested text");
+		return true;
+	}
 };
 
 /**
@@ -288,24 +289,24 @@ public:
  * \brief Returns search links for different sites.
  * Searches for the search command, then uses the \a search function from \a flux_net_irc to return search links.
  */
-class searcher:public Module
+class searcher: public Module
 {
-  CommandCGoogle google;
-  CommandCYoutube yt;
-  CommandCPirateBay tpb;
-  CommandCDefine d;
-  CommandCUrban urban;
-  CommandCMovie movie;
-  CommandCWiki wiki;
-  CommandCMusic music;
-  CommandClmgtfy lmgtfy;
+	CommandCGoogle google;
+	CommandCYoutube yt;
+	CommandCPirateBay tpb;
+	CommandCDefine d;
+	CommandCUrban urban;
+	CommandCMovie movie;
+	CommandCWiki wiki;
+	CommandCMusic music;
+	CommandClmgtfy lmgtfy;
 public:
-  searcher(const Flux::string &Name):Module(Name), google(this), yt(this), tpb(this), d(this), urban(this),
-  movie(this), wiki(this), music(this), lmgtfy(this)
-  {
-    this->SetAuthor("Lordofsraam");
-    this->SetVersion(VERSION);
-  }
+	searcher(const Flux::string &Name): Module(Name), google(this), yt(this), tpb(this), d(this), urban(this),
+		movie(this), wiki(this), music(this), lmgtfy(this)
+	{
+		this->SetAuthor("Lordofsraam");
+		this->SetVersion(VERSION);
+	}
 };
 /**
  * @}

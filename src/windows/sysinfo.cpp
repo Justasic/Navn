@@ -22,6 +22,7 @@ inline int GetProcessList()
 
 	// Snapshot the current processes and make sure it's valid
 	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
 	if(hProcessSnap == INVALID_HANDLE_VALUE)
 		return Processes;
 
@@ -42,6 +43,7 @@ inline int GetProcessList()
 		Processes++;
 	}
 	while(Process32Next(hProcessSnap, &pe32));
+
 	CloseHandle(hProcessSnap);
 
 	return Processes;
@@ -53,7 +55,7 @@ int sysinfo(struct sysinfo *info)
 	MEMORYSTATUSEX statex;
 
 	ZeroMemory(&si, sizeof(SYSTEM_INFO));
-	statex.dwLength = sizeof (statex);
+	statex.dwLength = sizeof(statex);
 	GetSystemInfo(&si);
 
 	if(!GlobalMemoryStatusEx(&statex))

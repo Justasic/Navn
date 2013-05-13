@@ -22,13 +22,16 @@
  */
 class SocketException
 {
- public:
-  SocketException(Flux::string s):m_s(s) {};
-  ~SocketException(){};
+public:
+	SocketException(Flux::string s): m_s(s) {};
+	~SocketException() {};
 
-  Flux::string description() { return m_s; }
- private:
-  Flux::string m_s;
+	Flux::string description()
+	{
+		return m_s;
+	}
+private:
+	Flux::string m_s;
 };
 
 /**CoreExceptions are to be thrown with everything else
@@ -42,7 +45,7 @@ class SocketException
 
 class CoreException : public std::exception
 {
- public:
+public:
 	/** Holds the error message to be displayed
 	 */
 	const Flux::string err;
@@ -67,12 +70,12 @@ class CoreException : public std::exception
 	/** Returns the reason for the exception.
 	 * The Module should probably put something informative here as the user will see this upon failure.
 	 */
-	virtual const char* GetReason() const
+	virtual const char *GetReason() const
 	{
 		return err.c_str();
 	}
 
-	virtual const char* GetSource()
+	virtual const char *GetSource()
 	{
 		return source.c_str();
 	}
@@ -80,22 +83,22 @@ class CoreException : public std::exception
 
 class LogException : public CoreException
 {
- public:
-		LogException(const Flux::string &message) : CoreException(message, "A Log") { }
-		virtual ~LogException() throw() { }
+public:
+	LogException(const Flux::string &message) : CoreException(message, "A Log") { }
+	virtual ~LogException() throw() { }
 };
 class ModuleException : public CoreException
 {
- public:
-		ModuleException(const Flux::string &message) : CoreException(message, "A Module") { }
-		virtual ~ModuleException() throw() { }
+public:
+	ModuleException(const Flux::string &message) : CoreException(message, "A Module") { }
+	virtual ~ModuleException() throw() { }
 };
 
 class ConfigException : public CoreException
 {
- public:
- 		ConfigException() : CoreException("Config threw an exception", "Config Parser") { }
-		ConfigException(const Flux::string &msg) : CoreException(msg, "A Config") { }
-		virtual ~ConfigException() throw() { }
+public:
+	ConfigException() : CoreException("Config threw an exception", "Config Parser") { }
+	ConfigException(const Flux::string &msg) : CoreException(msg, "A Config") { }
+	virtual ~ConfigException() throw() { }
 };
 #endif

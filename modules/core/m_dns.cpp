@@ -48,101 +48,107 @@
 class CommandCDNS : public Command
 {
 public:
-  CommandCDNS(Module *m):Command(m, "DNS", C_CHANNEL, 1, 1)
-  {
-    this->SetDesc("Displays a resolved hostname");
-    this->SetSyntax("hostname");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string ip = ForwardResolution(params[1]);
+	CommandCDNS(Module *m): Command(m, "DNS", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Displays a resolved hostname");
+		this->SetSyntax("hostname");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string ip = ForwardResolution(params[1]);
 
-    if (ip.empty())
-	source.c->SendMessage("\0034[DNS]\017 Error");
-    else
-	source.c->SendMessage("\0034[DNS]\017 %s", ip.c_str());
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command lets a user do a\n"
-		 "DNS resolution of a Domain Name which\n"
-		 "can be useful to find what a Domain name\n"
-		 "Resolves to or if it resolves at all");
-    return true;
-  }
+		if(ip.empty())
+			source.c->SendMessage("\0034[DNS]\017 Error");
+		else
+			source.c->SendMessage("\0034[DNS]\017 %s", ip.c_str());
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command lets a user do a\n"
+		             "DNS resolution of a Domain Name which\n"
+		             "can be useful to find what a Domain name\n"
+		             "Resolves to or if it resolves at all");
+		return true;
+	}
 };
 class CommandCADNS : public Command
 {
 public:
-  CommandCADNS(Module *m):Command(m, "ADNS", C_CHANNEL, 1, 1)
-  {
-    this->SetDesc("Displays ALL resolved ip addresses from hostnames");
-    this->SetSyntax("hostname");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string hostname = params[1];
-    struct addrinfo *result, *res;
-    int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
+	CommandCADNS(Module *m): Command(m, "ADNS", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Displays ALL resolved ip addresses from hostnames");
+		this->SetSyntax("hostname");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string hostname = params[1];
+		struct addrinfo *result, *res;
+		int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
 
-    if(err != 0)
-    {
-      source.c->SendMessage("\0034[ADNS]\017 Failed to resolve %s: %s", hostname.c_str(), gai_strerror(err));
-      return;
-    }
+		if(err != 0)
+		{
+			source.c->SendMessage("\0034[ADNS]\017 Failed to resolve %s: %s", hostname.c_str(), gai_strerror(err));
+			return;
+		}
 
-    Flux::string ret = hostname, laststr;
-    int c = 0;
+		Flux::string ret = hostname, laststr;
+		int c = 0;
 
-    for(res = result; res != NULL; res = res->ai_next)
-    {
-      struct sockaddr *haddr = res->ai_addr;
-      char address[INET6_ADDRSTRLEN + 1] = "";
+		for(res = result; res != NULL; res = res->ai_next)
+		{
+			struct sockaddr *haddr = res->ai_addr;
+			char address[INET6_ADDRSTRLEN + 1] = "";
 
-      switch(haddr->sa_family)
-      {
-	case AF_INET:
-	  struct sockaddr_in *v4;
-	  v4 = reinterpret_cast<struct sockaddr_in*>(haddr);
-	  if (!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address)))
-	  {
-	    source.c->SendMessage("DNS: %s", strerror(errno));
-	    return;
-	  }
-	  break;
-	case AF_INET6:
-	  struct sockaddr_in6 *v6;
-	  v6 = reinterpret_cast<struct sockaddr_in6*>(haddr);
-	  if (!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address)))
-	  {
-	    source.c->SendMessage("DNS: %s", strerror(errno));
-	    return;
-	  }
-	  break;
-      }
+			switch(haddr->sa_family)
+			{
+				case AF_INET:
+					struct sockaddr_in *v4;
+					v4 = reinterpret_cast<struct sockaddr_in *>(haddr);
 
-      ret = address;
-      if(!laststr.equals_cs(ret))
-      {
-	source.c->SendMessage("\0034[ADNS]\017 %s", ret.c_str());
-	laststr = ret;
-	c++; //LOL!
-      }
-    }
-    source.c->SendMessage("\0034[ADNS]\017 Total of %i IP address%s", c, c > 1?"es":"");
-    freeaddrinfo(result);
-  }
-  bool OnHelp(CommandSource &source, const Flux::string&)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command lets a user resolve\n"
-		 "all IP addresses associated with a\n"
-		 "given hostname.");
-    return true;
-  }
+					if(!inet_ntop(AF_INET, &v4->sin_addr, address, sizeof(address)))
+					{
+						source.c->SendMessage("DNS: %s", strerror(errno));
+						return;
+					}
+
+					break;
+				case AF_INET6:
+					struct sockaddr_in6 *v6;
+					v6 = reinterpret_cast<struct sockaddr_in6 *>(haddr);
+
+					if(!inet_ntop(AF_INET6, &v6->sin6_addr, address, sizeof(address)))
+					{
+						source.c->SendMessage("DNS: %s", strerror(errno));
+						return;
+					}
+
+					break;
+			}
+
+			ret = address;
+
+			if(!laststr.equals_cs(ret))
+			{
+				source.c->SendMessage("\0034[ADNS]\017 %s", ret.c_str());
+				laststr = ret;
+				c++; //LOL!
+			}
+		}
+
+		source.c->SendMessage("\0034[ADNS]\017 Total of %i IP address%s", c, c > 1 ? "es" : "");
+		freeaddrinfo(result);
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command lets a user resolve\n"
+		             "all IP addresses associated with a\n"
+		             "given hostname.");
+		return true;
+	}
 };
 
 /** Reverse DNS Lookup
@@ -153,44 +159,46 @@ public:
 class CommandCRDNS : public Command
 {
 public:
-  CommandCRDNS(Module *m):Command(m, "RDNS", C_CHANNEL, 1, 1)
-  {
-    this->SetDesc("Displays a reversely resolved DNS IP Address");
-    this->SetSyntax("ipaddress");
-  }
+	CommandCRDNS(Module *m): Command(m, "RDNS", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Displays a reversely resolved DNS IP Address");
+		this->SetSyntax("ipaddress");
+	}
 
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    struct addrinfo *result;
-    struct addrinfo *res;
-    int error;
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		struct addrinfo *result;
+		struct addrinfo *res;
+		int error;
 
-    error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
-    if (error != 0)
-      source.c->SendMessage("\0034[rDNS]\017 Error: %s\n", gai_strerror(error));
-    else
-    {
-      char hostname[NI_MAXHOST] = "";
-      res = result;
-      error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+		error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
 
-      if(error != 0)
-	source.c->SendMessage("\0034[rDNS]\017 Error: %s", gai_strerror(error));
-      if(*hostname != '\0')
-	source.c->SendMessage("\0034[rDNS]\017 %s", hostname);
+		if(error != 0)
+			source.c->SendMessage("\0034[rDNS]\017 Error: %s\n", gai_strerror(error));
+		else
+		{
+			char hostname[NI_MAXHOST] = "";
+			res = result;
+			error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
 
-      freeaddrinfo(result);
-    }
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command allows a user to do a\n"
-		 "Reverse DNS lookup on a Domain Name or\n"
-		 "IP address and only list one return");
-    return true;
-  }
+			if(error != 0)
+				source.c->SendMessage("\0034[rDNS]\017 Error: %s", gai_strerror(error));
+
+			if(*hostname != '\0')
+				source.c->SendMessage("\0034[rDNS]\017 %s", hostname);
+
+			freeaddrinfo(result);
+		}
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command allows a user to do a\n"
+		             "Reverse DNS lookup on a Domain Name or\n"
+		             "IP address and only list one return");
+		return true;
+	}
 };
 /** All hosts reverse DNS Lookup
 * Looks up an IP address to all the host
@@ -199,70 +207,74 @@ public:
 class CommandCARDNS : public Command
 {
 public:
-  CommandCARDNS(Module *m):Command(m, "ARDNS", C_CHANNEL, 1, 1)
-  {
-    this->SetDesc("Displays ALL reverse DNS ip addresses");
-    this->SetSyntax("ipaddress");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    struct addrinfo *result;
-    struct addrinfo *res;
-    int error;
-    int count = 0;
-
-    error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
-    if (error != 0)
-      source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error));
-    else
-    {
-      Flux::string laststr, ret;
-      for (res = result; res != NULL; res = res->ai_next)
-      {
-	char hostname[NI_MAXHOST] = "";
-	error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
-
-	if(error != 0){
-	  source.c->SendMessage("\0034[All rDNS]\017 error in getnameinfo: %s", gai_strerror(error));
-	  continue;
-	}
-
-	ret = hostname;
-	if(!laststr.equals_cs(ret))
+	CommandCARDNS(Module *m): Command(m, "ARDNS", C_CHANNEL, 1, 1)
 	{
-	  source.c->SendMessage("\0034[All rDNS]\017 %s", hostname);
-	  laststr = ret;
-	  count++;
+		this->SetDesc("Displays ALL reverse DNS ip addresses");
+		this->SetSyntax("ipaddress");
 	}
-      }
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		struct addrinfo *result;
+		struct addrinfo *res;
+		int error;
+		int count = 0;
 
-      source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostname%s.", count, count > 1?"s":"");
-      freeaddrinfo(result);
-    }
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command allows a user to do a\n"
-		 "Reverse DNS lookup on an IP address\n"
-		 "or a Domain Name and list ALL results");
-    return true;
-  }
+		error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
+
+		if(error != 0)
+			source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error));
+		else
+		{
+			Flux::string laststr, ret;
+
+			for(res = result; res != NULL; res = res->ai_next)
+			{
+				char hostname[NI_MAXHOST] = "";
+				error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+
+				if(error != 0)
+				{
+					source.c->SendMessage("\0034[All rDNS]\017 error in getnameinfo: %s", gai_strerror(error));
+					continue;
+				}
+
+				ret = hostname;
+
+				if(!laststr.equals_cs(ret))
+				{
+					source.c->SendMessage("\0034[All rDNS]\017 %s", hostname);
+					laststr = ret;
+					count++;
+				}
+			}
+
+			source.c->SendMessage("\0034[All rDNS]\017 Total of %i hostname%s.", count, count > 1 ? "s" : "");
+			freeaddrinfo(result);
+		}
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command allows a user to do a\n"
+		             "Reverse DNS lookup on an IP address\n"
+		             "or a Domain Name and list ALL results");
+		return true;
+	}
 };
 
-class dns_m:public Module
+class dns_m: public Module
 {
-  CommandCARDNS ardns;
-  CommandCRDNS rdns;
-  CommandCDNS dns;
-  CommandCADNS adns;
+	CommandCARDNS ardns;
+	CommandCRDNS rdns;
+	CommandCDNS dns;
+	CommandCADNS adns;
 public:
-  dns_m(const Flux::string &Name):Module(Name), ardns(this), rdns(this), dns(this), adns(this)
-  {
-    this->SetAuthor("Justasic");
-    this->SetVersion(VERSION);
-  }
+	dns_m(const Flux::string &Name): Module(Name), ardns(this), rdns(this), dns(this), adns(this)
+	{
+		this->SetAuthor("Justasic");
+		this->SetVersion(VERSION);
+	}
 };
 /**
  * @}

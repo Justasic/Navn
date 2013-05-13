@@ -14,12 +14,12 @@
 #ifdef _WIN32
 #include "flux.h"
 
-extern CoreExport int read(int, char*, size_t);
-extern CoreExport int write(int, const char*, size_t);
+extern CoreExport int read(int, char *, size_t);
+extern CoreExport int write(int, const char *, size_t);
 extern CoreExport int windows_close(int);
-extern CoreExport int windows_accept(int, struct sockaddr*, int*);
-extern CoreExport int windows_inet_pton(int, const char*, void*);
-extern CoreExport const char *windows_inet_ntop(int, const void*, char*, size_t);
+extern CoreExport int windows_accept(int, struct sockaddr *, int *);
+extern CoreExport int windows_inet_pton(int, const char *, void *);
+extern CoreExport const char *windows_inet_ntop(int, const void *, char *, size_t);
 extern CoreExport int fcntl(int, int, int);
 
 // Windows socket bullshit

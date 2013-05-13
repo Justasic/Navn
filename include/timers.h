@@ -20,7 +20,7 @@
 
 class CoreExport Timer : public Base
 {
- private:
+private:
 	/** The time this was created
 	 */
 	time_t settime;
@@ -37,7 +37,7 @@ class CoreExport Timer : public Base
 	 */
 	bool repeat;
 
- public:
+public:
 	/**
 	 * @fn Timer(long time_from_now, time_t now = time(NULL), bool repeating = false)
 	 * Default constructor, initializes the triggering time
@@ -106,7 +106,7 @@ class CoreExport TimerManager : public Base
 	/** A list of timers
 	 */
 	static std::vector<Timer *> Timers;
- public:
+public:
 	/** Add a timer to the list
 	 * @param T A Timer derived class to add
 	 */

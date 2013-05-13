@@ -26,15 +26,15 @@
  */
 // EVENT_HOOK(command, "PING", I_OnPing, OnPing);
 #define EVENT_HOOK(w, x, y, z) \
-if(true) \
-{ \
-  if(w.equals_ci(x)) \
-  {\
-    FOREACH_MOD(y, z); \
-  } \
-} \
-else \
-  static_cast<void>(0);
+	if(true) \
+	{ \
+		if(w.equals_ci(x)) \
+		{\
+			FOREACH_MOD(y, z); \
+		} \
+	} \
+	else \
+		static_cast<void>(0);
 
 /**
  * \fn void ProcessJoin(CommandSource &source, const Flux::string &chan)
@@ -44,148 +44,162 @@ else \
  */
 void ProcessJoin(CommandSource &source, const Flux::string &chan)
 {
-    std::vector<Flux::string> &params = source.params;
-    if(params.size() < 7)
-	return;
-    Flux::string channel = params[1];
-    Flux::string Ident = params[2];
-    Flux::string Host = params[3];
-    Flux::string Server = params[4];
-    Flux::string Nickname = params[5];
-    Flux::string opstatus = params[6];
-    Flux::string realname = params[7].erase(0,2);
-    /*******************************************************/
-    User *u = finduser(Nickname);
-    Channel *c = findchannel(channel);
-    
-    if(!u)
-    {
-      if(!Host.empty() || !Nickname.empty() || !Ident.empty())
-	u = new User(Nickname, Ident, Host, realname, Server);
-    }
-    
-    if(!c)
-    {
-	if(!channel.empty() && IsValidChannel(channel))
-	c = new Channel(channel);
-	else
-	Log(LOG_DEBUG) << "Invalid channel " << channel << " in processing channels from numeric 352!";
-    }
-    
-    if(u)
-	u->AddChan(c);
-    
-    if(c)
-	c->AddUser(u);
+	std::vector<Flux::string> &params = source.params;
+
+	if(params.size() < 7)
+		return;
+
+	Flux::string channel = params[1];
+	Flux::string Ident = params[2];
+	Flux::string Host = params[3];
+	Flux::string Server = params[4];
+	Flux::string Nickname = params[5];
+	Flux::string opstatus = params[6];
+	Flux::string realname = params[7].erase(0, 2);
+	/*******************************************************/
+	User *u = finduser(Nickname);
+	Channel *c = findchannel(channel);
+
+	if(!u)
+	{
+		if(!Host.empty() || !Nickname.empty() || !Ident.empty())
+			u = new User(Nickname, Ident, Host, realname, Server);
+	}
+
+	if(!c)
+	{
+		if(!channel.empty() && IsValidChannel(channel))
+			c = new Channel(channel);
+		else
+			Log(LOG_DEBUG) << "Invalid channel " << channel << " in processing channels from numeric 352!";
+	}
+
+	if(u)
+		u->AddChan(c);
+
+	if(c)
+		c->AddUser(u);
 }
 /*********************************************************************************/
 // Process Channel Commands.
 
 void ProcessChannelCommand(CommandSource &Source, const Flux::vector &params)
 {
-    Flux::vector params2 = params;
-    Command *ccom = FindCommand(params2[0], C_CHANNEL);
-    if(ccom)
-    {
-	Source.command = ccom->name;
-	params2.erase(params2.begin());
+	Flux::vector params2 = params;
+	Command *ccom = FindCommand(params2[0], C_CHANNEL);
 
-	while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
+	if(ccom)
 	{
-	    params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
-	    params2.erase(params2.begin() + ccom->MaxParams);
-	}
+		Source.command = ccom->name;
+		params2.erase(params2.begin());
 
-	if(params2.size() < ccom->MinParams)
-	{
-	    ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
-	    return;
-	}
-	#ifdef HAVE_SETJMP_H
-	// Yes, i understand this code is VERY VERY bad and can cause VERY BAD
-	// stack corruption, but it's still cool to see that it unloads Modules
-	// if it segfaults and i would like to keep a system like this in place.
-	if(setjmp(sigbuf) == 0)
-	{
-	#endif
-	    LastRunModule = ccom->mod;
-	    ccom->Run(Source, params2);
-	#ifdef HAVE_SETJMP_H
+		while(ccom->MaxParams > 0 && params2.size() > ccom->MaxParams)
+		{
+			params2[ccom->MaxParams - 1] += " " + params2[ccom->MaxParams];
+			params2.erase(params2.begin() + ccom->MaxParams);
+		}
+
+		if(params2.size() < ccom->MinParams)
+		{
+			ccom->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+			return;
+		}
+
+#ifdef HAVE_SETJMP_H
+
+		// Yes, i understand this code is VERY VERY bad and can cause VERY BAD
+		// stack corruption, but it's still cool to see that it unloads Modules
+		// if it segfaults and i would like to keep a system like this in place.
+		if(setjmp(sigbuf) == 0)
+		{
+#endif
+			LastRunModule = ccom->mod;
+			ccom->Run(Source, params2);
+#ifdef HAVE_SETJMP_H
+		}
+		else
+		{
+			Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
+			Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
+
+			for(unsigned i = 0; i < Config->Owners.size(); ++i)
+			{
+				User *ou = finduser(Config->Owners[i]);
+
+				if(ou)
+					ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
+			}
+		}
+
+#endif
+		LastRunModule = NULL;
 	}
 	else
 	{
-	    Log() << "Command " << ccom->name << " failed to execute. Stack Restored.";
-	    Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
-
-	    for(unsigned i = 0; i < Config->Owners.size(); ++i)
-	    {
-		User *ou = finduser(Config->Owners[i]);
-		if(ou)
-		ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), ccom->name.c_str());
-	    }
+		//This will one day be a actual function for channel only messages..
+		FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(Source.u, Source.c, params2));
 	}
-	#endif
-	LastRunModule = NULL;
-    }
-    else
-    {
-	//This will one day be a actual function for channel only messages..
-	FOREACH_MOD(I_OnPrivmsgChannel, OnPrivmsgChannel(Source.u, Source.c, params2));
-    }
 }
 
 /*********************************************************************************/
 
 void ProcessPrivateCommand(CommandSource &Source, const Flux::vector &params)
 {
-    // Cast away const (although I am not sure why it's const in the 1st place)
-    Flux::vector params2 = params;
-    Command *com = FindCommand(params2[0], C_PRIVATE);
-    if(com)
-    {
-	    Source.command = com->name;
-	    params2.erase(params2.begin()); //Remove the command from the params
+	// Cast away const (although I am not sure why it's const in the 1st place)
+	Flux::vector params2 = params;
+	Command *com = FindCommand(params2[0], C_PRIVATE);
 
-	    while(com->MaxParams > 0 && params2.size() > com->MaxParams)
-	    { // Trim the command separation, then paste the rest unmodified as the last param.
-		params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
-		params2.erase(params2.begin() + com->MaxParams);
-	    }
+	if(com)
+	{
+		Source.command = com->name;
+		params2.erase(params2.begin()); //Remove the command from the params
 
-	    if(params2.size() < com->MinParams)
-	    { // Insufficent params
-		com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
-		return;
-	    }
-
-	    #ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
-	    if(setjmp(sigbuf) == 0)
-	    {
-	    #endif
-		LastRunModule = com->mod;
-		com->Run(Source, params2);
-	    #ifdef HAVE_SETJMP_H
-	    }
-	    else
-	    { //Module segfaulted.
-		Log() << "Command " << com->name << " failed to execute. Stack Restored.";
-		Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
-
-		for(unsigned i = 0; i < Config->Owners.size(); ++i)
+		while(com->MaxParams > 0 && params2.size() > com->MaxParams)
 		{
-		    User *ou = finduser(Config->Owners[i]);
-		    if(ou)
-			ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
+			// Trim the command separation, then paste the rest unmodified as the last param.
+			params2[com->MaxParams - 1] += " " + params2[com->MaxParams];
+			params2.erase(params2.begin() + com->MaxParams);
 		}
-	    }
-	    #endif
+
+		if(params2.size() < com->MinParams)
+		{
+			// Insufficent params
+			com->OnSyntaxError(Source, !params2.empty() ? params2[params2.size() - 1] : "");
+			return;
+		}
+
+#ifdef HAVE_SETJMP_H // Module Segmentation fault recovery.
+
+		if(setjmp(sigbuf) == 0)
+		{
+#endif
+			LastRunModule = com->mod;
+			com->Run(Source, params2);
+#ifdef HAVE_SETJMP_H
+		}
+		else
+		{
+			//Module segfaulted.
+			Log() << "Command " << com->name << " failed to execute. Stack Restored.";
+			Source.Reply("An internal error has occurred, please contact one of the bots administrators: %s", Flux::string(Config->Owners).c_str());
+
+			for(unsigned i = 0; i < Config->Owners.size(); ++i)
+			{
+				User *ou = finduser(Config->Owners[i]);
+
+				if(ou)
+					ou->SendMessage("Module \2%s\2 has crashed! User \2%s\2 was unable to use command \2%s\2", LastRunModule->name.c_str(), Source.u->nick.c_str(), com->name.c_str());
+			}
+		}
+
+#endif
 		LastRunModule = NULL;
 	}
 	else
 	{
-	    //This receives ALL server commands sent to the bot..
-	    if(!protocoldebug)
-		Log(LOG_DEBUG) << Flux::Sanitize(Source.raw);
+		//This receives ALL server commands sent to the bot..
+		if(!protocoldebug)
+			Log(LOG_DEBUG) << Flux::Sanitize(Source.raw);
 	}
 }
 
@@ -200,41 +214,43 @@ void ProcessPrivateCommand(CommandSource &Source, const Flux::vector &params)
  */
 void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::string &receiver, const Flux::string &command)
 {
-  SET_SEGV_LOCATION();
-  User *u = Source.u;
+	SET_SEGV_LOCATION();
+	User *u = Source.u;
 
-  if(!command.is_pos_number_only())
-  {
-    FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
-  }
-
-  if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
-  {
-    Log(LOG_DEVEL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
-
-    if(!IsValidChannel(receiver))
-    { // Make sure we reply to a private message command if there is no command
-      Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
-      FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
-    }
-    else
-    {
-      if(params2[0].search(Config->FantasyPrefix))
-      {
-	Flux::string blah = params2[0].substr(0, Config->FantasyPrefix.size());
-	if(blah.equals_cs(Config->FantasyPrefix))
+	if(!command.is_pos_number_only())
 	{
-	  params2[0] = params2[0].substr(Config->FantasyPrefix.size());
-	  ProcessChannelCommand(Source, params2);
+		FOREACH_MOD(I_OnCommand, OnCommand(command, params2));
 	}
-      }
-    }
-  }
-  else
-  {
-    if(FindCommand(params2[0], C_PRIVATE) && !IsValidChannel(receiver) && command.equals_ci("PRIVMSG"))
-      ProcessPrivateCommand(Source, params2);
-  }
+
+	if(!FindCommand(params2[0], C_PRIVATE) && command.equals_ci("PRIVMSG"))
+	{
+		Log(LOG_DEVEL) << '<' << u->nick << '-' << receiver << "> " << Source.params[1];
+
+		if(!IsValidChannel(receiver))
+		{
+			// Make sure we reply to a private message command if there is no command
+			Source.Reply("Unknown command \2%s\2", Flux::Sanitize(params2[0]).c_str());
+			FOREACH_MOD(I_OnPrivmsg, OnPrivmsg(u, params2));
+		}
+		else
+		{
+			if(params2[0].search(Config->FantasyPrefix))
+			{
+				Flux::string blah = params2[0].substr(0, Config->FantasyPrefix.size());
+
+				if(blah.equals_cs(Config->FantasyPrefix))
+				{
+					params2[0] = params2[0].substr(Config->FantasyPrefix.size());
+					ProcessChannelCommand(Source, params2);
+				}
+			}
+		}
+	}
+	else
+	{
+		if(FindCommand(params2[0], C_PRIVATE) && !IsValidChannel(receiver) && command.equals_ci("PRIVMSG"))
+			ProcessPrivateCommand(Source, params2);
+	}
 }
 
 /*********************************************************************************/
@@ -253,241 +269,250 @@ void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::st
 // my god, someone PLEASE for the LOVE OF GOD clean this function up!!!
 void process(const Flux::string &buffer)
 {
-  EventResult e;
-  FOREACH_RESULT(I_OnPreReceiveMessage, OnPreReceiveMessage(buffer), e);
-  if(e != EVENT_CONTINUE)
-    return;
+	EventResult e;
+	FOREACH_RESULT(I_OnPreReceiveMessage, OnPreReceiveMessage(buffer), e);
 
-  SET_SEGV_LOCATION();
-  Flux::string buf = buffer;
-  buf = buf.replace_all_cs("  ", " ");
+	if(e != EVENT_CONTINUE)
+		return;
 
-  if(buf.empty())
-    return;
+	SET_SEGV_LOCATION();
+	Flux::string buf = buffer;
+	buf = buf.replace_all_cs("  ", " ");
 
-  Flux::string source;
-  if(buf[0] == ':')
-  {
-    size_t space = buf.find_first_of(" ");
+	if(buf.empty())
+		return;
 
-    if(space == Flux::string::npos)
-	return;
+	Flux::string source;
 
-    source = buf.substr(1, space - 1);
-    buf = buf.substr(space + 1);
+	if(buf[0] == ':')
+	{
+		size_t space = buf.find_first_of(" ");
 
-    if(source.empty() || buf.empty())
-	return;
-  }
+		if(space == Flux::string::npos)
+			return;
 
-  sepstream bufferseparator(buf, ' ');
-  Flux::string bufferseparator_token;
-  Flux::string command = buf;
+		source = buf.substr(1, space - 1);
+		buf = buf.substr(space + 1);
 
-  if(bufferseparator.GetToken(bufferseparator_token))
-    command = bufferseparator_token;
+		if(source.empty() || buf.empty())
+			return;
+	}
 
-  Flux::vector params;
+	sepstream bufferseparator(buf, ' ');
+	Flux::string bufferseparator_token;
+	Flux::string command = buf;
 
-  while(bufferseparator.GetToken(bufferseparator_token))
-  {
-    if(bufferseparator_token[0] == ':')
-    {
-      if(!bufferseparator.StreamEnd())
-	params.push_back(bufferseparator_token.substr(1)+" "+bufferseparator.GetRemaining());
-      else
-	params.push_back(bufferseparator_token.substr(1));
-      break;
-    }
-    else
-      params.push_back(bufferseparator_token);
-  }
+	if(bufferseparator.GetToken(bufferseparator_token))
+		command = bufferseparator_token;
 
-  if(protocoldebug)
-  {
-    Log(LOG_TERMINAL) << "Source: " << (source.empty()?"No Source":source);
-    Log(LOG_TERMINAL) << (command.is_number_only()?"Numeric":"Command") << ": " << command;
+	Flux::vector params;
 
-   if(params.empty())
-     Log(LOG_TERMINAL) << "No Params";
-   else
-     for(unsigned i =0; i < params.size(); ++i)
-       Log(LOG_TERMINAL) << "Params[" << i << "]: " << Flux::Sanitize(params[i]);
-  }
+	while(bufferseparator.GetToken(bufferseparator_token))
+	{
+		if(bufferseparator_token[0] == ':')
+		{
+			if(!bufferseparator.StreamEnd())
+				params.push_back(bufferseparator_token.substr(1) + " " + bufferseparator.GetRemaining());
+			else
+				params.push_back(bufferseparator_token.substr(1));
 
-  /***********************************************/
-  /* make local variables instead of global ones */
-  const Flux::string receiver = params.size() > 0 ? params[0] : "";
-  Flux::string message = params.size() > 1? params[1] : "";
-  const Flux::string nickname = source.isolate(':', '!'),
-  uident = source.isolate('!', '@'), uhost = source.isolate('@', ' ');
+			break;
+		}
+		else
+			params.push_back(bufferseparator_token);
+	}
 
-  User *u = finduser(nickname);
-  Channel *c = findchannel(receiver);
-  Flux::vector params2 = ParamitizeString(message, ' ');
-  /***********************************************/
+	if(protocoldebug)
+	{
+		Log(LOG_TERMINAL) << "Source: " << (source.empty() ? "No Source" : source);
+		Log(LOG_TERMINAL) << (command.is_number_only() ? "Numeric" : "Command") << ": " << command;
 
-  if(message[0] == '\1' && message[message.length() -1] == '\1' && !params2[0].equals_cs("\001ACTION"))
-  {
-    FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));
-    return; // Don't allow the rest of the system to process ctcps as it will be caught by the command handler.
-  }
-  // the nickname hook MUST go before the creation of a new user, or we'll end up with phantom users in the map!
-  if(command.equals_ci("NICK") && u)
-  {
-    FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0]));
-    u->SetNewNick(params[0]);
-  }
+		if(params.empty())
+			Log(LOG_TERMINAL) << "No Params";
+		else
+			for(unsigned i = 0; i < params.size(); ++i)
+				Log(LOG_TERMINAL) << "Params[" << i << "]: " << Flux::Sanitize(params[i]);
+	}
 
-  if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty()))
-  {
-    if(!nickname.search('.'))
-      u = new User(nickname, uident, uhost);
-  }
+	/***********************************************/
+	/* make local variables instead of global ones */
+	const Flux::string receiver = params.size() > 0 ? params[0] : "";
+	Flux::string message = params.size() > 1 ? params[1] : "";
+	const Flux::string nickname = source.isolate(':', '!'),
+	                   uident = source.isolate('!', '@'), uhost = source.isolate('@', ' ');
 
-  if(command.equals_ci("QUIT"))
-  {
-    FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
-    QuitUser(u);
-  }
+	User *u = finduser(nickname);
+	Channel *c = findchannel(receiver);
+	Flux::vector params2 = ParamitizeString(message, ' ');
+	/***********************************************/
 
-  if(command.equals_ci("PART"))
-  {
-    FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
-    if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
-     delete c; //This should remove the channel from all users if the bot is parting..
-    else
-    {
-     if(u)
-       u->DelChan(c);
+	if(message[0] == '\1' && message[message.length() - 1] == '\1' && !params2[0].equals_cs("\001ACTION"))
+	{
+		FOREACH_MOD(I_OnCTCP, OnCTCP(nickname, params2));
+		return; // Don't allow the rest of the system to process ctcps as it will be caught by the command handler.
+	}
 
-     if(c)
-       c->DelUser(u);
+	// the nickname hook MUST go before the creation of a new user, or we'll end up with phantom users in the map!
+	if(command.equals_ci("NICK") && u)
+	{
+		FOREACH_MOD(I_OnNickChange, OnNickChange(u, params[0]));
+		u->SetNewNick(params[0]);
+	}
 
-     if(u && c && !u->findchannel(c->name))
-     {
-       Log(LOG_TERMINAL) << "Deleted " << u->nick << '|' << c->name << '|' << u->findchannel(c->name);
-       delete u;
-      }
-    }
-  }
+	if(!u && !finduser(nickname) && (!nickname.empty() || !uident.empty() || !uhost.empty()))
+	{
+		if(!nickname.search('.'))
+			u = new User(nickname, uident, uhost);
+	}
 
-  if(command.is_pos_number_only())
-  {
-    FOREACH_MOD(I_OnNumeric, OnNumeric(static_cast<int>(command), params));
-  }
+	if(command.equals_ci("QUIT"))
+	{
+		FOREACH_MOD(I_OnQuit, OnQuit(u, params[0]));
+		QuitUser(u);
+	}
 
-  // Various events we need to pay attention to.
-  EVENT_HOOK(command, "PING", I_OnPing, OnPing(params));
-  EVENT_HOOK(command, "PONG", I_OnPong, OnPong(params));
-  EVENT_HOOK(command, "KICK", I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2]));
-  EVENT_HOOK(command, "ERROR", I_OnConnectionError, OnConnectionError(buffer));
-  EVENT_HOOK(command, "INVITE", I_OnInvite, OnInvite(u, params[1]));
+	if(command.equals_ci("PART"))
+	{
+		FOREACH_MOD(I_OnPart, OnPart(u, c, params[0]));
 
-  if(command.equals_ci("NOTICE") && !source.find('.'))
-  {
-    if(!IsValidChannel(receiver))
-    {
-      FOREACH_MOD(I_OnNotice, OnNotice(u, params2));
-    }
-    else
-    {
-      FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2));
-    }
-  }
+		if(IsValidChannel(receiver) && c && u && u->nick == Config->BotNick)
+			delete c; //This should remove the channel from all users if the bot is parting..
+		else
+		{
+			if(u)
+				u->DelChan(c);
 
-  if(command.equals_ci("MODE"))
-  {
-    if(IsValidChannel(params[0]) && params.size() == 2)
-    {
-      FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1]));
-    }
-    else if(IsValidChannel(params[0]) && params.size() == 3)
-    {
-      FOREACH_MOD(I_OnChannelOp, OnChannelOp(u, c, params[1], params[2]));
-    }
-    else if(params[0] == Config->BotNick)
-    {
-      FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1]));
-    }
-  }
+			if(c)
+				c->DelUser(u);
 
-  if(command.equals_ci("JOIN"))
-  {
-    if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
-      u = new User(nickname, uident, uhost);
-    else if(!c && IsValidChannel(receiver))
-      c = new Channel(receiver);
-    else if(!u->findchannel(c->name))
-      u->AddChan(c);
-    else if(!c->finduser(u->nick))
-      c->AddUser(u);
-    else if(u->nick != Config->BotNick)
-    {
-      FOREACH_MOD(I_OnJoin, OnJoin(u, c));
-    }
-  }
+			if(u && c && !u->findchannel(c->name))
+			{
+				Log(LOG_TERMINAL) << "Deleted " << u->nick << '|' << c->name << '|' << u->findchannel(c->name);
+				delete u;
+			}
+		}
+	}
 
-  /**************************************/
+	if(command.is_pos_number_only())
+	{
+		FOREACH_MOD(I_OnNumeric, OnNumeric(static_cast<int>(command), params));
+	}
 
-  // Get channel timestamp and modes with the below numerics
-  if(command == "329")
-  {
-    Channel *chan = findchannel(params[1]);
-    if(chan)
-      chan->creation_time = static_cast<long>(params[2]);
-  }
+	// Various events we need to pay attention to.
+	EVENT_HOOK(command, "PING", I_OnPing, OnPing(params));
+	EVENT_HOOK(command, "PONG", I_OnPong, OnPong(params));
+	EVENT_HOOK(command, "KICK", I_OnKick, OnKick(u, finduser(params[1]), findchannel(params[0]), params[2]));
+	EVENT_HOOK(command, "ERROR", I_OnConnectionError, OnConnectionError(buffer));
+	EVENT_HOOK(command, "INVITE", I_OnInvite, OnInvite(u, params[1]));
 
-  if(command == "324")
-  {
-    // NOTE: This *only* does the modes with + in front of them
-    Channel *chan = findchannel(params[1]);
-    if(chan)
-      chan->modes = params[2];
-}
+	if(command.equals_ci("NOTICE") && !source.find('.'))
+	{
+		if(!IsValidChannel(receiver))
+		{
+			FOREACH_MOD(I_OnNotice, OnNotice(u, params2));
+		}
+		else
+		{
+			FOREACH_MOD(I_OnNoticeChannel, OnNoticeChannel(u, c, params2));
+		}
+	}
 
-  // Get the actual topic
-  if(command == "332")
-  {
-    Channel *chan = findchannel(params[1]);
-    if(chan)
-      chan->topic = params[2];
-  }
+	if(command.equals_ci("MODE"))
+	{
+		if(IsValidChannel(params[0]) && params.size() == 2)
+		{
+			FOREACH_MOD(I_OnChannelMode, OnChannelMode(u, c, params[1]));
+		}
+		else if(IsValidChannel(params[0]) && params.size() == 3)
+		{
+			FOREACH_MOD(I_OnChannelOp, OnChannelOp(u, c, params[1], params[2]));
+		}
+		else if(params[0] == Config->BotNick)
+		{
+			FOREACH_MOD(I_OnUserMode, OnUserMode(u, params[0], params[1]));
+		}
+	}
 
-  // Get the topic setter and timestamp
-  if(command == "333")
-  {
-    Channel *chan = findchannel(params[1]);
-    if(chan)
-    {
-      chan->topic_time = static_cast<long>(params[3]);
-      chan->topic_setter = params[2];
-    }
-  }
+	if(command.equals_ci("JOIN"))
+	{
+		if(!u && (!nickname.empty() || !uident.empty() || !uhost.empty()))
+			u = new User(nickname, uident, uhost);
+		else if(!c && IsValidChannel(receiver))
+			c = new Channel(receiver);
+		else if(!u->findchannel(c->name))
+			u->AddChan(c);
+		else if(!c->finduser(u->nick))
+			c->AddUser(u);
+		else if(u->nick != Config->BotNick)
+		{
+			FOREACH_MOD(I_OnJoin, OnJoin(u, c));
+		}
+	}
 
-  /**************************************/
-  // Make sure we have valid information being passed to the core commands and Modules
-  if(!c && !nickname.search('.') && IsValidChannel(receiver) && protocoldebug)
-    Log(LOG_WARN) << "No channel being passed to CommandSource???";
+	/**************************************/
 
-  if(!u && !nickname.search('.') && protocoldebug)
-    Log(LOG_WARN) << "No User being passed to CommandSource???";
+	// Get channel timestamp and modes with the below numerics
+	if(command == "329")
+	{
+		Channel *chan = findchannel(params[1]);
 
-  CommandSource Source;
-  Source.u = u; //User class
-  Source.c = c; //Channel class
-  Source.params = params;
-  Source.raw = buffer;
-  /**************************************/
+		if(chan)
+			chan->creation_time = static_cast<long>(params[2]);
+	}
 
-  if(command == "352")
-    ProcessJoin(Source, c->name);
+	if(command == "324")
+	{
+		// NOTE: This *only* does the modes with + in front of them
+		Channel *chan = findchannel(params[1]);
 
-  if(source.empty() || message.empty() || params2.empty())
-    return;
+		if(chan)
+			chan->modes = params[2];
+	}
 
-  if(!c && !u) // Don't bother executing commands if there's nothing to do
-    return;
+	// Get the actual topic
+	if(command == "332")
+	{
+		Channel *chan = findchannel(params[1]);
 
-  ProcessCommand(Source, params2, receiver, command);
+		if(chan)
+			chan->topic = params[2];
+	}
+
+	// Get the topic setter and timestamp
+	if(command == "333")
+	{
+		Channel *chan = findchannel(params[1]);
+
+		if(chan)
+		{
+			chan->topic_time = static_cast<long>(params[3]);
+			chan->topic_setter = params[2];
+		}
+	}
+
+	/**************************************/
+	// Make sure we have valid information being passed to the core commands and Modules
+	if(!c && !nickname.search('.') && IsValidChannel(receiver) && protocoldebug)
+		Log(LOG_WARN) << "No channel being passed to CommandSource???";
+
+	if(!u && !nickname.search('.') && protocoldebug)
+		Log(LOG_WARN) << "No User being passed to CommandSource???";
+
+	CommandSource Source;
+	Source.u = u; //User class
+	Source.c = c; //Channel class
+	Source.params = params;
+	Source.raw = buffer;
+	/**************************************/
+
+	if(command == "352")
+		ProcessJoin(Source, c->name);
+
+	if(source.empty() || message.empty() || params2.empty())
+		return;
+
+	if(!c && !u) // Don't bother executing commands if there's nothing to do
+		return;
+
+	ProcessCommand(Source, params2, receiver, command);
 }

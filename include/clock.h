@@ -16,20 +16,20 @@
 class CoreExport Clock
 {
 private:
-  time_t rawtime;
-  struct tm *ptm;
-  void CorrectHour(int &);
-  bool isdst;
+	time_t rawtime;
+	struct tm *ptm;
+	void CorrectHour(int &);
+	bool isdst;
 public:
-  Clock();
-  Flux::string Local();
-  Flux::string CustomOffset(int);
-  Flux::string MST();
-  Flux::string EST();
-  Flux::string UTC();
-  Flux::string CCT();
-  Flux::string PST();
-  Flux::string AUS();
+	Clock();
+	Flux::string Local();
+	Flux::string CustomOffset(int);
+	Flux::string MST();
+	Flux::string EST();
+	Flux::string UTC();
+	Flux::string CCT();
+	Flux::string PST();
+	Flux::string AUS();
 };
 
 #endif

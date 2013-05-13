@@ -33,40 +33,45 @@
 class ctcp : public Module
 {
 public:
-  ctcp(const Flux::string &Name):Module(Name)
-  {
-    this->SetAuthor("Justasic");
-    this->SetVersion(VERSION);
-    this->SetPriority(PRIORITY_FIRST);
-    ModuleHandler::Attach(I_OnCTCP, this);
-  }
-  void OnCTCP(const Flux::string &source, const Flux::vector &params)
-  {
-    Flux::string cmd = params.empty()?"":params[0];
-    Log(LOG_SILENT) << "Received CTCP " << Flux::Sanitize(cmd) << " from " << source;
-    Log(LOG_TERMINAL) << "\033[22;31mReceived CTCP " << Flux::Sanitize(cmd) << " from " << source << Config->LogColor;
+	ctcp(const Flux::string &Name): Module(Name)
+	{
+		this->SetAuthor("Justasic");
+		this->SetVersion(VERSION);
+		this->SetPriority(PRIORITY_FIRST);
+		ModuleHandler::Attach(I_OnCTCP, this);
+	}
+	void OnCTCP(const Flux::string &source, const Flux::vector &params)
+	{
+		Flux::string cmd = params.empty() ? "" : params[0];
+		Log(LOG_SILENT) << "Received CTCP " << Flux::Sanitize(cmd) << " from " << source;
+		Log(LOG_TERMINAL) << "\033[22;31mReceived CTCP " << Flux::Sanitize(cmd) << " from " << source << Config->LogColor;
 
-    if(cmd == "\001VERSION\001")
-    { // for CTCP VERSION reply
-      struct utsname uts;
-      if(uname(&uts) < 0)
-	      throw CoreException("uname() Error");
+		if(cmd == "\001VERSION\001")
+		{
+			// for CTCP VERSION reply
+			struct utsname uts;
 
-	ircproto->notice(source, "\001VERSION Navn-%s %s %s\001", VERSION_FULL, uts.sysname, uts.machine);
-    }
+			if(uname(&uts) < 0)
+				throw CoreException("uname() Error");
 
-    if(cmd == "\001TIME\001")
-    { // for CTCP TIME reply
-	ircproto->notice(source,"\001TIME %s\001", do_strftime(time(NULL), true).c_str());
-    }
-    if(cmd == "\001SOURCE\001")
-    {
-      ircproto->notice(source, "\001SOURCE https://github.com/Justasic/Navn\001");
-      ircproto->notice(source, "\1SOURCE git://github.com/Justasic/Navn.git\1");
-    }
-    if(cmd == "\001DCC")
-      ircproto->notice(source, "I do not accept or support DCC connections.");
-  }
+			ircproto->notice(source, "\001VERSION Navn-%s %s %s\001", VERSION_FULL, uts.sysname, uts.machine);
+		}
+
+		if(cmd == "\001TIME\001")
+		{
+			// for CTCP TIME reply
+			ircproto->notice(source, "\001TIME %s\001", do_strftime(time(NULL), true).c_str());
+		}
+
+		if(cmd == "\001SOURCE\001")
+		{
+			ircproto->notice(source, "\001SOURCE https://github.com/Justasic/Navn\001");
+			ircproto->notice(source, "\1SOURCE git://github.com/Justasic/Navn.git\1");
+		}
+
+		if(cmd == "\001DCC")
+			ircproto->notice(source, "I do not accept or support DCC connections.");
+	}
 };
 /**
  * @}

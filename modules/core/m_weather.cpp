@@ -35,69 +35,72 @@
 class CommandCWeather : public Command
 {
 public:
-  CommandCWeather(Module *m):Command(m, "WEATHER", C_CHANNEL, 1, 1)
-  {
-    this->SetDesc("Displays the weather");
-    this->SetSyntax("\2location\2");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    User *u = source.u;
-    Channel *c = source.c;
-    Flux::string area = params[0], tmpfile = TextFile::TempFile(binary_dir+"/runtime/navn_xml.tmp.XXXXXX");
+	CommandCWeather(Module *m): Command(m, "WEATHER", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Displays the weather");
+		this->SetSyntax("\2location\2");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		User *u = source.u;
+		Channel *c = source.c;
+		Flux::string area = params[0], tmpfile = TextFile::TempFile(binary_dir + "/runtime/navn_xml.tmp.XXXXXX");
 
-    if(tmpfile.empty())
-    {
-      Log() << "Failed to get temp file";
-      return;
-    }
-    area.trim();
+		if(tmpfile.empty())
+		{
+			Log() << "Failed to get temp file";
+			return;
+		}
 
-    Flux::string url = Config->Parser->Get("Modules", "WeatherURL", "http://www.google.com/ig/api?weather=%l");
-    url = url.replace_all_cs("%l", area.is_number_only()?area:area.url_str());
+		area.trim();
 
-    Log(LOG_DEBUG) << "wget weather url \"" << url << "\" for !weather command used";
-    system(Flux::string("wget -q -O "+tmpfile+" - "+url).c_str());
-    XMLFile *xf = new XMLFile(tmpfile);
+		Flux::string url = Config->Parser->Get("Modules", "WeatherURL", "http://www.google.com/ig/api?weather=%l");
+		url = url.replace_all_cs("%l", area.is_number_only() ? area : area.url_str());
 
-    Flux::string city = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["city"].Attributes["data"].Value;
-    Flux::string condition = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["condition"].Attributes["data"].Value;
-    Flux::string temp_f = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["temp_f"].Attributes["data"].Value;
-    Flux::string temp_c = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["temp_c"].Attributes["data"].Value;
-    Flux::string humidity = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["humidity"].Attributes["data"].Value;
-    Flux::string windy = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["wind_condition"].Attributes["data"].Value;
+		Log(LOG_DEBUG) << "wget weather url \"" << url << "\" for !weather command used";
+		system(Flux::string("wget -q -O " + tmpfile + " - " + url).c_str());
+		XMLFile *xf = new XMLFile(tmpfile);
 
-    delete xf;
+		Flux::string city = xf->Tags["xml_api_reply"].Tags["weather"].Tags["forecast_information"].Tags["city"].Attributes["data"].Value;
+		Flux::string condition = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["condition"].Attributes["data"].Value;
+		Flux::string temp_f = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["temp_f"].Attributes["data"].Value;
+		Flux::string temp_c = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["temp_c"].Attributes["data"].Value;
+		Flux::string humidity = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["humidity"].Attributes["data"].Value;
+		Flux::string windy = xf->Tags["xml_api_reply"].Tags["weather"].Tags["current_conditions"].Tags["wind_condition"].Attributes["data"].Value;
 
-    if(city.strip().empty())
-    {
-      source.Reply("Weather information for \2%s\2 not found.", area.c_str());
-      return;
-    }
-    int temp_k = static_cast<int>(temp_c) + 273; // Calculate degrees kelvin from degrees celsius
-    c->SendMessage("%s Current Condition: %s, %s, %s, %s %cF %s %cC %iK", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), 0x00B0, temp_c.c_str(), 0x00B0, temp_k);
+		delete xf;
 
-    Log(u, this) << "to get weather for area '" << area << "'";
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command provides the weather for\n"
-		 "the requested location. Powered by google,\n"
-		 "You may use a city name or area code or any\n"
-		 "other location identifing text\n");
-    return true;
-  }
+		if(city.strip().empty())
+		{
+			source.Reply("Weather information for \2%s\2 not found.", area.c_str());
+			return;
+		}
+
+		int temp_k = static_cast<int>(temp_c) + 273; // Calculate degrees kelvin from degrees celsius
+		c->SendMessage("%s Current Condition: %s, %s, %s, %s %cF %s %cC %iK", city.strip().c_str(), condition.strip().c_str(), humidity.strip().c_str(), windy.strip().c_str(), temp_f.c_str(), 0x00B0, temp_c.c_str(), 0x00B0, temp_k);
+
+		Log(u, this) << "to get weather for area '" << area << "'";
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command provides the weather for\n"
+		             "the requested location. Powered by google,\n"
+		             "You may use a city name or area code or any\n"
+		             "other location identifing text\n");
+		return true;
+	}
 };
-class weather:public Module{
-  CommandCWeather rainy;
+class weather: public Module
+{
+	CommandCWeather rainy;
 public:
-  weather(const Flux::string &Name):Module(Name), rainy(this)
-  {
-    this->SetAuthor("Lordofsraam");
-    this->SetVersion(VERSION);
-  }
+	weather(const Flux::string &Name): Module(Name), rainy(this)
+	{
+		this->SetAuthor("Lordofsraam");
+		this->SetVersion(VERSION);
+	}
 };
 
 /**

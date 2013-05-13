@@ -15,109 +15,113 @@
 class CommandJoin : public Command
 {
 public:
-  CommandJoin(Module *m) : Command(m, "JOIN", C_PRIVATE, 1, 1)
-  {
-   this->SetDesc("Joins a channel");
-   this->SetSyntax("\37channel\37");
-  }
+	CommandJoin(Module *m) : Command(m, "JOIN", C_PRIVATE, 1, 1)
+	{
+		this->SetDesc("Joins a channel");
+		this->SetSyntax("\37channel\37");
+	}
 
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    User *u = source.u;
-    Flux::string chan = params[1];
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		User *u = source.u;
+		Flux::string chan = params[1];
 
-    if(!u->IsOwner())
-    {
-      source.Reply(ACCESS_DENIED);
-      Log(u) << "attempted to make the bot join " << chan;
-      return;
-    }
+		if(!u->IsOwner())
+		{
+			source.Reply(ACCESS_DENIED);
+			Log(u) << "attempted to make the bot join " << chan;
+			return;
+		}
 
-    if(!IsValidChannel(chan))
-      source.Reply(CHANNEL_X_INVALID, chan.c_str());
-    else
-    {
-      Log(u) << "made the bot join " << chan;
-      Channel *c = findchannel(chan);
-      if(!c)
-      {
-	ircproto->join(chan);
+		if(!IsValidChannel(chan))
+			source.Reply(CHANNEL_X_INVALID, chan.c_str());
+		else
+		{
+			Log(u) << "made the bot join " << chan;
+			Channel *c = findchannel(chan);
 
-	Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
-	WelcomeMessage.trim();
-	if(!WelcomeMessage.empty())
-	  ircproto->privmsg(chan, WelcomeMessage);
-      }
-      else
-      {
-	Log(u) << "tried to make bot join " << c->name << " but we're already in that channel";
-	source.Reply("Already in \2%s\2", c->name.c_str());
-      }
-    }
-  }
+			if(!c)
+			{
+				ircproto->join(chan);
 
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command makes the bot join a channel.\n"
-		 "You must be the bots owner to use this command.");
-    return true;
-  }
+				Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
+				WelcomeMessage.trim();
+
+				if(!WelcomeMessage.empty())
+					ircproto->privmsg(chan, WelcomeMessage);
+			}
+			else
+			{
+				Log(u) << "tried to make bot join " << c->name << " but we're already in that channel";
+				source.Reply("Already in \2%s\2", c->name.c_str());
+			}
+		}
+	}
+
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command makes the bot join a channel.\n"
+		             "You must be the bots owner to use this command.");
+		return true;
+	}
 };
 
 class CommandPart : public Command
 {
 public:
-  CommandPart(Module *m):Command(m, "PART", C_PRIVATE, 1,1)
-  {
-    this->SetDesc("Part a channel");
-    this->SetSyntax("\37channel\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Flux::string chan = params[1];
-    User *u = source.u;
+	CommandPart(Module *m): Command(m, "PART", C_PRIVATE, 1, 1)
+	{
+		this->SetDesc("Part a channel");
+		this->SetSyntax("\37channel\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Flux::string chan = params[1];
+		User *u = source.u;
 
-    if(!u->IsOwner())
-    {
-     source.Reply(ACCESS_DENIED);
-     Log(u) << "attempted to make bot part " << chan;
-     return;
-    }
+		if(!u->IsOwner())
+		{
+			source.Reply(ACCESS_DENIED);
+			Log(u) << "attempted to make bot part " << chan;
+			return;
+		}
 
-    if(!IsValidChannel(chan))
-     source.Reply(CHANNEL_X_INVALID, chan.c_str());
-    else
-    {
-      Channel *c = findchannel(chan);
-      if(c)
-	c->SendPart();
-      else
-	source.Reply("I am not in channel \2%s\2", chan.c_str());
-      Log(u) << "made the bot part " << chan;
-    }
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command makes the bot part a channel.\n"
-		 "You must be the bots owner to use this command.");
-    return true;
-  }
+		if(!IsValidChannel(chan))
+			source.Reply(CHANNEL_X_INVALID, chan.c_str());
+		else
+		{
+			Channel *c = findchannel(chan);
+
+			if(c)
+				c->SendPart();
+			else
+				source.Reply("I am not in channel \2%s\2", chan.c_str());
+
+			Log(u) << "made the bot part " << chan;
+		}
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command makes the bot part a channel.\n"
+		             "You must be the bots owner to use this command.");
+		return true;
+	}
 };
 
 class Join : public Module
 {
-  CommandJoin cmdjoin;
-  CommandPart cmdpart;
+	CommandJoin cmdjoin;
+	CommandPart cmdpart;
 public:
-  Join(const Flux::string &Name):Module(Name), cmdjoin(this), cmdpart(this)
-  {
-    this->SetVersion(VERSION);
-    this->SetAuthor("Justasic");
-  }
+	Join(const Flux::string &Name): Module(Name), cmdjoin(this), cmdpart(this)
+	{
+		this->SetVersion(VERSION);
+		this->SetAuthor("Justasic");
+	}
 };
 
 MODULE_HOOK(Join)

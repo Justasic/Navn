@@ -29,30 +29,30 @@
 class CommandDecodeHost : public Command
 {
 public:
-  CommandDecodeHost(Module *m):Command(m, "DECODEHOST", C_CHANNEL, 1, 1)
-  {
-   this->SetDesc("Decodes a hostname");
-   this->SetSyntax("\37fullhost\37");
-  }
-  void Run(CommandSource &source, const Flux::vector &params)
-  {
-    Channel *c = source.c;
-    Flux::string host = params[1];
-    IsoHost* Host = new IsoHost(host);
-    c->SendMessage("Nick: %s", Host->nick.c_str());
-    c->SendMessage("User: %s", Host->ident.c_str());
-    c->SendMessage("Host: %s", Host->host.c_str());
-    c->SendMessage("Raw: %s", Host->raw.c_str());
-    delete Host;
-  }
-  bool OnHelp(CommandSource &source, const Flux::string &nill)
-  {
-    this->SendSyntax(source);
-    source.Reply(" ");
-    source.Reply("This command simply shows you your\n"
-		  "hostname decoded into separate strings");
-    return true;
-  }
+	CommandDecodeHost(Module *m): Command(m, "DECODEHOST", C_CHANNEL, 1, 1)
+	{
+		this->SetDesc("Decodes a hostname");
+		this->SetSyntax("\37fullhost\37");
+	}
+	void Run(CommandSource &source, const Flux::vector &params)
+	{
+		Channel *c = source.c;
+		Flux::string host = params[1];
+		IsoHost *Host = new IsoHost(host);
+		c->SendMessage("Nick: %s", Host->nick.c_str());
+		c->SendMessage("User: %s", Host->ident.c_str());
+		c->SendMessage("Host: %s", Host->host.c_str());
+		c->SendMessage("Raw: %s", Host->raw.c_str());
+		delete Host;
+	}
+	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply("This command simply shows you your\n"
+		             "hostname decoded into separate strings");
+		return true;
+	}
 };
 
 /**
@@ -62,31 +62,32 @@ public:
  */
 class about_me : public Module
 {
-  CommandDecodeHost host;
+	CommandDecodeHost host;
 public:
-  about_me(const Flux::string &Name):Module(Name), host(this)
-  {
-    this->SetAuthor("Justasic");
-    this->SetVersion(VERSION);
-    this->SetPriority(PRIORITY_LAST);
-    ModuleHandler::Attach(I_OnPrivmsgChannel, this);
-  }
+	about_me(const Flux::string &Name): Module(Name), host(this)
+	{
+		this->SetAuthor("Justasic");
+		this->SetVersion(VERSION);
+		this->SetPriority(PRIORITY_LAST);
+		ModuleHandler::Attach(I_OnPrivmsgChannel, this);
+	}
 
-  void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
-  {
-    Flux::string msg = ConcatinateVector(params);
-    if(msg.equals_ci("about me"))
-    {
-	  u->SendMessage("Raw: %s", sock->GetLastBuf().c_str());
-	  u->SendMessage("Message: %s", msg.c_str());
-	  u->SendMessage("Nickname: %s", u->nick.c_str());
-	  u->SendMessage("Ident: %s", u->ident.c_str());
-	  u->SendMessage("Host: %s", u->host.c_str());
-	  u->SendMessage("Channel: %s", c->name.c_str());
-	  u->SendMessage("Fullhost: %s", u->fullhost.c_str());
-	  Log() << u->nick << " requested information about themself";
-    }
- }
+	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
+	{
+		Flux::string msg = ConcatinateVector(params);
+
+		if(msg.equals_ci("about me"))
+		{
+			u->SendMessage("Raw: %s", sock->GetLastBuf().c_str());
+			u->SendMessage("Message: %s", msg.c_str());
+			u->SendMessage("Nickname: %s", u->nick.c_str());
+			u->SendMessage("Ident: %s", u->ident.c_str());
+			u->SendMessage("Host: %s", u->host.c_str());
+			u->SendMessage("Channel: %s", c->name.c_str());
+			u->SendMessage("Fullhost: %s", u->fullhost.c_str());
+			Log() << u->nick << " requested information about themself";
+		}
+	}
 };
 /**
  * @}

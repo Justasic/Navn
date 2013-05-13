@@ -17,8 +17,8 @@
  */
 int randint(int x, int y)
 {
-  srand(time(NULL));
-  return rand()%(y-x+1)+x;
+	srand(time(NULL));
+	return rand() % (y - x + 1) + x;
 }
 
 /**
@@ -28,10 +28,10 @@ int randint(int x, int y)
  */
 IsoHost::IsoHost(const Flux::string &fullhost)
 {
-  nick = fullhost.isolate(':','!');
-  raw = fullhost;
-  host = fullhost.isolate('@',' ');
-  ident = fullhost.isolate('!','@');
+	nick = fullhost.isolate(':', '!');
+	raw = fullhost;
+	host = fullhost.isolate('@', ' ');
+	ident = fullhost.isolate('!', '@');
 }
 
 /**
@@ -43,31 +43,38 @@ IsoHost::IsoHost(const Flux::string &fullhost)
 void Fork()
 {
 #ifndef _WIN32
-  if (!nofork && InTerm())
-  {
-    int i = fork();
-    if(i > 0)
-    {
-	    Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
-	    Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[0m";
-	    FOREACH_MOD(I_OnFork, OnFork(i));
-	    exit(0);
-    }
-    if(isatty(fileno(stdout)))
-      fclose(stdout);
-    if(isatty(fileno(stdin)))
-      fclose(stdin);
-    if(isatty(fileno(stderr)))
-      fclose(stderr);
-    if(setpgid(0, 0) < 0)
-	    throw CoreException("Unable to setpgid()");
-    else if(i == -1)
-      Log() << "Error, unable to fork: " << strerror(errno);
-  }
-  else
-    Log() << Config->BotNick << " Started, PID: " << getpid() << Config->LogColor;
+
+	if(!nofork && InTerm())
+	{
+		int i = fork();
+
+		if(i > 0)
+		{
+			Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
+			Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[0m";
+			FOREACH_MOD(I_OnFork, OnFork(i));
+			exit(0);
+		}
+
+		if(isatty(fileno(stdout)))
+			fclose(stdout);
+
+		if(isatty(fileno(stdin)))
+			fclose(stdin);
+
+		if(isatty(fileno(stderr)))
+			fclose(stderr);
+
+		if(setpgid(0, 0) < 0)
+			throw CoreException("Unable to setpgid()");
+		else if(i == -1)
+			Log() << "Error, unable to fork: " << strerror(errno);
+	}
+	else
+		Log() << Config->BotNick << " Started, PID: " << getpid() << Config->LogColor;
+
 #else
-  FreeConsole();
+	FreeConsole();
 #endif
 }
 
@@ -78,18 +85,21 @@ void Fork()
  */
 Flux::string Flux::RandomNickString(size_t length)
 {
-  Flux::string randomchars;
-  srand(time(NULL));
-  for(unsigned i=0; i < length; ++i)
-  {
-    top:
-    char c = static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
-    if(isalphibeticnum(c))
-      randomchars += c;
-    else
-      goto top;
-  }
-  return randomchars;
+	Flux::string randomchars;
+	srand(time(NULL));
+
+	for(unsigned i = 0; i < length; ++i)
+	{
+top:
+		char c = static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
+
+		if(isalphibeticnum(c))
+			randomchars += c;
+		else
+			goto top;
+	}
+
+	return randomchars;
 }
 
 /**
@@ -99,11 +109,13 @@ Flux::string Flux::RandomNickString(size_t length)
  */
 Flux::string Flux::RandomString(size_t length)
 {
-  Flux::string randomchars;
-  srand(static_cast<unsigned>(time(NULL)));
-  for(unsigned i=0; i < length; ++i)
-    randomchars += static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
-  return randomchars;
+	Flux::string randomchars;
+	srand(static_cast<unsigned>(time(NULL)));
+
+	for(unsigned i = 0; i < length; ++i)
+		randomchars += static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
+
+	return randomchars;
 }
 
 /**
@@ -118,45 +130,47 @@ Flux::string Flux::RandomString(size_t length)
 // modified to fit this project.
 Flux::string StripColors(const Flux::string &input)
 {
-  /* refactor this completely due to SQUIT bug since the old code would strip last char and replace with \0 --peavey */
-  Flux::string sentence = input;
-  int seq = 0;
-  Flux::string::iterator i,safei;
-  for (i = sentence.begin(); i != sentence.end();)
-  {
-    if ((*i == 3))
-      seq = 1;
-    else if (seq && (( ((*i >= '0') && (*i <= '9')) || (*i == ',') ) ))
-    {
-      seq++;
-      if ( (seq <= 4) && (*i == ',') )
-	seq = 1;
-      else if (seq > 3)
-	seq = 0;
-    }
-    else
-      seq = 0;
+	/* refactor this completely due to SQUIT bug since the old code would strip last char and replace with \0 --peavey */
+	Flux::string sentence = input;
+	int seq = 0;
+	Flux::string::iterator i, safei;
 
-    if (seq || ((*i == 2) || (*i == 15) || (*i == 22) || (*i == 21) || (*i == 31)))
-    {
-      if (i != sentence.begin())
-      {
-	safei = i;
-	--i;
-	sentence.erase(safei);
-	++i;
-      }
-      else
-      {
-	sentence.erase(i);
-	i = sentence.begin();
-      }
-    }
-    else
-      ++i;
-  }
+	for(i = sentence.begin(); i != sentence.end();)
+	{
+		if((*i == 3))
+			seq = 1;
+		else if(seq && ((((*i >= '0') && (*i <= '9')) || (*i == ','))))
+		{
+			seq++;
 
-  return sentence;
+			if((seq <= 4) && (*i == ','))
+				seq = 1;
+			else if(seq > 3)
+				seq = 0;
+		}
+		else
+			seq = 0;
+
+		if(seq || ((*i == 2) || (*i == 15) || (*i == 22) || (*i == 21) || (*i == 31)))
+		{
+			if(i != sentence.begin())
+			{
+				safei = i;
+				--i;
+				sentence.erase(safei);
+				++i;
+			}
+			else
+			{
+				sentence.erase(i);
+				i = sentence.begin();
+			}
+		}
+		else
+			++i;
+	}
+
+	return sentence;
 }
 
 /**
@@ -168,28 +182,29 @@ Flux::string StripColors(const Flux::string &input)
  */
 Flux::string Flux::Sanitize(const Flux::string &string)
 {
- static struct special_chars
- {
-   Flux::string character;
-   Flux::string replace;
-   special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
- }
- special[] = {
-  special_chars("\n",""),
-  special_chars("\002",""),
-  special_chars("\035",""),
-  special_chars("\037",""),
-  special_chars("\026",""),
-  special_chars("\001",""),
-  special_chars("","")
- };
+	static struct special_chars
+	{
+		Flux::string character;
+		Flux::string replace;
+		special_chars(const Flux::string &c, const Flux::string &r) : character(c), replace(r) { }
+	}
+	special[] =
+	{
+		special_chars("\n", ""),
+		special_chars("\002", ""),
+		special_chars("\035", ""),
+		special_chars("\037", ""),
+		special_chars("\026", ""),
+		special_chars("\001", ""),
+		special_chars("", "")
+	};
 
-  Flux::string ret = StripColors(string.c_str());
+	Flux::string ret = StripColors(string.c_str());
 
-  for(int i = 0; special[i].character.empty() == false; ++i)
-    ret = ret.replace_all_cs(special[i].character, special[i].replace);
+	for(int i = 0; special[i].character.empty() == false; ++i)
+		ret = ret.replace_all_cs(special[i].character, special[i].replace);
 
-  return ret.c_str();
+	return ret.c_str();
 }
 
 /**
@@ -201,16 +216,16 @@ Flux::string Flux::Sanitize(const Flux::string &string)
  */
 Flux::string make_pass()
 {
-  int p1,p2,p3,p4,p5;
-  srand(time(NULL));
-  p1 = rand()%10;
-  p2 = rand()%10;
-  p3 = rand()%10;
-  p4 = rand()%10;
-  p5 = rand()%10;
-  std::stringstream pass_ss;
-  pass_ss << p1 << p2 << p3 << p4 << p5;
-  return pass_ss.str();
+	int p1, p2, p3, p4, p5;
+	srand(time(NULL));
+	p1 = rand() % 10;
+	p2 = rand() % 10;
+	p3 = rand() % 10;
+	p4 = rand() % 10;
+	p5 = rand() % 10;
+	std::stringstream pass_ss;
+	pass_ss << p1 << p2 << p3 << p4 << p5;
+	return pass_ss.str();
 }
 
 /**
@@ -221,12 +236,13 @@ Flux::string make_pass()
  */
 bool IsValidChannel(const Flux::string &chan)
 {
-  for(unsigned i = 0; i < isupport.ChanTypes.size(); ++i)
-  {
-    if(chan[0] != isupport.ChanTypes[i])
-      return false;
-  }
-  return true;
+	for(unsigned i = 0; i < isupport.ChanTypes.size(); ++i)
+	{
+		if(chan[0] != isupport.ChanTypes[i])
+			return false;
+	}
+
+	return true;
 }
 
 /**
@@ -238,17 +254,17 @@ bool IsValidChannel(const Flux::string &chan)
  */
 Flux::string printfify(const char *fmt, ...)
 {
-  if(fmt)
-  {
-    va_list args;
-    char buf[BUFSIZE];
-    va_start(args, fmt);
-    vsnprintf(buf, sizeof(buf), fmt, args);
-    va_end(args);
-    return buf;
-  }
-  else
-    return fmt;
+	if(fmt)
+	{
+		va_list args;
+		char buf[BUFSIZE];
+		va_start(args, fmt);
+		vsnprintf(buf, sizeof(buf), fmt, args);
+		va_end(args);
+		return buf;
+	}
+	else
+		return fmt;
 }
 
 /**
@@ -258,12 +274,14 @@ Flux::string printfify(const char *fmt, ...)
  */
 Flux::string Flux::ConcatinateVector(const Flux::vector &p)
 {
-  Flux::vector params = *const_cast<Flux::vector*>(&(p)); //Why is this so complex?
-  Flux::string ret;
-  for(Flux::vector::iterator it = params.begin(); it != params.end(); ++it)
-    ret += *it + " ";
-  ret.trim();
-  return ret;
+	Flux::vector params = *const_cast<Flux::vector *>(&(p)); //Why is this so complex?
+	Flux::string ret;
+
+	for(Flux::vector::iterator it = params.begin(); it != params.end(); ++it)
+		ret += *it + " ";
+
+	ret.trim();
+	return ret;
 }
 
 /**
@@ -274,22 +292,27 @@ Flux::string Flux::ConcatinateVector(const Flux::vector &p)
  */
 Flux::vector ParamitizeString(const Flux::string &src, char delim)
 {
-  sepstream tok(src, delim);
-  Flux::string token;
-  Flux::vector ret;
-  while(tok.GetToken(token))
-  {
-    token.trim();
-    ret.push_back(token);
-  }
-  return ret;
+	sepstream tok(src, delim);
+	Flux::string token;
+	Flux::vector ret;
+
+	while(tok.GetToken(token))
+	{
+		token.trim();
+		ret.push_back(token);
+	}
+
+	return ret;
 }
 /** Check if a file exists
  * \fn bool InTerm()
  * \brief returns if the bot is started in terminal
  * \return true if in terminal, false otherwise
  */
-bool InTerm() { return isatty(fileno(stdout) && isatty(fileno(stdin)) && isatty(fileno(stderr))); }
+bool InTerm()
+{
+	return isatty(fileno(stdout) && isatty(fileno(stdin)) && isatty(fileno(stderr)));
+}
 
 /* butt-plug?
  * http://www.albinoblacksheep.com/flash/plugs */

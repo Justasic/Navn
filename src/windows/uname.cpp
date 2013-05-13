@@ -11,7 +11,7 @@
 #ifdef _WIN32
 #include "windows_navn.h"
 
-extern Flux::string printfify(const char*, ...);
+extern Flux::string printfify(const char *, ...);
 
 int uname(struct utsname *info)
 {
@@ -29,16 +29,16 @@ int uname(struct utsname *info)
 		return -1;
 
 	GetSystemInfo(&si);
-	
+
 	// Get the hostname
 	if(gethostname(hostname, sizeof(hostname)) == SOCKET_ERROR)
 		return -1;
 
-	if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+	if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
 		cputype = "64-bit";
-	else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL)
+	else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL)
 		cputype = "32-bit";
-	else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+	else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
 		cputype = "Itanium 64-bit";
 
 	// Fill the utsname struct with the windows system info

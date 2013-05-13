@@ -16,26 +16,26 @@
 class CoreExport Log
 {
 protected:
-  std::fstream log;
-  void ToFile(const std::stringstream&);
+	std::fstream log;
+	void ToFile(const std::stringstream &);
 public:
-  LogType type;
-  Flux::string filename;
-  User *u;
-  Command *c;
-  std::stringstream buffer;
-  static Flux::string TimeStamp();
-  explicit Log(LogType type = LOG_NORMAL);
-  explicit Log(User*);
-  Log(LogType, User*);
-  Log(User*, Command*);
-  Log(LogType, User*, Command*);
-  ~Log();
+	LogType type;
+	Flux::string filename;
+	User *u;
+	Command *c;
+	std::stringstream buffer;
+	static Flux::string TimeStamp();
+	explicit Log(LogType type = LOG_NORMAL);
+	explicit Log(User *);
+	Log(LogType, User *);
+	Log(User *, Command *);
+	Log(LogType, User *, Command *);
+	~Log();
 
-  template<typename T> Log &operator<<(T val)
-  {
-   this->buffer << val;
-   return *this;
-  }
+	template<typename T> Log &operator<<(T val)
+	{
+		this->buffer << val;
+		return *this;
+	}
 };
 #endif

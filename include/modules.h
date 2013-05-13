@@ -21,6 +21,6 @@ class CommandLineArguments;
 E DEPRECATED(Flux::string removeCommand(Flux::string command, Flux::string s));
 E DEPRECATED(Flux::string urlify(const Flux::string &received));
 E void WritePID();
-E void startup(int, char**, char*[]);
+E void startup(int, char **, char*[]);
 
 #endif // MODULES_H

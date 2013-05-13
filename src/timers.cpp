@@ -103,7 +103,7 @@ void TimerManager::DelTimer(Timer *T)
 {
 	std::vector<Timer *>::iterator i = std::find(Timers.begin(), Timers.end(), T);
 
-	if (i != Timers.end())
+	if(i != Timers.end())
 		Timers.erase(i);
 }
 
@@ -113,12 +113,14 @@ void TimerManager::DelTimer(Timer *T)
 void TimerManager::TickTimers(time_t ctime)
 {
 	SET_SEGV_LOCATION();
-	while (Timers.size() && ctime > Timers.front()->GetTimer())
+
+	while(Timers.size() && ctime > Timers.front()->GetTimer())
 	{
 		Timer *t = Timers.front();
 
 		t->Tick(ctime);
-		if (t->GetRepeat())
+
+		if(t->GetRepeat())
 		{
 			t->SetTimer(ctime + t->GetSecs());
 			sort(Timers.begin(), Timers.end(), TimerManager::TimerComparison);

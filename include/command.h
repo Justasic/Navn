@@ -29,28 +29,28 @@
 class CoreExport Oper
 {
 public:
-  Oper();
-  void samode(const Flux::string&, const Flux::string&);
-  void samode(const Flux::string&, const Flux::string&, const Flux::string&);
-  void sajoin(const Flux::string&, const Flux::string&);
-  void sapart(const Flux::string&, const Flux::string&);
-  void sanick(const Flux::string&, const Flux::string&);
-  void sakick(const Flux::string&, const Flux::string&, const Flux::string&);
-  void satopic(const Flux::string&, const Flux::string&);
-  void satopic(const Flux::string&, const char *fmt, ...);
-  void sahost(const Flux::string&, const Flux::string&);
-  void saident(const Flux::string&, const Flux::string&);
-  void kill(const Flux::string&, const Flux::string&);
-  void saname(const Flux::string&, const Flux::string&);
-  void saname(const Flux::string&, const char *fmt, ...);
-  void wallops(const Flux::string&);
-  void wallops(const char *fmt, ...);
-  void globops(const char *fmt, ...);
-  void globops(const Flux::string&);
-  void zline(const Flux::string&, const Flux::string&, const Flux::string&);
-  void qline(const Flux::string&, const Flux::string&, const Flux::string&);
-  void kline(const Flux::string&, const Flux::string&, const Flux::string&);
-  void gline(const Flux::string&, const Flux::string&, const Flux::string&);
+	Oper();
+	void samode(const Flux::string &, const Flux::string &);
+	void samode(const Flux::string &, const Flux::string &, const Flux::string &);
+	void sajoin(const Flux::string &, const Flux::string &);
+	void sapart(const Flux::string &, const Flux::string &);
+	void sanick(const Flux::string &, const Flux::string &);
+	void sakick(const Flux::string &, const Flux::string &, const Flux::string &);
+	void satopic(const Flux::string &, const Flux::string &);
+	void satopic(const Flux::string &, const char *fmt, ...);
+	void sahost(const Flux::string &, const Flux::string &);
+	void saident(const Flux::string &, const Flux::string &);
+	void kill(const Flux::string &, const Flux::string &);
+	void saname(const Flux::string &, const Flux::string &);
+	void saname(const Flux::string &, const char *fmt, ...);
+	void wallops(const Flux::string &);
+	void wallops(const char *fmt, ...);
+	void globops(const char *fmt, ...);
+	void globops(const Flux::string &);
+	void zline(const Flux::string &, const Flux::string &, const Flux::string &);
+	void qline(const Flux::string &, const Flux::string &, const Flux::string &);
+	void kline(const Flux::string &, const Flux::string &, const Flux::string &);
+	void gline(const Flux::string &, const Flux::string &, const Flux::string &);
 };
 
 /**
@@ -61,11 +61,11 @@ public:
 class CoreExport IsoHost
 {
 public:
-  IsoHost(const Flux::string&);
-  Flux::string raw;
-  Flux::string nick;
-  Flux::string host;
-  Flux::string ident;
+	IsoHost(const Flux::string &);
+	Flux::string raw;
+	Flux::string nick;
+	Flux::string host;
+	Flux::string ident;
 };
 
 /**
@@ -75,14 +75,14 @@ public:
  */
 struct CoreExport CommandSource
 {
-  User *u;
-  Channel *c;
-  Flux::string command;
-  Flux::string raw;
-  std::vector<Flux::string> params;
+	User *u;
+	Channel *c;
+	Flux::string command;
+	Flux::string raw;
+	std::vector<Flux::string> params;
 
-  void Reply(const char *fmt, ...);
-  void Reply(const Flux::string&);
+	void Reply(const char *fmt, ...);
+	void Reply(const Flux::string &);
 };
 
 /**
@@ -92,27 +92,27 @@ struct CoreExport CommandSource
  */
 class CoreExport Command : public Base
 {
-  Flux::string desc;
-  std::vector<Flux::string> syntax;
-  CommandType type;
+	Flux::string desc;
+	std::vector<Flux::string> syntax;
+	CommandType type;
 public:
-  size_t MaxParams;
-  size_t MinParams;
-  Flux::string name;
-  Module *mod;
-  Command(Module*, const Flux::string &sname, CommandType, size_t min_params=0, size_t max_params=0);
-  virtual ~Command();
+	size_t MaxParams;
+	size_t MinParams;
+	Flux::string name;
+	Module *mod;
+	Command(Module *, const Flux::string &sname, CommandType, size_t min_params = 0, size_t max_params = 0);
+	virtual ~Command();
 protected:
-  void SetDesc(const Flux::string&);
-  void SetSyntax(const Flux::string&);
-  void SendSyntax(CommandSource&);
-  void SendSyntax(CommandSource&, const Flux::string&);
+	void SetDesc(const Flux::string &);
+	void SetSyntax(const Flux::string &);
+	void SendSyntax(CommandSource &);
+	void SendSyntax(CommandSource &, const Flux::string &);
 public:
-  const Flux::string &GetDesc() const;
-  CommandType GetType() const;
-  virtual void Run(CommandSource&, const std::vector<Flux::string> &params);
-  virtual bool OnHelp(CommandSource&, const Flux::string&);
-  virtual void OnList(User *u);
-  virtual void OnSyntaxError(CommandSource&, const Flux::string&);
+	const Flux::string &GetDesc() const;
+	CommandType GetType() const;
+	virtual void Run(CommandSource &, const std::vector<Flux::string> &params);
+	virtual bool OnHelp(CommandSource &, const Flux::string &);
+	virtual void OnList(User *u);
+	virtual void OnSyntaxError(CommandSource &, const Flux::string &);
 };
 #endif

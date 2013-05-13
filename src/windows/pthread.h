@@ -22,7 +22,7 @@ typedef void pthread_condattr_t;
 
 extern int pthread_attr_init(pthread_attr_t *);
 extern int pthread_attr_setdetachstate(pthread_attr_t *, int);
-extern int pthread_create(pthread_t *, const pthread_attr_t *, void *(*)(void *), void *);
+extern int pthread_create(pthread_t *, const pthread_attr_t *, void * ( *)(void *), void *);
 extern int pthread_join(pthread_t, void **);
 extern void pthread_exit(int);
 

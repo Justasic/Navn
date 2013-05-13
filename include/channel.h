@@ -44,42 +44,42 @@
  * \var time_t creation_time
  * \brief Time the IRC Channel was last created.
  */
-typedef std::map<User*, Channel*> UList;
+typedef std::map<User *, Channel *> UList;
 class CoreExport Channel : public Base
 {
 public:
-  Channel(const Flux::string&);
-  virtual ~Channel();
-  UList UserList;
-  User *finduser(const Flux::string&);
-  Flux::string name;
-  Flux::string modes;
-  Flux::string topic;
-  Flux::string topic_setter;
-  time_t topic_time;
-  time_t creation_time;
-  void AddUser(User*);
-  void DelUser(User*);
-  void SendJoin();
-  void SendPart(const Flux::string& = "");
-  void SendPart(const char*, ...);
-  void SendWho();
-  void kick(User*, const Flux::string&);
-  void kick(User*, const char*, ...);
-  void kick(const Flux::string&, const Flux::string&);
-  void kick(const Flux::string&, const char*, ...);
-  void SetMode(const Flux::string&);
-  void SetMode(User *u, const Flux::string &mode);
-  void RemoveMode(const Flux::string&);
-  void RemoveMode(User *u, const Flux::string &mode);
-  void ChangeTopic(const Flux::string&);
-  void ChangeTopic(const char *fmt, ...);
-  virtual void SendMessage(const Flux::string&);
-  void SendMessage(const char*, ...);
-  virtual void SendAction(const Flux::string&);
-  void SendAction(const char*, ...);
-  virtual void SendNotice(const Flux::string&);
-  void SendNotice(const char*, ...);
+	Channel(const Flux::string &);
+	virtual ~Channel();
+	UList UserList;
+	User *finduser(const Flux::string &);
+	Flux::string name;
+	Flux::string modes;
+	Flux::string topic;
+	Flux::string topic_setter;
+	time_t topic_time;
+	time_t creation_time;
+	void AddUser(User *);
+	void DelUser(User *);
+	void SendJoin();
+	void SendPart(const Flux::string& = "");
+	void SendPart(const char *, ...);
+	void SendWho();
+	void kick(User *, const Flux::string &);
+	void kick(User *, const char *, ...);
+	void kick(const Flux::string &, const Flux::string &);
+	void kick(const Flux::string &, const char *, ...);
+	void SetMode(const Flux::string &);
+	void SetMode(User *u, const Flux::string &mode);
+	void RemoveMode(const Flux::string &);
+	void RemoveMode(User *u, const Flux::string &mode);
+	void ChangeTopic(const Flux::string &);
+	void ChangeTopic(const char *fmt, ...);
+	virtual void SendMessage(const Flux::string &);
+	void SendMessage(const char *, ...);
+	virtual void SendAction(const Flux::string &);
+	void SendAction(const char *, ...);
+	virtual void SendNotice(const Flux::string &);
+	void SendNotice(const char *, ...);
 };
 #endif
 

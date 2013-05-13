@@ -20,14 +20,15 @@
 
 Module::Module(const Flux::string &n) : author(""), version(""), loadtime(time(NULL)), Priority(PRIORITY_DONTCARE), permanent(false), handle(NULL), name(n), filename(""),  filepath("")
 {
-  SET_SEGV_LOCATION();
+	SET_SEGV_LOCATION();
 
-  if(FindModule(this->name))
-    throw ModuleException("Module already exists!");
+	if(FindModule(this->name))
+		throw ModuleException("Module already exists!");
 
-  Modules[this->name] = this;
-  if(InTerm())
-    Log() << "Loaded Module " << n;
+	Modules[this->name] = this;
+
+	if(InTerm())
+		Log() << "Loaded Module " << n;
 }
 
 /**
@@ -36,10 +37,10 @@ Module::Module(const Flux::string &n) : author(""), version(""), loadtime(time(N
  */
 Module::~Module()
 {
-  SET_SEGV_LOCATION();
-  Log(LOG_DEBUG) << "Unloading Module " << this->name;
-  ModuleHandler::DetachAll(this);
-  Modules.erase(this->name);
+	SET_SEGV_LOCATION();
+	Log(LOG_DEBUG) << "Unloading Module " << this->name;
+	ModuleHandler::DetachAll(this);
+	Modules.erase(this->name);
 }
 
 /**
@@ -47,20 +48,32 @@ Module::~Module()
  * \brief Sets the Module author, can only be set by the Module its self
  * \param Author the name of the author(s) to be set
  */
-void Module::SetAuthor(const Flux::string &person) { this->author = person; }
+void Module::SetAuthor(const Flux::string &person)
+{
+	this->author = person;
+}
 
 /**
  * \fn void Module::SetVersion(const Flux::string &ver)
  * \brief Sets the Module version, can only be set by the Module its self
  * \param Version the Module version
  */
-void Module::SetVersion(const Flux::string &ver) { this->version = ver; }
+void Module::SetVersion(const Flux::string &ver)
+{
+	this->version = ver;
+}
 
 /**
  * \fn void Module::SetAuthor(const Flux::string &person)
  * \brief Sets the Module priority, can only be set by the Module its self
  * \param Priority sets the priority of the Module
  */
-void Module::SetPriority(ModulePriority p) { this->Priority = p; }
+void Module::SetPriority(ModulePriority p)
+{
+	this->Priority = p;
+}
 
-void Module::SetPermanent(bool value) { this->permanent = value; }
+void Module::SetPermanent(bool value)
+{
+	this->permanent = value;
+}

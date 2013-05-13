@@ -33,7 +33,7 @@ jmp_buf sigbuf;
 #endif
 
 // Global variables
-char **my_av, **my_envp;
+char **my_av, * *my_envp;
 bool nofork = false, dev = false, protocoldebug = false, IsOper = false, quitting = false;
 bool started = false, nocolor = false, istempnick = false, memdebug = false;
 Flux::string binary_path, bot_bin, binary_dir, quitmsg;
@@ -54,11 +54,14 @@ E void Connect();
 class ReconnectTimer : public Timer
 {
 public:
-  ReconnectTimer() : Timer(Config->ReconnectTime)
-  {
-    Log() << "Reconnecting to server in " << Config->ReconnectTime << " seconds.";
-  }
-  void Tick(time_t) { Connect(); }
+	ReconnectTimer() : Timer(Config->ReconnectTime)
+	{
+		Log() << "Reconnecting to server in " << Config->ReconnectTime << " seconds.";
+	}
+	void Tick(time_t)
+	{
+		Connect();
+	}
 };
 
 /**
@@ -68,53 +71,56 @@ public:
  */
 void Connect()
 {
-  try
-  {
-    if(quitting)
-      return;
-    
-    ++startcount;
-    Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
+	try
+	{
+		if(quitting)
+			return;
 
-    FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+		++startcount;
+		Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
 
-    if(Config->Server.empty())
-      throw SocketException("No Server Specified.");
-    if(Config->Port.empty())
-      throw SocketException("No Port Specified.");
-    if(sock)
-    {
-      delete sock;
-      sock = NULL;
-    }
+		FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
 
-    FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+		if(Config->Server.empty())
+			throw SocketException("No Server Specified.");
 
-    sock = new SocketIO(Config->Server, Config->Port);
-    sock->Connect();
+		if(Config->Port.empty())
+			throw SocketException("No Port Specified.");
 
-    if(!sock)
-      throw SocketException("Cannot create socket!");
-    else
-      startcount = 0;
+		if(sock)
+		{
+			delete sock;
+			sock = NULL;
+		}
 
-    if(ircproto)
-      ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
+		FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
 
-    FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
-  }
-  catch (SocketException &e)
-  {
-    Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
-    if(static_cast<int>(startcount) >= Config->ReconnectTries)
-      throw CoreException("Cannot connect to server!");
-    else
-    {
-      delete sock;
-      sock = NULL;
-      new ReconnectTimer();
-    }
-  }
+		sock = new SocketIO(Config->Server, Config->Port);
+		sock->Connect();
+
+		if(!sock)
+			throw SocketException("Cannot create socket!");
+		else
+			startcount = 0;
+
+		if(ircproto)
+			ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
+
+		FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+	}
+	catch(SocketException &e)
+	{
+		Log(LOG_DEBUG) << "Socket Exception Caught: " << e.description();
+
+		if(static_cast<int>(startcount) >= Config->ReconnectTries)
+			throw CoreException("Cannot connect to server!");
+		else
+		{
+			delete sock;
+			sock = NULL;
+			new ReconnectTimer();
+		}
+	}
 }
 
 /**
@@ -124,69 +130,72 @@ void Connect()
  * \param argv the args in a c-string array provided by the system
  * \param envp[] Not quite sure what this is lol
  */
-int main (int argcx, char** argvx, char *envp[])
+int main(int argcx, char **argvx, char *envp[])
 {
-  SET_SEGV_LOCATION();
-  startcount = 0;
-  try
-  {
-    startup(argcx, argvx, envp);
-    Connect();
+	SET_SEGV_LOCATION();
+	startcount = 0;
 
-    ircproto = new IRCProto();
-    time_t last_check = time(NULL);
+	try
+	{
+		startup(argcx, argvx, envp);
+		Connect();
 
-    // Introduce ourselves to the IRC server
-    ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
+		ircproto = new IRCProto();
+		time_t last_check = time(NULL);
 
-    FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+		// Introduce ourselves to the IRC server
+		ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
 
-    while(!quitting)
-    {
-      Log(LOG_RAWIO) << "Top of main loop";
-      
-      if(++loopcount >= 50)
-	raise(SIGSEGV); //prevent loop bombs, raise a SIGSEGV to handle elsewhere.
+		FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
 
-      /* Process the socket engine */
-      try
-      {
-	if(sock)
-	  sock->Process();
-	else
-	  throw SocketException("No socket to read from!");
-      }
-      catch(SocketException &exc)
-      {
-	Log() << "Socket Exception: " << exc.description();
-	Connect();
-      }
-      
-      /* Process Timers */
-      /***********************************/
-      if(time(NULL) - last_check >= 3)
-      {
-	loopcount = 0;
-	TimerManager::TickTimers(time(NULL));
-	last_check = time(NULL);
-      }
-      /***********************************/
-    }//while loop ends here
-    
-    GarbageCollect();
-    Log(LOG_TERMINAL) << "Bye!\033[0m";
-  }//try ends here
-  catch(const CoreException& e)
-  {
-    /* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
-    Log(LOG_CRITICAL) << "\033[0mCore Exception Caught: " << e.GetReason();
-    return EXIT_FAILURE;
-  }
-  catch(std::exception &ex)
-  {
-    Log(LOG_CRITICAL) << "\033[0mStandard Exception Caught: " << ex.what();
-    return EXIT_FAILURE;
-  }
-  return EXIT_SUCCESS;
+		while(!quitting)
+		{
+			Log(LOG_RAWIO) << "Top of main loop";
+
+			if(++loopcount >= 50)
+				raise(SIGSEGV); //prevent loop bombs, raise a SIGSEGV to handle elsewhere.
+
+			/* Process the socket engine */
+			try
+			{
+				if(sock)
+					sock->Process();
+				else
+					throw SocketException("No socket to read from!");
+			}
+			catch(SocketException &exc)
+			{
+				Log() << "Socket Exception: " << exc.description();
+				Connect();
+			}
+
+			/* Process Timers */
+			/***********************************/
+			if(time(NULL) - last_check >= 3)
+			{
+				loopcount = 0;
+				TimerManager::TickTimers(time(NULL));
+				last_check = time(NULL);
+			}
+
+			/***********************************/
+		}//while loop ends here
+
+		GarbageCollect();
+		Log(LOG_TERMINAL) << "Bye!\033[0m";
+	}//try ends here
+	catch(const CoreException &e)
+	{
+		/* we reset the terminal colors, this should be removed as it makes more issues than it is cool */
+		Log(LOG_CRITICAL) << "\033[0mCore Exception Caught: " << e.GetReason();
+		return EXIT_FAILURE;
+	}
+	catch(std::exception &ex)
+	{
+		Log(LOG_CRITICAL) << "\033[0mStandard Exception Caught: " << ex.what();
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
 }
 

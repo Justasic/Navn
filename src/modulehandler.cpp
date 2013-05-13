@@ -10,7 +10,7 @@
 
 #include "module.h"
 
-Flux::insensitive_map<Module*> Modules;
+Flux::insensitive_map<Module *> Modules;
 std::vector<Module *> ModuleHandler::EventHandlers[I_END];
 
 /**
@@ -20,10 +20,12 @@ std::vector<Module *> ModuleHandler::EventHandlers[I_END];
  */
 Module *FindModule(const Flux::string &name)
 {
-  Flux::insensitive_map<Module*>::iterator it = Modules.find(name);
-  if(it != Modules.end())
-    return it->second;
- return NULL;
+	Flux::insensitive_map<Module *>::iterator it = Modules.find(name);
+
+	if(it != Modules.end())
+		return it->second;
+
+	return NULL;
 }
 
 /**
@@ -34,17 +36,18 @@ Module *FindModule(const Flux::string &name)
  */
 bool ModuleHandler::Attach(Implementation i, Module *mod)
 {
-  if(std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod) != EventHandlers[i].end())
-    return false;
-  EventHandlers[i].push_back(mod);
-  return true;
+	if(std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod) != EventHandlers[i].end())
+		return false;
+
+	EventHandlers[i].push_back(mod);
+	return true;
 }
 
 /// \overload void ModuleHandler::Attach(Implementation *i, Module *mod, size_t sz)
 void ModuleHandler::Attach(Implementation *i, Module *mod, size_t sz)
 {
- for(size_t n = 0; n < sz; ++n)
-   Attach(i[n], mod);
+	for(size_t n = 0; n < sz; ++n)
+		Attach(i[n], mod);
 }
 
 /**
@@ -54,41 +57,41 @@ void ModuleHandler::Attach(Implementation *i, Module *mod, size_t sz)
  */
 Flux::string DecodeModErr(ModErr err)
 {
- switch(err)
- {
-   case MOD_ERR_OK:
-     return "No error (MOD_ERR_OK)";
-   case MOD_ERR_MEMORY:
-     return "Out of memory (MOD_ERR_MEMORY)";
-   case MOD_ERR_PARAMS:
-     return "Insufficient parameters (MOD_ERR_PARAMS)";
-   case MOD_ERR_EXISTS:
-     return "Module Exists (MOD_ERR_EXISTS)";
-   case MOD_ERR_NOEXIST:
-     return "Module does not exist (MOD_ERR_NOEXIST)";
-   case MOD_ERR_NOLOAD:
-     return "Module cannot be loaded (MOD_ERR_NOLOAD)";
-   case MOD_ERR_UNKNOWN:
-     return "Unknown error (MOD_ERR_UNKNOWN)";
-   case MOD_ERR_FILE_IO:
-     return "File I/O Error (MOD_ERR_FILE_IO)";
-   case MOD_ERR_EXCEPTION:
-     return "Module Exception caught (MOD_ERR_EXCEPTION)";
-   default:
-     return "Unknown error code";
- }
+	switch(err)
+	{
+		case MOD_ERR_OK:
+			return "No error (MOD_ERR_OK)";
+		case MOD_ERR_MEMORY:
+			return "Out of memory (MOD_ERR_MEMORY)";
+		case MOD_ERR_PARAMS:
+			return "Insufficient parameters (MOD_ERR_PARAMS)";
+		case MOD_ERR_EXISTS:
+			return "Module Exists (MOD_ERR_EXISTS)";
+		case MOD_ERR_NOEXIST:
+			return "Module does not exist (MOD_ERR_NOEXIST)";
+		case MOD_ERR_NOLOAD:
+			return "Module cannot be loaded (MOD_ERR_NOLOAD)";
+		case MOD_ERR_UNKNOWN:
+			return "Unknown error (MOD_ERR_UNKNOWN)";
+		case MOD_ERR_FILE_IO:
+			return "File I/O Error (MOD_ERR_FILE_IO)";
+		case MOD_ERR_EXCEPTION:
+			return "Module Exception caught (MOD_ERR_EXCEPTION)";
+		default:
+			return "Unknown error code";
+	}
 }
 
 /*  This code was found online at http://www.linuxjournal.com/article/3687#comment-26593 */
 template<class TYPE> TYPE function_cast(void *symbol)
 {
-    union
-    {
-        void *symbol;
-        TYPE function;
-    } cast;
-    cast.symbol = symbol;
-    return cast.function;
+	union
+	{
+		void *symbol;
+		TYPE function;
+	} cast;
+	cast.symbol = symbol;
+	return cast.function;
 }
 
 /**
@@ -99,11 +102,13 @@ template<class TYPE> TYPE function_cast(void *symbol)
  */
 bool ModuleHandler::Detach(Implementation i, Module *mod)
 {
-  std::vector<Module*>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
-  if(x == EventHandlers[i].end())
-    return false;
-  EventHandlers[i].erase(x);
-  return true;
+	std::vector<Module *>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
+
+	if(x == EventHandlers[i].end())
+		return false;
+
+	EventHandlers[i].erase(x);
+	return true;
 }
 
 /**
@@ -113,8 +118,8 @@ bool ModuleHandler::Detach(Implementation i, Module *mod)
  */
 void ModuleHandler::DetachAll(Module *m)
 {
- for(size_t n = I_BEGIN+1; n != I_END; ++n)
-   Detach(static_cast<Implementation>(n), m);
+	for(size_t n = I_BEGIN + 1; n != I_END; ++n)
+		Detach(static_cast<Implementation>(n), m);
 }
 
 /**
@@ -124,73 +129,75 @@ void ModuleHandler::DetachAll(Module *m)
  */
 ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 {
-  SET_SEGV_LOCATION();
+	SET_SEGV_LOCATION();
 
-  if(modname.empty())
-    return MOD_ERR_PARAMS;
-  if(FindModule(modname))
-    return MOD_ERR_EXISTS;
+	if(modname.empty())
+		return MOD_ERR_PARAMS;
 
-  Log() << "Attempting to load Module [" << modname << ']';
+	if(FindModule(modname))
+		return MOD_ERR_EXISTS;
 
-  Flux::string mdir = binary_dir + "/runtime/"+ (modname.search(".so")?modname+".XXXXXX":modname+".so.XXXXXX");
-  Flux::string input = Flux::string(binary_dir + "/" + (Config->ModuleDir.empty()?modname:Config->ModuleDir+"/"+modname) + ".so").replace_all_cs("//","/");
+	Log() << "Attempting to load Module [" << modname << ']';
 
-  TextFile mod(input);
-  Flux::string output = TextFile::TempFile(mdir);
-  Log(LOG_RAWIO) << "Runtime Module location: " << output;
-  mod.Copy(output);
+	Flux::string mdir = binary_dir + "/runtime/" + (modname.search(".so") ? modname + ".XXXXXX" : modname + ".so.XXXXXX");
+	Flux::string input = Flux::string(binary_dir + "/" + (Config->ModuleDir.empty() ? modname : Config->ModuleDir + "/" + modname) + ".so").replace_all_cs("//", "/");
 
-  if(mod.GetLastError() != FILE_IO_OK)
-  {
-    Log(LOG_RAWIO) << "Runtime Copy Error: " << mod.DecodeLastError();
-    return MOD_ERR_FILE_IO;
-  }
+	TextFile mod(input);
+	Flux::string output = TextFile::TempFile(mdir);
+	Log(LOG_RAWIO) << "Runtime Module location: " << output;
+	mod.Copy(output);
 
-  dlerror();
+	if(mod.GetLastError() != FILE_IO_OK)
+	{
+		Log(LOG_RAWIO) << "Runtime Copy Error: " << mod.DecodeLastError();
+		return MOD_ERR_FILE_IO;
+	}
 
-  // FIXME: Somehow the binary_dir variable is lost when this executes >:|
-  void *handle = dlopen(output.c_str(), RTLD_LAZY|RTLD_LOCAL);
-  const char *err = dlerror();
+	dlerror();
 
-  if(!handle && err && *err)
-  {
-    Log() << '[' << modname << "] " << err;
-    return MOD_ERR_NOLOAD;
-  }
+	// FIXME: Somehow the binary_dir variable is lost when this executes >:|
+	void *handle = dlopen(output.c_str(), RTLD_LAZY | RTLD_LOCAL);
+	const char *err = dlerror();
 
-  dlerror();
-  Module *(*f)(const Flux::string&) = function_cast<Module *(*)(const Flux::string&)>(dlsym(handle, "ModInit"));
-  err = dlerror();
+	if(!handle && err && *err)
+	{
+		Log() << '[' << modname << "] " << err;
+		return MOD_ERR_NOLOAD;
+	}
 
-  if(!f && err && *err)
-  {
-    Log() << "No Module init function, moving on.";
-    dlclose(handle);
-    return MOD_ERR_NOLOAD;
-  }
+	dlerror();
+	Module *(*f)(const Flux::string &) = function_cast<Module * ( *)(const Flux::string &)>(dlsym(handle, "ModInit"));
+	err = dlerror();
 
-  if(!f)
-    throw CoreException("Can't find Module constructor, yet no moderr?");
+	if(!f && err && *err)
+	{
+		Log() << "No Module init function, moving on.";
+		dlclose(handle);
+		return MOD_ERR_NOLOAD;
+	}
 
-  Module *m;
-  try
-  {
-    m = f(modname);
-  }
-  catch (const ModuleException &e)
-  {
-    Log() << "Error while loading " << modname << ": " << e.GetReason();
-    return MOD_ERR_EXCEPTION;
-  }
+	if(!f)
+		throw CoreException("Can't find Module constructor, yet no moderr?");
 
-  m->filepath = output;
-  m->filename = (modname.search(".so")?modname:modname+".so");
-  m->handle = handle;
+	Module *m;
 
-  FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
+	try
+	{
+		m = f(modname);
+	}
+	catch(const ModuleException &e)
+	{
+		Log() << "Error while loading " << modname << ": " << e.GetReason();
+		return MOD_ERR_EXCEPTION;
+	}
 
-  return MOD_ERR_OK;
+	m->filepath = output;
+	m->filename = (modname.search(".so") ? modname : modname + ".so");
+	m->handle = handle;
+
+	FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
+
+	return MOD_ERR_OK;
 }
 
 /**
@@ -200,33 +207,35 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
  */
 bool ModuleHandler::DeleteModule(Module *m)
 {
-  SET_SEGV_LOCATION();
-  if (!m || !m->handle)
-	  return false;
+	SET_SEGV_LOCATION();
 
-  void *handle = m->handle;
-  Flux::string filepath = m->filepath;
+	if(!m || !m->handle)
+		return false;
 
-  dlerror();
-  void (*df)(Module*) = function_cast<void (*)(Module*)>(dlsym(m->handle, "ModunInit"));
-  const char *err = dlerror();
-  if (!df && err && *err)
-  {
-	  Log(LOG_WARN) << "No destroy function found for " << m->name << ", chancing delete...";
-	  delete m; /* we just have to chance they haven't overwrote the delete operator then... */
-  }
-  else
-    df(m); /* Let the Module delete it self, just in case */
+	void *handle = m->handle;
+	Flux::string filepath = m->filepath;
+
+	dlerror();
+	void (*df)(Module *) = function_cast<void ( *)(Module *)>(dlsym(m->handle, "ModunInit"));
+	const char *err = dlerror();
+
+	if(!df && err && *err)
+	{
+		Log(LOG_WARN) << "No destroy function found for " << m->name << ", chancing delete...";
+		delete m; /* we just have to chance they haven't overwrote the delete operator then... */
+	}
+	else
+		df(m); /* Let the Module delete it self, just in case */
 
 
-  if(handle)
-    if(dlclose(handle))
-      Log() << "[" << m->name << ".so] " << dlerror();
+	if(handle)
+		if(dlclose(handle))
+			Log() << "[" << m->name << ".so] " << dlerror();
 
-  if (!filepath.empty())
-    Delete(filepath.c_str());
+	if(!filepath.empty())
+		Delete(filepath.c_str());
 
-  return true;
+	return true;
 }
 
 /**
@@ -236,10 +245,11 @@ bool ModuleHandler::DeleteModule(Module *m)
  */
 bool ModuleHandler::Unload(Module *m)
 {
-  if(!m || m->GetPermanent())
-    return false;
-  FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
-  return DeleteModule(m);
+	if(!m || m->GetPermanent())
+		return false;
+
+	FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
+	return DeleteModule(m);
 }
 
 /**
@@ -248,14 +258,15 @@ bool ModuleHandler::Unload(Module *m)
  */
 void ModuleHandler::UnloadAll()
 {
-  for(Flux::insensitive_map<Module*>::iterator it = Modules.begin(), it_end = Modules.end(); it != it_end;)
-  {
-    Module *m = it->second;
-    ++it;
-    FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
-    DeleteModule(m);
-  }
-  Modules.clear();
+	for(Flux::insensitive_map<Module *>::iterator it = Modules.begin(), it_end = Modules.end(); it != it_end;)
+	{
+		Module *m = it->second;
+		++it;
+		FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
+		DeleteModule(m);
+	}
+
+	Modules.clear();
 }
 
 /**
@@ -265,18 +276,19 @@ void ModuleHandler::UnloadAll()
  */
 Flux::string ModuleHandler::DecodePriority(ModulePriority p)
 {
- switch(p)
- {
-   case PRIORITY_FIRST:
-     return "FIRST";
-   case PRIORITY_DONTCARE:
-     return "DON'T CARE";
-   case PRIORITY_LAST:
-     return "LAST";
-   default:
-     return "";
- }
- return "";
+	switch(p)
+	{
+		case PRIORITY_FIRST:
+			return "FIRST";
+		case PRIORITY_DONTCARE:
+			return "DON'T CARE";
+		case PRIORITY_LAST:
+			return "LAST";
+		default:
+			return "";
+	}
+
+	return "";
 }
 
 /**
@@ -285,25 +297,30 @@ Flux::string ModuleHandler::DecodePriority(ModulePriority p)
  */
 void ModuleHandler::SanitizeRuntime()
 {
-  Log(LOG_DEBUG) << "Cleaning up runtime directory.";
-  Flux::string dirbuf = binary_dir+"/runtime/";
+	Log(LOG_DEBUG) << "Cleaning up runtime directory.";
+	Flux::string dirbuf = binary_dir + "/runtime/";
 
-  if(!TextFile::IsDirectory(dirbuf))
-  {
+	if(!TextFile::IsDirectory(dirbuf))
+	{
 #ifndef _WIN32
-    if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0)
-      throw CoreException(printfify("Error making new runtime directory: %s", strerror(errno)));
+
+		if(mkdir(dirbuf.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0)
+			throw CoreException(printfify("Error making new runtime directory: %s", strerror(errno)));
+
 #else
-	  if(!CreateDirectory(dirbuf.c_str(), NULL))
-		  throw CoreException(printfify("Error making runtime new directory: %s", strerror(errno)));
+
+		if(!CreateDirectory(dirbuf.c_str(), NULL))
+			throw CoreException(printfify("Error making runtime new directory: %s", strerror(errno)));
+
 #endif
-  }
-  else
-  {
-    Flux::vector files = TextFile::DirectoryListing(dirbuf);
-    for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
-      Delete(Flux::string(dirbuf+(*it)).c_str());
-  }
+	}
+	else
+	{
+		Flux::vector files = TextFile::DirectoryListing(dirbuf);
+
+		for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
+			Delete(Flux::string(dirbuf + (*it)).c_str());
+	}
 }
 /******************Configuration variables***********************/
 
@@ -314,12 +331,14 @@ void ModuleHandler::SanitizeRuntime()
  */
 void ModuleHandler::LoadModuleList(const Flux::vector &list)
 {
-  for(Flux::vector::const_iterator it = list.begin(); it != list.end(); ++it)
-  {
-    ModErr e = LoadModule(*it);
-    if(e != MOD_ERR_OK)
-      Log() << "Error loading Module " << *it << ": " << DecodeModErr(e);
-  }
+	for(Flux::vector::const_iterator it = list.begin(); it != list.end(); ++it)
+	{
+		ModErr e = LoadModule(*it);
+
+		if(e != MOD_ERR_OK)
+			Log() << "Error loading Module " << *it << ": " << DecodeModErr(e);
+	}
+
 //   sepstream sep(Config->Modules, ',');
 //   Flux::string tok;
 //

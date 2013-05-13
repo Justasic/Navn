@@ -12,7 +12,7 @@
 #include "windows_navn.h"
 #include <io.h>
 
-int gettimeofday(timeval *tv, void*)
+int gettimeofday(timeval *tv, void *)
 {
 	SYSTEMTIME st;
 	GetSystemTime(&st);
@@ -32,112 +32,135 @@ Flux::string GetWindowsVersion()
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
 	BOOL bOsVersionInfoEx = GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&osvi));
-	if (!bOsVersionInfoEx)
+
+	if(!bOsVersionInfoEx)
 	{
 		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-		if (!GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&osvi)))
+
+		if(!GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&osvi)))
 			return "";
 	}
+
 	GetSystemInfo(&si);
 
 	Flux::string buf, extra, cputype;
+
 	/* Determine CPU type 32 or 64 */
-	if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+	if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
 		cputype = " 64-bit";
-	else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL)
+	else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL)
 		cputype = " 32-bit";
-	else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+	else if(si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
 		cputype = " Itanium 64-bit";
 
-	switch (osvi.dwPlatformId)
+	switch(osvi.dwPlatformId)
 	{
-		/* test for the Windows NT product family. */
+			/* test for the Windows NT product family. */
 		case VER_PLATFORM_WIN32_NT:
+
 			/* Windows Vista or Windows Server 2008 */
-			if (osvi.dwMajorVersion == 6 && !osvi.dwMinorVersion)
+			if(osvi.dwMajorVersion == 6 && !osvi.dwMinorVersion)
 			{
-				if (osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
+				if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
 					extra = " Enterprise Edition";
-				else if (osvi.wSuiteMask & VER_SUITE_DATACENTER)
+				else if(osvi.wSuiteMask & VER_SUITE_DATACENTER)
 					extra = " Datacenter Edition";
-				else if (osvi.wSuiteMask & VER_SUITE_PERSONAL)
+				else if(osvi.wSuiteMask & VER_SUITE_PERSONAL)
 					extra = " Home Premium/Basic";
-				if (osvi.dwMinorVersion == 0)
+
+				if(osvi.dwMinorVersion == 0)
 				{
-					if (osvi.wProductType & VER_NT_WORKSTATION)
+					if(osvi.wProductType & VER_NT_WORKSTATION)
 						buf = "Microsoft Windows Vista" + cputype + extra;
 					else
 						buf = "Microsoft Windows Server 2008" + cputype + extra;
 				}
-				else if (osvi.dwMinorVersion == 1)
+				else if(osvi.dwMinorVersion == 1)
 				{
-					if (osvi.wProductType & VER_NT_WORKSTATION)
+					if(osvi.wProductType & VER_NT_WORKSTATION)
 						buf = "Microsoft Windows 7" + cputype + extra;
 					else
 						buf = "Microsoft Windows Server 2008 R2" + cputype + extra;
 				}
 			}
+
 			/* Windows 2003 or Windows XP Pro 64 */
-			if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2)
+			if(osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2)
 			{
-				if (osvi.wSuiteMask & VER_SUITE_DATACENTER)
+				if(osvi.wSuiteMask & VER_SUITE_DATACENTER)
 					extra = " Datacenter Edition";
-				else if (osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
+				else if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
 					extra = " Enterprise Edition";
+
 #ifdef VER_SUITE_COMPUTE_SERVER
-				else if (osvi.wSuiteMask & VER_SUITE_COMPUTE_SERVER)
+				else if(osvi.wSuiteMask & VER_SUITE_COMPUTE_SERVER)
 					extra = " Compute Cluster Edition";
+
 #endif
-				else if (osvi.wSuiteMask == VER_SUITE_BLADE)
+				else if(osvi.wSuiteMask == VER_SUITE_BLADE)
 					extra = " Web Edition";
 				else
 					extra = " Standard Edition";
-				if (osvi.wProductType & VER_NT_WORKSTATION && si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+
+				if(osvi.wProductType &VER_NT_WORKSTATION && si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
 					buf = "Microsoft Windows XP Professional x64 Edition" + extra;
 				else
 					buf = "Microsoft Windows Server 2003 Family" + cputype + extra;
 			}
-			if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1)
+
+			if(osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1)
 			{
-				if (osvi.wSuiteMask & VER_SUITE_EMBEDDEDNT)
+				if(osvi.wSuiteMask & VER_SUITE_EMBEDDEDNT)
 					extra = " Embedded";
-				else if (osvi.wSuiteMask & VER_SUITE_PERSONAL)
+				else if(osvi.wSuiteMask & VER_SUITE_PERSONAL)
 					extra = " Home Edition";
+
 				buf = "Microsoft Windows XP" + extra;
 			}
-			if (osvi.dwMajorVersion == 5 && !osvi.dwMinorVersion)
+
+			if(osvi.dwMajorVersion == 5 && !osvi.dwMinorVersion)
 			{
-				if (osvi.wSuiteMask & VER_SUITE_DATACENTER)
+				if(osvi.wSuiteMask & VER_SUITE_DATACENTER)
 					extra = " Datacenter Server";
-				else if (osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
+				else if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
 					extra = " Advanced Server";
 				else
 					extra = " Server";
+
 				buf = "Microsoft Windows 2000" + extra;
 			}
-			if (osvi.dwMajorVersion <= 4)
+
+			if(osvi.dwMajorVersion <= 4)
 			{
-				if (osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
+				if(osvi.wSuiteMask & VER_SUITE_ENTERPRISE)
 					extra = " Enterprise Edition";
+
 				buf = "Microsoft Windows NT Server 4.0" + extra;
 			}
+
 			break;
 		case VER_PLATFORM_WIN32_WINDOWS:
-			if (osvi.dwMajorVersion == 4 && !osvi.dwMinorVersion)
+
+			if(osvi.dwMajorVersion == 4 && !osvi.dwMinorVersion)
 			{
-				if (osvi.szCSDVersion[1] == 'C' || osvi.szCSDVersion[1] == 'B')
+				if(osvi.szCSDVersion[1] == 'C' || osvi.szCSDVersion[1] == 'B')
 					extra = " OSR2";
+
 				buf = "Microsoft Windows 95" + extra;
 			}
-			if (osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 10)
+
+			if(osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 10)
 			{
-				if (osvi.szCSDVersion[1] == 'A')
+				if(osvi.szCSDVersion[1] == 'A')
 					extra = "SE";
+
 				buf = "Microsoft Windows 98" + extra;
 			}
-			if (osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 90)
+
+			if(osvi.dwMajorVersion == 4 && osvi.dwMinorVersion == 90)
 				buf = "Microsoft Windows Millenium Edition";
 	}
+
 	return buf;
 }
 
@@ -154,6 +177,7 @@ int unsetenv(const char *name)
 int mkstemp(char *input)
 {
 	input = _mktemp(input);
+
 	if(input == NULL)
 	{
 		errno = EEXIST;
@@ -168,8 +192,10 @@ const char *decodeerrno(int)
 {
 	char errbuf[513];
 	DWORD err = GetLastError();
+
 	if(!err)
 		return "";
+
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, err, 0,  errbuf, 512, NULL);
 	return errbuf;
 }
@@ -209,7 +235,7 @@ DIR *opendir(const char *path)
 	d->handle = FindFirstFile(real_path, &d->data);
 	d->read_first = false;
 
-	if (d->handle == INVALID_HANDLE_VALUE)
+	if(d->handle == INVALID_HANDLE_VALUE)
 	{
 		delete d;
 		return NULL;
@@ -220,9 +246,9 @@ DIR *opendir(const char *path)
 
 dirent *readdir(DIR *d)
 {
-	if (d->read_first == false)
+	if(d->read_first == false)
 		d->read_first = true;
-	else if (!FindNextFile(d->handle, &d->data))
+	else if(!FindNextFile(d->handle, &d->data))
 		return NULL;
 
 	d->ent.d_ino = 1;
