@@ -1,7 +1,7 @@
 file(GLOB MODULES_FOLDERS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "*")
-remove_item_from_list(MODULES_FOLDERS "CMakeFiles")
+LIST(REMOVE_ITEM MODULES_FOLDERS "CMakeFiles")
 #Remove kate's stupid temp files
-remove_item_from_list(MODULE_FOLDERS "*~")
+LIST(REMOVE_ITEM MODULES_FOLDERS "*~")
 
 # if we're on windows, tell it to do MODULE_COMPILE define so CoreExport can reverse for dll's and such
 if(WIN32)

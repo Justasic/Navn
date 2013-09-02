@@ -1,10 +1,7 @@
 #
 # CMake config
 #
-CMAKE_MINIMUM_REQUIRED(VERSION 2.4 FATAL_ERROR)
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 
 # If the Source dir and the Binary dir are the same, we are building in-source, which we will disallow due to Autotools being there (but only on non-Windows)
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR} AND NOT WIN32)
@@ -18,7 +15,7 @@ PROJECT(navn CXX)
 enable_language(C)
 
 # Include our navn.cmake here
-SET(CMAKE_MODULE_PATH ${navn_SOURCE_DIR}/cmake)
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(navn)
 
 # Project version
@@ -28,23 +25,23 @@ SET(${PROJECT_NAME}_PATCH_LEVEL 2)
 SET(${PROJECT_NAME}_VERSION_EXTRA -with-rainbows-and-unicorns)
 
 # Get the git revision location for the branch we're on
-if(EXISTS "${navn_SOURCE_DIR}/.git/HEAD")
-  read_from_file(${navn_SOURCE_DIR}/.git/HEAD ".*" GIT_HEAD_LOC)
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git/HEAD")
+  read_from_file(${CMAKE_SOURCE_DIR}/.git/HEAD ".*" GIT_HEAD_LOC)
   string(LENGTH ${GIT_HEAD_LOC} HEAD_LEN)
   math(EXPR LEN "${HEAD_LEN} - 5")
   string(SUBSTRING ${GIT_HEAD_LOC} 5 ${LEN} GIT_HEAD)
-endif(EXISTS "${navn_SOURCE_DIR}/.git/HEAD")
+endif(EXISTS "${CMAKE_SOURCE_DIR}/.git/HEAD")
 
 # Get the git revision we're on for the version string
-if(EXISTS "${navn_SOURCE_DIR}/.git/${GIT_HEAD}")
-  read_from_file(${navn_SOURCE_DIR}/.git/${GIT_HEAD} ".*" VERSION_STR)
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git/${GIT_HEAD}")
+  read_from_file(${CMAKE_SOURCE_DIR}/.git/${GIT_HEAD} ".*" VERSION_STR)
   # Get the length of the string
   string(LENGTH ${VERSION_STR} VERSION_LEN)
   # Subtract 7 from the string's length
   math(EXPR VERSION_NUM_LEN "${VERSION_LEN} - ${VERSION_LEN} + 7")
   # Extract the value from the string
   string(SUBSTRING ${VERSION_STR} 0 ${VERSION_NUM_LEN} VERSION_GIT)
-endif(EXISTS "${navn_SOURCE_DIR}/.git/${GIT_HEAD}")
+endif(EXISTS "${CMAKE_SOURCE_DIR}/.git/${GIT_HEAD}")
 
 # Set our version strings
 SET(VERSION_SIMPLE "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_LEVEL}")
@@ -177,7 +174,7 @@ option(USE_RUN_CC_PL "Use run-cc.pl for building" OFF)
 # Add an option for using C++ 11 during compile
 option(USE_CXX_11 "Use C++ 11 during compile" OFF)
 
-INCLUDE_DIRECTORIES(${navn_SOURCE_DIR}/src ${navn_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include)
 
 set(ENV{LC_ALL} C)
 SOURCE_GROUP(${PROJECT_NAME} FILES ${navn_source})
@@ -186,11 +183,8 @@ include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckTypeSize)
 include(CheckLibraryExists)
-if(CMAKE244_OR_BETTER)
-  include(CheckCXXCompilerFlag)
-else(CMAKE244_OR_BETTER)
-  include(TestCXXAcceptsFlag)
-endif(CMAKE244_OR_BETTER)
+include(CheckCXXCompilerFlag)
+
 
 # Make sure we have windows defined in C++ so we know wtf is happening
 if(WIN32)
@@ -219,11 +213,7 @@ else(MSVC)
 
 	# GCC 4.8 added clang++ style error messages which include a caret showing what's wrong,
 	# personally I hate this so I am disabling it.
-	if(CMAKE244_OR_BETTER)
-	    check_cxx_compiler_flag(-fno-diagnostics-show-caret HAVE_NO_DIAGNOSTICS_CARET)
-	else(CMAKE244_OR_BETTER)
-	    check_cxx_accepts_flag(-fno-diagnostics-show-caret HAVE_NO_DIAGNOSTICS_CARET)
-	endif(CMAKE244_OR_BETTER)
+	check_cxx_compiler_flag(-fno-diagnostics-show-caret HAVE_NO_DIAGNOSTICS_CARET)
 
 	if(HAVE_NO_DIAGNOSTICS_CARET)
 	    set(CXXFLAGS "${CXXFLAGS} -fno-diagnostics-show-caret")
@@ -255,19 +245,16 @@ endif(MINGW)
 # If we are not using Visual Studio, we'll run the following checks
 if(NOT MSVC)
   # Check if the C++ compiler can accept the -pipe flag, and add it to the compile flags if it works
-  if(CMAKE244_OR_BETTER)
-    # If using CMake 2.4.4 or better, we can use check_cxx_compiler_flag
-    check_cxx_compiler_flag(-pipe HAVE_PIPE_FLAG)
-    check_cxx_compiler_flag(-std=gnu++0x HAVE_CXX_11)
-  else(CMAKE244_OR_BETTER)
-    # If using CMake 2.4.3 or older, we will use check_cxx_accepts_flags instead
-    check_cxx_accepts_flag(-pipe HAVE_PIPE_FLAG)
-    check_cxx_accepts_flag(-std=gnu++0x HAVE_CXX_11)
-  endif(CMAKE244_OR_BETTER)
-  # If the flag was accepted, add it to the list of flags
-  if(HAVE_CXX_11 AND USE_CXX_11)
+  check_cxx_compiler_flag(-pipe HAVE_PIPE_FLAG)
+  check_cxx_compiler_flag(-std=gnu++0x HAVE_CXX_11)
+  
+  # C++11 is required now since FOREACH_MOD uses C99 standards..
+  if(HAVE_CXX_11)
     set(CXXFLAGS "${CXXFLAGS} -std=gnu++0x")
-  endif(HAVE_CXX_11 AND USE_CXX_11)
+  else(HAVE_CXX_11)
+    message(FATAL_ERROR "Your compiler must support C++11")
+  endif(HAVE_CXX_11)
+  
   if(HAVE_PIPE_FLAG)
     set(CXXFLAGS "${CXXFLAGS} -pipe")
   endif(HAVE_PIPE_FLAG)
@@ -347,9 +334,9 @@ if(LDFLAGS)
 endif(LDFLAGS)
 
 if(PERL AND USE_RUN_CC_PL)
-  set(CMAKE_CXX_COMPILE_OBJECT "${PERL} ${navn_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_COMPILE_OBJECT}")
-  set(CMAKE_CXX_LINK_EXECUTABLE "${PERL} ${navn_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_LINK_EXECUTABLE}")
-  set(CMAKE_CXX_CREATE_SHARED_MODULE "${PERL} ${navn_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_CREATE_SHARED_MODULE}")
+  set(CMAKE_CXX_COMPILE_OBJECT "${PERL} ${CMAKE_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_COMPILE_OBJECT}")
+  set(CMAKE_CXX_LINK_EXECUTABLE "${PERL} ${CMAKE_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_LINK_EXECUTABLE}")
+  set(CMAKE_CXX_CREATE_SHARED_MODULE "${PERL} ${CMAKE_SOURCE_DIR}/run-cc.pl -q ${CMAKE_CXX_CREATE_SHARED_MODULE}")
 endif(PERL AND USE_RUN_CC_PL)
 
 # If a INSTDIR was passed in to CMake, use it as the install prefix, otherwise set the default install prefix to the bots directory under the user's home directory

@@ -26,17 +26,10 @@ Run_Build_System () {
 	WITH_INST=""
 	RUN_CC_PL=""
 	BUILD_TYPE=""
-	WITH_CXX11=""
 	GEN_TYPE=""
 
 	if [ "$INSTDIR" != "" ] ; then
 		WITH_INST="-DINSTDIR:STRING=$INSTDIR"
-	fi
-
-	if [ "$USE_CXX_11" = "yes" ] ; then
-		WITH_CXX11="-DUSE_CXX_11:BOOLEAN=ON"
-	else
-		WITH_CXX11="-DUSE_CXX_11:BOOLEAN=OFF"
 	fi
 
 	if [ "$DEBUG" = "yes" ] ; then
@@ -113,8 +106,6 @@ while [ $# -ge 1 ] ; do
 		exit 0
 	elif [ $1 = "-nocache" ] ; then
 		IGNORE_CACHE="1"
-	elif [ $1 = "-nointro" ] ; then
-		NO_INTRO="1"
 	elif [ $1 = "-quick" -o $1 = "-q" ] ; then
 		Load_Cache
 		if [ "$CAN_QUICK" = "yes" ] ; then
@@ -220,29 +211,6 @@ echo ""
 
 ####
 
-TEMP_YN="n"
-if [ "$USE_CXX_11" = "yes" ] ; then
-	TEMP_YN="y"
-fi
-echo "You can optionally build using C++ 11, this is very experimental"
-echo "at this point and should only be enabled for advanced users."
-echo "Some compilers may not fully support C++ 11 but will accept"
-echo "the code, this may cause compiles to fail. There will be no"
-echo "support for build related errors if this option is enabled!"
-echo "Do you want to compile with C++ 11?"
-echo2 "[$TEMP_YN] "
-read YN
-if [ "$YN" ] ; then
-	if [ "$YN" = "y" ] ; then
-		USE_CXX_11="yes"
-	else
-		USE_CXX_11="no"
-	fi
-fi
-echo ""
-
-####
-
 echo "Are there any extra arguments you wish to pass to cmake?"
 echo "You may only need to do this if cmake is unable to locate"
 echo "missing dependencies without hints."
@@ -266,7 +234,6 @@ cat <<EOT >$SOURCE_DIR/config.cache
 INSTDIR="$INSTDIR"
 DEBUG="$DEBUG"
 USE_RUN_CC_PL="$USE_RUN_CC_PL"
-USE_CXX_11="$USE_CXX_11"
 EXTRA_CONFIG_ARGS="$EXTRA_CONFIG_ARGS"
 EOT
 echo "done."

@@ -4,41 +4,11 @@
 # A macro to handle stripping the leading and trailing spaces from a string,
 #   uses string(STRIP) if using CMake 2.6.x or better, otherwise uses
 #   string(REGEX REPLACE).
+#
+# DEPRECATED!
 ###############################################################################
 macro(strip_string INPUT_STRING OUTPUT_STRING)
-  if(CMAKE26_OR_BETTER)
-    # For CMake 2.6.x or better, we can just use the STRIP sub-command of string()
     string(STRIP ${INPUT_STRING} ${OUTPUT_STRING})
-  else(CMAKE26_OR_BETTER)
-    # For CMake 2.4.x, we will have to use the REGEX REPLACE sub-command of string() instead
-    # First check if the input string is empty or not
-    if (${INPUT_STRING} STREQUAL "")
-      set(${OUTPUT_STRING} "")
-    else(${INPUT_STRING} STREQUAL "")
-      # Determine if the string is entirely empty or not
-      string(REGEX MATCH "^[ \t]*$" EMPTY_STRING "${INPUT_STRING}")
-      if(EMPTY_STRING)
-        set(${OUTPUT_STRING} "")
-      else(EMPTY_STRING)
-        # We detect if there is any leading whitespace and remove any if there is
-        string(SUBSTRING "${INPUT_STRING}" 0 1 FIRST_CHAR)
-        if(FIRST_CHAR STREQUAL " " OR FIRST_CHAR STREQUAL "\t")
-          string(REGEX REPLACE "^[ \t]+" "" TEMP_STRING "${INPUT_STRING}")
-        else(FIRST_CHAR STREQUAL " " OR FIRST_CHAR STREQUAL "\t")
-          set(TEMP_STRING "${INPUT_STRING}")
-        endif(FIRST_CHAR STREQUAL " " OR FIRST_CHAR STREQUAL "\t")
-        # Next we detect if there is any trailing whitespace and remove any if there is
-        string(LENGTH "${TEMP_STRING}" STRING_LEN)
-        math(EXPR STRING_LEN "${STRING_LEN} - 1")
-        string(SUBSTRING "${TEMP_STRING}" ${STRING_LEN} 1 LAST_CHAR)
-        if(LAST_CHAR STREQUAL " " OR LAST_CHAR STREQUAL "\t")
-          string(REGEX REPLACE "[ \t]+$" "" ${OUTPUT_STRING} "${TEMP_STRING}")
-        else(LAST_CHAR STREQUAL " " OR LAST_CHAR STREQUAL "\t")
-          set(${OUTPUT_STRING} "${TEMP_STRING}")
-        endif(LAST_CHAR STREQUAL " " OR LAST_CHAR STREQUAL "\t")
-      endif(EMPTY_STRING)
-    endif(${INPUT_STRING} STREQUAL "")
-  endif(CMAKE26_OR_BETTER)
 endmacro(strip_string)
 
 ###############################################################################
@@ -46,15 +16,11 @@ endmacro(strip_string)
 #
 # A macro to handle appending to lists, uses list(APPEND) if using CMake 2.4.2
 #   or better, otherwise uses set() instead.
+#
+# DEPRECATED!
 ###############################################################################
 macro(append_to_list LIST)
-  if(CMAKE242_OR_BETTER)
-    # For CMake 2.4.2 or better, we can just use the APPEND sub-command of list()
     list(APPEND ${LIST} ${ARGN})
-  else(CMAKE242_OR_BETTER)
-    # For CMake 2.4.x before 2.4.2, we have to do this manually use set() instead
-    set(${LIST} ${${LIST}} ${ARGN})
-  endif(CMAKE242_OR_BETTER)
 endmacro(append_to_list)
 
 ###############################################################################
@@ -64,28 +30,11 @@ endmacro(append_to_list)
 #   given <output variable>, uses list(FIND) if using CMake 2.6.x or better
 #   (or CMake 2.4.8 or better), otherwise it iterates through the list to find
 #   the item.
+#
+# DEPRECATED!
 ###############################################################################
 macro(find_in_list LIST ITEM_TO_FIND FOUND)
-  if(CMAKE248_OR_BETTER)
-    # For CMake 2.4.8 or better, we can use the FIND sub-command of list()
     list(FIND ${LIST} ${ITEM_TO_FIND} ITEM_FOUND)
-  else(CMAKE248_OR_BETTER)
-    # For CMake 2.4.x before 2.4.8, we have to do this ourselves (NOTE: This is very slow due to a lack of break() as well)
-    # Firstly we set the position to -1 indicating nothing found, we also use a temporary position
-    set(ITEM_FOUND -1)
-    set(POS 0)
-    # Iterate through the list
-    foreach(ITEM ${${LIST}})
-      # If the item we are looking at is the item we are trying to find, set that we've found the item
-      if(${ITEM} STREQUAL ${ITEM_TO_FIND})
-        set(ITEM_FOUND ${POS})
-      endif(${ITEM} STREQUAL ${ITEM_TO_FIND})
-      # Increase the position value by 1
-      math(EXPR POS "${POS} + 1")
-    endforeach(ITEM)
-  endif(CMAKE248_OR_BETTER)
-  # Set the given FOUND variable to the result
-  set(${FOUND} ${ITEM_FOUND})
 endmacro(find_in_list)
 
 ###############################################################################
@@ -95,26 +44,11 @@ endmacro(find_in_list)
 #   list(REMOVE_DUPLICATES) if using CMake 2.6.x or better, otherwise it uses
 #   a slower method of creating a temporary list and only adding to it when
 #   a duplicate item hasn't been found.
+#
+# DEPRECATED!
 ###############################################################################
 macro(remove_list_duplicates LIST)
-  if(CMAKE26_OR_BETTER)
-    # For CMake 2.6.x or better, this can be done automatically
     list(REMOVE_DUPLICATES ${LIST})
-  else(CMAKE26_OR_BETTER)
-    # For CMake 2.4.x, we have to do this ourselves, firstly we'll clear a temporary list
-    set(NEW_LIST)
-    # Iterate through the old list
-    foreach(ITEM ${${LIST}})
-      # Check if the item is in the new list
-      find_in_list(NEW_LIST ${ITEM} FOUND_ITEM)
-      if(FOUND_ITEM EQUAL -1)
-        # If the item was not found, append it to the list
-        append_to_list(NEW_LIST ${ITEM})
-      endif(FOUND_ITEM EQUAL -1)
-    endforeach(ITEM)
-    # Replace the old list with the new list
-    set(${LIST} ${NEW_LIST})
-  endif(CMAKE26_OR_BETTER)
 endmacro(remove_list_duplicates)
 
 ###############################################################################
@@ -124,28 +58,11 @@ endmacro(remove_list_duplicates)
 #   both cases, but can remove the value itself using CMake 2.4.2 or better,
 #   while older versions use a slower method of iterating the list to find the
 #   index of the value to remove.
+#
+# DEPRECATED!
 ###############################################################################
 macro(remove_item_from_list LIST VALUE)
-  if(CMAKE242_OR_BETTER)
-    # For CMake 2.4.2 or better, this can be done automatically
     list(REMOVE_ITEM ${LIST} ${VALUE})
-  else(CMAKE242_OR_BETTER)
-    # For CMake 2.4.x before 2.4.2, we have to do this ourselves, firstly we set the index and a variable to indicate if the item was found
-    set(INDEX 0)
-    set(FOUND FALSE)
-    # Iterate through the old list
-    foreach(ITEM ${${LIST}})
-      # If the item hasn't been found yet, but the current item is the same, remove it
-      if(NOT FOUND)
-        if(ITEM STREQUAL ${VALUE})
-          set(FOUND TRUE)
-          list(REMOVE_ITEM ${LIST} ${INDEX})
-        endif(ITEM STREQUAL ${VALUE})
-      endif(NOT FOUND)
-      # Increase the index value by 1
-      math(EXPR INDEX "${INDEX} + 1")
-    endforeach(ITEM)
-  endif(CMAKE242_OR_BETTER)
 endmacro(remove_item_from_list)
 
 ###############################################################################
@@ -154,39 +71,11 @@ endmacro(remove_item_from_list)
 # A macro to handle sorting a list, uses list(SORT) if using CMake 2.4.4 or
 #   better, otherwise it uses a slower method of creating a temporary list and
 #   adding elements in alphabetical order.
+#
+# DEPRECATED!
 ###############################################################################
 macro(sort_list LIST)
-  if(CMAKE244_OR_BETTER)
-    # For CMake 2.4.4 or better, this can be done automatically
     list(SORT ${LIST})
-  else(CMAKE244_OR_BETTER)
-    # For CMake 2.4.x before 2.4.4, we have to do this ourselves, firstly we'll create a teporary list
-    set(NEW_LIST)
-    # Iterate through the old list
-    foreach(ITEM ${${LIST}})
-      # Temporary index position for the new list, as well as temporary value to store if the item was ever found
-      set(INDEX 0)
-      set(FOUND FALSE)
-      # Iterate through the new list
-      foreach(NEW_ITEM ${NEW_LIST})
-        # Compare the items, only if nothing was found before
-        if(NOT FOUND)
-          if(NEW_ITEM STRGREATER "${ITEM}")
-            set(FOUND TRUE)
-            list(INSERT NEW_LIST ${INDEX} ${ITEM})
-          endif(NEW_ITEM STRGREATER "${ITEM}")
-        endif(NOT FOUND)
-        # Increase the index value by 1
-        math(EXPR INDEX "${INDEX} + 1")
-      endforeach(NEW_ITEM)
-      # If the item was never found, just append it to the end
-      if(NOT FOUND)
-        append_to_list(NEW_LIST ${ITEM})
-      endif(NOT FOUND)
-    endforeach(ITEM)
-    # Replace the old list with the new list
-    set(${LIST} ${NEW_LIST})
-  endif(CMAKE244_OR_BETTER)
 endmacro(sort_list)
 
 ###############################################################################
@@ -197,37 +86,15 @@ endmacro(sort_list)
 #   perform a string(REGEX MATCH) on each line of the file instead.  This
 #   macro can also be used to read in all the lines of a file if REGEX is set
 #   to "".
+#
+# DEPRECATED!
 ###############################################################################
 macro(read_from_file FILE REGEX STRINGS)
-  if(CMAKE26_OR_BETTER)
-    # For CMake 2.6.x or better, we can just use the STRINGS sub-command to get the lines that match the given regular expression (if one is given, otherwise get all lines)
     if(REGEX STREQUAL "")
       file(STRINGS ${FILE} RESULT)
     else(REGEX STREQUAL "")
       file(STRINGS ${FILE} RESULT REGEX ${REGEX})
     endif(REGEX STREQUAL "")
-  else(CMAKE26_OR_BETTER)
-    # For CMake 2.4.x, we need to do this manually, firstly we read the file in
-    execute_process(COMMAND ${CMAKE_COMMAND} -DFILE:STRING=${FILE} -P ${CMAKE_MODULE_PATH}/ReadFile.cmake ERROR_VARIABLE ALL_STRINGS)
-    # Next we replace all newlines with semicolons
-    string(REGEX REPLACE "\n" ";" ALL_STRINGS ${ALL_STRINGS})
-    if(REGEX STREQUAL "")
-      # For no regular expression, just set the result to all the lines
-      set(RESULT ${ALL_STRINGS})
-    else(REGEX STREQUAL "")
-      # Clear the result list
-      set(RESULT)
-      # Iterate through all the lines of the file
-      foreach(STRING ${ALL_STRINGS})
-        # Check for a match against the given regular expression
-        string(REGEX MATCH ${REGEX} STRING_MATCH ${STRING})
-        # If we had a match, append the match to the list
-        if(STRING_MATCH)
-          append_to_list(RESULT ${STRING})
-        endif(STRING_MATCH)
-      endforeach(STRING)
-    endif(REGEX STREQUAL "")
-  endif(CMAKE26_OR_BETTER)
   # Set the given STRINGS variable to the result
   set(${STRINGS} ${RESULT})
 endmacro(read_from_file)

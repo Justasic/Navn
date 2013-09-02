@@ -7,7 +7,7 @@
  *
  * Based on the original code of Anope by The Anope Team.
  */
-#include <user.h>
+#include "user.h"
 Flux::insensitive_map<User *> UserNickList;
 uint32_t usercnt = 0, maxusercnt = 0;
 
