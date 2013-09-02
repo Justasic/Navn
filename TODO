@@ -36,16 +36,12 @@ Navn 2.0.2
   [ ] TCL
   [ ] Java interface (dear god kill me for mentioning it)
 
-[ ] Add more event handlers (FOREACH_MOD) or better event handling
-[ ] Add calculator
 [ ] Correct thread engine to use mutex
 [ ] Redo [fantasy] commands
-[ ] Allow modules to depend on other modules
 [#] Make searcher module use config for search URL's instead of hard coded ones.
 [x] Add buffer limiter (so freenode does not kill the bot)
 [ ] Better config format
 [x] Better terminal Commands Parsing
-[+] Windows support (Feature request: http://Azuru.net/bugs/view.php?id=9)
 
 
 Navn 2.0.3

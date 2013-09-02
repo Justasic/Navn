@@ -1,3 +1,4 @@
+/* RequiredLibraries: python */
 /* Navn IRC bot -- Python Scripting interface module
  *
  * (C) 2011-2012 Azuru
