@@ -79,7 +79,7 @@ void Connect()
 		++startcount;
 		Log() << "Connecting to server '" << Config->Server << ":" << Config->Port << "'";
 
-		FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+		FOREACH_MOD(OnPreConnect, Config->Server, Config->Port);
 
 		if(Config->Server.empty())
 			throw SocketException("No Server Specified.");
@@ -93,7 +93,7 @@ void Connect()
 			sock = NULL;
 		}
 
-		FOREACH_MOD(I_OnPreConnect, OnPreConnect(Config->Server, Config->Port));
+		FOREACH_MOD(OnPreConnect, Config->Server, Config->Port);
 
 		sock = new SocketIO(Config->Server, Config->Port);
 		sock->Connect();
@@ -106,7 +106,7 @@ void Connect()
 		if(ircproto)
 			ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
 
-		FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+		FOREACH_MOD(OnPostConnect, sock);
 	}
 	catch(SocketException &e)
 	{
@@ -146,7 +146,7 @@ int main(int argcx, char **argvx, char *envp[])
 		// Introduce ourselves to the IRC server
 		ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
 
-		FOREACH_MOD(I_OnPostConnect, OnPostConnect(sock));
+		FOREACH_MOD(OnPostConnect, sock);
 
 		while(!quitting)
 		{

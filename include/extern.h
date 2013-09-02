@@ -188,17 +188,17 @@ E void ProcessCommand(CommandSource &Source, Flux::vector &params2, const Flux::
 
 /* Char's */
 E char segv_location[255];
-E char **my_av, * *my_envp;
+E char **my_av, **my_envp;
 
 /**************************************************************/
 /* This is the only #define allowed at the bottom of the file */
 #ifdef HAVE_SETJMP_H
 // We have setjmp, try and recover from Segmentation Faults
-#define FOREACH_MOD(y, x) \
+#define FOREACH_MOD(y, ...) \
 	if(true) \
 	{ \
 		std::vector<Module*>::iterator safei; \
-		for (std::vector<Module*>::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+		for (std::vector<Module*>::iterator _i = ModuleHandler::EventHandlers[I_ ## y].begin(); _i != ModuleHandler::EventHandlers[I_ ## y].end(); ) \
 		{ \
 			safei = _i; \
 			++safei; \
@@ -208,11 +208,11 @@ E char **my_av, * *my_envp;
 				if(setjmp(sigbuf) == 0) \
 				{ \
 					LastRunModule = *_i; \
-					(*_i)->x ; \
+					(*_i)->y(__VA_ARGS__); \
 				} \
 				else \
 				{\
-					throw ModuleException(printfify("%s failed to run an event. Segmentation fault occured.", LastRunModule->name.c_str())); \
+					throw ModuleException(printfify("%s failed to run ## y event. Segmentation fault occured.", LastRunModule->name.c_str())); \
 					for(unsigned _o = 0; _o < Config->Owners.size(); ++_o) \
 					{ \
 						User *ou = finduser(Config->Owners[_o]); \
@@ -275,18 +275,18 @@ E char **my_av, * *my_envp;
 
 #else // HAVE_SETJMP_H
 // We don't have setjmp
-#define FOREACH_MOD(y, x) \
+#define FOREACH_MOD(y, ...) \
 	if(true) \
 	{ \
 		EventsVector::iterator safei; \
-		for (EventsVector::iterator _i = ModuleHandler::EventHandlers[y].begin(); _i != ModuleHandler::EventHandlers[y].end(); ) \
+		for (EventsVector::iterator _i = ModuleHandler::EventHandlers[I_ ## y].begin(); _i != ModuleHandler::EventHandlers[I_ ## y].end(); ) \
 		{ \
 			safei = _i; \
 			++safei; \
 			try \
 			{ \
 				SET_SEGV_LOCATION(); \
-				(*_i)->x ; \
+				(*_i)->y(__VA_ARGS__); \
 			} \
 			catch (const ModuleException &modexcept) \
 			{ \

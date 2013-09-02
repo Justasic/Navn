@@ -52,7 +52,7 @@ void Fork()
 		{
 			Log(LOG_TERMINAL) << "Navn IRC Bot v" << VERSION << " Started";
 			Log(LOG_TERMINAL) << "Forking to background. PID: " << i << "\033[0m";
-			FOREACH_MOD(I_OnFork, OnFork(i));
+			FOREACH_MOD(OnFork, i);
 			exit(0);
 		}
 

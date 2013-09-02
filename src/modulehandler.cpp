@@ -195,7 +195,7 @@ ModErr ModuleHandler::LoadModule(const Flux::string &modname)
 	m->filename = (modname.search(".so") ? modname : modname + ".so");
 	m->handle = handle;
 
-	FOREACH_MOD(I_OnModuleLoad, OnModuleLoad(m));
+	FOREACH_MOD(OnModuleLoad, m);
 
 	return MOD_ERR_OK;
 }
@@ -248,7 +248,7 @@ bool ModuleHandler::Unload(Module *m)
 	if(!m || m->GetPermanent())
 		return false;
 
-	FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
+	FOREACH_MOD(OnModuleUnload, m);
 	return DeleteModule(m);
 }
 
@@ -262,7 +262,7 @@ void ModuleHandler::UnloadAll()
 	{
 		Module *m = it->second;
 		++it;
-		FOREACH_MOD(I_OnModuleUnload, OnModuleUnload(m));
+		FOREACH_MOD(OnModuleUnload, m);
 		DeleteModule(m);
 	}
 

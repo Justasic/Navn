@@ -121,6 +121,7 @@ for(auto val : ChanCommandMap) //As you can see C++11 is MUCH better than C++98
 		}
 	}
 };
+
 class help_m: public Module
 {
 	CommandHelp help;
@@ -133,7 +134,9 @@ public:
 		this->SetAuthor("Justasic");
 	}
 };
+
 MODULE_HOOK(help_m)
+
 /**
  * @}
  */

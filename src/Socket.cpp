@@ -198,7 +198,7 @@ void SocketIO::Process()
 		socklen_t optlen = sizeof(optval);
 		getsockopt(this->GetFD(), SOL_SOCKET, SO_ERROR, reinterpret_cast<char *>(&optval), &optlen);
 		errno = optval;
-		FOREACH_MOD(I_OnSocketError, OnSocketError(optval ? strerror(errno) : "Unknown socket error"));
+		FOREACH_MOD(OnSocketError, (optval ? strerror(errno) : "Unknown socket error"));
 		throw SocketException("Socket error");
 	}
 
@@ -270,7 +270,7 @@ bool SocketIO::Read(const Flux::string &buf) const
 {
 	if(buf.search_ci("ERROR :Closing link:"))
 	{
-		FOREACH_MOD(I_OnSocketError, OnSocketError(buf));
+		FOREACH_MOD(OnSocketError, buf);
 		return false;
 	}
 
