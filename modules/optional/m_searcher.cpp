@@ -76,13 +76,13 @@ public:
 		this->SetDesc("Generate a Google search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel Google Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -100,13 +100,13 @@ public:
 		this->SetDesc("Generate a youtube search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel youtube Search from " << source.u->nick << "\"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -124,13 +124,13 @@ public:
 		this->SetDesc("Generate a Pirate Bay search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel The Pirate Bay Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -148,13 +148,13 @@ public:
 		this->SetDesc("Generate a Dictionary search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel define Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -172,13 +172,13 @@ public:
 		this->SetDesc("Generate a Urban Dictionary search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel urban dictionary Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -196,13 +196,13 @@ public:
 		this->SetDesc("Generate a movie search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel movie Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -220,13 +220,13 @@ public:
 		this->SetDesc("Generate a wikipedia search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel Wikipedia Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -244,13 +244,13 @@ public:
 		this->SetDesc("Generate a music search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -268,13 +268,13 @@ public:
 		this->SetDesc("Generate a Let me google that for you search url");
 		this->SetSyntax("\37message\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string str = search(params[0], this->name);
 		source.c->SendMessage(str);
 		Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

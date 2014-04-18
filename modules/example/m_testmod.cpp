@@ -39,11 +39,11 @@ public:
 		this->SetDesc("Test for the Modules");
 		this->SetSyntax("\37TEST\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		source.Reply("YAY!");
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -81,8 +81,8 @@ public:
 		{
 			Flux::string users;
 
-			for(Flux::insensitive_map<User *>::iterator it = UserNickList.begin(); it != UserNickList.end(); ++it)
-				users += it->second->nick + " ";
+			for(auto & elem : UserNickList)
+				users += elem.second->nick + " ";
 
 			u->SendMessage(users);
 		}

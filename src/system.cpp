@@ -76,7 +76,7 @@ Flux::string execute(const char *cmd)
 
 	while(!feof(pipe))
 	{
-		if(fgets(buffer, 128, pipe) != NULL)
+		if(fgets(buffer, 128, pipe) != nullptr)
 			result += buffer;
 	}
 
@@ -144,8 +144,8 @@ void Rehash()
 	{
 		Log() << "Configuration Exception Caught: " << ex.GetReason();
 
-		for(unsigned i = 0; i < Config->Owners.size(); ++i)
-			ircproto->notice(Config->Owners[i], "Config Exception Caught: %s", ex.GetReason());
+		for(auto & elem : Config->Owners)
+			ircproto->notice(elem, "Config Exception Caught: %s", ex.GetReason());
 	}
 }
 
@@ -232,11 +232,11 @@ public:
 	{
 		args.clear();
 
-		for(Flux::map<Flux::string>::iterator it = this->Arguments.begin(); it != this->Arguments.end(); ++it)
+		for(auto & elem : this->Arguments)
 		{
-			if(it->first.equals_ci(name) || (it->first.size() == 1 && it->first[0] == shortname))
+			if(elem.first.equals_ci(name) || (elem.first.size() == 1 && elem.first[0] == shortname))
 			{
-				args = it->second;
+				args = elem.second;
 				return true;
 			}
 		}
@@ -253,12 +253,12 @@ void startup(int argc, char **argv, char *envp[])
 	SET_SEGV_LOCATION();
 
 	InitSignals();
-	Config = NULL;
-	ircproto = NULL;
-	sock = NULL;
+	Config = nullptr;
+	ircproto = nullptr;
+	sock = nullptr;
 	my_av = argv;
 	my_envp = envp;
-	starttime = time(NULL); //for bot uptime
+	starttime = time(nullptr); //for bot uptime
 
 #ifndef _WIN32
 
@@ -279,7 +279,7 @@ void startup(int argc, char **argv, char *envp[])
 	if(binary_dir[binary_dir.length() - 1] == '.')
 		binary_dir = binary_dir.substr(0, binary_dir.length() - 2);
 
-	Config = new BotConfig(NULL);
+	Config = new BotConfig(nullptr);
 
 	if(!Config)
 		throw CoreException("Config Error.");
@@ -374,7 +374,7 @@ void GarbageCollect()
 	ModuleHandler::UnloadAll();
 
 	// Schedule all channels for deletion
-	for(Flux::insensitive_map<Channel *>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end;)
+	for(auto it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end;)
 	{
 		Channel *c = it->second;
 		++it;
@@ -385,7 +385,7 @@ void GarbageCollect()
 	ChanMap.clear();
 
 	// Schedule all Users for deletion
-	for(Flux::insensitive_map<User *>::iterator it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end;)
+	for(auto it = UserNickList.begin(), it_end = UserNickList.end(); it != it_end;)
 	{
 		User *u = it->second;
 		++it;
@@ -399,7 +399,7 @@ void GarbageCollect()
 	{
 		Log(LOG_MEMORY) << "Deleting ircproto @" << ircproto;
 		delete ircproto;
-		ircproto = NULL;
+		ircproto = nullptr;
 	}
 
 	if(sock)
@@ -411,14 +411,14 @@ void GarbageCollect()
 
 		Log(LOG_MEMORY) << "Deleting socket @" << sock;
 		delete sock;
-		sock = NULL;
+		sock = nullptr;
 	}
 
 	// Clean the runtime last incase we wanna put some temp crap in the runtime folder for deletion.
 	ModuleHandler::SanitizeRuntime();
 
 	// We need to be careful that we don't deallocate a timer, they cause segmentation faults
-	for(std::vector<Base *>::iterator it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end;)
+	for(auto it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end;)
 	{
 		Base *b = *++it;
 		// Timers can cause errors.

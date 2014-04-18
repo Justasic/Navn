@@ -15,8 +15,8 @@ class PingTimer : public Timer
 {
 public:
 	PingTimeoutTimer *ptt;
-	PingTimer(): Timer(30, time(NULL), true), ptt(NULL) { }
-	void Tick(time_t);
+	PingTimer(): Timer(30, time(nullptr), true), ptt(nullptr) { }
+	void Tick(time_t) override;
 };
 
 class PingTimeoutTimer : public Timer
@@ -24,7 +24,7 @@ class PingTimeoutTimer : public Timer
 	PingTimer *pt;
 	time_t wait;
 public:
-	PingTimeoutTimer(time_t w, PingTimer *pt2): Timer(w, time(NULL), false), pt(pt2), wait(w)
+	PingTimeoutTimer(time_t w, PingTimer *pt2): Timer(w, time(nullptr), false), pt(pt2), wait(w)
 	{
 		if(this->pt && this->pt->ptt)
 			return;
@@ -32,10 +32,10 @@ public:
 
 	~PingTimeoutTimer()
 	{
-		this->pt->ptt = NULL;
+		this->pt->ptt = nullptr;
 	}
 
-	void Tick(time_t)
+	void Tick(time_t) override
 	{
 		sock->ThrowException(printfify("Ping Timeout: %u seconds", this->wait));
 	}
@@ -43,7 +43,7 @@ public:
 
 void PingTimer::Tick(time_t)
 {
-	send_cmd("PING :%i\n", time(NULL));
+	send_cmd("PING :%i\n", time(nullptr));
 	this->ptt = new PingTimeoutTimer(Config->PingTimeoutTime, this);
 }
 
@@ -67,33 +67,33 @@ public:
 			delete pingtimer.ptt;
 	}
 
-	void OnPong(const std::vector<Flux::string> &params)
+	void OnPong(const std::vector<Flux::string> &params) override
 	{
 		Flux::string ts = params[1];
-		int lag = time(NULL) - static_cast<int>(ts);
-		Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(NULL) << ")";
+		int lag = time(nullptr) - static_cast<int>(ts);
+		Log(LOG_RAWIO) << lag << " sec lag (" << ts << " - " << time(nullptr) << ")";
 
 		if(pingtimer.ptt)
 			delete pingtimer.ptt;
 
-		pingtimer.ptt = NULL;
+		pingtimer.ptt = nullptr;
 	}
 
-	void OnPing(const Flux::vector &params)
+	void OnPing(const Flux::vector &params) override
 	{
 		if(pingtimer.ptt)
 			delete pingtimer.ptt;
 
-		pingtimer.ptt = NULL;
+		pingtimer.ptt = nullptr;
 		send_cmd("PONG :%s\n", params[0].c_str());
 	}
 
-	void OnConnectionError(const Flux::string &buffer)
+	void OnConnectionError(const Flux::string &buffer) override
 	{
 		throw CoreException(buffer.c_str());
 	}
 
-	void OnNumeric(int i, const std::vector<Flux::string> &params)
+	void OnNumeric(int i, const std::vector<Flux::string> &params) override
 	{
 		if((i == 451))
 			ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);

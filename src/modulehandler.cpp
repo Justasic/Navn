@@ -20,12 +20,12 @@ std::vector<Module *> ModuleHandler::EventHandlers[I_END];
  */
 Module *FindModule(const Flux::string &name)
 {
-	Flux::insensitive_map<Module *>::iterator it = Modules.find(name);
+	auto it = Modules.find(name);
 
 	if(it != Modules.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -102,7 +102,7 @@ template<class TYPE> TYPE function_cast(void *symbol)
  */
 bool ModuleHandler::Detach(Implementation i, Module *mod)
 {
-	std::vector<Module *>::iterator x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
+	auto x = std::find(EventHandlers[i].begin(), EventHandlers[i].end(), mod);
 
 	if(x == EventHandlers[i].end())
 		return false;
@@ -258,7 +258,7 @@ bool ModuleHandler::Unload(Module *m)
  */
 void ModuleHandler::UnloadAll()
 {
-	for(Flux::insensitive_map<Module *>::iterator it = Modules.begin(), it_end = Modules.end(); it != it_end;)
+	for(auto it = Modules.begin(), it_end = Modules.end(); it != it_end;)
 	{
 		Module *m = it->second;
 		++it;
@@ -318,8 +318,8 @@ void ModuleHandler::SanitizeRuntime()
 	{
 		Flux::vector files = TextFile::DirectoryListing(dirbuf);
 
-		for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
-			Delete(Flux::string(dirbuf + (*it)).c_str());
+		for(auto & file : files)
+			Delete(Flux::string(dirbuf + (file)).c_str());
 	}
 }
 /******************Configuration variables***********************/
@@ -331,12 +331,12 @@ void ModuleHandler::SanitizeRuntime()
  */
 void ModuleHandler::LoadModuleList(const Flux::vector &list)
 {
-	for(Flux::vector::const_iterator it = list.begin(); it != list.end(); ++it)
+	for(const auto & elem : list)
 	{
-		ModErr e = LoadModule(*it);
+		ModErr e = LoadModule(elem);
 
 		if(e != MOD_ERR_OK)
-			Log() << "Error loading Module " << *it << ": " << DecodeModErr(e);
+			Log() << "Error loading Module " << elem << ": " << DecodeModErr(e);
 	}
 
 //   sepstream sep(Config->Modules, ',');

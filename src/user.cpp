@@ -33,9 +33,9 @@ User::User(const Flux::string &snick, const Flux::string &sident, const Flux::st
 
 User::~User()
 {
-	for(CList::iterator it = ChannelList.begin(), it_end = ChannelList.end(); it != it_end; ++it)
-		if(it->first)
-			it->first->DelUser(this);
+	for(auto & elem : ChannelList)
+		if(elem.first)
+			elem.first->DelUser(this);
 
 	ChannelList.clear();
 
@@ -88,9 +88,9 @@ void User::SendPrivmsg(const char *fmt, ...)
 
 bool User::IsOwner()
 {
-	for(unsigned i = 0; i < Config->Owners.size(); ++i)
+	for(auto & elem : Config->Owners)
 	{
-		if(this->nick.equals_ci(Config->Owners[i]))
+		if(this->nick.equals_ci(elem))
 			return true;
 	}
 
@@ -115,7 +115,7 @@ void User::AddChan(Channel *c)
 
 void User::DelChan(Channel *c)
 {
-	CList::iterator it = ChannelList.find(c);
+	auto it = ChannelList.find(c);
 
 	if(it != ChannelList.end())
 		ChannelList.erase(it);
@@ -123,18 +123,18 @@ void User::DelChan(Channel *c)
 
 Channel *User::findchannel(const Flux::string &name)
 {
-	Flux::insensitive_map<Channel *>::iterator it1 = ChanMap.find(name);
+	auto it1 = ChanMap.find(name);
 	Channel *c = it1->second;
 
 	if(!c)
-		return NULL;
+		return nullptr;
 
-	CList::iterator it = ChannelList.find(c);
+	auto it = ChannelList.find(c);
 
 	if(it != ChannelList.end())
 		return it->first;
 
-	return NULL;
+	return nullptr;
 }
 
 void User::SendMessage(const Flux::string &message)
@@ -149,10 +149,10 @@ void User::SendPrivmsg(const Flux::string &message)
 
 User *finduser(const Flux::string &fnick)
 {
-	Flux::insensitive_map<User *>::iterator it = UserNickList.find(fnick);
+	auto it = UserNickList.find(fnick);
 
 	if(it != UserNickList.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }

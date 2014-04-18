@@ -17,7 +17,7 @@
  */
 int randint(int x, int y)
 {
-	srand(time(NULL));
+	srand(time(nullptr));
 	return rand() % (y - x + 1) + x;
 }
 
@@ -86,7 +86,7 @@ void Fork()
 Flux::string Flux::RandomNickString(size_t length)
 {
 	Flux::string randomchars;
-	srand(time(NULL));
+	srand(time(nullptr));
 
 	for(unsigned i = 0; i < length; ++i)
 	{
@@ -110,7 +110,7 @@ top:
 Flux::string Flux::RandomString(size_t length)
 {
 	Flux::string randomchars;
-	srand(static_cast<unsigned>(time(NULL)));
+	srand(static_cast<unsigned>(time(nullptr)));
 
 	for(unsigned i = 0; i < length; ++i)
 		randomchars += static_cast<char>((rand() % ('z' - '0' + 1) + '0'));
@@ -217,7 +217,7 @@ Flux::string Flux::Sanitize(const Flux::string &string)
 Flux::string make_pass()
 {
 	int p1, p2, p3, p4, p5;
-	srand(time(NULL));
+	srand(time(nullptr));
 	p1 = rand() % 10;
 	p2 = rand() % 10;
 	p3 = rand() % 10;
@@ -236,9 +236,9 @@ Flux::string make_pass()
  */
 bool IsValidChannel(const Flux::string &chan)
 {
-	for(unsigned i = 0; i < isupport.ChanTypes.size(); ++i)
+	for(auto & elem : isupport.ChanTypes)
 	{
-		if(chan[0] != isupport.ChanTypes[i])
+		if(chan[0] != elem)
 			return false;
 	}
 
@@ -277,8 +277,8 @@ Flux::string Flux::ConcatinateVector(const Flux::vector &p)
 	Flux::vector params = *const_cast<Flux::vector *>(&(p)); //Why is this so complex?
 	Flux::string ret;
 
-	for(Flux::vector::iterator it = params.begin(); it != params.end(); ++it)
-		ret += *it + " ";
+	for(auto & param : params)
+		ret += param + " ";
 
 	ret.trim();
 	return ret;

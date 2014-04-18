@@ -55,7 +55,7 @@ void CLog(const char *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 
-	time_t t = time(NULL);
+	time_t t = time(nullptr);
 	struct tm *tm = localtime(&t);
 
 	char buf[512];
@@ -80,7 +80,7 @@ public:
 		ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
 	}
 
-	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
+	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params) override
 	{
 		Flux::string nolog = params.size() == 2 ? params[1] : "";
 
@@ -104,7 +104,7 @@ public:
 		}
 	}
 
-	void OnNoticeChannel(User *u, Channel *c, const Flux::vector &params)
+	void OnNoticeChannel(User *u, Channel *c, const Flux::vector &params) override
 	{
 		if(!u || !c)
 			return;
@@ -114,8 +114,8 @@ public:
 
 		Flux::string msg;
 
-		for(unsigned i = 0; i < params.size(); ++i)
-			msg += params[i] + ' ';
+		for(auto & param : params)
+			msg += param + ' ';
 
 		msg.trim();
 		Flux::string nolog = params.size() == 2 ? params[1] : "";
@@ -124,7 +124,7 @@ public:
 			CLog("-Notice- %s: %s", u->nick.c_str(), Flux::Sanitize(msg).c_str());
 	}
 
-	void OnPart(User *u, Channel *c, const Flux::string &reason)
+	void OnPart(User *u, Channel *c, const Flux::string &reason) override
 	{
 		if(!u || !c)
 			return;
@@ -135,7 +135,7 @@ public:
 		CLog("*** %s has parted %s (%s)", u->nick.c_str(), c->name.c_str(), reason.c_str());
 	}
 
-	void OnJoin(User *u, Channel *c)
+	void OnJoin(User *u, Channel *c) override
 	{
 		if(!u || !c)
 			return;
@@ -146,12 +146,12 @@ public:
 		CLog("*** %s has joined %s", u->nick.c_str(), c->name.c_str());
 	}
 
-	void OnQuit(User *u, const Flux::string &reason)
+	void OnQuit(User *u, const Flux::string &reason) override
 	{
 		CLog("*** %s has quit (%s)", u->nick.c_str(), reason.c_str());
 	}
 
-	void OnChannelMode(User *u, Channel *c, const Flux::string &mode)
+	void OnChannelMode(User *u, Channel *c, const Flux::string &mode) override
 	{
 		if(!u || !c)
 			return;
@@ -162,7 +162,7 @@ public:
 		CLog("*** %s sets mode %s %s", u->nick.c_str(), c->name.c_str(), mode.c_str());
 	}
 
-	void OnChannelOp(User *u, Channel *c, const Flux::string &mode, const Flux::string &nick)
+	void OnChannelOp(User *u, Channel *c, const Flux::string &mode, const Flux::string &nick) override
 	{
 		if(!u || !c)
 			return;

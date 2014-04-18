@@ -19,7 +19,7 @@ public:
 	{
 		this->SetDesc("Rehashes the config file");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 
@@ -33,7 +33,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -54,7 +54,7 @@ public:
 		this->SetDesc("Change the bots nickname");
 		this->SetSyntax("\37nickname\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 		Flux::string newnick = params[1];
@@ -81,7 +81,7 @@ public:
 		ircproto->nick(newnick);
 		Log(u, this) << "to change the bots nickname to " << newnick;
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -101,7 +101,7 @@ public:
 		this->SetDesc("Restarts the bot");
 		this->SetSyntax("\37reason\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		if(source.u->IsOwner())
 		{
@@ -112,7 +112,7 @@ public:
 		else
 			source.Reply(ACCESS_DENIED);
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -133,7 +133,7 @@ public:
 		this->SetDesc("Kick a user from the channel");
 		this->SetSyntax("channel \37nick\15");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 
@@ -168,7 +168,7 @@ public:
 		else
 			source.Reply(ACCESS_DENIED);
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -188,11 +188,11 @@ public:
 		this->SetDesc("Change ownership over the bot");
 		this->SetSyntax("\37owner\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		source.Reply("This command is broken!");
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -212,7 +212,7 @@ public:
 		this->SetDesc("Quits the bot from IRC");
 		this->SetSyntax("\37randompass\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 		Flux::string pass = params[1];
@@ -230,7 +230,7 @@ public:
 			Log(u) << "Attempted to quit the bot";
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -252,7 +252,7 @@ public:
 		this->SetSyntax("\37channel\37 [\37topic\37]");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string tchan = params[0];
 		Flux::string msg = params[1];
@@ -295,7 +295,7 @@ public:
 		Log(u, this) << "to change " << tchan << "'s topic to \"" << msg << "\"";
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -314,7 +314,7 @@ public:
 	{
 		this->SetDesc("Gets the bots Process ID");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 
@@ -328,7 +328,7 @@ public:
 			source.Reply(ACCESS_DENIED);
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -346,7 +346,7 @@ public:
 	{
 		this->SetDesc("Gets the bots Random Password");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 
@@ -361,7 +361,7 @@ public:
 			Log(u, this) << "to attempt to request navn's quit password.";
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -381,7 +381,7 @@ public:
 	{
 		this->SetDesc("Shows system stats");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		int days, hours, mins;
 
@@ -408,7 +408,7 @@ public:
 
 		source.Reply("System Uptime: %d days, %d hours, %d minutes, %ld seconds",
 		             days, hours, mins, sys_info.uptime % 60);
-		source.Reply("Bot Uptime: %s", duration(time(NULL) - starttime).c_str());
+		source.Reply("Bot Uptime: %s", duration(time(nullptr) - starttime).c_str());
 
 		// Load Averages for 1,5 and 15 minutes
 		source.Reply("Load Avgs: 1min(%ld) 5min(%ld) 15min(%ld)",
@@ -439,7 +439,7 @@ public:
 //#endif
 		Log(source.u, this) << "command";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -476,7 +476,7 @@ public:
 		this->SetPermanent(true);
 		orig = Config->BotNick;
 	}
-	void OnNumeric(int i, const std::vector<Flux::string> &params)
+	void OnNumeric(int i, const std::vector<Flux::string> &params) override
 	{
 		if((i == 5))
 		{
@@ -534,7 +534,7 @@ public:
 			while(cs.GetToken(tok))
 			{
 				tok.trim();
-				Channel *c = new Channel(tok);
+				auto c = new Channel(tok);
 				c->SendJoin();
 
 				Flux::string WelcomeMessage = Config->WelcomeMessage.replace_all_ci("{botnick}", Config->BotNick);
@@ -566,8 +566,8 @@ public:
 			Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << Config->LogColor;
 			Log(LOG_TERMINAL) << "\033[22;34mSession Password: \033[01;32m" << password << Config->LogColor;
 
-			for(unsigned o = 0; o < Config->Owners.size(); ++o)
-				ircproto->notice(Config->Owners[o], "The randomly generated password is: %s", password.c_str());
+			for(auto & elem : Config->Owners)
+				ircproto->notice(elem, "The randomly generated password is: %s", password.c_str());
 
 			started = true;
 
@@ -589,14 +589,14 @@ public:
 		}
 	}
 
-	void OnJoin(User *u, Channel *c)
+	void OnJoin(User *u, Channel *c) override
 	{
 		u->SendMessage("Welcome %s to %s. Type !time for time or \"/msg %s help\" for help on more commands.", u->nick.c_str(),
 		               c->name.c_str(), Config->BotNick.c_str());
 		Log(u) << "joined " << c->name;
 	}
 
-	void OnKick(User *u, User *kickee, Channel *c, const Flux::string &reason)
+	void OnKick(User *u, User *kickee, Channel *c, const Flux::string &reason) override
 	{
 		if(kickee && kickee->nick.equals_ci(Config->BotNick))
 		{
@@ -605,7 +605,7 @@ public:
 		}
 	}
 
-	void OnNotice(User *u, const Flux::vector &params)
+	void OnNotice(User *u, const Flux::vector &params) override
 	{
 		Flux::string msg = ConcatinateVector(params);
 
@@ -620,7 +620,7 @@ public:
 			}
 		}
 	}
-	void OnNickChange(User *u, const Flux::string &newnick)
+	void OnNickChange(User *u, const Flux::string &newnick) override
 	{
 		if(u->nick == Config->BotNick)
 			Config->BotNick = newnick;
@@ -628,9 +628,9 @@ public:
 		// Keep owners in the owners vector updated..
 		if(u->IsOwner())
 		{
-			for(unsigned i = 0; i < Config->Owners.size(); ++i)
-				if(newnick.equals_ci(Config->Owners[i]))
-					Config->Owners[i] = newnick;
+			for(auto & elem : Config->Owners)
+				if(newnick.equals_ci(elem))
+					elem = newnick;
 		}
 	}
 };

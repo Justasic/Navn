@@ -19,41 +19,41 @@ public:
 		this->SetSyntax("\037priority\037");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		const Flux::string priority = params.size() == 2 ? params[1] : "";
 		int c = 0;
 
 		if(priority.empty())
 		{
-			for(Flux::insensitive_map<Module *>::iterator it = Modules.begin(); it != Modules.end(); ++it)
+			for(auto & Modules_it : Modules)
 			{
-				source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-				             ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
+				source.Reply("\2%-16s\2 %s [%s]", Modules_it.second->name.c_str(), Modules_it.second->GetAuthor().c_str(),
+				             ModuleHandler::DecodePriority(Modules_it.second->GetPriority()).c_str());
 				++c;
 			}
 		}
 		else
 		{
 			// There is probably a WAY easier way of doing this but whatever
-			for(Flux::insensitive_map<Module *>::iterator it = Modules.begin(); it != Modules.end(); ++it)
+			for(auto & Modules_it : Modules)
 			{
 				if(priority.equals_ci("LAST") || priority == '1')
 				{
-					source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-					             ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
+					source.Reply("\2%-16s\2 %s [%s]", Modules_it.second->name.c_str(), Modules_it.second->GetAuthor().c_str(),
+					             ModuleHandler::DecodePriority(Modules_it.second->GetPriority()).c_str());
 					++c;
 				}
 				else if(priority.equals_ci("NORMAL") || priority == '2')
 				{
-					source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-					             ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
+					source.Reply("\2%-16s\2 %s [%s]", Modules_it.second->name.c_str(), Modules_it.second->GetAuthor().c_str(),
+					             ModuleHandler::DecodePriority(Modules_it.second->GetPriority()).c_str());
 					++c;
 				}
 				else if(priority.equals_ci("FIRST") || priority == '3')
 				{
-					source.Reply("\2%-16s\2 %s [%s]", it->second->name.c_str(), it->second->GetAuthor().c_str(),
-					             ModuleHandler::DecodePriority(it->second->GetPriority()).c_str());
+					source.Reply("\2%-16s\2 %s [%s]", Modules_it.second->name.c_str(), Modules_it.second->GetAuthor().c_str(),
+					             ModuleHandler::DecodePriority(Modules_it.second->GetPriority()).c_str());
 					++c;
 				}
 			}
@@ -63,7 +63,7 @@ public:
 		Log(source.u, this) << "to list all Module" << (priority.empty() ? "" : " with priority " + priority);
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -83,7 +83,7 @@ public:
 		this->SetSyntax("\37name\37");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		const Flux::string Module = params[1];
 
@@ -108,7 +108,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -130,7 +130,7 @@ public:
 		this->SetSyntax("\37name\37");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		const Flux::string Modulestr = params[1];
 
@@ -165,7 +165,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -184,7 +184,7 @@ public:
 		this->SetSyntax("\37name\37");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		const Flux::string Modulestr = params[1];
 
@@ -222,7 +222,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -242,7 +242,7 @@ public:
 		this->SetSyntax("\37name\37");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		const Flux::string modd = params[1];
 
@@ -265,15 +265,15 @@ public:
 
 		Flux::string cmds;
 
-		for(CommandMap::iterator it = Commandsmap.begin(); it != Commandsmap.end(); ++it)
-			if((it->second->mod == mo))//For /msg commands
-				cmds += it->second->name + " ";
+		for(auto & elem : Commandsmap)
+			if((elem.second->mod == mo))//For /msg commands
+				cmds += elem.second->name + " ";
 
 		cmds.trim();
 
-		for(CommandMap::iterator it = ChanCommandMap.begin(); it != ChanCommandMap.end(); ++it)
-			if((it->second->mod == mo)) //For Channel Commands
-				cmds += it->second->name + " ";
+		for(auto & elem : ChanCommandMap)
+			if((elem.second->mod == mo)) //For Channel Commands
+				cmds += elem.second->name + " ";
 
 		cmds.trim();
 
@@ -287,7 +287,7 @@ public:
 		Log(source.u, this) << "to show info on Module " << mo->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -318,22 +318,22 @@ public:
 		ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
 	}
 
-	void OnStart(int, char **)
+	void OnStart(int, char **) override
 	{
 		CurrentModuleList = ParamitizeString(Config->Modules, ',');
 
-		for(unsigned i = 0; i < CurrentModuleList.size(); ++i)
+		for(auto & elem : CurrentModuleList)
 		{
-			CurrentModuleList[i].trim();
+			elem.trim();
 //       printf("[%i] '%s'\n", i, CurrentModuleList[i].c_str());
 		}
 	}
 
 	bool FindInVector(const Flux::string &nname, const Flux::vector &vector)
 	{
-		for(Flux::vector::const_iterator it = vector.begin(); it != vector.end(); ++it)
+		for(const auto & elem : vector)
 		{
-			const Flux::string found = *it;
+			const Flux::string found = elem;
 
 			if(found.equals_cs(nname))
 				return true;
@@ -342,7 +342,7 @@ public:
 		return false;
 	}
 
-	void OnReload()
+	void OnReload() override
 	{
 		Flux::vector updatedmodlist = ParamitizeString(Config->Modules, ',');
 

@@ -23,12 +23,12 @@ public:
 		Implementation i[] = { I_OnPrivmsgChannel, I_OnNotice };
 		ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
 	}
-	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
+	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params) override
 	{
 		Flux::string msg;
 
-		for(unsigned i = 0; i < params.size(); ++i)
-			msg += params[i] + ' ';
+		for(auto & param : params)
+			msg += param + ' ';
 
 		if(msg.search_ci("!rehash"))
 		{
@@ -42,12 +42,12 @@ public:
 			c->SendMessage(xf->Tags["trigger"].Content);
 		}
 	}
-	void OnNotice(User *u, const Flux::vector &params)
+	void OnNotice(User *u, const Flux::vector &params) override
 	{
 		Flux::string msg;
 
-		for(unsigned i = 0; i < params.size(); ++i)
-			msg += params[i] + ' ';
+		for(auto & param : params)
+			msg += param + ' ';
 	}
 };
 MODULE_HOOK(QuickReply)

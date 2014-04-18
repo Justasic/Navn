@@ -34,18 +34,18 @@ public:
 		this->SetDesc("Decodes a hostname");
 		this->SetSyntax("\37fullhost\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		Flux::string host = params[1];
-		IsoHost *Host = new IsoHost(host);
+		auto Host = new IsoHost(host);
 		c->SendMessage("Nick: %s", Host->nick.c_str());
 		c->SendMessage("User: %s", Host->ident.c_str());
 		c->SendMessage("Host: %s", Host->host.c_str());
 		c->SendMessage("Raw: %s", Host->raw.c_str());
 		delete Host;
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -72,7 +72,7 @@ public:
 		ModuleHandler::Attach(I_OnPrivmsgChannel, this);
 	}
 
-	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
+	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params) override
 	{
 		Flux::string msg = ConcatinateVector(params);
 

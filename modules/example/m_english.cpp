@@ -23,7 +23,7 @@ public:
 		ModuleHandler::Attach(I_OnPrivmsgChannel, this);
 	}
 
-	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
+	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params) override
 	{
 		Flux::string sentence = ConcatinateVector(params);
 
@@ -39,9 +39,9 @@ public:
 
 		// Make sure the bots nickname is capitalized.
 		if(sentence.search_ci(Config->BotNick))
-			for(unsigned i = 0; i < params.size(); i++)
+			for(auto & param : params)
 			{
-				if(params[i].search_ci(Config->BotNick) && !params[i].search(Config->BotNick))
+				if(param.search_ci(Config->BotNick) && !param.search(Config->BotNick))
 				{
 					// Make sure we're not lower case or it would be ironic to say "capitalize" when we're lowercase
 					if(!islower(Config->BotNick[0]))

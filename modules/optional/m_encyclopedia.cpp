@@ -13,8 +13,8 @@ class cooldowntimer : public Timer
 {
 public:
 	int requested;
-	cooldowntimer(): Timer(300, time(NULL), true) { }
-	void Tick(time_t)
+	cooldowntimer(): Timer(300, time(nullptr), true) { }
+	void Tick(time_t) override
 	{
 		Log(LOG_TERMINAL) << Log::TimeStamp() << " Requests reset";
 		requested = 0;
@@ -115,13 +115,13 @@ public:
 		ModuleHandler::Attach(I_OnPrivmsgChannel, this);
 	}
 
-	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
+	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params) override
 	{
 		//Flux::vector MessageParams = StringVector(params, ' ');
 		Flux::string msg;
 
-		for(unsigned i = 0; i < params.size(); ++i)
-			msg += params[i] + ' ';
+		for(auto & param : params)
+			msg += param + ' ';
 
 		Flux::string cmd = params.empty() ? "" : params[0];
 

@@ -40,7 +40,7 @@ public:
 		this->SetPriority(PRIORITY_FIRST);
 		ModuleHandler::Attach(I_OnCTCP, this);
 	}
-	void OnCTCP(const Flux::string &source, const Flux::vector &params)
+	void OnCTCP(const Flux::string &source, const Flux::vector &params) override
 	{
 		Flux::string cmd = params.empty() ? "" : params[0];
 		Log(LOG_SILENT) << "Received CTCP " << Flux::Sanitize(cmd) << " from " << source;
@@ -60,7 +60,7 @@ public:
 		if(cmd == "\001TIME\001")
 		{
 			// for CTCP TIME reply
-			ircproto->notice(source, "\001TIME %s\001", do_strftime(time(NULL), true).c_str());
+			ircproto->notice(source, "\001TIME %s\001", do_strftime(time(nullptr), true).c_str());
 		}
 
 		if(cmd == "\001SOURCE\001")

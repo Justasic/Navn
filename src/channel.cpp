@@ -11,7 +11,7 @@
 
 Flux::insensitive_map<Channel *> ChanMap;
 
-Channel::Channel(const Flux::string &nname) : name(nname), topic_time(0), creation_time(time(NULL))
+Channel::Channel(const Flux::string &nname) : name(nname), topic_time(0), creation_time(time(nullptr))
 {
 	if(this->name.empty())
 		throw CoreException("Empty channel name passed to channel constructor");
@@ -30,9 +30,9 @@ Channel::~Channel()
 	this->SendPart();
 
 	// Remove the channel from users in the list.
-	for(UList::iterator it = UserList.begin(), it_end = UserList.end(); it != it_end; ++it)
-		if(it->first)
-			it->first->DelChan(this);
+	for(auto & elem : UserList)
+		if(elem.first)
+			elem.first->DelChan(this);
 
 	UserList.clear();
 
@@ -42,18 +42,18 @@ Channel::~Channel()
 
 User *Channel::finduser(const Flux::string &usr)
 {
-	Flux::insensitive_map<User *>::iterator it1 = UserNickList.find(usr);
+	auto it1 = UserNickList.find(usr);
 	User *u = it1->second;
 
 	if(!u)
-		return NULL;
+		return nullptr;
 
-	UList::iterator it = UserList.find(u);
+	auto it = UserList.find(u);
 
 	if(it != UserList.end())
 		return it->first;
 
-	return NULL;
+	return nullptr;
 }
 
 void Channel::SendJoin()
@@ -72,7 +72,7 @@ void Channel::DelUser(User *u)
 	if(!sock)
 		return;
 
-	UList::iterator it = UserList.find(u);
+	auto it = UserList.find(u);
 
 	if(it != UserList.end())
 		UserList.erase(it);
@@ -260,11 +260,11 @@ void QuitUser(User *u)
 	if(!u)
 		return;
 
-	for(Flux::insensitive_map<Channel *>::iterator it = ChanMap.begin(), it_end = ChanMap.end(); it != it_end; ++it)
-		for(UList::iterator it1 = it->second->UserList.begin(), it1_end = it->second->UserList.end(); it1 != it1_end; ++it1)
+	for(auto & elem : ChanMap)
+		for(auto & _it1 : elem.second->UserList)
 		{
-			if(it1->first == u)
-				it1->second->DelUser(u);
+			if(_it1.first == u)
+				_it1.second->DelUser(u);
 		}
 
 	delete u;
@@ -272,10 +272,10 @@ void QuitUser(User *u)
 
 Channel *findchannel(const Flux::string &channel)
 {
-	Flux::insensitive_map<Channel *>::iterator it = ChanMap.find(channel);
+	auto it = ChanMap.find(channel);
 
 	if(it != ChanMap.end())
 		return it->second;
 
-	return NULL;
+	return nullptr;
 }

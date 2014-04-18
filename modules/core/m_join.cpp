@@ -21,7 +21,7 @@ public:
 		this->SetSyntax("\37channel\37");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 		Flux::string chan = params[1];
@@ -58,7 +58,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -76,7 +76,7 @@ public:
 		this->SetDesc("Part a channel");
 		this->SetSyntax("\37channel\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string chan = params[1];
 		User *u = source.u;
@@ -102,7 +102,7 @@ public:
 			Log(u) << "made the bot part " << chan;
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

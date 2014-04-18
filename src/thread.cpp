@@ -32,8 +32,8 @@ void *EntryPoint(void *parameter)
 	Thread *thread = static_cast<Thread *>(parameter);
 	thread->ToRun();
 	thread->SetExitState();
-	pthread_exit(0);
-	return 0;
+	pthread_exit(nullptr);
+	return nullptr;
 }
 
 void Thread::SetExitState()
@@ -61,11 +61,11 @@ void Thread::Start()
 void Thread::Join()
 {
 	this->SetExitState();
-	pthread_join(Handle, NULL);
+	pthread_join(Handle, nullptr);
 }
 
 void Thread::Exit()
 {
 	this->SetExitState();
-	pthread_exit(0);
+	pthread_exit(nullptr);
 }

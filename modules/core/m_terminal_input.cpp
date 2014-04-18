@@ -60,13 +60,13 @@ public:
 	}
 
 	// We're the console, no Access Denied crap
-	bool IsOwner()
+	bool IsOwner() override
 	{
 		return true;
 	}
 
 	// forward messages to the console, not IRC
-	void SendMessage(const Flux::string &message)
+	void SendMessage(const Flux::string &message) override
 	{
 		Log(LOG_TERMINAL) << FixColors(message);
 	}
@@ -91,7 +91,7 @@ void ProcessInput(const Flux::string &str)
 
 	CommandSource source;
 	source.u = DeathBlade;
-	source.c = NULL;
+	source.c = nullptr;
 	source.params = Lordofsraam;
 	source.raw = Justasic;
 
@@ -119,19 +119,19 @@ public:
 		SetExitState();
 	}
 
-	void ToRun()
+	void ToRun() override
 	{
-		int nobomb = 0, last_run = time(NULL);
+		int nobomb = 0, last_run = time(nullptr);
 
 		while(!exiting)
 		{
 			if(nobomb++ >= 50)
 				raise(SIGSEGV);
 
-			if(last_run - time(NULL) > 5)
+			if(last_run - time(nullptr) > 5)
 			{
 				nobomb = 0;
-				last_run = time(NULL);
+				last_run = time(nullptr);
 			}
 
 			Log(LOG_THREAD) << "Top of Input Loop";

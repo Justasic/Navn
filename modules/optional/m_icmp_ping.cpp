@@ -79,7 +79,7 @@ public:
 		SetExitState();
 	}
 
-	void ToRun()
+	void ToRun() override
 	{
 		if(ForwardResolution(address).empty())
 		{
@@ -89,9 +89,9 @@ public:
 
 		for(int i = 0; i < times; ++i)
 		{
-			time_t sendtime = time(NULL);
+			time_t sendtime = time(nullptr);
 			this->SendPing();
-			source.c->SendMessage("Time: %is", static_cast<int>(time(NULL) - sendtime));
+			source.c->SendMessage("Time: %is", static_cast<int>(time(nullptr) - sendtime));
 		}
 
 		source.Reply("Sent \2%i\2 ping%s to \2%s\2", times, times <= 1 ? "" : "s", address.c_str());
@@ -139,7 +139,7 @@ void PingThread::SendPing()
 	ip = reinterpret_cast<struct iphdr *>(packet);
 	icmp = reinterpret_cast<struct icmphdr *>(packet + sizeof(struct iphdr));
 
-	if((proto = getprotobyname("icmp")) == NULL)
+	if((proto = getprotobyname("icmp")) == nullptr)
 	{
 		Log(LOG_WARN) << "[m_icmp_ping]: unknown protocol \"ICMP\"";
 		source.Reply("Internal Error: ICMP protocol is unknown");
@@ -223,7 +223,7 @@ public:
 	{
 		this->SetDesc("Sends an ICMP ping to a hostname or ipaddress");
 		this->SetSyntax("\37[hostname|ipaddress]\37 times");
-		thread = 0;
+		thread = nullptr;
 	}
 
 	~CommandPing()
@@ -232,7 +232,7 @@ public:
 			delete thread;
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string destination = params[0];
 		Flux::string numbers = params.size() < 2 ? "1" : params[1];
@@ -240,7 +240,7 @@ public:
 		thread = new PingThread(source, destination, times);
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &)
+	bool OnHelp(CommandSource &source, const Flux::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

@@ -40,7 +40,7 @@ public:
 	{
 		this->SetDesc("Say " + Config->FantasyPrefix + "joinPvP to join the PvP game.");
 	}
-	void Run(CommandSource &Source, const std::vector<Flux::string> &params)
+	void Run(CommandSource &Source, const std::vector<Flux::string> &params) override
 	{
 		if(!BattleField::PlayerInField(Source.u->nick))
 		{
@@ -61,7 +61,7 @@ public:
 	{
 		this->SetDesc("Say " + Config->FantasyPrefix + "PvPInfo to get information about the game.");
 	}
-	void Run(CommandSource &Source, const std::vector<Flux::string> &params)
+	void Run(CommandSource &Source, const std::vector<Flux::string> &params) override
 	{
 		if((params[1] == "me") ^(params[1] == "myself") ^(params[1] == Source.u->nick))
 		{
@@ -88,7 +88,7 @@ public:
 	{
 		this->SetDesc("Say " + Config->FantasyPrefix + "stab <victim> to stab someone! (Uses 5 energy).");
 	}
-	void Run(CommandSource &Source, const std::vector<Flux::string> &params)
+	void Run(CommandSource &Source, const std::vector<Flux::string> &params) override
 	{
 		if(BattleField::PlayerInField(params[1])) BattleField::Players[params[1]].HurtBy(5);
 
@@ -110,19 +110,19 @@ public:
 		Implementation i[] = { I_OnPrivmsg, I_OnNotice };
 		ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
 	}
-	void OnPrivmsg(User *u, const std::vector<Flux::string> &params)
+	void OnPrivmsg(User *u, const std::vector<Flux::string> &params) override
 	{
 		Flux::string msg;
 
-		for(unsigned i = 0; i < params.size(); ++i)
-			msg += params[i] + ' ';
+		for(auto & param : params)
+			msg += param + ' ';
 	}
-	void OnNotice(User *u, const std::vector<Flux::string> &params)
+	void OnNotice(User *u, const std::vector<Flux::string> &params) override
 	{
 		Flux::string msg;
 
-		for(unsigned i = 0; i < params.size(); ++i)
-			msg += params[i] + ' ';
+		for(auto & param : params)
+			msg += param + ' ';
 	}
 };
 

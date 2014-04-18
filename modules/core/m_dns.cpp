@@ -53,7 +53,7 @@ public:
 		this->SetDesc("Displays a resolved hostname");
 		this->SetSyntax("hostname");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string ip = ForwardResolution(params[1]);
 
@@ -62,7 +62,7 @@ public:
 		else
 			source.c->SendMessage("\0034[DNS]\017 %s", ip.c_str());
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -81,11 +81,11 @@ public:
 		this->SetDesc("Displays ALL resolved ip addresses from hostnames");
 		this->SetSyntax("hostname");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string hostname = params[1];
 		struct addrinfo *result, *res;
-		int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
+		int err = getaddrinfo(hostname.c_str(), nullptr, nullptr, &result);
 
 		if(err != 0)
 		{
@@ -96,7 +96,7 @@ public:
 		Flux::string ret = hostname, laststr;
 		int c = 0;
 
-		for(res = result; res != NULL; res = res->ai_next)
+		for(res = result; res != nullptr; res = res->ai_next)
 		{
 			struct sockaddr *haddr = res->ai_addr;
 			char address[INET6_ADDRSTRLEN + 1] = "";
@@ -140,7 +140,7 @@ public:
 		source.c->SendMessage("\0034[ADNS]\017 Total of %i IP address%s", c, c > 1 ? "es" : "");
 		freeaddrinfo(result);
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &)
+	bool OnHelp(CommandSource &source, const Flux::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -165,13 +165,13 @@ public:
 		this->SetSyntax("ipaddress");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		struct addrinfo *result;
 		struct addrinfo *res;
 		int error;
 
-		error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
+		error = getaddrinfo(params[1].c_str(), nullptr, nullptr, &result);
 
 		if(error != 0)
 			source.c->SendMessage("\0034[rDNS]\017 Error: %s\n", gai_strerror(error));
@@ -179,7 +179,7 @@ public:
 		{
 			char hostname[NI_MAXHOST] = "";
 			res = result;
-			error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+			error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, nullptr, 0, 0);
 
 			if(error != 0)
 				source.c->SendMessage("\0034[rDNS]\017 Error: %s", gai_strerror(error));
@@ -190,7 +190,7 @@ public:
 			freeaddrinfo(result);
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -212,14 +212,14 @@ public:
 		this->SetDesc("Displays ALL reverse DNS ip addresses");
 		this->SetSyntax("ipaddress");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		struct addrinfo *result;
 		struct addrinfo *res;
 		int error;
 		int count = 0;
 
-		error = getaddrinfo(params[1].c_str(), NULL, NULL, &result);
+		error = getaddrinfo(params[1].c_str(), nullptr, nullptr, &result);
 
 		if(error != 0)
 			source.c->SendMessage("\0034[All rDNS]\017 Error: %s\n", gai_strerror(error));
@@ -227,10 +227,10 @@ public:
 		{
 			Flux::string laststr, ret;
 
-			for(res = result; res != NULL; res = res->ai_next)
+			for(res = result; res != nullptr; res = res->ai_next)
 			{
 				char hostname[NI_MAXHOST] = "";
-				error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, NULL, 0, 0);
+				error = getnameinfo(res->ai_addr, res->ai_addrlen, hostname, NI_MAXHOST, nullptr, 0, 0);
 
 				if(error != 0)
 				{
@@ -252,7 +252,7 @@ public:
 			freeaddrinfo(result);
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

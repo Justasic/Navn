@@ -186,7 +186,7 @@ CommandMap ChanCommandMap;
 Command *FindCommand(const Flux::string &name, CommandType type)
 {
 	if(name.empty())
-		return NULL;
+		return nullptr;
 
 	CommandMap::iterator it;
 
@@ -208,7 +208,7 @@ Command *FindCommand(const Flux::string &name, CommandType type)
 			break;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -222,8 +222,8 @@ Command *FindCommand(const Flux::string &name, CommandType type)
  */
 Command::Command(Module *m, const Flux::string &sname, CommandType t, size_t min_params, size_t max_params): type(t), MaxParams(max_params), MinParams(min_params), name(sname), mod(m)
 {
-	for(unsigned i = 0; i < sname.size(); ++i) //commands with spaces can screw up the command handler
-		if(isspace(sname[i]))
+	for(auto & elem : sname) //commands with spaces can screw up the command handler
+		if(isspace(elem))
 			throw ModuleException("Command \"" + this->name + "\" cannot contain spaces!");
 
 	if(this->type == C_NULL)
@@ -340,9 +340,9 @@ void Command::Run(CommandSource &, const std::vector<Flux::string>&) { }
 void Command::OnSyntaxError(CommandSource &source, const Flux::string &subcommand)
 {
 	this->SendSyntax(source);
-	CommandMap::iterator it = ChanCommandMap.find(this->name);
+	auto it = ChanCommandMap.find(this->name);
 
-	if((it->second != NULL)) {}
+	if((it->second != nullptr)) {}
 	else  // good god what the fuck work around is this?
 		source.Reply("\002/msg %s HELP %s\002 for more information.", Config->BotNick.c_str(), source.command.c_str());
 }

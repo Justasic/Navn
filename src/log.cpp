@@ -20,9 +20,9 @@ Flux::string NoTermColor(const Flux::string &ret)
 	Flux::string str;
 	bool in_term_color = false;
 
-	for(unsigned i = 0; i < ret.length(); ++i)
+	for(auto & elem : ret)
 	{
-		char c = ret[i];
+		char c = elem;
 
 		if(in_term_color)
 		{
@@ -51,7 +51,7 @@ Flux::string NoTermColor(const Flux::string &ret)
  * \param time time to use on the log files
  * \return returns a string containing the human-readable date format
  */
-static Flux::string GetLogDate(time_t t = time(NULL))
+static Flux::string GetLogDate(time_t t = time(nullptr))
 {
 	char timestamp[32];
 
@@ -70,7 +70,7 @@ static Flux::string GetLogDate(time_t t = time(NULL))
  * \param time time to use on the filename
  * \return the filename that has been generated
  */
-static inline Flux::string CreateLogName(const Flux::string &file, time_t t = time(NULL))
+static inline Flux::string CreateLogName(const Flux::string &file, time_t t = time(nullptr))
 {
 	return "logs/" + file + "." + GetLogDate(t) + "-" + value_cast<Flux::string>(t);
 }
@@ -109,16 +109,16 @@ void CheckLogDelete(Log *log)
 	if(files.empty())
 		Log(LOG_TERMINAL) << "No Logs!";
 
-	for(Flux::vector::iterator it = files.begin(); it != files.end(); ++it)
+	for(auto & files_it : files)
 	{
-		Flux::string file = dir + (*it);
+		Flux::string file = dir + (files_it);
 
 		if(TextFile::IsFile(file))
 		{
 			Flux::string t = file.isolate('-', ' ').strip('-');
 			int timestamp = static_cast<int>(t);
 
-			if(timestamp > (time(NULL) - 86400 * Config->LogAge) && timestamp != starttime)
+			if(timestamp > (time(nullptr) - 86400 * Config->LogAge) && timestamp != starttime)
 			{
 				Delete(file.c_str());
 				Log(LOG_DEBUG) << "Deleted old logfile " << file;
@@ -147,7 +147,7 @@ Flux::string Log::TimeStamp()
 	{
 		char *s;
 		struct timeval tv;
-		gettimeofday(&tv, NULL);
+		gettimeofday(&tv, nullptr);
 		strftime(tbuf, sizeof(tbuf) - 1, "[%b %d %H:%M:%S", &tm);
 		s = tbuf + strlen(tbuf);
 		s += snprintf(s, sizeof(tbuf) - (s - tbuf), ".%06d", static_cast<int>(tv.tv_usec));
@@ -165,14 +165,14 @@ Flux::string Log::TimeStamp()
  * \fn Log::Log(LogType t) : type(t), u(NULL), c(NULL)
  * \brief Logging class used for generating log files and messages
  */
-Log::Log(LogType t) : type(t), u(NULL), c(NULL) {}
+Log::Log(LogType t) : type(t), u(nullptr), c(nullptr) {}
 /// \overload Log::Log(LogType t, User *user):type(t), u(user), c(NULL)
-Log::Log(LogType t, User *user): type(t), u(user), c(NULL)
+Log::Log(LogType t, User *user): type(t), u(user), c(nullptr)
 {
 	if(!u) throw CoreException("No user argument in Log()");
 }
 /// \overload Log::Log(User *user): type(LOG_NORMAL), u(user), c(NULL)
-Log::Log(User *user): type(LOG_NORMAL), u(user), c(NULL)
+Log::Log(User *user): type(LOG_NORMAL), u(user), c(nullptr)
 {
 	if(!u) throw CoreException("No user argument in Log()");
 }

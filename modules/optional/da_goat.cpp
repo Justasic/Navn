@@ -61,7 +61,7 @@ public:
 		this->SetDesc("Displays the bots version info into the channel");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 		Channel *c = source.c;
@@ -72,7 +72,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -91,13 +91,13 @@ public:
 		this->SetDesc("Displays the spam warning");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Log(source.u, this) << "command in " << source.c->name;
 		source.c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -115,13 +115,13 @@ public:
 		this->SetDesc("Displays the Ask protocol");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Log(source.u, this) << "command in " << source.c->name;
 		source.c->SendMessage("The Ask To Ask protocol wastes more bandwidth than any version of the Ask protocol, so just ask your question. (Read: don't ask to ask a question, just ask your question)");
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -137,7 +137,7 @@ public:
 	{
 		this->SetDesc("Displays the rules of the chatroom");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		User *u = source.u;
@@ -149,7 +149,7 @@ public:
 		c->SendMessage("If you violate any of these rules you will be kicked and possibly banned from %s.", c->name.c_str());
 		Log(u, this) << "command in " << c->name;
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -169,7 +169,7 @@ public:
 		this->SetDesc("Prints Syatem Uptime in the channel");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		User *u = source.u;
@@ -184,14 +184,14 @@ public:
 		hours = (sys_info.uptime / 3600) - (days * 24);
 		mins = (sys_info.uptime / 60) - (days * 1440) - (hours * 60);
 		c->SendMessage("System Uptime: %d days, %d hours, %d minutes, %ld seconds", days, hours, mins, sys_info.uptime % 60);
-		c->SendMessage("Bot Uptime: %s", duration(time(NULL) - starttime).c_str());
+		c->SendMessage("Bot Uptime: %s", duration(time(nullptr) - starttime).c_str());
 #else
 		source.Reply("This is currently not available on windows systems, sorry.");
 #endif
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -211,7 +211,7 @@ public:
 		this->SetDesc("Displays Azuru's Social Information");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		User *u = source.u;
@@ -221,7 +221,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -240,7 +240,7 @@ public:
 		this->SetDesc("Displays how to register your nickname");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		User *u = source.u;
@@ -249,7 +249,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -271,7 +271,7 @@ public:
 		this->SetDesc("Displays how to rename");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		User *u = source.u;
@@ -280,7 +280,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -301,7 +301,7 @@ public:
 		this->SetDesc("General Da_Goat info");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		User *u = source.u;
@@ -311,7 +311,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -341,7 +341,7 @@ public:
 		ModuleHandler::Attach(I_OnPrivmsgChannel, this);
 	}
 
-	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params)
+	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params) override
 	{
 		Flux::string cmd = params.empty() ? "" : params[0], msg = ConcatinateVector(params);
 

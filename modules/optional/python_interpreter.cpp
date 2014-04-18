@@ -9,6 +9,7 @@
  * Based on the original code of Anope by The Anope Team.
  * Based on python Module of Sigyn by Alyx Wolcott
  */
+#ifdef PYTHON
 #include "modules.h"
 #include <Python.h>
 
@@ -452,3 +453,5 @@ public:
 };
 
 MODULE_INIT(PyInterp_mod)
+
+#endif

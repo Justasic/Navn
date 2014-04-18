@@ -110,7 +110,7 @@ void HandleSegfault(Module *m)
 	char tbuf[256];
 	Flux::string mbuf;
 	size_t size;
-	time_t now = time(NULL);
+	time_t now = time(nullptr);
 
 	size = backtrace(array, 10);
 
@@ -151,8 +151,8 @@ void HandleSegfault(Module *m)
 			slog << "Module Author: " << m->GetAuthor() << std::endl;
 		}
 
-		for(Flux::insensitive_map<Module *>::iterator it = Modules.begin(); it != Modules.end(); ++it)
-			mbuf += it->second->name + " ";
+		for(auto & Modules_it : Modules)
+			mbuf += Modules_it.second->name + " ";
 
 		mbuf.trim();
 		slog << "Modules Loaded: " << (mbuf.empty() ? "None" : mbuf) << std::endl;
@@ -226,7 +226,7 @@ void sigact(int sig)
 
 #endif
 			// Oh no, core crash, report it and exit
-			HandleSegfault(NULL);
+			HandleSegfault(nullptr);
 			exit(sig);
 			break;
 		case SIGINT:

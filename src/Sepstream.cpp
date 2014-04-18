@@ -116,7 +116,7 @@ const char *ci::ci_char_traits::find(const char *s1, int n, char c)
 	while(n-- > 0 && ascii_case_insensitive_map[static_cast<unsigned char>(*s1)] != ascii_case_insensitive_map[static_cast<unsigned char>(c)])
 		++s1;
 
-	return n >= 0 ? s1 : NULL;
+	return n >= 0 ? s1 : nullptr;
 }
 
 /** Compare two Flux::strings as ci::strings and find which one is less
@@ -141,10 +141,10 @@ Base::~Base()
 {
 	Log(LOG_MEMORY) << "Base::- @" << this;
 
-	for(std::set<dynamic_reference_base *>::iterator it = this->References.begin(), it_end = this->References.end(); it != it_end; ++it)
-		(*it)->Invalidate();
+	for(const auto & elem : this->References)
+		(elem)->Invalidate();
 
-	for(std::vector<Base *>::iterator it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end; ++it)
+	for(auto it = BaseReferences.begin(), it_end = BaseReferences.end(); it != it_end; ++it)
 		if((*it) == this)
 			BaseReferences.erase(it);
 }

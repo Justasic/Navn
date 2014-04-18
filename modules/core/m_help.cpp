@@ -36,7 +36,7 @@ public:
 		this->SetDesc("Displays help messages");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		int c = 0;
 
@@ -84,7 +84,7 @@ public:
 		this->SetDesc("Displays Channel help messages");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string cmds;
 

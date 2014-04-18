@@ -125,9 +125,9 @@ bool TextFile::Empty()
 	if(lines.empty())
 		return true;
 
-	for(unsigned i = 0; i < lines.size(); i++)
+	for(auto & elem : lines)
 	{
-		if(!lines[i].empty()) return false;
+		if(!elem.empty()) return false;
 	}
 
 	return true;
@@ -168,7 +168,7 @@ FileIOErrors TextFile::Copy(const Flux::string &dest)
 	}
 
 	int want = s.st_size;
-	char *buffer = new char[s.st_size];
+	auto buffer = new char[s.st_size];
 
 	while(want > 0 && !source.fail() && !target.fail())
 	{
@@ -228,7 +228,7 @@ bool TextFile::IsFile(const Flux::string &filename)
 
 	FILE *input = fopen(file, "r");
 
-	if(input == NULL)
+	if(input == nullptr)
 		return false;
 	else
 		fclose(input);
@@ -239,7 +239,7 @@ bool TextFile::IsFile(const Flux::string &filename)
 Flux::vector TextFile::DirectoryListing(const Flux::string &directory)
 {
 	Flux::vector nil;
-	DIR *dp = NULL;
+	DIR *dp = nullptr;
 
 	if(!TextFile::IsDirectory(directory))
 		return nil;
@@ -252,7 +252,7 @@ Flux::vector TextFile::DirectoryListing(const Flux::string &directory)
 
 	Flux::vector files;
 
-	while((drip = readdir(dp)) != NULL)
+	while((drip = readdir(dp)) != nullptr)
 	{
 		if(!drip->d_ino)
 			continue;
@@ -291,13 +291,13 @@ bool TextFile::WriteToDisk(const Flux::string &FileName)
 	{
 		if(Contents != lines)
 		{
-			for(unsigned i = 0; i < Contents.size(); i++)
-				f << Contents[i].strip() << "\n";
+			for(auto & elem : Contents)
+				f << elem.strip() << "\n";
 		}
 		else
 		{
-			for(unsigned i = 0; i < lines.size(); i++)
-				f << lines[i].strip() << "\n";
+			for(auto & elem : lines)
+				f << elem.strip() << "\n";
 		}
 
 		f.close();

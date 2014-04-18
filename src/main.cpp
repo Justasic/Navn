@@ -58,7 +58,7 @@ public:
 	{
 		Log() << "Reconnecting to server in " << Config->ReconnectTime << " seconds.";
 	}
-	void Tick(time_t)
+	void Tick(time_t) override
 	{
 		Connect();
 	}
@@ -90,7 +90,7 @@ void Connect()
 		if(sock)
 		{
 			delete sock;
-			sock = NULL;
+			sock = nullptr;
 		}
 
 		FOREACH_MOD(OnPreConnect, Config->Server, Config->Port);
@@ -117,7 +117,7 @@ void Connect()
 		else
 		{
 			delete sock;
-			sock = NULL;
+			sock = nullptr;
 			new ReconnectTimer();
 		}
 	}
@@ -141,7 +141,7 @@ int main(int argcx, char **argvx, char *envp[])
 		Connect();
 
 		ircproto = new IRCProto();
-		time_t last_check = time(NULL);
+		time_t last_check = time(nullptr);
 
 		// Introduce ourselves to the IRC server
 		ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
@@ -171,11 +171,11 @@ int main(int argcx, char **argvx, char *envp[])
 
 			/* Process Timers */
 			/***********************************/
-			if(time(NULL) - last_check >= 3)
+			if(time(nullptr) - last_check >= 3)
 			{
 				loopcount = 0;
-				TimerManager::TickTimers(time(NULL));
-				last_check = time(NULL);
+				TimerManager::TickTimers(time(nullptr));
+				last_check = time(nullptr);
 			}
 
 			/***********************************/

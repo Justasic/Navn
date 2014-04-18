@@ -40,7 +40,7 @@ public:
 		this->SetDesc("Displays the weather");
 		this->SetSyntax("\2location\2");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
 		Channel *c = source.c;
@@ -81,7 +81,7 @@ public:
 
 		Log(u, this) << "to get weather for area '" << area << "'";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill)
+	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

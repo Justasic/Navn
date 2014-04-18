@@ -28,7 +28,7 @@ class SendQTimer : public Timer
 {
 	int sent;
 public:
-	SendQTimer() : Timer(Config->SendQRate, time(NULL), true), sent(0)
+	SendQTimer() : Timer(Config->SendQRate, time(nullptr), true), sent(0)
 	{
 		Log(LOG_DEBUG) << "Initialized a SengQ Timer";
 		sqo.linessent = 0;
@@ -42,7 +42,7 @@ public:
 			sqo.SendQ.pop();
 	}
 
-	void Tick(time_t)
+	void Tick(time_t) override
 	{
 		while(!sqo.SendQ.empty() && ++sent <= Config->SendQLines)
 		{
@@ -67,7 +67,7 @@ public:
  *\file  ircproto.cpp
  *\brief Contains the IRCProto class.
  */
-IRCProto::IRCProto() : o(NULL)
+IRCProto::IRCProto() : o(nullptr)
 {
 	if(Config->SendQEnabled) new SendQTimer();
 }
@@ -77,7 +77,7 @@ IRCProto::~IRCProto()
 	if(this->o)
 		delete this->o;
 
-	this->o = NULL;
+	this->o = nullptr;
 }
 
 void IRCProto::Raw(const char *fmt, ...)

@@ -38,7 +38,7 @@ public:
 		this->SetDesc("Shows the time in the channel");
 		this->SetSyntax("\37location\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params)
+	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
 		Flux::string location = params.empty() ? "" : params[0];
@@ -46,7 +46,7 @@ public:
 
 		if(location.empty())
 		{
-			Clock *wclock = new Clock();
+			auto wclock = new Clock();
 			c->SendMessage("Current time around the World:");
 			c->SendMessage("GMT == %s", wclock->UTC().c_str());
 			c->SendMessage("New York (USA) == %s", wclock->EST().c_str());
@@ -80,7 +80,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &)
+	bool OnHelp(CommandSource &source, const Flux::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

@@ -73,7 +73,7 @@ time_t Timer::GetSetTime() const
 void Timer::SetSecs(time_t t)
 {
 	secs = t;
-	trigger = time(NULL) + t;
+	trigger = time(nullptr) + t;
 
 	TimerManager::DelTimer(this);
 	TimerManager::AddTimer(this);
@@ -101,7 +101,7 @@ void TimerManager::AddTimer(Timer *T)
  */
 void TimerManager::DelTimer(Timer *T)
 {
-	std::vector<Timer *>::iterator i = std::find(Timers.begin(), Timers.end(), T);
+	auto i = std::find(Timers.begin(), Timers.end(), T);
 
 	if(i != Timers.end())
 		Timers.erase(i);

@@ -14,9 +14,9 @@ Flux::string NoTermColor(const Flux::string &ret)
 	Flux::string str;
 	bool in_term_color = false;
 
-	for(unsigned i = 0; i < ret.length(); ++i)
+	for(auto & elem : ret)
 	{
-		char c = ret[i];
+		char c = elem;
 
 		if(in_term_color)
 		{
@@ -52,7 +52,7 @@ public:
 			throw ModuleException("Log channel is empty, cannot load m_logchan!");
 	}
 
-	EventResult OnLog(Log *l)
+	EventResult OnLog(Log *l) override
 	{
 		Channel *c = findchannel(Config->LogChan);
 

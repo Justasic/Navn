@@ -29,7 +29,7 @@ fd_set ReadFD, WriteFD, ExceptFD;
 Flux::string ForwardResolution(const Flux::string &hostname)
 {
 	struct addrinfo *result, *res;
-	int err = getaddrinfo(hostname.c_str(), NULL, NULL, &result);
+	int err = getaddrinfo(hostname.c_str(), nullptr, nullptr, &result);
 
 	if(err != 0)
 	{
@@ -40,7 +40,7 @@ Flux::string ForwardResolution(const Flux::string &hostname)
 	bool gothost = false;
 	Flux::string ret = hostname;
 
-	for(res = result; res != NULL && !gothost; res = res->ai_next)
+	for(res = result; res != nullptr && !gothost; res = res->ai_next)
 	{
 		struct sockaddr *haddr;
 		haddr = res->ai_addr;
@@ -143,7 +143,7 @@ void SocketIO::Connect()
 	struct addrinfo *servinfo;
 	int rv = 0;
 
-	if((rv = getaddrinfo(this->ip.c_str(), this->port.c_str(), NULL, &servinfo)) != 0)
+	if((rv = getaddrinfo(this->ip.c_str(), this->port.c_str(), nullptr, &servinfo)) != 0)
 		throw SocketException(printfify("Could not resolve server (%s:%u): %s", this->ip.c_str(), this->port.c_str(), gai_strerror(rv)));
 
 	int c = connect(this->GetFD(), servinfo->ai_addr, servinfo->ai_addrlen);
