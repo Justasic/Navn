@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef IRCPROTO_H
-#define IRCPROTO_H
 #include "includes.h"
 #include "command.h"
 
@@ -58,4 +56,3 @@ public:
 	void away(const Flux::string &);
 	void pass(const Flux::string &);
 };
-#endif

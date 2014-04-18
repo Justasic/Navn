@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef FLUX_H
-#define FLUX_H
 #include <cstring>
 #include <vector>
 #include <set>
@@ -49,7 +47,7 @@
 # define DllExport
 #endif
 
-typedef std::basic_string<char, std::char_traits<char>, std::allocator<char> > sstr;
+typedef std::basic_string<char, std::char_traits<char>, std::allocator<char>> sstr;
 extern CoreExport bool protocoldebug;
 
 /**
@@ -1212,4 +1210,3 @@ public:
 		this->invalid = true;
 	}
 };
-#endif

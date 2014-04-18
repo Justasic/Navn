@@ -12,8 +12,6 @@
  *\brief Socket header for Socket.cpp
  */
 #pragma once
-#ifndef SOCKET_H
-#define SOCKET_H
 #include <sys/types.h>
 
 #include <errno.h>
@@ -37,26 +35,32 @@ private:
 public:
 	SocketIO(const Flux::string &server, const Flux::string &port);
 	~SocketIO();
+	
 	inline int GetFD() const
 	{
 		return sockn;
 	}
+	
 	inline bool IsIPv6() const
 	{
 		return this->ipv6;
 	}
+	
 	inline bool is_valid() const
 	{
 		return this->GetFD() != -1;
 	}
+	
 	inline size_t GetReceiveLen() const
 	{
 		return this->recvlen;
 	}
+	
 	inline Flux::string GetLastBuf() const
 	{
 		return this->LastBuf;
 	};
+	
 	bool SetNonBlocking();
 	bool SetBlocking();
 	void send(const Flux::string &buf);
@@ -65,4 +69,3 @@ public:
 	bool Read(const Flux::string &) const;
 	void ThrowException(const Flux::string &);
 };
-#endif

@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef THREAD_H
-#define THREAD_H
 #include "includes.h"
 #include <pthread.h>
 
@@ -30,4 +28,3 @@ public:
 	void Start();
 	virtual void ToRun() = 0;
 };
-#endif

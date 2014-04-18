@@ -171,9 +171,6 @@ endif(NOT MSVC)
 # Add an optional variable for using run-cc.pl for building, Perl will be checked later regardless of this setting
 option(USE_RUN_CC_PL "Use run-cc.pl for building" OFF)
 
-# Add an option for using C++ 11 during compile
-option(USE_CXX_11 "Use C++ 11 during compile" OFF)
-
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include)
 
 set(ENV{LC_ALL} C)
@@ -204,7 +201,7 @@ if(MSVC)
 # Otherwise, we're not using Visual Studio
 else(MSVC)
   # Set the compile flags to have all warnings on (including shadowed variables)
-  set(CXXFLAGS "${CXXFLAGS} -Wall -Wshadow")
+  set(CXXFLAGS "${CXXFLAGS} -Wall -Wshadow -Wextra")
   # If on a *nix system, also set the compile flags to remove GNU extensions (favor ISO C++) as well as reject non-ISO C++ code, also remove all leading underscores in exported symbols (only on GNU compiler)
   if(UNIX)
     set(CXXFLAGS "${CXXFLAGS} -ansi -pedantic")
@@ -246,11 +243,11 @@ endif(MINGW)
 if(NOT MSVC)
   # Check if the C++ compiler can accept the -pipe flag, and add it to the compile flags if it works
   check_cxx_compiler_flag(-pipe HAVE_PIPE_FLAG)
-  check_cxx_compiler_flag(-std=gnu++0x HAVE_CXX_11)
+  check_cxx_compiler_flag(-std=c++11 HAVE_CXX_11)
   
   # C++11 is required now since FOREACH_MOD uses C99 standards..
   if(HAVE_CXX_11)
-    set(CXXFLAGS "${CXXFLAGS} -std=gnu++0x")
+    set(CXXFLAGS "${CXXFLAGS} -std=c++11")
   else(HAVE_CXX_11)
     message(FATAL_ERROR "Your compiler must support C++11")
   endif(HAVE_CXX_11)

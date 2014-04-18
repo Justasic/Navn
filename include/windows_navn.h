@@ -9,8 +9,6 @@
  */
 
 #pragma once
-#ifndef WINDOWS_NAVN_H
-#define WINDOWS_NAVN_H
 #include <fcntl.h>
 #ifdef _WIN32
 /* include the various windows libraries for compile */
@@ -159,5 +157,3 @@ extern CoreExport int closedir(DIR *);
 	extern "C" Module *ModInit(const Flux::string &name) { return new x(name); } \
 	extern "C" void ModunInit(x *m) { if(m) delete m; }
 #endif // _WIN32
-
-#endif // WINDOWS_H

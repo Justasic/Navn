@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef MODULE_H
-#define MODULE_H
 
 #include "user.h"
 #include "command.h"
@@ -116,7 +114,7 @@ public:
 	virtual void OnPreConnect(const Flux::string &, const Flux::string &) {}
 	virtual void OnPostConnect(SocketIO *) {}
 	virtual void OnConnectionError(const Flux::string &) {}
-	virtual void OnInvite(User *u, const Flux::string &) {}
+	virtual void OnInvite(User *, const Flux::string &) {}
 };
 
 class CoreExport ModuleHandler
@@ -136,4 +134,3 @@ public:
 private:
 	static bool DeleteModule(Module *);
 };
-#endif

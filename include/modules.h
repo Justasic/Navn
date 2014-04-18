@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef MODULES_H
-#define MODULES_H
 
 #include "module.h"
 #include "xmlfile.h"
@@ -22,5 +20,3 @@ E DEPRECATED(Flux::string removeCommand(Flux::string command, Flux::string s));
 E DEPRECATED(Flux::string urlify(const Flux::string &received));
 E void WritePID();
 E void startup(int, char **, char*[]);
-
-#endif // MODULES_H

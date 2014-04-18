@@ -1,6 +1,4 @@
 #pragma once
-#ifndef _SYSCONF_H_
-#define _SYSCONF_H_
 
 #cmakedefine HAVE_SYS_TYPES_H 1
 #cmakedefine HAVE_STDINT_H 1
@@ -138,5 +136,3 @@ typedef unsigned long uint32;
 # define sleep(x) Sleep(x * 1000)
 # endif
 */
-
-#endif

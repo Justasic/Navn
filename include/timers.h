@@ -9,8 +9,6 @@
  * All code is licensed under GNU General Public License GPL v3 (http://www.gnu.org/licenses/gpl.html)
  */
 #pragma once
-#ifndef TIMERS_H
-#define TIMERS_H
 
 #include "includes.h"
 #include "clock.h"
@@ -127,4 +125,3 @@ public:
 	static bool TimerComparison(Timer *one, Timer *two);
 };
 
-#endif // TIMERS_H

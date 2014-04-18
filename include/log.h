@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef LOG_H
-#define LOG_H
 #include "command.h"
 #include "user.h"
 
@@ -38,4 +36,3 @@ public:
 		return *this;
 	}
 };
-#endif

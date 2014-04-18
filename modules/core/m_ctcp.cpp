@@ -40,6 +40,7 @@ public:
 		this->SetPriority(PRIORITY_FIRST);
 		ModuleHandler::Attach(I_OnCTCP, this);
 	}
+	
 	void OnCTCP(const Flux::string &source, const Flux::vector &params) override
 	{
 		Flux::string cmd = params.empty() ? "" : params[0];

@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef XMLFILE_H
-#define XMLFILE_H
 
 #include "module.h"
 
@@ -39,5 +37,3 @@ public:
 	XMLFile(Flux::string);
 	std::map<Flux::string, Tag> Tags;
 };
-
-#endif

@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef USER_H
-#define USER_H
 
 #include "ircproto.h"
 #include "channel.h"
@@ -40,4 +38,4 @@ public:
 	void SendMessage(const char *, ...);
 	void SendPrivmsg(const char *, ...);
 };
-#endif
+

@@ -12,8 +12,6 @@
  *\brief Contains the Exception throw classes.
  */
 #pragma once
-#ifndef SOCKET_EXCEPTION_H
-#define SOCKET_EXCEPTION_H
 #include <exception>
 #include "flux.h"
 /** SocketExceptions are to be thrown with anything Socket related
@@ -87,6 +85,7 @@ public:
 	LogException(const Flux::string &message) : CoreException(message, "A Log") { }
 	virtual ~LogException() throw() { }
 };
+
 class ModuleException : public CoreException
 {
 public:
@@ -101,4 +100,4 @@ public:
 	ConfigException(const Flux::string &msg) : CoreException(msg, "A Config") { }
 	virtual ~ConfigException() throw() { }
 };
-#endif
+

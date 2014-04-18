@@ -8,8 +8,6 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef EXTERN_H
-#define EXTERN_H
 
 #include <list> //for std::list
 /* Prototypes and external variable declarations only */
@@ -327,6 +325,3 @@ E char **my_av, **my_envp;
 		static_cast<void>(0)
 
 #endif // HAVE_SETJMP_H
-
-
-#endif

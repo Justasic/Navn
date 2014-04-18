@@ -17,8 +17,6 @@
 // This INIReader has been modified by Justasic, it is NOT the one on google code!
 
 #pragma once
-#ifndef INIREADER_H
-#define INIREADER_H
 #include "flux.h"
 #include "extern.h"
 #include "textfile.h"
@@ -102,5 +100,3 @@ public:
 private:
 	void Read();
 };
-
-#endif  // __INIREADER_H__

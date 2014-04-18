@@ -8,8 +8,7 @@
  * Based on the original code of Anope by The Anope Team.
  */
 #pragma once
-#ifndef CHANNEL_H
-#define CHANNEL_H
+
 /**
  * \include ircproto.h
  */
@@ -81,5 +80,4 @@ public:
 	virtual void SendNotice(const Flux::string &);
 	void SendNotice(const char *, ...);
 };
-#endif
 

@@ -9,8 +9,6 @@
  */
 
 #pragma once
-#ifndef CLOCK_H
-#define CLOCK_H
 #include "module.h"
 
 class CoreExport Clock
@@ -31,5 +29,3 @@ public:
 	Flux::string PST();
 	Flux::string AUS();
 };
-
-#endif
