@@ -20,7 +20,7 @@ public:
 		this->SetSyntax("\37[question]\37");
 	}
 
-	void Run(CommandSource &source, const Flux::vector &params) override
+	void Run(CommandSource &source, const Flux::vector &) override
 	{
 		static Flux::string responses[21] =
 		{
@@ -50,7 +50,7 @@ public:
 		source.Reply(responses[(rand() % 21)]);
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

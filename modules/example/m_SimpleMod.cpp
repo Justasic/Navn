@@ -23,7 +23,7 @@ public:
 		source.Reply("HI!");
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -46,7 +46,7 @@ public:
 		ModuleHandler::Attach(i, this, sizeof(i) / sizeof(Implementation));
 	}
 
-	void OnPrivmsg(User *u, const Flux::vector &params) override
+	void OnPrivmsg(User *, const Flux::vector &params) override
 	{
 		Flux::string msg = ConcatinateVector(params);
 
@@ -54,7 +54,7 @@ public:
 			Log(LOG_TERMINAL) << "PRIVMSG: " << msg;
 	}
 
-	void OnNotice(User *u, const Flux::vector &params) override
+	void OnNotice(User *, const Flux::vector &params) override
 	{
 		Flux::string msg = ConcatinateVector(params);
 

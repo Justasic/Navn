@@ -63,7 +63,7 @@ public:
 		Log(source.u, this) << "to list all Module" << (priority.empty() ? "" : " with priority " + priority);
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -108,7 +108,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -165,7 +165,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -222,7 +222,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -266,13 +266,13 @@ public:
 		Flux::string cmds;
 
 		for(auto & elem : Commandsmap)
-			if((elem.second->mod == mo))//For /msg commands
+			if(elem.second->mod == mo)//For /msg commands
 				cmds += elem.second->name + " ";
 
 		cmds.trim();
 
 		for(auto & elem : ChanCommandMap)
-			if((elem.second->mod == mo)) //For Channel Commands
+			if(elem.second->mod == mo) //For Channel Commands
 				cmds += elem.second->name + " ";
 
 		cmds.trim();
@@ -287,7 +287,7 @@ public:
 		Log(source.u, this) << "to show info on Module " << mo->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

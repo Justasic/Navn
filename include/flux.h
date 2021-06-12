@@ -804,7 +804,7 @@ namespace Flux
 		}
 		inline void insert(iterator p, size_t n, char c)
 		{
-			return this->_string.insert(p, n, c);
+			this->_string.insert(p, n, c);
 		}
 		template<class InputIterator> inline void insert(iterator p, InputIterator first, InputIterator last)
 		{

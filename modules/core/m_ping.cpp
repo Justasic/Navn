@@ -93,9 +93,9 @@ public:
 		throw CoreException(buffer.c_str());
 	}
 
-	void OnNumeric(int i, const std::vector<Flux::string> &params) override
+	void OnNumeric(int i, const std::vector<Flux::string>&) override
 	{
-		if((i == 451))
+		if(i == 451)
 			ircproto->introduce_client(Config->BotNick, Config->Ident, Config->Realname);
 	}
 };

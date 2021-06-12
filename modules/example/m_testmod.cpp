@@ -39,10 +39,12 @@ public:
 		this->SetDesc("Test for the Modules");
 		this->SetSyntax("\37TEST\37");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		source.Reply("YAY!");
 	}
+	
 	bool OnHelp(CommandSource &source, const Flux::string &nill) override
 	{
 		this->SendSyntax(source);
@@ -70,6 +72,7 @@ public:
 		 * ModuleHandler::Attach(i, this, sizeof(i)/sizeof(Implementation));
 		 */
 	}
+	
 	virtual void OnPrivmsgChanenl(User *u, Channel *c, const Flux::vector &params)
 	{
 		Flux::string s = ConcatinateVector(params);

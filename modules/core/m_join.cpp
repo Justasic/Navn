@@ -58,7 +58,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -102,7 +102,7 @@ public:
 			Log(u) << "made the bot part " << chan;
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

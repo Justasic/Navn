@@ -31,10 +31,10 @@ long int random(void)
  */
 unsigned short in_cksum(unsigned short *addr, int len)
 {
-	register int sum = 0;
+	int sum = 0;
 	u_short answer = 0;
-	register u_short *w = addr;
-	register int nleft = len;
+	u_short *w = addr;
+	int nleft = len;
 
 	/*
 	 * Our algorithm is simple, using a 32 bit accumulator (sum), we add

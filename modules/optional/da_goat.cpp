@@ -72,7 +72,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -97,7 +97,7 @@ public:
 		source.c->SendMessage("Spam is the abuse of electronic messaging systems. This includes (but not limited to) external links, Flooding, mass join/quit messages, mass private messages or notices, mIRC color code abuse, CTCP abuse, mass nick changes, etc. If you violate the spam policy you will be kicked.");
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -121,7 +121,7 @@ public:
 		source.c->SendMessage("The Ask To Ask protocol wastes more bandwidth than any version of the Ask protocol, so just ask your question. (Read: don't ask to ask a question, just ask your question)");
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -137,6 +137,7 @@ public:
 	{
 		this->SetDesc("Displays the rules of the chatroom");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Channel *c = source.c;
@@ -149,7 +150,8 @@ public:
 		c->SendMessage("If you violate any of these rules you will be kicked and possibly banned from %s.", c->name.c_str());
 		Log(u, this) << "command in " << c->name;
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -191,7 +193,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -221,7 +223,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -249,7 +251,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -280,7 +282,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -311,7 +313,7 @@ public:
 		Log(u, this) << "command in " << c->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

@@ -19,7 +19,8 @@ public:
 	{
 		this->SetDesc("Rehashes the config file");
 	}
-	void Run(CommandSource &source, const Flux::vector &params) override
+	
+	void Run(CommandSource &source, const Flux::vector&) override
 	{
 		User *u = source.u;
 
@@ -33,7 +34,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -54,6 +55,7 @@ public:
 		this->SetDesc("Change the bots nickname");
 		this->SetSyntax("\37nickname\37");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
@@ -81,7 +83,8 @@ public:
 		ircproto->nick(newnick);
 		Log(u, this) << "to change the bots nickname to " << newnick;
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -101,7 +104,8 @@ public:
 		this->SetDesc("Restarts the bot");
 		this->SetSyntax("\37reason\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params) override
+	
+	void Run(CommandSource &source, const Flux::vector&) override
 	{
 		if(source.u->IsOwner())
 		{
@@ -112,7 +116,8 @@ public:
 		else
 			source.Reply(ACCESS_DENIED);
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -133,6 +138,7 @@ public:
 		this->SetDesc("Kick a user from the channel");
 		this->SetSyntax("channel \37nick\15");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
@@ -168,7 +174,8 @@ public:
 		else
 			source.Reply(ACCESS_DENIED);
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -188,11 +195,13 @@ public:
 		this->SetDesc("Change ownership over the bot");
 		this->SetSyntax("\37owner\37");
 	}
-	void Run(CommandSource &source, const Flux::vector &params) override
+	
+	void Run(CommandSource &source, const Flux::vector&) override
 	{
 		source.Reply("This command is broken!");
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -212,6 +221,7 @@ public:
 		this->SetDesc("Quits the bot from IRC");
 		this->SetSyntax("\37randompass\37");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
@@ -230,7 +240,8 @@ public:
 			Log(u) << "Attempted to quit the bot";
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -295,7 +306,7 @@ public:
 		Log(u, this) << "to change " << tchan << "'s topic to \"" << msg << "\"";
 	}
 
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -314,7 +325,8 @@ public:
 	{
 		this->SetDesc("Gets the bots Process ID");
 	}
-	void Run(CommandSource &source, const Flux::vector &params) override
+	
+	void Run(CommandSource &source, const Flux::vector&) override
 	{
 		User *u = source.u;
 
@@ -328,7 +340,8 @@ public:
 			source.Reply(ACCESS_DENIED);
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -346,7 +359,8 @@ public:
 	{
 		this->SetDesc("Gets the bots Random Password");
 	}
-	void Run(CommandSource &source, const Flux::vector &params) override
+	
+	void Run(CommandSource &source, const Flux::vector&) override
 	{
 		User *u = source.u;
 
@@ -361,7 +375,8 @@ public:
 			Log(u, this) << "to attempt to request navn's quit password.";
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -381,7 +396,8 @@ public:
 	{
 		this->SetDesc("Shows system stats");
 	}
-	void Run(CommandSource &source, const Flux::vector &params) override
+	
+	void Run(CommandSource &source, const Flux::vector&) override
 	{
 		int days, hours, mins;
 
@@ -439,7 +455,8 @@ public:
 //#endif
 		Log(source.u, this) << "command";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -476,9 +493,10 @@ public:
 		this->SetPermanent(true);
 		orig = Config->BotNick;
 	}
+	
 	void OnNumeric(int i, const std::vector<Flux::string> &params) override
 	{
-		if((i == 5))
+		if(i == 5)
 		{
 			// Skip the nickname and the "are supported by this server" parts of the message
 			for(unsigned o = 1; o < params.size() - 1; ++o)
@@ -518,7 +536,7 @@ public:
 			}
 		}
 
-		if((i == 4))
+		if(i == 4)
 		{
 			isupport.ServerHost = params[1];
 			isupport.IRCdVersion = params[2];
@@ -554,14 +572,14 @@ public:
 			Log() << "Successfully connected to the server \"" << Config->Server + ":" + Config->Port << "\" Master Channel(s): " << Config->Channel;
 		}
 
-		if((i == 433))
+		if(i == 433)
 		{
 			Config->BotNick.push_back(Flux::RandomNickString(5));
 			ircproto->nick(Config->BotNick);
 			istempnick = true;
 		}
 
-		if((i == 376))
+		if(i == 376)
 		{
 			Log(LOG_TERMINAL) << "\033[22;31mStarted with PID \033[22;32m" << getpid() << Config->LogColor;
 			Log(LOG_TERMINAL) << "\033[22;34mSession Password: \033[01;32m" << password << Config->LogColor;
@@ -620,6 +638,7 @@ public:
 			}
 		}
 	}
+	
 	void OnNickChange(User *u, const Flux::string &newnick) override
 	{
 		if(u->nick == Config->BotNick)

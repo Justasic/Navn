@@ -53,6 +53,7 @@ public:
 		this->SetDesc("Displays a resolved hostname");
 		this->SetSyntax("hostname");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string ip = ForwardResolution(params[1]);
@@ -62,7 +63,8 @@ public:
 		else
 			source.c->SendMessage("\0034[DNS]\017 %s", ip.c_str());
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -73,6 +75,7 @@ public:
 		return true;
 	}
 };
+
 class CommandCADNS : public Command
 {
 public:
@@ -81,6 +84,7 @@ public:
 		this->SetDesc("Displays ALL resolved ip addresses from hostnames");
 		this->SetSyntax("hostname");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		Flux::string hostname = params[1];
@@ -140,6 +144,7 @@ public:
 		source.c->SendMessage("\0034[ADNS]\017 Total of %i IP address%s", c, c > 1 ? "es" : "");
 		freeaddrinfo(result);
 	}
+	
 	bool OnHelp(CommandSource &source, const Flux::string &) override
 	{
 		this->SendSyntax(source);
@@ -190,7 +195,8 @@ public:
 			freeaddrinfo(result);
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -212,6 +218,7 @@ public:
 		this->SetDesc("Displays ALL reverse DNS ip addresses");
 		this->SetSyntax("ipaddress");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		struct addrinfo *result;
@@ -252,7 +259,8 @@ public:
 			freeaddrinfo(result);
 		}
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

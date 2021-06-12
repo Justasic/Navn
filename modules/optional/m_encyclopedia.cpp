@@ -115,7 +115,7 @@ public:
 		ModuleHandler::Attach(I_OnPrivmsgChannel, this);
 	}
 
-	void OnPrivmsgChannel(User *u, Channel *c, const Flux::vector &params) override
+	void OnPrivmsgChannel(User *u, Channel *, const Flux::vector &params) override
 	{
 		//Flux::vector MessageParams = StringVector(params, ' ');
 		Flux::string msg;

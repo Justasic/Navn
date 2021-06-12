@@ -1,7 +1,7 @@
 #
 # CMake config
 #
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10.0 FATAL_ERROR)
 
 # If the Source dir and the Binary dir are the same, we are building in-source, which we will disallow due to Autotools being there (but only on non-Windows)
 if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR} AND NOT WIN32)
@@ -350,6 +350,3 @@ set(CONFIG_INSTALL bot.example.conf ftp.sh brain.py README)
 install(FILES ${CONFIG_INSTALL}
   DESTINATION bin
 )
-
-get_target_property(BOT_BINARY ${PROGRAM_NAME} LOCATION)
-get_filename_component(BOT_BINARY ${BOT_BINARY} NAME)

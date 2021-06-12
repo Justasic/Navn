@@ -82,7 +82,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel Google Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -106,7 +106,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel youtube Search from " << source.u->nick << "\"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -130,7 +130,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel The Pirate Bay Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -154,7 +154,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel define Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -178,7 +178,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel urban dictionary Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -202,7 +202,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel movie Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -226,7 +226,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel Wikipedia Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -250,7 +250,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -274,7 +274,7 @@ public:
 		source.c->SendMessage(str);
 		Log() << "Channel music Search from " << source.u->nick << " \"" << str << "\"";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");

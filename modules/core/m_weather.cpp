@@ -40,6 +40,7 @@ public:
 		this->SetDesc("Displays the weather");
 		this->SetSyntax("\2location\2");
 	}
+	
 	void Run(CommandSource &source, const Flux::vector &params) override
 	{
 		User *u = source.u;
@@ -81,7 +82,8 @@ public:
 
 		Log(u, this) << "to get weather for area '" << area << "'";
 	}
-	bool OnHelp(CommandSource &source, const Flux::string &nill) override
+	
+	bool OnHelp(CommandSource &source, const Flux::string&) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -92,6 +94,7 @@ public:
 		return true;
 	}
 };
+
 class weather: public Module
 {
 	CommandCWeather rainy;

@@ -74,10 +74,6 @@ else(WIN32)
   target_link_libraries(${PROGRAM_NAME} ${LINK_LIBS})
 endif(WIN32)
 
-# Get the filename of the Navn executable as it is in on this system
-get_target_property(BOT_BINARY ${PROGRAM_NAME} LOCATION)
-get_filename_component(BOT_BINARY ${BOT_BINARY} NAME)
-
 # Generate conf.h from the earlier configuration
 configure_file(${navn_SOURCE_DIR}/include/config.h.cmake ${navn_SOURCE_DIR}/include/config.h)
 
